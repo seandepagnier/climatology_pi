@@ -36,8 +36,8 @@
 #include <wx/fileconf.h>
 
 #include "trends_pi.h"
-#include "TrendsConfigDialog.h"
-
+#include "icons.h"
+#include "TrendsDialog.h"
 
 // the class factories, used to create and destroy instances of the PlugIn
 
@@ -50,10 +50,6 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
 {
     delete p;
 }
-
-
-
-
 
 //---------------------------------------------------------------------------------------------------------
 //
@@ -78,7 +74,6 @@ trends_pi::trends_pi(void *ppimgr)
 
 trends_pi::~trends_pi(void)
 {
-      delete _img_trends_pi;
       delete _img_trends;
 }
 
@@ -106,7 +101,7 @@ int trends_pi::Init(void)
       m_parent_window = GetOCPNCanvasWindow();
 
       //    This PlugIn needs a toolbar icon, so request its insertion if enabled locally
-      m_leftclick_tool_id  = InsertPlugInTool(_T(""), _img_trends, _img_trends, wxITEM_CHECK,
+      m_leftclick_tool_id  = InsertPlugInTool(_T(""), _img_trends, _img_trends, wxITEM_NORMAL,
                                               _("Trends"), _T(""), NULL,
                                               TRENDS_TOOL_POSITION, 0, this);
 
@@ -128,8 +123,8 @@ bool trends_pi::DeInit(void)
         m_pTrendsDialog = NULL;
     }
 
-//      delete m_pTRENDSOverlayFactory;
-//      m_pTRENDSOverlayFactory = NULL;
+    delete m_pOverlayFactory;
+    m_pOverlayFactory = NULL;
 
       return true;
 }
@@ -156,7 +151,7 @@ int trends_pi::GetPlugInVersionMinor()
 
 wxBitmap *trends_pi::GetPlugInBitmap()
 {
-      return _img_trends_pi;
+      return _img_trends;
 }
 
 wxString trends_pi::GetCommonName()
@@ -185,7 +180,6 @@ Supported TRENDS file types include:\n\
 
 }
 
-
 void trends_pi::SetDefaults(void)
 {
 }
@@ -194,43 +188,16 @@ void trends_pi::SetDefaults(void)
 int trends_pi::GetToolbarToolCount(void)
 {
       return 1;
-}n
+}
 
 void trends_pi::ShowPreferencesDialog( wxWindow* parent )
 {
       wxDialog *dialog = new wxDialog( parent, wxID_ANY, _("TRENDS Preferences"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE );
 
-    //      Build TRENDS. Page for Toolbox
-    int border_size = 4;
-
-    wxBoxSizer* itemBoxSizerPanel = new wxBoxSizer(wxVERTICAL);
-    dialog->SetSizer(itemBoxSizerPanel);
-
-    //  Trends toolbox icon checkbox
-    wxStaticBox* itemStaticBoxSizerStatic = new wxStaticBox(dialog, wxID_ANY, _(""));
-    wxStaticBoxSizer* itemStaticBoxSizer = new wxStaticBoxSizer(itemStaticBoxSizerStatic, wxVERTICAL);
-    itemBoxSizerPanel->Add(itemStaticBoxSizer, 0, wxGROW|wxALL, border_size);
-
-    m_pUseHiDef = new wxCheckBox( dialog, -1, _("Use High Definition Graphics"));
-    itemStaticBoxSizer->Add(m_pUseHiDef, 1, wxALIGN_LEFT|wxALL, border_size);
-
-    m_pUseGradualColors = new wxCheckBox( dialog, -1, _("Use gradual colors blended (wave height etc) instead of step at set heights."));
-    itemStaticBoxSizer->Add(m_pUseGradualColors, 1, wxALIGN_LEFT|wxALL, border_size);
-
-
-    m_pUseHiDef->SetValue(m_bUseHiDef);
-    m_pUseGradualColors->SetValue(m_bUseGradualColors);
-
-    wxStdDialogButtonSizer* DialogButtonSizer = dialog->CreateStdDialogButtonSizer(wxOK|wxCANCEL);
-    itemBoxSizerPanel->Add(DialogButtonSizer, 0, wxALIGN_RIGHT|wxALL, 5);
-
-    dialog->Fit();
+   dialog->Fit();
 
     if(dialog->ShowModal() == wxID_OK)
     {
-        m_bUseHiDef= m_pUseHiDef->GetValue();
-        m_bUseGradualColors= m_pUseGradualColors->GetValue();
-        m_pOverlayFactory->SetSettings( m_bUseHiDef, m_bUseGradualColors );
         SaveConfig();
     }
 }
@@ -239,24 +206,21 @@ void trends_pi::OnToolbarToolCallback(int id)
 {
     if(!m_pTrendsDialog)
     {
-        m_pTrendsDialog = new TrendsUIDialog(m_parent_window, this);
+        m_pTrendsDialog = new TrendsDialog(m_parent_window, this);
         m_pTrendsDialog->Move(wxPoint(m_trends_dialog_x, m_trends_dialog_y));
 
         // Create the drawing factory
         m_pOverlayFactory = new TrendsOverlayFactory( *m_pTrendsDialog );
-        m_pOverlayFactory->SetSettings( m_bUseHiDef, m_bUseGradualColors );
     }
 
     m_pTrendsDialog->Show(!m_pTrendsDialog->IsShown());
 
-    // Toggle is handled by the toolbar but we must keep plugin manager b_toggle updated
-    // to actual status to ensure correct status upon toolbar rebuild
-    SetToolbarItemState( m_leftclick_tool_id, m_pTrendsDialog->IsShown() );
+//    SetToolbarItemState( m_leftclick_tool_id, m_pTrendsDialog->IsShown() );
 }
 
 void trends_pi::OnTrendsDialogClose()
 {
-    SetToolbarItemState( m_leftclick_tool_id, false );
+//    SetToolbarItemState( m_leftclick_tool_id, false );
 
     if(m_pTrendsDialog)
         m_pTrendsDialog->Show(false);
@@ -268,11 +232,10 @@ bool trends_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
 {
     if(!m_pTrendsDialog ||
        !m_pTrendsDialog->IsShown() ||
-       !m_pOverlayFactory ||
-       !m_pOverlayFactory->IsReadyToRender())
+       !m_pOverlayFactory)
         return false;
 
-    m_pOverlayFactory->RenderTrendsOverlay ( dc, vp );
+    m_pOverlayFactory->RenderOverlay ( dc, vp );
     return true;
 }
 
@@ -280,18 +243,19 @@ bool trends_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
 {
     if(!m_pTrendsDialog ||
        !m_pTrendsDialog->IsShown() ||
-       !m_pOverlayFactory ||
-       !m_pOverlayFactory->IsReadyToRender())
+       !m_pOverlayFactory)
         return false;
 
-    m_pOverlayFactory->RenderGLTrendsOverlay ( pcontext, vp );
+    m_pOverlayFactory->RenderGLOverlay ( pcontext, vp );
     return true;
 }
 
 void trends_pi::SetCursorLatLon(double lat, double lon)
 {
+/*
     if(m_pTrendsDialog)
         m_pTrendsDialog->SetCursorLatLon(lat, lon);
+*/
 }
 
 bool trends_pi::LoadConfig(void)
@@ -302,8 +266,6 @@ bool trends_pi::LoadConfig(void)
         return false;
 
     pConf->SetPath ( _T( "/Settings/Trends" ) );
-    pConf->Read ( _T( "UseHiDef" ),  &m_bUseHiDef, 0 );
-    pConf->Read ( _T( "UseGradualColors" ),     &m_bUseGradualColors, 0 );
 
     m_trends_dialog_sx = pConf->Read ( _T ( "DialogSizeX" ), 300L );
     m_trends_dialog_sy = pConf->Read ( _T ( "DialogSizeY" ), 540L );
@@ -321,8 +283,6 @@ bool trends_pi::SaveConfig(void)
         return false;
 
     pConf->SetPath ( _T ( "/Settings/Trends" ) );
-    pConf->Write ( _T ( "UseHiDef" ), m_bUseHiDef );
-    pConf->Write ( _T ( "UseGradualColors" ),    m_bUseGradualColors );
 
     pConf->Write ( _T ( "DialogSizeX" ),  m_trends_dialog_sx );
     pConf->Write ( _T ( "DialogSizeY" ),  m_trends_dialog_sy );

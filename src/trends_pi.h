@@ -42,7 +42,8 @@
 
 #include "../../../include/ocpn_plugin.h"
 
-#include "GribOverlayFactory.h"
+#include "TrendsOverlayFactory.h"
+#include "TrendsDialog.h"
 #include "TrendsUI.h"
 
 
@@ -95,7 +96,7 @@ public:
       void SetColorScheme(PI_ColorScheme cs);
 
       void OnTrendsDialogClose();
-      TRENDSOverlayFactory *GetTRENDSOverlayFactory(){ return m_pTRENDSOverlayFactory; }
+      TrendsOverlayFactory *GetOverlayFactory(){ return m_pOverlayFactory; }
 
 private:
       bool LoadConfig(void);
@@ -104,21 +105,14 @@ private:
       wxFileConfig     *m_pconfig;
       wxWindow         *m_parent_window;
 
-      TRENDSUIDialog     *m_pTrendsDialog;
-      TRENDSOverlayFactory *m_pTRENDSOverlayFactory;
+      TrendsDialog       *m_pTrendsDialog;
+      TrendsOverlayFactory *m_pOverlayFactory;
 
       int              m_display_width, m_display_height;
       int              m_leftclick_tool_id;
 
       int              m_trends_dialog_x, m_trends_dialog_y;
       int              m_trends_dialog_sx, m_trends_dialog_sy;
-
-      bool              m_bTRENDSUseHiDef;
-      bool              m_bTRENDSUseGradualColors;
-
-      //    Controls added to Preferences panel
-      wxCheckBox              *m_pTRENDSUseHiDef;
-      wxCheckBox              *m_pTRENDSUseGradualColors;
 
 };
 
