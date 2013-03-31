@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Project:  OpenCPN
- * Purpose:  Trends Plugin
+ * Purpose:  Climatology Plugin
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
@@ -24,8 +24,8 @@
  ***************************************************************************
  */
 
-#ifndef _TRENDSPI_H_
-#define _TRENDSPI_H_
+#ifndef _CLIMATOLOGYPI_H_
+#define _CLIMATOLOGYPI_H_
 
 #include "wx/wxprec.h"
 
@@ -42,22 +42,22 @@
 
 #include "../../../include/ocpn_plugin.h"
 
-#include "TrendsOverlayFactory.h"
-#include "TrendsDialog.h"
-#include "TrendsUI.h"
+#include "ClimatologyOverlayFactory.h"
+#include "ClimatologyDialog.h"
+#include "ClimatologyUI.h"
 
 
 //----------------------------------------------------------------------------------------------------------
 //    The PlugIn Class Definition
 //----------------------------------------------------------------------------------------------------------
 
-#define TRENDS_TOOL_POSITION    -1          // Request default positioning of toolbar tool
+#define CLIMATOLOGY_TOOL_POSITION    -1          // Request default positioning of toolbar tool
 
-class trends_pi : public opencpn_plugin_18
+class climatology_pi : public opencpn_plugin_18
 {
 public:
-      trends_pi(void *ppimgr);
-      ~trends_pi(void);
+      climatology_pi(void *ppimgr);
+      ~climatology_pi(void);
 
 //    The required PlugIn Methods
       int Init(void);
@@ -89,14 +89,14 @@ public:
 
 // Other public methods
 
-      void SetTrendsDialogX    (int x){ m_trends_dialog_x = x;};
-      void SetTrendsDialogY    (int x){ m_trends_dialog_y = x;}
-      void SetTrendsDialogSizeX(int x){ m_trends_dialog_sx = x;}
-      void SetTrendsDialogSizeY(int x){ m_trends_dialog_sy = x;}
+      void SetClimatologyDialogX    (int x){ m_climatology_dialog_x = x;};
+      void SetClimatologyDialogY    (int x){ m_climatology_dialog_y = x;}
+      void SetClimatologyDialogSizeX(int x){ m_climatology_dialog_sx = x;}
+      void SetClimatologyDialogSizeY(int x){ m_climatology_dialog_sy = x;}
       void SetColorScheme(PI_ColorScheme cs);
 
-      void OnTrendsDialogClose();
-      TrendsOverlayFactory *GetOverlayFactory(){ return m_pOverlayFactory; }
+      void OnClimatologyDialogClose();
+      ClimatologyOverlayFactory *GetOverlayFactory(){ return m_pOverlayFactory; }
 
 private:
       bool LoadConfig(void);
@@ -105,14 +105,14 @@ private:
       wxFileConfig     *m_pconfig;
       wxWindow         *m_parent_window;
 
-      TrendsDialog       *m_pTrendsDialog;
-      TrendsOverlayFactory *m_pOverlayFactory;
+      ClimatologyDialog       *m_pClimatologyDialog;
+      ClimatologyOverlayFactory *m_pOverlayFactory;
 
       int              m_display_width, m_display_height;
       int              m_leftclick_tool_id;
 
-      int              m_trends_dialog_x, m_trends_dialog_y;
-      int              m_trends_dialog_sx, m_trends_dialog_sy;
+      int              m_climatology_dialog_x, m_climatology_dialog_y;
+      int              m_climatology_dialog_sx, m_climatology_dialog_sy;
 
 };
 

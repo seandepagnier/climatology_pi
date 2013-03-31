@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Project:  OpenCPN
- * Purpose:  Trends Plugin Friends
+ * Purpose:  Climatology Plugin Friends
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
@@ -24,51 +24,31 @@
  ***************************************************************************
  */
 
-#ifndef __TrendsDIALOG_H__
-#define __TrendsDIALOG_H__
+#ifndef __ClimatologyConfigDIALOG_H__
+#define __ClimatologyConfigDIALOG_H__
 
 #include "wx/wxprec.h"
 
 #ifndef  WX_PRECOMP
 #include "wx/wx.h"
 #endif //precompiled headers
-#include <wx/fileconf.h>
-#include <wx/glcanvas.h>
 
-#include "TrendsUI.h"
+#include "ClimatologyUI.h"
 
-#ifndef PI
-#define PI        3.1415926535897931160E0      /* pi */
-#endif
-
-class TrendsOverlayFactory;
-
-class wxFileConfig;
-class trends_pi;
-
-//----------------------------------------------------------------------------------------------------------
-//    Trends Selector/Control Dialog Specification
-//----------------------------------------------------------------------------------------------------------
-class TrendsDialog : public TrendsDialogBase {
+class ClimatologyConfigDialog : public ClimatologyConfigDialogBase {
 public:
 
-    TrendsDialog(wxWindow *parent, trends_pi *ppi);
-
-    ~TrendsDialog();
-    void Init();
-
-    void SetFactoryOptions();
+    ClimatologyConfigDialog(ClimatologyDialog *parent);
+    ~ClimatologyConfigDialog();
 
 private:
-    void OnMonth( wxCommandEvent& event );
-    void OnMonth( wxScrollEvent& event );
-    void OnConfig( wxCommandEvent& event );
 
-    void OnClose( wxCloseEvent& event );
-    void OnCBAny( wxCommandEvent& event );
+    void OnCycloneConfig();
+    void OnCycloneConfig( wxCommandEvent& event ) { OnCycloneConfig(); }
+    void OnCycloneConfig( wxDateEvent& event ) { OnCycloneConfig(); }
+    void OnCycloneConfig( wxSpinEvent& event ) { OnCycloneConfig(); }
 
-    wxWindow *pParent;
-    trends_pi *pPlugIn;
+    ClimatologyDialog *pParent;
 };
 
 #endif

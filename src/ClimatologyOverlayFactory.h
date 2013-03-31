@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Project:  OpenCPN
- * Purpose:  Trends Plugin
+ * Purpose:  Climatology Plugin
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
@@ -53,17 +53,17 @@ public:
 };
 
 //----------------------------------------------------------------------------------------------------------
-//    Trends Overlay Specification
+//    Climatology Overlay Specification
 //----------------------------------------------------------------------------------------------------------
 
-class TrendsOverlay {
+class ClimatologyOverlay {
 public:
-    TrendsOverlay( void )
+    ClimatologyOverlay( void )
     {
         m_iTexture = 0;
         m_pDCBitmap = NULL, m_pRGBA = NULL;
     }
-    ~TrendsOverlay( void )
+    ~ClimatologyOverlay( void )
     {
         if(m_iTexture)
           glDeleteTextures( 1, &m_iTexture );
@@ -80,22 +80,25 @@ public:
 };
 
 //----------------------------------------------------------------------------------------------------------
-//    Trends Overlay Factory Specification
+//    Climatology Overlay Factory Specification
 //----------------------------------------------------------------------------------------------------------
 
-class TrendsDialog;
+class ClimatologyDialog;
 
-class TrendsOverlayFactory {
+class ClimatologyOverlayFactory {
 public:
-    TrendsOverlayFactory( TrendsDialog &dlg );
-    ~TrendsOverlayFactory();
+    ClimatologyOverlayFactory( ClimatologyDialog &dlg );
+    ~ClimatologyOverlayFactory();
 
-    void ClearCachedData() {}
+    void ClearCachedData() { m_cyclonelistok = false; }
 
     bool RenderOverlay( wxDC &dc, PlugIn_ViewPort *vp );
     bool RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPort *vp );
 
 private:
-    TrendsDialog &m_dlg;
+    unsigned int m_cyclonelist;
+    bool m_cyclonelistok;
+
+    ClimatologyDialog &m_dlg;
     std::list<Storm*> storms;
 };

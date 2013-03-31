@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Project:  OpenCPN
- * Purpose:  Trends Plugin Friends
+ * Purpose:  Climatology Plugin Friends
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
@@ -24,31 +24,55 @@
  ***************************************************************************
  */
 
-#ifndef __TrendsConfigDIALOG_H__
-#define __TrendsConfigDIALOG_H__
+#ifndef __ClimatologyDIALOG_H__
+#define __ClimatologyDIALOG_H__
 
 #include "wx/wxprec.h"
 
 #ifndef  WX_PRECOMP
 #include "wx/wx.h"
 #endif //precompiled headers
+#include <wx/fileconf.h>
+#include <wx/glcanvas.h>
 
-#include "TrendsUI.h"
+#include "ClimatologyUI.h"
 
-class TrendsConfigDialog : public TrendsConfigDialogBase {
+#ifndef PI
+#define PI        3.1415926535897931160E0      /* pi */
+#endif
+
+class ClimatologyConfigDialog;
+class ClimatologyOverlayFactory;
+
+class wxFileConfig;
+class climatology_pi;
+
+//----------------------------------------------------------------------------------------------------------
+//    Climatology Selector/Control Dialog Specification
+//----------------------------------------------------------------------------------------------------------
+class ClimatologyDialog : public ClimatologyDialogBase {
 public:
 
-    TrendsConfigDialog(wxWindow *parent);
-    ~TrendsConfigDialog();
+    ClimatologyDialog(wxWindow *parent, climatology_pi *ppi);
+
+    ~ClimatologyDialog();
+    void Init();
+
+    void SetFactoryOptions();
+
+    ClimatologyConfigDialog *m_cfgdlg;
 
 private:
+    void OnMonth( wxCommandEvent& event );
+    void OnMonth( wxScrollEvent& event );
+    void OnUpdate( wxCommandEvent& event );
+    void OnConfig( wxCommandEvent& event );
 
-    void OnCycloneConfig();
-    void OnCycloneConfig( wxCommandEvent& event ) { OnCycloneConfig(); }
-    void OnCycloneConfig( wxDateEvent& event ) { OnCycloneConfig(); }
-    void OnCycloneConfig( wxSpinEvent& event ) { OnCycloneConfig(); }
+    void OnClose( wxCloseEvent& event );
+    void OnCBAny( wxCommandEvent& event );
 
     wxWindow *pParent;
+    climatology_pi *pPlugIn;
 };
 
 #endif

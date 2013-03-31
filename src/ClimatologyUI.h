@@ -5,8 +5,8 @@
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __TRENDSUI_H__
-#define __TRENDSUI_H__
+#ifndef __CLIMATOLOGYUI_H__
+#define __CLIMATOLOGYUI_H__
 
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
@@ -36,9 +36,9 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class TrendsDialogBase
+/// Class ClimatologyDialogBase
 ///////////////////////////////////////////////////////////////////////////////
-class TrendsDialogBase : public wxDialog 
+class ClimatologyDialogBase : public wxDialog 
 {
 	private:
 	
@@ -48,28 +48,29 @@ class TrendsDialogBase : public wxDialog
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnMonth( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMonth( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfig( wxCommandEvent& event ) { event.Skip(); }
 		
 	
 	public:
 		wxChoice* m_cMonth;
 		wxSlider* m_sMonth;
-		wxCheckBox* m_checkBox13;
+		wxCheckBox* m_cbWindPilot;
 		wxCheckBox* m_cbOceanCurrents;
 		wxCheckBox* m_cbPressure;
 		wxCheckBox* m_cbSwellPlots;
 		wxCheckBox* m_cbCyclones;
 		wxCheckBox* m_cbITCZ;
 		
-		TrendsDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Trends Display Control"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxCLOSE_BOX|wxDIALOG_NO_PARENT|wxRESIZE_BORDER|wxSYSTEM_MENU ); 
-		~TrendsDialogBase();
+		ClimatologyDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Climatology Display Control"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxCLOSE_BOX|wxDIALOG_NO_PARENT|wxRESIZE_BORDER|wxSYSTEM_MENU ); 
+		~ClimatologyDialogBase();
 	
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class TrendsConfigDialogBase
+/// Class ClimatologyConfigDialogBase
 ///////////////////////////////////////////////////////////////////////////////
-class TrendsConfigDialogBase : public wxDialog 
+class ClimatologyConfigDialogBase : public wxDialog 
 {
 	private:
 	
@@ -77,18 +78,10 @@ class TrendsConfigDialogBase : public wxDialog
 		wxAuiNotebook* m_auinotebook1;
 		wxPanel* m_panel1;
 		wxPanel* m_panel2;
-		wxCheckBox* m_cbTropical;
-		wxCheckBox* m_cbSubTropical;
-		wxCheckBox* m_cbExtraTropical;
-		wxCheckBox* m_cbRemanent;
 		wxStaticText* m_staticText1;
-		wxDatePickerCtrl* m_dPStart;
 		wxStaticText* m_staticText2;
-		wxDatePickerCtrl* m_datePicker2;
 		wxStaticText* m_staticText4;
-		wxSpinCtrl* m_spinCtrl1;
 		wxStaticText* m_staticText5;
-		wxSpinCtrl* m_spinCtrl2;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnCycloneConfig( wxCommandEvent& event ) { event.Skip(); }
@@ -97,10 +90,18 @@ class TrendsConfigDialogBase : public wxDialog
 		
 	
 	public:
+		wxCheckBox* m_cbTropical;
+		wxCheckBox* m_cbSubTropical;
+		wxCheckBox* m_cbExtraTropical;
+		wxCheckBox* m_cbRemanent;
+		wxDatePickerCtrl* m_dPStart;
+		wxDatePickerCtrl* m_dPEnd;
+		wxSpinCtrl* m_sMinWindSpeed;
+		wxSpinCtrl* m_sMaxPressure;
 		
-		TrendsConfigDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxDEFAULT_DIALOG_STYLE ); 
-		~TrendsConfigDialogBase();
+		ClimatologyConfigDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxDEFAULT_DIALOG_STYLE ); 
+		~ClimatologyConfigDialogBase();
 	
 };
 
-#endif //__TRENDSUI_H__
+#endif //__CLIMATOLOGYUI_H__

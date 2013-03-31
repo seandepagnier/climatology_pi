@@ -27,9 +27,9 @@ IF (COMMAND cmake_policy)
   CMAKE_POLICY(SET CMP0011 OLD)
 ENDIF (COMMAND cmake_policy)
 
-PROJECT(trends_pi)
+PROJECT(climatology_pi)
 
-SET(PACKAGE_NAME trends_pi)
+SET(PACKAGE_NAME climatology_pi)
 SET(PLUGIN_SOURCE_DIR .)
 MESSAGE (STATUS "")
 MESSAGE (STATUS "*** Staging to build ${PACKAGE_NAME} ***")
@@ -68,21 +68,21 @@ FIND_PACKAGE(Gettext REQUIRED)
 # header files and cpp/c files and CMake will sort them out
 
 
-SET(SRC_TRENDS
-            src/TrendsOverlayFactory.cpp
-            src/TrendsOverlayFactory.h
-            src/trends_pi.cpp
-            src/trends_pi.h
-            src/TrendsUI.cpp
-            src/TrendsUI.h
-            src/TrendsDialog.cpp
-            src/TrendsDialog.h
-            src/TrendsConfigDialog.cpp
-            src/TrendsConfigDialog.h
+SET(SRC_CLIMATOLOGY
+            src/ClimatologyOverlayFactory.cpp
+            src/ClimatologyOverlayFactory.h
+            src/climatology_pi.cpp
+            src/climatology_pi.h
+            src/ClimatologyUI.cpp
+            src/ClimatologyUI.h
+            src/ClimatologyDialog.cpp
+            src/ClimatologyDialog.h
+            src/ClimatologyConfigDialog.cpp
+            src/ClimatologyConfigDialog.h
             src/icons.cpp
             src/icons.h
 )
-ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_TRENDS})
+ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY})
 
 IF(WIN32)
   SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
@@ -105,7 +105,7 @@ INSTALL(TARGETS ${PACKAGE_NAME} RUNTIME DESTINATION "plugins")
 ENDIF(WIN32)
  	  	 
 IF(WIN32)
-  INSTALL(DIRECTORY data DESTINATION "plugins\\\\trends")
+  INSTALL(DIRECTORY data DESTINATION "plugins\\\\climatology")
 ELSE(WIN32)
-  INSTALL(DIRECTORY data DESTINATION ${PREFIX_PARENTDATA}/plugins/trends)
+  INSTALL(DIRECTORY data DESTINATION ${PREFIX_PARENTDATA}/plugins/climatology)
 ENDIF(WIN32)

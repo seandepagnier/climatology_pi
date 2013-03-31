@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Project:  OpenCPN
- * Purpose:  Trends Object
+ * Purpose:  Climatology Object
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
@@ -35,12 +35,12 @@
 #include <math.h>
 #include <time.h>
 
-#include "trends_pi.h"
-#include "TrendsDialog.h"
-#include "TrendsConfigDialog.h"
+#include "climatology_pi.h"
+#include "ClimatologyDialog.h"
+#include "ClimatologyConfigDialog.h"
 
-TrendsDialog::TrendsDialog(wxWindow *parent, trends_pi *ppi)
-  : TrendsDialogBase(parent)
+ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
+  : ClimatologyDialogBase(parent)
 {
     pParent = parent;
     pPlugIn = ppi;
@@ -48,7 +48,7 @@ TrendsDialog::TrendsDialog(wxWindow *parent, trends_pi *ppi)
     wxFileConfig *pConf = GetOCPNConfigObject();;
 
     if(pConf) {
-        pConf->SetPath ( _T ( "/Settings/Trends" ) );
+        pConf->SetPath ( _T ( "/Settings/Climatology" ) );
 /*
         bool value;
         pConf->Read( _T ( "WindPlot" ), &value, true );
@@ -65,10 +65,11 @@ TrendsDialog::TrendsDialog(wxWindow *parent, trends_pi *ppi)
         pConf->Read ( _T ( "lastdatatype" ), &m_lastdatatype, 0);
 
         pConf->SetPath ( _T ( "/Directories" ) );
-        pConf->Read ( _T ( "TrendsDirectory" ), &m_trends_dir );
+        pConf->Read ( _T ( "ClimatologyDirectory" ), &m_climatology_dir );
 */
     }
 
+    m_cfgdlg = new ClimatologyConfigDialog(this);
 
     DimeWindow( this );
 
@@ -77,12 +78,12 @@ TrendsDialog::TrendsDialog(wxWindow *parent, trends_pi *ppi)
 }
 
 
-TrendsDialog::~TrendsDialog()
+ClimatologyDialog::~ClimatologyDialog()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();;
 
     if(pConf) {
-        pConf->SetPath ( _T ( "/Settings/Trends" ) );
+        pConf->SetPath ( _T ( "/Settings/Climatology" ) );
 /*
         pConf->Write( _T ( "WindPlot" ), m_cbWind->GetValue());
         pConf->Write( _T ( "WavePlot" ), m_cbWave->GetValue());
@@ -92,40 +93,48 @@ TrendsDialog::~TrendsDialog()
         pConf->Write ( _T ( "lastdatatype" ), m_lastdatatype);
 
         pConf->SetPath ( _T ( "/Directories" ) );
-        pConf->Write ( _T ( "TrendsDirectory" ), m_trends_dir );
+        pConf->Write ( _T ( "ClimatologyDirectory" ), m_climatology_dir );
 */
     }
+
+    delete m_cfgdlg;
 }
 
-void TrendsDialog::SetFactoryOptions()
+void ClimatologyDialog::SetFactoryOptions()
 {
     pPlugIn->GetOverlayFactory()->ClearCachedData();
 
     RequestRefresh( pParent );
 }
 
-void TrendsDialog::OnMonth( wxCommandEvent& event )
+void ClimatologyDialog::OnMonth( wxCommandEvent& event )
 {
     m_sMonth->SetValue(event.GetSelection());
+    SetFactoryOptions();
 }
 
-void TrendsDialog::OnMonth( wxScrollEvent& event )
+void ClimatologyDialog::OnMonth( wxScrollEvent& event )
 {
     m_cMonth->SetSelection(event.GetPosition());
+    SetFactoryOptions();
 }
 
-void TrendsDialog::OnConfig( wxCommandEvent& event )
+void ClimatologyDialog::OnUpdate( wxCommandEvent& event )
 {
-    TrendsConfigDialog dlg(pParent);
-    dlg.ShowModal();
+    SetFactoryOptions();
 }
 
-void TrendsDialog::OnClose( wxCloseEvent& event )
+void ClimatologyDialog::OnConfig( wxCommandEvent& event )
 {
-    pPlugIn->OnTrendsDialogClose();
+    m_cfgdlg->Show(!m_cfgdlg->IsShown());
 }
 
-void TrendsDialog::OnCBAny( wxCommandEvent& event )
+void ClimatologyDialog::OnClose( wxCloseEvent& event )
+{
+    pPlugIn->OnClimatologyDialogClose();
+}
+
+void ClimatologyDialog::OnCBAny( wxCommandEvent& event )
 {
     SetFactoryOptions();                     // Reload the visibility options
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Project:  OpenCPN
- * Purpose:  Trends Plugin
+ * Purpose:  Climatology Plugin
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
@@ -35,15 +35,15 @@
 #include <wx/treectrl.h>
 #include <wx/fileconf.h>
 
-#include "trends_pi.h"
+#include "climatology_pi.h"
 #include "icons.h"
-#include "TrendsDialog.h"
+#include "ClimatologyDialog.h"
 
 // the class factories, used to create and destroy instances of the PlugIn
 
 extern "C" DECL_EXP opencpn_plugin* create_pi(void *ppimgr)
 {
-    return new trends_pi(ppimgr);
+    return new climatology_pi(ppimgr);
 }
 
 extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
@@ -53,7 +53,7 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
 
 //---------------------------------------------------------------------------------------------------------
 //
-//    Trends PlugIn Implementation
+//    Climatology PlugIn Implementation
 //
 //---------------------------------------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
 //
 //---------------------------------------------------------------------------------------------------------
 
-trends_pi::trends_pi(void *ppimgr)
+climatology_pi::climatology_pi(void *ppimgr)
       :opencpn_plugin_18(ppimgr)
 {
       // Create the PlugIn icons
@@ -72,21 +72,21 @@ trends_pi::trends_pi(void *ppimgr)
 
 }
 
-trends_pi::~trends_pi(void)
+climatology_pi::~climatology_pi(void)
 {
-      delete _img_trends;
+      delete _img_climatology;
 }
 
-int trends_pi::Init(void)
+int climatology_pi::Init(void)
 {
-      AddLocaleCatalog( _T("opencpn-trends_pi") );
+      AddLocaleCatalog( _T("opencpn-climatology_pi") );
 
       // Set some default private member parameters
-      m_trends_dialog_x = 0;
-      m_trends_dialog_y = 0;
-      m_trends_dialog_sx = 200;
-      m_trends_dialog_sy = 400;
-      m_pTrendsDialog = NULL;
+      m_climatology_dialog_x = 0;
+      m_climatology_dialog_y = 0;
+      m_climatology_dialog_sx = 200;
+      m_climatology_dialog_sy = 400;
+      m_pClimatologyDialog = NULL;
       m_pOverlayFactory = NULL;
 
       ::wxDisplaySize(&m_display_width, &m_display_height);
@@ -101,9 +101,9 @@ int trends_pi::Init(void)
       m_parent_window = GetOCPNCanvasWindow();
 
       //    This PlugIn needs a toolbar icon, so request its insertion if enabled locally
-      m_leftclick_tool_id  = InsertPlugInTool(_T(""), _img_trends, _img_trends, wxITEM_NORMAL,
-                                              _("Trends"), _T(""), NULL,
-                                              TRENDS_TOOL_POSITION, 0, this);
+      m_leftclick_tool_id  = InsertPlugInTool(_T(""), _img_climatology, _img_climatology, wxITEM_NORMAL,
+                                              _("Climatology"), _T(""), NULL,
+                                              CLIMATOLOGY_TOOL_POSITION, 0, this);
 
       return (WANTS_OVERLAY_CALLBACK |
            WANTS_OPENGL_OVERLAY_CALLBACK |
@@ -115,12 +115,12 @@ int trends_pi::Init(void)
             );
 }
 
-bool trends_pi::DeInit(void)
+bool climatology_pi::DeInit(void)
 {
-    if(m_pTrendsDialog) {
-        m_pTrendsDialog->Close();
-        delete m_pTrendsDialog;
-        m_pTrendsDialog = NULL;
+    if(m_pClimatologyDialog) {
+        m_pClimatologyDialog->Close();
+        delete m_pClimatologyDialog;
+        m_pClimatologyDialog = NULL;
     }
 
     delete m_pOverlayFactory;
@@ -129,48 +129,48 @@ bool trends_pi::DeInit(void)
       return true;
 }
 
-int trends_pi::GetAPIVersionMajor()
+int climatology_pi::GetAPIVersionMajor()
 {
       return MY_API_VERSION_MAJOR;
 }
 
-int trends_pi::GetAPIVersionMinor()
+int climatology_pi::GetAPIVersionMinor()
 {
       return MY_API_VERSION_MINOR;
 }
 
-int trends_pi::GetPlugInVersionMajor()
+int climatology_pi::GetPlugInVersionMajor()
 {
       return PLUGIN_VERSION_MAJOR;
 }
 
-int trends_pi::GetPlugInVersionMinor()
+int climatology_pi::GetPlugInVersionMinor()
 {
       return PLUGIN_VERSION_MINOR;
 }
 
-wxBitmap *trends_pi::GetPlugInBitmap()
+wxBitmap *climatology_pi::GetPlugInBitmap()
 {
-      return _img_trends;
+      return _img_climatology;
 }
 
-wxString trends_pi::GetCommonName()
+wxString climatology_pi::GetCommonName()
 {
-      return _("TRENDS");
-}
-
-
-wxString trends_pi::GetShortDescription()
-{
-      return _("Trends PlugIn for OpenCPN");
+      return _("CLIMATOLOGY");
 }
 
 
-wxString trends_pi::GetLongDescription()
+wxString climatology_pi::GetShortDescription()
 {
-      return _("Trends PlugIn for OpenCPN\n\
+      return _("Climatology PlugIn for OpenCPN");
+}
+
+
+wxString climatology_pi::GetLongDescription()
+{
+      return _("Climatology PlugIn for OpenCPN\n\
 Provides overlay capabilities for history weather data.\n\n\
-Supported TRENDS file types include:\n\
+Supported CLIMATOLOGY file types include:\n\
 - Average wind directions and speed\n\
 - Percentage of gale and calm conditions\n\
 - Average swell and seastate\n\
@@ -180,19 +180,19 @@ Supported TRENDS file types include:\n\
 
 }
 
-void trends_pi::SetDefaults(void)
+void climatology_pi::SetDefaults(void)
 {
 }
 
 
-int trends_pi::GetToolbarToolCount(void)
+int climatology_pi::GetToolbarToolCount(void)
 {
       return 1;
 }
 
-void trends_pi::ShowPreferencesDialog( wxWindow* parent )
+void climatology_pi::ShowPreferencesDialog( wxWindow* parent )
 {
-      wxDialog *dialog = new wxDialog( parent, wxID_ANY, _("TRENDS Preferences"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE );
+      wxDialog *dialog = new wxDialog( parent, wxID_ANY, _("CLIMATOLOGY Preferences"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE );
 
    dialog->Fit();
 
@@ -202,36 +202,36 @@ void trends_pi::ShowPreferencesDialog( wxWindow* parent )
     }
 }
 
-void trends_pi::OnToolbarToolCallback(int id)
+void climatology_pi::OnToolbarToolCallback(int id)
 {
-    if(!m_pTrendsDialog)
+    if(!m_pClimatologyDialog)
     {
-        m_pTrendsDialog = new TrendsDialog(m_parent_window, this);
-        m_pTrendsDialog->Move(wxPoint(m_trends_dialog_x, m_trends_dialog_y));
+        m_pClimatologyDialog = new ClimatologyDialog(m_parent_window, this);
+        m_pClimatologyDialog->Move(wxPoint(m_climatology_dialog_x, m_climatology_dialog_y));
 
         // Create the drawing factory
-        m_pOverlayFactory = new TrendsOverlayFactory( *m_pTrendsDialog );
+        m_pOverlayFactory = new ClimatologyOverlayFactory( *m_pClimatologyDialog );
     }
 
-    m_pTrendsDialog->Show(!m_pTrendsDialog->IsShown());
+    m_pClimatologyDialog->Show(!m_pClimatologyDialog->IsShown());
 
-//    SetToolbarItemState( m_leftclick_tool_id, m_pTrendsDialog->IsShown() );
+//    SetToolbarItemState( m_leftclick_tool_id, m_pClimatologyDialog->IsShown() );
 }
 
-void trends_pi::OnTrendsDialogClose()
+void climatology_pi::OnClimatologyDialogClose()
 {
 //    SetToolbarItemState( m_leftclick_tool_id, false );
 
-    if(m_pTrendsDialog)
-        m_pTrendsDialog->Show(false);
+    if(m_pClimatologyDialog)
+        m_pClimatologyDialog->Show(false);
 
     SaveConfig();
 }
 
-bool trends_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
+bool climatology_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
 {
-    if(!m_pTrendsDialog ||
-       !m_pTrendsDialog->IsShown() ||
+    if(!m_pClimatologyDialog ||
+       !m_pClimatologyDialog->IsShown() ||
        !m_pOverlayFactory)
         return false;
 
@@ -239,10 +239,10 @@ bool trends_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
     return true;
 }
 
-bool trends_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
+bool climatology_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
 {
-    if(!m_pTrendsDialog ||
-       !m_pTrendsDialog->IsShown() ||
+    if(!m_pClimatologyDialog ||
+       !m_pClimatologyDialog->IsShown() ||
        !m_pOverlayFactory)
         return false;
 
@@ -250,49 +250,49 @@ bool trends_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
     return true;
 }
 
-void trends_pi::SetCursorLatLon(double lat, double lon)
+void climatology_pi::SetCursorLatLon(double lat, double lon)
 {
 /*
-    if(m_pTrendsDialog)
-        m_pTrendsDialog->SetCursorLatLon(lat, lon);
+    if(m_pClimatologyDialog)
+        m_pClimatologyDialog->SetCursorLatLon(lat, lon);
 */
 }
 
-bool trends_pi::LoadConfig(void)
+bool climatology_pi::LoadConfig(void)
 {
     wxFileConfig *pConf = (wxFileConfig *)m_pconfig;
 
     if(!pConf)
         return false;
 
-    pConf->SetPath ( _T( "/Settings/Trends" ) );
+    pConf->SetPath ( _T( "/Settings/Climatology" ) );
 
-    m_trends_dialog_sx = pConf->Read ( _T ( "DialogSizeX" ), 300L );
-    m_trends_dialog_sy = pConf->Read ( _T ( "DialogSizeY" ), 540L );
-    m_trends_dialog_x =  pConf->Read ( _T ( "DialogPosX" ), 20L );
-    m_trends_dialog_y =  pConf->Read ( _T ( "DialogPosY" ), 170L );
+    m_climatology_dialog_sx = pConf->Read ( _T ( "DialogSizeX" ), 300L );
+    m_climatology_dialog_sy = pConf->Read ( _T ( "DialogSizeY" ), 540L );
+    m_climatology_dialog_x =  pConf->Read ( _T ( "DialogPosX" ), 20L );
+    m_climatology_dialog_y =  pConf->Read ( _T ( "DialogPosY" ), 170L );
 
     return true;
 }
 
-bool trends_pi::SaveConfig(void)
+bool climatology_pi::SaveConfig(void)
 {
     wxFileConfig *pConf = (wxFileConfig *)m_pconfig;
 
     if(!pConf)
         return false;
 
-    pConf->SetPath ( _T ( "/Settings/Trends" ) );
+    pConf->SetPath ( _T ( "/Settings/Climatology" ) );
 
-    pConf->Write ( _T ( "DialogSizeX" ),  m_trends_dialog_sx );
-    pConf->Write ( _T ( "DialogSizeY" ),  m_trends_dialog_sy );
-    pConf->Write ( _T ( "DialogPosX" ),   m_trends_dialog_x );
-    pConf->Write ( _T ( "DialogPosY" ),   m_trends_dialog_y );
+    pConf->Write ( _T ( "DialogSizeX" ),  m_climatology_dialog_sx );
+    pConf->Write ( _T ( "DialogSizeY" ),  m_climatology_dialog_sy );
+    pConf->Write ( _T ( "DialogPosX" ),   m_climatology_dialog_x );
+    pConf->Write ( _T ( "DialogPosY" ),   m_climatology_dialog_y );
     
     return true;
 }
 
-void trends_pi::SetColorScheme(PI_ColorScheme cs)
+void climatology_pi::SetColorScheme(PI_ColorScheme cs)
 {
-    DimeWindow(m_pTrendsDialog);
+    DimeWindow(m_pClimatologyDialog);
 }

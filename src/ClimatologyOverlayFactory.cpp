@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Project:  OpenCPN
- * Purpose:  Trends Plugin
+ * Purpose:  Climatology Plugin
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
@@ -34,21 +34,24 @@
 
 #include <wx/progdlg.h>
 
-#include "trends_pi.h"
-#include "TrendsDialog.h"
+#include "climatology_pi.h"
+#include "ClimatologyDialog.h"
+#include "ClimatologyConfigDialog.h"
 
 //----------------------------------------------------------------------------------------------------------
-//    Trends Overlay Factory Implementation
+//    Climatology Overlay Factory Implementation
 //----------------------------------------------------------------------------------------------------------
-TrendsOverlayFactory::TrendsOverlayFactory( TrendsDialog &dlg )
-    : m_dlg(dlg)
+ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
+    : m_dlg(dlg), m_cyclonelist(0)
 {
+    ClearCachedData();
+
     wxString hurricane_text_path = *GetpSharedDataLocation()
-        + _T("plugins/trends/data/hurricanetracks.txt");
+        + _T("plugins/climatology/data/hurricanetracks.txt");
 
     FILE *f = fopen(hurricane_text_path.mb_str(), "r");
     if (!f) {
-        wxLogMessage(_T("trends_pi: failed to open file: ") + hurricane_text_path);
+        wxLogMessage(_T("climatology_pi: failed to open file: ") + hurricane_text_path);
         return;
     }
 
@@ -68,7 +71,7 @@ TrendsOverlayFactory::TrendsOverlayFactory( TrendsDialog &dlg )
         /* daily data */
         for(int i=0; i<ldays; i++) {
             if(!fgets(line, sizeof line, f)) {
-                wxLogMessage(_T("trends_pi: hurricane text file ended before it should"));
+                wxLogMessage(_T("climatology_pi: hurricane text file ended before it should"));
                 goto done;
             }
 
@@ -108,7 +111,7 @@ TrendsOverlayFactory::TrendsOverlayFactory( TrendsDialog &dlg )
 
         /* trailer */
         if(!fgets(line, sizeof line, f)) {
-            wxLogMessage(_T("trends_pi: hurricane text file ended before it should"));
+            wxLogMessage(_T("climatology_pi: hurricane text file ended before it should"));
             goto done;
         }
 
@@ -128,23 +131,39 @@ TrendsOverlayFactory::TrendsOverlayFactory( TrendsDialog &dlg )
 
 done:
     fclose(f);
+
+    m_dlg.m_cbCyclones->Enable();
 }
 
-TrendsOverlayFactory::~TrendsOverlayFactory()
+ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
 {
+    glDeleteLists(m_cyclonelist, 1);
 }
 
-bool TrendsOverlayFactory::RenderOverlay( wxDC &dc, PlugIn_ViewPort *vp )
+bool ClimatologyOverlayFactory::RenderOverlay( wxDC &dc, PlugIn_ViewPort *vp )
 {
     return true;
 }
 
-bool TrendsOverlayFactory::RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPort *vp )
+bool ClimatologyOverlayFactory::RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPort *vp )
 {
+    if(!m_dlg.m_cbCyclones->GetValue())
+        return true;
+
+    if(!m_cyclonelist)
+        m_cyclonelist = glGenLists(1);
+
+    if(m_cyclonelistok) {
+        glCallList(m_cyclonelist);
+        return true;
+    }
+
+    glNewList(m_cyclonelist, GL_COMPILE_AND_EXECUTE);
     glLineWidth(1);
 
     for(std::list<Storm*>::iterator it = storms.begin(); it != storms.end(); it++) {
         Storm *s = *it;
+
         glBegin(GL_LINES);
 
         bool first = true;
@@ -154,6 +173,30 @@ bool TrendsOverlayFactory::RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPo
         for(std::list<StormState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
             wxPoint p;
             StormState *ss = *it2;
+
+            if(m_dlg.m_sMonth->GetValue() != 0 &&
+               ss->datetime.GetMonth() != m_dlg.m_sMonth->GetValue())
+                continue;
+
+            if((ss->datetime < m_dlg.m_cfgdlg->m_dPStart->GetValue()) ||
+               (ss->datetime > m_dlg.m_cfgdlg->m_dPEnd->GetValue()))
+                continue;
+
+            switch(ss->state) {
+            case StormState::TROPICAL: if(m_dlg.m_cfgdlg->m_cbTropical->GetValue()) goto isok;
+            case StormState::SUBTROPICAL: if(m_dlg.m_cfgdlg->m_cbSubTropical->GetValue()) goto isok;
+            case StormState::EXTRATROPICAL: if(m_dlg.m_cfgdlg->m_cbExtraTropical->GetValue()) goto isok;
+            case StormState::REMANENT: if(m_dlg.m_cfgdlg->m_cbRemanent->GetValue()) goto isok;
+            }
+            continue;
+        isok:
+
+            if(ss->windknots < m_dlg.m_cfgdlg->m_sMinWindSpeed->GetValue())
+                continue;
+
+            if(ss->pressure > m_dlg.m_cfgdlg->m_sMaxPressure->GetValue())
+                continue;
+
             double lat = ss->latitude, lon = ss->longitude;
             GetCanvasPixLL( vp, &p, lat, lon );
 
@@ -165,10 +208,11 @@ bool TrendsOverlayFactory::RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPo
                 if((lastlon+180 > vp->clon || lon+180 < vp->clon) &&
                    (lastlon+180 < vp->clon || lon+180 > vp->clon) &&
                    (lastlon-180 > vp->clon || lon-180 < vp->clon) &&
-                   (lastlon-180 < vp->clon || lon-180 > vp->clon)) {
+                   (lastlon-180 < vp->clon || lon-180 > vp->clon))
 #else
-                if(abs(lastp.x-p.x) < vp->pix_width) {
+                if(abs(lastp.x-p.x) < vp->pix_width)
 #endif
+                {
 
                     double intense =  (ss->windknots / 150);
 
@@ -188,7 +232,10 @@ bool TrendsOverlayFactory::RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPo
             lastlon = lon;
             lastp = p;
         }
-        glEnd();
     }
+    glEnd();
+    
+    glEndList();
+    m_cyclonelistok = true;
     return true;
 }

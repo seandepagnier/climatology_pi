@@ -9,6 +9,6 @@
 
 extern void initialize_images(void);
 
-extern wxBitmap *_img_trends;
+extern wxBitmap *_img_climatology;
 
 #endif /* ICONS_H */

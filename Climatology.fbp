@@ -11,11 +11,11 @@
         <property name="embedded_files_path">res</property>
         <property name="encoding">UTF-8</property>
         <property name="event_generation">connect</property>
-        <property name="file">TrendsUI</property>
+        <property name="file">ClimatologyUI</property>
         <property name="first_id">1000</property>
         <property name="help_provider">none</property>
         <property name="internationalize">0</property>
-        <property name="name">trends_pi</property>
+        <property name="name">climatology_pi</property>
         <property name="namespace"></property>
         <property name="path">./src</property>
         <property name="precompiled_header"></property>
@@ -40,12 +40,12 @@
             <property name="id">wxID_ANY</property>
             <property name="maximum_size"></property>
             <property name="minimum_size"></property>
-            <property name="name">TrendsDialogBase</property>
+            <property name="name">ClimatologyDialogBase</property>
             <property name="pos"></property>
             <property name="size">-1,-1</property>
             <property name="style">wxCAPTION|wxCLOSE_BOX|wxDIALOG_NO_PARENT|wxRESIZE_BORDER|wxSYSTEM_MENU</property>
             <property name="subclass"></property>
-            <property name="title">Trends Display Control</property>
+            <property name="title">Climatology Display Control</property>
             <property name="tooltip"></property>
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
@@ -314,7 +314,7 @@
                     <property name="proportion">1</property>
                     <object class="wxStaticBoxSizer" expanded="1">
                         <property name="id">wxID_ANY</property>
-                        <property name="label">Trends Data</property>
+                        <property name="label">Climatology Data</property>
                         <property name="minimum_size"></property>
                         <property name="name">sbSizer2</property>
                         <property name="orient">wxVERTICAL</property>
@@ -324,7 +324,7 @@
                             <property name="border">5</property>
                             <property name="flag">wxEXPAND</property>
                             <property name="proportion">1</property>
-                            <object class="wxFlexGridSizer" expanded="0">
+                            <object class="wxFlexGridSizer" expanded="1">
                                 <property name="cols">1</property>
                                 <property name="flexible_direction">wxBOTH</property>
                                 <property name="growablecols"></property>
@@ -369,7 +369,7 @@
                                         <property name="gripper">0</property>
                                         <property name="hidden">0</property>
                                         <property name="id">wxID_ANY</property>
-                                        <property name="label">Wind Pilot Charts</property>
+                                        <property name="label">Wind Pilot</property>
                                         <property name="max_size"></property>
                                         <property name="maximize_button">0</property>
                                         <property name="maximum_size"></property>
@@ -377,7 +377,7 @@
                                         <property name="minimize_button">0</property>
                                         <property name="minimum_size"></property>
                                         <property name="moveable">1</property>
-                                        <property name="name">m_checkBox13</property>
+                                        <property name="name">m_cbWindPilot</property>
                                         <property name="pane_border">1</property>
                                         <property name="pane_position"></property>
                                         <property name="pane_size"></property>
@@ -399,7 +399,7 @@
                                         <property name="window_name"></property>
                                         <property name="window_style"></property>
                                         <event name="OnChar"></event>
-                                        <event name="OnCheckBox"></event>
+                                        <event name="OnCheckBox">OnUpdate</event>
                                         <event name="OnEnterWindow"></event>
                                         <event name="OnEraseBackground"></event>
                                         <event name="OnKeyDown"></event>
@@ -424,11 +424,11 @@
                                         <event name="OnUpdateUI"></event>
                                     </object>
                                 </object>
-                                <object class="sizeritem" expanded="1">
+                                <object class="sizeritem" expanded="0">
                                     <property name="border">5</property>
                                     <property name="flag">wxALL</property>
                                     <property name="proportion">0</property>
-                                    <object class="wxCheckBox" expanded="1">
+                                    <object class="wxCheckBox" expanded="0">
                                         <property name="BottomDockable">1</property>
                                         <property name="LeftDockable">1</property>
                                         <property name="RightDockable">1</property>
@@ -487,7 +487,7 @@
                                         <property name="window_name"></property>
                                         <property name="window_style"></property>
                                         <event name="OnChar"></event>
-                                        <event name="OnCheckBox"></event>
+                                        <event name="OnCheckBox">OnUpdate</event>
                                         <event name="OnEnterWindow"></event>
                                         <event name="OnEraseBackground"></event>
                                         <event name="OnKeyDown"></event>
@@ -575,7 +575,7 @@
                                         <property name="window_name"></property>
                                         <property name="window_style"></property>
                                         <event name="OnChar"></event>
-                                        <event name="OnCheckBox"></event>
+                                        <event name="OnCheckBox">OnUpdate</event>
                                         <event name="OnEnterWindow"></event>
                                         <event name="OnEraseBackground"></event>
                                         <event name="OnKeyDown"></event>
@@ -663,7 +663,7 @@
                                         <property name="window_name"></property>
                                         <property name="window_style"></property>
                                         <event name="OnChar"></event>
-                                        <event name="OnCheckBox"></event>
+                                        <event name="OnCheckBox">OnUpdate</event>
                                         <event name="OnEnterWindow"></event>
                                         <event name="OnEraseBackground"></event>
                                         <event name="OnKeyDown"></event>
@@ -751,7 +751,7 @@
                                         <property name="window_name"></property>
                                         <property name="window_style"></property>
                                         <event name="OnChar"></event>
-                                        <event name="OnCheckBox"></event>
+                                        <event name="OnCheckBox">OnUpdate</event>
                                         <event name="OnEnterWindow"></event>
                                         <event name="OnEraseBackground"></event>
                                         <event name="OnKeyDown"></event>
@@ -839,7 +839,7 @@
                                         <property name="window_name"></property>
                                         <property name="window_style"></property>
                                         <event name="OnChar"></event>
-                                        <event name="OnCheckBox"></event>
+                                        <event name="OnCheckBox">OnUpdate</event>
                                         <event name="OnEnterWindow"></event>
                                         <event name="OnEraseBackground"></event>
                                         <event name="OnKeyDown"></event>
@@ -974,7 +974,7 @@
             <property name="id">wxID_ANY</property>
             <property name="maximum_size"></property>
             <property name="minimum_size"></property>
-            <property name="name">TrendsConfigDialogBase</property>
+            <property name="name">ClimatologyConfigDialogBase</property>
             <property name="pos"></property>
             <property name="size">500,300</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
@@ -1352,7 +1352,7 @@
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
-                                                    <property name="permission">protected</property>
+                                                    <property name="permission">public</property>
                                                     <property name="pin_button">1</property>
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
@@ -1440,7 +1440,7 @@
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
-                                                    <property name="permission">protected</property>
+                                                    <property name="permission">public</property>
                                                     <property name="pin_button">1</property>
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
@@ -1528,7 +1528,7 @@
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
-                                                    <property name="permission">protected</property>
+                                                    <property name="permission">public</property>
                                                     <property name="pin_button">1</property>
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
@@ -1616,7 +1616,7 @@
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
-                                                    <property name="permission">protected</property>
+                                                    <property name="permission">public</property>
                                                     <property name="pin_button">1</property>
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
@@ -1785,7 +1785,7 @@
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
-                                                    <property name="permission">protected</property>
+                                                    <property name="permission">public</property>
                                                     <property name="pin_button">1</property>
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
@@ -1950,11 +1950,11 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">m_datePicker2</property>
+                                                    <property name="name">m_dPEnd</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
-                                                    <property name="permission">protected</property>
+                                                    <property name="permission">public</property>
                                                     <property name="pin_button">1</property>
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
@@ -2112,7 +2112,7 @@
                                                     <property name="gripper">0</property>
                                                     <property name="hidden">0</property>
                                                     <property name="id">wxID_ANY</property>
-                                                    <property name="initial">0</property>
+                                                    <property name="initial">60</property>
                                                     <property name="max">200</property>
                                                     <property name="max_size"></property>
                                                     <property name="maximize_button">0</property>
@@ -2122,11 +2122,11 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">m_spinCtrl1</property>
+                                                    <property name="name">m_sMinWindSpeed</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
-                                                    <property name="permission">protected</property>
+                                                    <property name="permission">public</property>
                                                     <property name="pin_button">1</property>
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
@@ -2282,7 +2282,7 @@
                                                     <property name="gripper">0</property>
                                                     <property name="hidden">0</property>
                                                     <property name="id">wxID_ANY</property>
-                                                    <property name="initial">0</property>
+                                                    <property name="initial">1000</property>
                                                     <property name="max">1200</property>
                                                     <property name="max_size"></property>
                                                     <property name="maximize_button">0</property>
@@ -2292,11 +2292,11 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">m_spinCtrl2</property>
+                                                    <property name="name">m_sMaxPressure</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
-                                                    <property name="permission">protected</property>
+                                                    <property name="permission">public</property>
                                                     <property name="pin_button">1</property>
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>

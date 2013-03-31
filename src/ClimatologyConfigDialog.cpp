@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Project:  OpenCPN
- * Purpose:  Trends Object
+ * Purpose:  Climatology Object
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
@@ -35,37 +35,38 @@
 #include <math.h>
 #include <time.h>
 
-#include "trends_pi.h"
-#include "TrendsConfigDialog.h"
+#include "climatology_pi.h"
+#include "ClimatologyConfigDialog.h"
 
-TrendsConfigDialog::TrendsConfigDialog(wxWindow *parent)
-  : TrendsConfigDialogBase(parent)
+ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
+  : ClimatologyConfigDialogBase(parent)
 {
     pParent = parent;
 
     wxFileConfig *pConf = GetOCPNConfigObject();;
 
     if(pConf) {
-        pConf->SetPath ( _T ( "/Settings/Trends" ) );
-
+        pConf->SetPath ( _T ( "/Settings/Climatology" ) );
     }
 
+    wxDateTime dt(1, 1, 1900);
+    m_dPStart->SetValue(dt);
 
     DimeWindow( this );
 }
 
 
-TrendsConfigDialog::~TrendsConfigDialog()
+ClimatologyConfigDialog::~ClimatologyConfigDialog()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();;
 
     if(pConf) {
-        pConf->SetPath ( _T ( "/Settings/Trends" ) );
+        pConf->SetPath ( _T ( "/Settings/Climatology" ) );
 
     }
 }
 
-void TrendsConfigDialog::OnCycloneConfig( )
+void ClimatologyConfigDialog::OnCycloneConfig( )
 {
-
+    pParent->SetFactoryOptions();
 }
