@@ -235,7 +235,7 @@ bool climatology_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
        !m_pOverlayFactory)
         return false;
 
-    m_pOverlayFactory->RenderOverlay ( dc, vp );
+    m_pOverlayFactory->RenderOverlay ( dc, *vp );
     return true;
 }
 
@@ -246,16 +246,14 @@ bool climatology_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
        !m_pOverlayFactory)
         return false;
 
-    m_pOverlayFactory->RenderGLOverlay ( pcontext, vp );
+    m_pOverlayFactory->RenderGLOverlay ( pcontext, *vp );
     return true;
 }
 
 void climatology_pi::SetCursorLatLon(double lat, double lon)
 {
-/*
     if(m_pClimatologyDialog)
         m_pClimatologyDialog->SetCursorLatLon(lat, lon);
-*/
 }
 
 bool climatology_pi::LoadConfig(void)

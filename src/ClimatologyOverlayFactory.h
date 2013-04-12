@@ -25,6 +25,7 @@
  */
 
 #include <list>
+#include <map>
 
 class StormState
 {
@@ -63,12 +64,8 @@ public:
         m_iTexture = 0;
         m_pDCBitmap = NULL, m_pRGBA = NULL;
     }
-    ~ClimatologyOverlay( void )
-    {
-        if(m_iTexture)
-          glDeleteTextures( 1, &m_iTexture );
-        delete m_pDCBitmap, delete[] m_pRGBA;
-    }
+
+    ~ClimatologyOverlay( void );
 
     unsigned int m_iTexture; /* opengl mode */
 
@@ -83,22 +80,49 @@ public:
 //    Climatology Overlay Factory Specification
 //----------------------------------------------------------------------------------------------------------
 
+class PlugIn_ViewPort;
 class ClimatologyDialog;
+class ClimatologyOverlaySettings;
+class wxGLContext;
 
 class ClimatologyOverlayFactory {
 public:
     ClimatologyOverlayFactory( ClimatologyDialog &dlg );
     ~ClimatologyOverlayFactory();
 
-    void ClearCachedData() { m_cyclonelistok = false; }
+    void ClearCachedData();
 
-    bool RenderOverlay( wxDC &dc, PlugIn_ViewPort *vp );
-    bool RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPort *vp );
+    void DrawGLLine( double x1, double y1, double x2, double y2, double width );
+
+    wxImage &getLabel(double value);
+
+    double GetMin(int setting);
+    double GetMax(int setting);
+    double getValue(int setting, double lat, double lon);
+
+    void RenderIsoBars(int setting, PlugIn_ViewPort &vp);
+    void RenderNumbers(int setting, PlugIn_ViewPort &vp);
+    void RenderCyclones(PlugIn_ViewPort &vp);
+
+    bool RenderOverlay( wxDC &dc, PlugIn_ViewPort &vp );
+    bool RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPort &vp );
+
+    int m_CurrentMonth;
 
 private:
+    ClimatologyDialog &m_dlg;
+    ClimatologyOverlaySettings &m_Settings;
+
+    wxDC *m_pdc;
+    wxGraphicsContext *m_gdc;
+
+    std::map < double , wxImage > m_labelCache;
+
+    wxInt16 m_slp[13][90][180]; /* 12 months + year total and average at 2 degree intervals */
+
+    wxInt16 m_sst[13][180][360]; /* 12 months + year total and average at 1 degree intervals */
+
     unsigned int m_cyclonelist;
     bool m_cyclonelistok;
-
-    ClimatologyDialog &m_dlg;
     std::list<Storm*> storms;
 };

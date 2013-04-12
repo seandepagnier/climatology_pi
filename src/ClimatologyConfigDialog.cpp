@@ -38,6 +38,65 @@
 #include "climatology_pi.h"
 #include "ClimatologyConfigDialog.h"
 
+static const wxString name_from_index[] = {_T("SeaLevelPressure"), _T("SeaSurfaceTemperature"),
+                                           _T("Cyclones")};
+static const wxString tname_from_index[] = {_("Sea Level Pressure"), _("Sea Surface Temperature"),
+                                            _("Cyclones")};
+
+void ClimatologyOverlaySettings::Read()
+{
+    /* read settings here */
+    wxFileConfig *pConf = GetOCPNConfigObject();
+
+    if(!pConf)
+        return;
+
+    pConf->SetPath ( _T( "/PlugIns/Climatology" ) );
+
+    for(int i=0; i<SETTINGS_COUNT; i++) {
+        wxString Name=name_from_index[i];
+
+        int units;
+        pConf->Read ( Name + _T ( "Units" ), &units);
+        Settings[i].m_Units = (SettingsType)units;
+
+        pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars, i==SLP);
+        double defspacing[SETTINGS_COUNT] = {10, 1, 0};
+        pConf->Read ( Name + _T ( "IsoBarSpacing" ), &Settings[i].m_iIsoBarSpacing, defspacing[i]);
+        Settings[i].m_pIsobarArray = NULL;
+
+        pConf->Read ( Name + _T ( "OverlayMap" ), &Settings[i].m_bOverlayMap, 0);
+        int defcolor[SETTINGS_COUNT] = {1, 2, 3};
+        pConf->Read ( Name + _T ( "OverlayMapColors" ), &Settings[i].m_iOverlayMapColors, defcolor[i]);
+
+        pConf->Read ( Name + _T ( "Numbers" ), &Settings[i].m_bNumbers, 0);
+        pConf->Read ( Name + _T ( "NumbersSpacing" ), &Settings[i].m_iNumbersSpacing, 50);
+    }
+}
+
+void ClimatologyOverlaySettings::Write()
+{
+    /* save settings here */
+    wxFileConfig *pConf = GetOCPNConfigObject();
+
+    if(!pConf)
+        return;
+
+    pConf->SetPath ( _T( "/PlugIns/Climatology" ) );
+
+    for(int i=0; i<SETTINGS_COUNT; i++) {
+        wxString Name=name_from_index[i];
+
+        pConf->Write ( Name + _T ( "Units" ), (int)Settings[i].m_Units);
+        pConf->Write ( Name + _T ( "IsoBars" ), Settings[i].m_bIsoBars);
+        pConf->Write ( Name + _T ( "IsoBarSpacing" ), Settings[i].m_iIsoBarSpacing);
+        pConf->Write ( Name + _T ( "OverlayMap" ), Settings[i].m_bOverlayMap);
+        pConf->Write ( Name + _T ( "OverlayMapColors" ), Settings[i].m_iOverlayMapColors);
+        pConf->Write ( Name + _T ( "Numbers" ), Settings[i].m_bNumbers);
+        pConf->Write ( Name + _T ( "NumbersSpacing" ), Settings[i].m_iNumbersSpacing);
+    }
+}
+
 ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
   : ClimatologyConfigDialogBase(parent)
 {

@@ -20,6 +20,7 @@
 #include <wx/sizer.h>
 #include <wx/statbox.h>
 #include <wx/checkbox.h>
+#include <wx/textctrl.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/panel.h>
@@ -30,7 +31,7 @@
 #include <wx/datectrl.h>
 #include <wx/dateevt.h>
 #include <wx/spinctrl.h>
-#include <wx/aui/auibook.h>
+#include <wx/notebook.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -43,6 +44,12 @@ class ClimatologyDialogBase : public wxDialog
 	private:
 	
 	protected:
+		wxTextCtrl* m_tWindPilot;
+		wxTextCtrl* m_tCurrent;
+		wxTextCtrl* m_tPressure;
+		wxTextCtrl* m_tSwell;
+		wxTextCtrl* m_tSeaTemperature;
+		wxTextCtrl* m_tCyclones;
 		wxButton* m_bConfig;
 		
 		// Virtual event handlers, overide them in your derived class
@@ -59,8 +66,8 @@ class ClimatologyDialogBase : public wxDialog
 		wxCheckBox* m_cbOceanCurrents;
 		wxCheckBox* m_cbPressure;
 		wxCheckBox* m_cbSwellPlots;
+		wxCheckBox* m_cbSeaTemperature;
 		wxCheckBox* m_cbCyclones;
-		wxCheckBox* m_cbITCZ;
 		
 		ClimatologyDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Climatology Display Control"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxCLOSE_BOX|wxDIALOG_NO_PARENT|wxRESIZE_BORDER|wxSYSTEM_MENU ); 
 		~ClimatologyDialogBase();
@@ -75,8 +82,11 @@ class ClimatologyConfigDialogBase : public wxDialog
 	private:
 	
 	protected:
-		wxAuiNotebook* m_auinotebook1;
-		wxPanel* m_panel1;
+		wxNotebook* m_notebook1;
+		wxPanel* m_panel4;
+		wxCheckBox* m_cbPressureNumbers;
+		wxPanel* m_panel5;
+		wxCheckBox* m_cbTemperatureNumbers;
 		wxPanel* m_panel2;
 		wxStaticText* m_staticText1;
 		wxStaticText* m_staticText2;

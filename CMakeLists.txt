@@ -79,6 +79,8 @@ SET(SRC_CLIMATOLOGY
             src/ClimatologyDialog.h
             src/ClimatologyConfigDialog.cpp
             src/ClimatologyConfigDialog.h
+            src/IsoLine.cpp
+            src/IsoLine.h
             src/icons.cpp
             src/icons.h
 )
@@ -89,6 +91,11 @@ IF(WIN32)
   TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} ${OPENCPN_IMPORT_LIB} )
   ADD_DEPENDENCIES(${PACKAGE_NAME} ${PARENT})
 ENDIF(WIN32)
+
+INCLUDE( FindNetCDF.cmake )
+
+#FIND_PACKAGE(netcdf REQUIRED)
+TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} ${NetCDF_LIBRARIES} )
 
 TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} ${wxWidgets_LIBRARIES} )
 

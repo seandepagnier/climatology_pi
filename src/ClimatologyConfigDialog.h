@@ -35,6 +35,30 @@
 
 #include "ClimatologyUI.h"
 
+struct ClimatologyOverlaySettings
+{
+    void Read();
+    void Write();
+
+    enum SettingsType {SLP, SST, CYCLONES, SETTINGS_COUNT};
+
+    struct OverlayDataSettings {
+        int m_Units;
+
+        bool m_bIsoBars;
+        int m_iIsoBarSpacing;
+        wxArrayPtrVoid *m_pIsobarArray;
+
+        bool m_bOverlayMap;
+        int m_iOverlayMapColors;
+
+        bool m_bNumbers;
+        double m_iNumbersSpacing;
+    } Settings[SETTINGS_COUNT];
+
+    bool m_bCyclones;
+};
+
 class ClimatologyConfigDialog : public ClimatologyConfigDialogBase {
 public:
 

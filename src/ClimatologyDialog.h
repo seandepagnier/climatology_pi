@@ -36,12 +36,12 @@
 #include <wx/glcanvas.h>
 
 #include "ClimatologyUI.h"
+#include "ClimatologyConfigDialog.h"
 
 #ifndef PI
 #define PI        3.1415926535897931160E0      /* pi */
 #endif
 
-class ClimatologyConfigDialog;
 class ClimatologyOverlayFactory;
 
 class wxFileConfig;
@@ -52,15 +52,17 @@ class climatology_pi;
 //----------------------------------------------------------------------------------------------------------
 class ClimatologyDialog : public ClimatologyDialogBase {
 public:
-
     ClimatologyDialog(wxWindow *parent, climatology_pi *ppi);
-
     ~ClimatologyDialog();
-    void Init();
 
+    void Init();
+    void UpdateTrackingControls();
     void SetFactoryOptions();
+    void SetCursorLatLon(double lat, double lon);
 
     ClimatologyConfigDialog *m_cfgdlg;
+
+    ClimatologyOverlaySettings m_OverlaySettings;
 
 private:
     void OnMonth( wxCommandEvent& event );
@@ -73,7 +75,8 @@ private:
 
     wxWindow *pParent;
     climatology_pi *pPlugIn;
+
+    double m_cursorlat, m_cursorlon;
 };
 
 #endif
-
