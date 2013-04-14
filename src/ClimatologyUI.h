@@ -44,10 +44,9 @@ class ClimatologyDialogBase : public wxDialog
 	private:
 	
 	protected:
-		wxTextCtrl* m_tWindPilot;
+		wxTextCtrl* m_tWind;
 		wxTextCtrl* m_tCurrent;
 		wxTextCtrl* m_tPressure;
-		wxTextCtrl* m_tSwell;
 		wxTextCtrl* m_tSeaTemperature;
 		wxTextCtrl* m_tCyclones;
 		wxButton* m_bConfig;
@@ -62,10 +61,9 @@ class ClimatologyDialogBase : public wxDialog
 	public:
 		wxChoice* m_cMonth;
 		wxSlider* m_sMonth;
-		wxCheckBox* m_cbWindPilot;
-		wxCheckBox* m_cbOceanCurrents;
+		wxCheckBox* m_cbWind;
+		wxCheckBox* m_cbCurrents;
 		wxCheckBox* m_cbPressure;
-		wxCheckBox* m_cbSwellPlots;
 		wxCheckBox* m_cbSeaTemperature;
 		wxCheckBox* m_cbCyclones;
 		
@@ -83,6 +81,10 @@ class ClimatologyConfigDialogBase : public wxDialog
 	
 	protected:
 		wxNotebook* m_notebook1;
+		wxPanel* m_panel41;
+		wxCheckBox* m_cbWindNumbers;
+		wxPanel* m_panel411;
+		wxCheckBox* m_cbCurrentNumbers;
 		wxPanel* m_panel4;
 		wxCheckBox* m_cbPressureNumbers;
 		wxPanel* m_panel5;
@@ -92,6 +94,9 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxStaticText* m_staticText2;
 		wxStaticText* m_staticText4;
 		wxStaticText* m_staticText5;
+		wxCheckBox* m_cbElNino;
+		wxCheckBox* m_cbLaNina;
+		wxCheckBox* m_cbNeutral;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnCycloneConfig( wxCommandEvent& event ) { event.Skip(); }
@@ -109,7 +114,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxSpinCtrl* m_sMinWindSpeed;
 		wxSpinCtrl* m_sMaxPressure;
 		
-		ClimatologyConfigDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxDEFAULT_DIALOG_STYLE ); 
+		ClimatologyConfigDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Climatology Configuration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxDEFAULT_DIALOG_STYLE ); 
 		~ClimatologyConfigDialogBase();
 	
 };
