@@ -27,11 +27,11 @@
 #include <list>
 #include <map>
 
-class StormState
+class CycloneState
 {
 public:
     enum State {TROPICAL, SUBTROPICAL, EXTRATROPICAL, WAVE, REMANENT, UNKNOWN};
-    StormState(State s, wxDateTime dt, double lat, double lon, double wk, double press)
+    CycloneState(State s, wxDateTime dt, double lat, double lon, double wk, double press)
     : state(s), datetime(dt), latitude(lat), longitude(lon), windknots(wk), pressure(press)
     {}
 
@@ -40,17 +40,17 @@ public:
     double latitude, longitude, windknots, pressure;
 };
 
-class Storm
+class Cyclone
 {
 public:
-    Storm() { }
+    Cyclone() { }
 
 //    int stormindex, stormindex_year;
 //    wxString name;
 
-    std::list<StormState*> states;
+    std::list<CycloneState*> states;
 
-    enum StormType {HURRICANE, TROPICAL_STORM, SUBTROPICAL_STORM, UNKNOWN} type;
+    enum CycloneType {HURRICANE, TROPICAL_CYCLONE, SUBTROPICAL_CYCLONE, UNKNOWN} type;
 };
 
 //----------------------------------------------------------------------------------------------------------
@@ -90,6 +90,9 @@ public:
     ClimatologyOverlayFactory( ClimatologyDialog &dlg );
     ~ClimatologyOverlayFactory();
 
+    bool ReadCycloneDatabase(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
+    bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones);
+
     void ClearCachedData();
 
     void DrawGLLine( double x1, double y1, double x2, double y2, double width );
@@ -102,6 +105,8 @@ public:
 
     void RenderIsoBars(int setting, PlugIn_ViewPort &vp);
     void RenderNumbers(int setting, PlugIn_ViewPort &vp);
+
+    void RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones);
     void RenderCyclones(PlugIn_ViewPort &vp);
 
     bool RenderOverlay( wxDC &dc, PlugIn_ViewPort &vp );
@@ -122,7 +127,8 @@ private:
 
     wxInt16 m_sst[13][180][360]; /* 12 months + year total and average at 1 degree intervals */
 
-    unsigned int m_cyclonelist;
+    unsigned int m_cyclonelist; /* for opengl display list */
     bool m_cyclonelistok;
-    std::list<Storm*> storms;
+
+    std::list<Cyclone*> m_bwp, m_epa, m_spa, m_atl, m_she, m_nio;
 };

@@ -134,12 +134,14 @@ void ClimatologyDialog::OnMonth( wxCommandEvent& event )
 {
     m_sMonth->SetValue(event.GetSelection());
     UpdateTrackingControls();
+    SetFactoryOptions();
 }
 
 void ClimatologyDialog::OnMonth( wxScrollEvent& event )
 {
     m_cMonth->SetSelection(event.GetPosition());
     UpdateTrackingControls();
+    SetFactoryOptions();
 }
 
 void ClimatologyDialog::OnUpdate( wxCommandEvent& event )

@@ -55,8 +55,6 @@ struct ClimatologyOverlaySettings
         bool m_bNumbers;
         double m_iNumbersSpacing;
     } Settings[SETTINGS_COUNT];
-
-    bool m_bCyclones;
 };
 
 class ClimatologyConfigDialog : public ClimatologyConfigDialogBase {
