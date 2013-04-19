@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#include "georef.h"
 #include <wx/graphics.h>
 
-#include "ClimatologyOverlayFactory.h"
+#include "climatology_pi.h"
 #include "IsoLine.h"
 
 static void GenerateSpline(int n, wxPoint points[]);
@@ -163,10 +163,12 @@ double      round_msvc (double x)
 }
 
 //---------------------------------------------------------------
-IsoLine::IsoLine(double value, ClimatologyOverlayFactory &fac, int setting)
+IsoLine::IsoLine(double val, ClimatologyOverlayFactory &fac, int setting)
 {
     //---------------------------------------------------------
     // Génère la liste des segments.
+    value = val;
+
     extractIsoLine(fac, setting);
 
     if(trace.size() == 0)
@@ -397,11 +399,15 @@ void IsoLine::drawIsoLine(ClimatologyOverlayFactory *pof, wxDC *dc, PlugIn_ViewP
       std::list<Segment *>::iterator it;
 
     //---------------------------------------------------------
-    // Dessine les segments
+    // Dessine lesn segments
     //---------------------------------------------------------
     for (it=trace.begin(); it!=trace.end(); it++)
     {
         Segment *seg = *it;
+
+        /* skip nan segments */
+        if(isnan(seg->px1) || isnan(seg->py1) || isnan(seg->px2) || isnan(seg->py2))
+            continue;
 
         /* skip segments that go the wrong way around the world */
         if(seg->px1+180 < vp->clon && seg->px2+180 > vp->clon)
@@ -625,8 +631,8 @@ void Segment::intersectionAreteGrille(int i,int j, int k,int l, double *x, doubl
                                       double pressure)
 {
     double a,b, pa, pb, dec;
-    pa = fac.getValue(setting,i,j);
-    pb = fac.getValue(setting,k,l);
+    pa = fac.getValue(setting,j,i);
+    pb = fac.getValue(setting,l,k);
     // Abscisse
     a = i;
     b = k;
@@ -665,20 +671,20 @@ void Segment::traduitCode(int I, int J, char c1, int &i, int &j) {
 //---------------------------------------------------------
 void IsoLine::extractIsoLine(ClimatologyOverlayFactory &fac, int setting)
 {
-    int i, j;
+    double i, j;
     double  a,b,c,d;
 
-    for (j=-90; j<90; j++)     // !!!! 1 to end
+    for (j=-89; j<88; j+=.5)     // !!!! 1 to end
     {
-        for (i=-180; i<180; i++)
+        for (i=-180; i<180; i+=.5)
         {
 //            x = rec->getX(i);
 //            y = rec->getY(j);
-
-            a = fac.getValue(setting, i, j );
-            b = fac.getValue(setting, i+1,   j );
-            c = fac.getValue(setting, i, j+1   );
-            d = fac.getValue(setting, i+1, j+1  );
+            
+            a = fac.getValue(setting, j,   i  );
+            b = fac.getValue(setting, j,   i+1);
+            c = fac.getValue(setting, j+1, i  );
+            d = fac.getValue(setting, j+1, i+1);
 
             // Détermine si 1 ou 2 segments traversent la case ab-cd
             // a  b

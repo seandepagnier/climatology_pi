@@ -62,8 +62,6 @@ public:
 
     ClimatologyConfigDialog *m_cfgdlg;
 
-    ClimatologyOverlaySettings m_OverlaySettings;
-
 private:
     void OnMonth( wxCommandEvent& event );
     void OnMonth( wxScrollEvent& event );

@@ -42,8 +42,8 @@
 
 #include "../../../include/ocpn_plugin.h"
 
-#include "ClimatologyOverlayFactory.h"
 #include "ClimatologyDialog.h"
+#include "ClimatologyOverlayFactory.h"
 #include "ClimatologyUI.h"
 
 

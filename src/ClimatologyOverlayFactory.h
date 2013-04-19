@@ -27,6 +27,11 @@
 #include <list>
 #include <map>
 
+struct ElNinoYear
+{
+    double months[12];
+};
+
 class CycloneState
 {
 public:
@@ -82,7 +87,6 @@ public:
 
 class PlugIn_ViewPort;
 class ClimatologyDialog;
-class ClimatologyOverlaySettings;
 class wxGLContext;
 
 class ClimatologyOverlayFactory {
@@ -92,6 +96,7 @@ public:
 
     bool ReadCycloneDatabase(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
     bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones);
+    bool ReadElNinoYears(wxString filename);
 
     void ClearCachedData();
 
@@ -103,20 +108,28 @@ public:
     double GetMax(int setting);
     double getValue(int setting, double lat, double lon);
 
-    void RenderIsoBars(int setting, PlugIn_ViewPort &vp);
-    void RenderNumbers(int setting, PlugIn_ViewPort &vp);
-
-    void RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones);
-    void RenderCyclones(PlugIn_ViewPort &vp);
-
     bool RenderOverlay( wxDC &dc, PlugIn_ViewPort &vp );
     bool RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPort &vp );
 
     int m_CurrentMonth;
 
 private:
+    void RenderIsoBars(int setting, PlugIn_ViewPort &vp);
+    void RenderNumbers(int setting, PlugIn_ViewPort &vp);
+
+    void RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones);
+    void RenderCyclones(PlugIn_ViewPort &vp);
+
+    wxColour GetGraphicColor(int setting, double val_in);
+    bool CreateGLTexture(ClimatologyOverlay &O, int setting, PlugIn_ViewPort &vp);
+    void DrawGLTexture(ClimatologyOverlay &O, PlugIn_ViewPort &vp);
+
+    void RenderOverlayMap( int setting, PlugIn_ViewPort &vp);
+
     ClimatologyDialog &m_dlg;
     ClimatologyOverlaySettings &m_Settings;
+
+    ClimatologyOverlay m_pOverlay[13][ClimatologyOverlaySettings::SETTINGS_COUNT];
 
     wxDC *m_pdc;
     wxGraphicsContext *m_gdc;
@@ -131,4 +144,6 @@ private:
     bool m_cyclonelistok;
 
     std::list<Cyclone*> m_bwp, m_epa, m_spa, m_atl, m_she, m_nio;
+
+    std::map<int, ElNinoYear> m_ElNinoYears;
 };

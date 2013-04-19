@@ -40,7 +40,7 @@ struct ClimatologyOverlaySettings
     void Read();
     void Write();
 
-    enum SettingsType {SLP, SST, CYCLONES, SETTINGS_COUNT};
+    enum SettingsType {WIND, CURRENT, SLP, SST, SETTINGS_COUNT};
 
     struct OverlayDataSettings {
         int m_Units;
@@ -50,12 +50,13 @@ struct ClimatologyOverlaySettings
         wxArrayPtrVoid *m_pIsobarArray;
 
         bool m_bOverlayMap;
-        int m_iOverlayMapColors;
 
         bool m_bNumbers;
         double m_iNumbersSpacing;
     } Settings[SETTINGS_COUNT];
 };
+
+class ClimatologyDialog;
 
 class ClimatologyConfigDialog : public ClimatologyConfigDialogBase {
 public:
@@ -63,13 +64,27 @@ public:
     ClimatologyConfigDialog(ClimatologyDialog *parent);
     ~ClimatologyConfigDialog();
 
+    ClimatologyOverlaySettings m_Settings;
+
 private:
+
+    void SetDataTypeSettings(int settings);
+    void ReadDataTypeSettings(int settings);
+    void PopulateUnits(int settings);
+    void OnDataTypeChoice( wxCommandEvent& event );
+
+    void OnUpdate();
+    void OnUpdate( wxCommandEvent& event ) { OnUpdate(); }
+    void OnUpdate( wxSpinEvent& event ) { OnUpdate(); }
 
     void OnCycloneConfig();
     void OnCycloneConfig( wxCommandEvent& event ) { OnCycloneConfig(); }
     void OnCycloneConfig( wxDateEvent& event ) { OnCycloneConfig(); }
     void OnCycloneConfig( wxSpinEvent& event ) { OnCycloneConfig(); }
 
+    int m_lastdatatype;
+
+    
     ClimatologyDialog *pParent;
 };
 

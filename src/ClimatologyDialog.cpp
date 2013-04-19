@@ -69,8 +69,6 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 */
     }
 
-    m_OverlaySettings.Read();
-
     m_cfgdlg = new ClimatologyConfigDialog(this);
 
     DimeWindow( this );
@@ -99,20 +97,21 @@ ClimatologyDialog::~ClimatologyDialog()
 */
     }
 
-    m_OverlaySettings.Write();
-
     delete m_cfgdlg;
 }
 
 void ClimatologyDialog::UpdateTrackingControls()
 {
+    if(!pPlugIn->GetOverlayFactory())
+        return;
+
     pPlugIn->GetOverlayFactory()->m_CurrentMonth = m_sMonth->GetValue();
 
     m_tPressure->SetValue
-        (wxString::Format(_T("%.f"), pPlugIn->GetOverlayFactory()->
+        (wxString::Format(_T("%.1f"), pPlugIn->GetOverlayFactory()->
                           getValue(ClimatologyOverlaySettings::SLP, m_cursorlat, m_cursorlon)));
     m_tSeaTemperature->SetValue
-        (wxString::Format(_T("%.f"), pPlugIn->GetOverlayFactory()->
+        (wxString::Format(_T("%.1f"), pPlugIn->GetOverlayFactory()->
                           getValue(ClimatologyOverlaySettings::SST, m_cursorlat, m_cursorlon)));
 }
 

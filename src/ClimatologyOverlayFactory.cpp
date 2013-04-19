@@ -37,9 +37,17 @@
 #include <netcdfcpp.h>
 
 #include "climatology_pi.h"
-#include "ClimatologyDialog.h"
-#include "ClimatologyConfigDialog.h"
 #include "IsoLine.h"
+
+
+double positive_degrees(double degrees)
+{
+    while(degrees < 0)
+        degrees += 360;
+    while(degrees >= 360)
+        degrees -= 360;
+    return degrees;
+}
 
 ClimatologyOverlay::~ClimatologyOverlay()
 {
@@ -52,13 +60,18 @@ ClimatologyOverlay::~ClimatologyOverlay()
 //    Climatology Overlay Factory Implementation
 //----------------------------------------------------------------------------------------------------------
 ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
-    : m_dlg(dlg), m_Settings(dlg.m_OverlaySettings), m_cyclonelist(0)
+    : m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonelist(0)
 {
+    wxProgressDialog progressdialog( _("Climatology"), wxString(), 5, &m_dlg,
+                                     wxPD_CAN_ABORT | wxPD_ELAPSED_TIME | wxPD_REMAINING_TIME);
+
     ClearCachedData();
 
     wxString path = *GetpSharedDataLocation() + _T("plugins/climatology/data/");
 
     /* load sea level pressure data */
+    if(!progressdialog.Update(0, _("sea level pressure data")))
+        return;
     wxString slp_path = path + _T("slpcoadsclim5079.nc");
 
     NcError err(NcError::silent_nonfatal);
@@ -76,6 +89,8 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     }
 
     /* load sea temperature data */
+    if(!progressdialog.Update(1, _("sea temperature data")))
+        return;
     wxString sst_path = path + _T("sstcoadsclim6079.1deg.nc");
 
     NcFile sst(sst_path.mb_str(), NcFile::ReadOnly);
@@ -92,20 +107,38 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     }
 
     /* load cyclone tracks */
+    if(!progressdialog.Update(2, _("cyclone data (pacific)")))
+        return;
     if(!ReadCycloneDatabase(path + _T("tracks.epa"), m_epa))
         m_dlg.m_cfgdlg->m_cbEastPacific->Disable();
     if(!ReadCycloneDatabase(path + _T("tracks.bwp"), m_bwp))
         m_dlg.m_cfgdlg->m_cbWestPacific->Disable();
     if(!ReadCycloneData(path + _T("tracks.spa.dat"), m_spa))
         m_dlg.m_cfgdlg->m_cbSouthPacific->Disable();
+    if(!progressdialog.Update(3, _("cyclone data (atlantic)")))
+        return;
     if(!ReadCycloneDatabase(path + _T("tracks.atl"), m_atl))
         m_dlg.m_cfgdlg->m_cbAtlantic->Disable();
+    if(!progressdialog.Update(4, _("cyclone data (indian)")))
+        return;
     if(!ReadCycloneDatabase(path + _T("tracks.nio"), m_nio))
         m_dlg.m_cfgdlg->m_cbNorthIndian->Disable();
     if(!ReadCycloneDatabase(path + _T("tracks.she"), m_she, true))
         m_dlg.m_cfgdlg->m_cbSouthIndian->Disable();
 
     m_dlg.m_cbCyclones->Enable();
+
+    if(!progressdialog.Update(4, _("el nino years")))
+        return;
+    if(!ReadElNinoYears(path + _T("elnino_years.txt"))) {
+        m_dlg.m_cfgdlg->m_cbElNino->Disable();
+        m_dlg.m_cfgdlg->m_cbLaNina->Disable();
+        m_dlg.m_cfgdlg->m_cbNeutral->Disable();
+    }
+
+    wxDateTime datetime;
+    datetime.SetYear(1980);
+    m_dlg.m_cfgdlg->m_dPStart->SetValue(datetime);
 }
 
 ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
@@ -276,6 +309,42 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
     return true;
 }
 
+static double strtod_nan(const char *str)
+{
+    if(!str)
+        return NAN;
+    char *endptr;
+    double ret = strtod(str, &endptr);
+    if(endptr == str)
+        return NAN;
+    return ret;
+}
+
+bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
+{
+    FILE *f = fopen(filename.mb_str(), "r");
+    if (!f) {
+        wxLogMessage(_T("climatology_pi: failed to open file: ") + filename);
+        return false;
+    }
+
+    char line[128];
+    int header = 1;
+    while(fgets(line, sizeof line, f)) {
+        if(header) {
+            header--;
+        } else {
+            char *saveptr;
+            int year = strtol(strtok_r(line, " ", &saveptr), 0, 10);
+            ElNinoYear elninoyear;
+            for(int i=0; i<12; i++)
+                elninoyear.months[i] = strtod_nan(strtok_r(0, " ", &saveptr));
+            m_ElNinoYears[year] = elninoyear;
+        }
+    }
+    return true;
+}
+
 void ClimatologyOverlayFactory::ClearCachedData()
 {
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
@@ -286,39 +355,250 @@ void ClimatologyOverlayFactory::ClearCachedData()
 
 void ClimatologyOverlayFactory::DrawGLLine( double x1, double y1, double x2, double y2, double width )
 {
+    glPushAttrib(GL_COLOR_BUFFER_BIT | GL_LINE_BIT | GL_ENABLE_BIT |
+                 GL_POLYGON_BIT | GL_HINT_BIT ); //Save state
     {
-        glPushAttrib(GL_COLOR_BUFFER_BIT | GL_LINE_BIT | GL_ENABLE_BIT |
-                     GL_POLYGON_BIT | GL_HINT_BIT ); //Save state
-        {
-
-            //      Enable anti-aliased lines, at best quality
-            glEnable( GL_LINE_SMOOTH );
-            glEnable( GL_BLEND );
-            glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-            glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-            glLineWidth( width );
-
-            glBegin( GL_LINES );
-            glVertex2d( x1, y1 );
-            glVertex2d( x2, y2 );
-            glEnd();
-        }
-
-        glPopAttrib();
+        //      Enable anti-aliased lines, at best quality
+        glEnable( GL_LINE_SMOOTH );
+        glEnable( GL_BLEND );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+        glLineWidth( width );
+        
+        glBegin( GL_LINES );
+        glVertex2d( x1, y1 );
+        glVertex2d( x2, y2 );
+        glEnd();
     }
+    glPopAttrib();
+}
+
+struct ColorMap {
+    double val;
+    wxString text;
+};
+
+ColorMap WindMap[] =
+{{0, _T("#00d900")},  {1, _T("#2ad900")},  {2, _T("#6ed900")},  {3, _T("#b2d900")},
+ {4, _T("#d4d400")},  {5, _T("#d9a600")},  {7, _T("#d90000")},  {9, _T("#d90040")},
+ {12, _T("#d90060")}, {15, _T("#ae0080")}, {18, _T("#8300a0")}, {21, _T("#5700c0")},
+ {24, _T("#0000d0")}, {27, _T("#0400e0")}, {30, _T("#0800e0")}, {36, _T("#a000e0")},
+ {42, _T("#c004c0")}, {48, _T("#c008a0")}, {56, _T("#c0a008")}};
+
+ColorMap CurrentMap[] =
+{{0,  _T("#d90000")},  {1, _T("#d92a00")},  {2, _T("#d96e00")},  {3, _T("#d9b200")},
+ {4,  _T("#d4d404")},  {5, _T("#a6d906")},  {7, _T("#06d9a0")},  {9, _T("#00d9b0")},
+ {12, _T("#00d9c0")}, {15, _T("#00aed0")}, {18, _T("#0083e0")}, {21, _T("#0057e0")},
+ {24, _T("#0000f0")}, {27, _T("#0400f0")}, {30, _T("#1c00f0")}, {36, _T("#4800f0")},
+ {42, _T("#6900f0")}, {48, _T("#a000f0")}, {56, _T("#f000f0")}};
+
+ColorMap PressureMap[] =
+{{900,  _T("#283282")}, {980,  _T("#273c8c")}, {990,  _T("#264696")}, {1000,  _T("#2350a0")},
+ {1001, _T("#1f5aaa")}, {1002, _T("#1a64b4")}, {1003, _T("#136ec8")}, {1004, _T("#0c78e1")},
+ {1005, _T("#0382e6")}, {1006, _T("#0091e6")}, {1007, _T("#009ee1")}, {1008, _T("#00a6dc")},
+ {1009, _T("#00b2d7")}, {1010, _T("#00bed2")}, {1011, _T("#28c8c8")}, {1012, _T("#78d2aa")},
+ {1013, _T("#8cdc78")}, {1014, _T("#a0eb5f")}, {1015, _T("#c8f550")}, {1016, _T("#f3fb02")},
+ {1017, _T("#ffed00")}, {1018, _T("#ffdd00")}, {1019, _T("#ffc900")}, {1020, _T("#ffab00")},
+ {1021, _T("#ff8100")}, {1022, _T("#f1780c")}, {1024, _T("#e26a23")}, {1028, _T("#d5453c")},
+ {1040, _T("#b53c59")}};
+
+ColorMap SeaTempMap[] =
+{{0, _T("#0000d9")},  {3, _T("#002ad9")},  {6, _T("#006ed9")},  {9, _T("#00b2d9")},
+ {12, _T("#00d4d4")}, {15, _T("#00d9a6")}, {18, _T("#00d900")}, {20, _T("#95d900")},
+ {22, _T("#d9d900")}, {23, _T("#d9ae00")}, {24, _T("#d98300")}, {25, _T("#d95700")},
+ {26, _T("#d90000")}, {27, _T("#ae0000")}, {28, _T("#8c0000")}, {29, _T("#870000")},
+ {30, _T("#690000")}, {32, _T("#550000")}, {35, _T("#410000")}};
+
+ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap};
+enum {WIND_GRAPHIC, CURRENT_GRAPHIC, PRESSURE_GRAPHIC, SEATEMP_GRAPHIC};
+
+wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in)
+{
+    int colormap_index = setting;
+    ColorMap *map;
+    int maplen;
+
+#if 0
+    /* normalize input value */
+    double min = GetMin(setting), max = GetMax(setting);
+
+    val_in -= min;
+    val_in /= max-min;
+#endif
+
+    switch(colormap_index) {
+    case WIND_GRAPHIC:
+        map = WindMap;
+        maplen = (sizeof WindMap) / (sizeof *WindMap);
+        break;
+    case CURRENT_GRAPHIC:
+        map = CurrentMap;
+        maplen = (sizeof CurrentMap) / (sizeof *CurrentMap);
+        break;
+    case PRESSURE_GRAPHIC: 
+        map = PressureMap;
+        maplen = (sizeof PressureMap) / (sizeof *PressureMap);
+        break;
+    case SEATEMP_GRAPHIC: 
+        map = SeaTempMap;
+        maplen = (sizeof SeaTempMap) / (sizeof *SeaTempMap);
+        break;
+    }
+
+#if 0
+    /* normalize map from 0 to 1 */
+    double cmax = map[maplen-1].val;
+#else
+    double cmax = 1;
+#endif
+
+    for(int i=1; i<maplen; i++) {
+        double nmapvala = map[i-1].val/cmax;
+        double nmapvalb = map[i].val/cmax;
+        if(nmapvalb > val_in || i==maplen-1) {
+            wxColour b, c;
+            c.Set(map[i].text);
+            b.Set(map[i-1].text);
+            double d = (val_in-nmapvala)/(nmapvalb-nmapvala);
+            c.Set((1-d)*b.Red()   + d*c.Red(),
+                  (1-d)*b.Green() + d*c.Green(),
+                  (1-d)*b.Blue()  + d*c.Blue());
+            return c;
+        }
+    }
+    return wxColour(0, 0, 0); /* unreachable */
+}
+
+bool ClimatologyOverlayFactory::CreateGLTexture( ClimatologyOverlay &O, int setting,
+                                                 PlugIn_ViewPort &vp)
+{
+    double s = 1;
+    int width = s*360+1;
+    int height = s*180;
+
+    unsigned char *data = new unsigned char[width*height*4];
+
+    for(int lon = 0; lon < width; lon++) {
+        for(int lat = 0; lat < height; lat++) {
+            double v = getValue(setting, lat/s-90, lon/s);
+            unsigned char r, g, b, a;
+            if(isnan(v))
+                a = 0; /* transparent */
+            else {
+                wxColour c = GetGraphicColor(setting, v);
+                r = c.Red();
+                g = c.Green();
+                b = c.Blue();
+                a = 220;
+            }
+
+            int doff = 4*(lat*width + lon);
+            data[doff + 0] = 255-r;
+            data[doff + 1] = 255-g;
+            data[doff + 2] = 255-b;
+            data[doff + 3] = a;
+        }
+    }
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture);
+
+    glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT );
+
+    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+    glPixelStorei( GL_UNPACK_SKIP_PIXELS, 0 );
+    glPixelStorei( GL_UNPACK_SKIP_ROWS, 0 );
+    glPixelStorei( GL_UNPACK_ROW_LENGTH, width );
+
+    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, width, height,
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    glPopClientAttrib();
+
+    delete [] data;
+
+    O.m_iTexture = texture;
+    O.m_width = width - 1;
+    O.m_height = height;
+
+    return true;
+}
+
+void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_ViewPort &vp)
+{ 
+    if( !O.m_iTexture )
+        return;
+
+    glEnable(GL_TEXTURE_RECTANGLE_ARB);
+    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O.m_iTexture);
+
+//    glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+//    glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+
+    glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+    glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+
+    glDisable( GL_MULTISAMPLE );
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glColor4f(1, 1, 1, 1);
+    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
+    
+    int w = vp.pix_width, h = vp.pix_height;
+
+    double lat1, lon1, lat2, lon2;
+    GetCanvasLLPix( &vp, wxPoint(0, 0), &lat1, &lon1 );
+    GetCanvasLLPix( &vp, wxPoint(w, h), &lat2, &lon2 );
+
+    lat1 += 90, lat2 += 90;
+    lon1 = positive_degrees(lon1), lon2 = positive_degrees(lon2);
+    lat1 *= O.m_height/180.0, lon1 *= O.m_width/360.0;
+    lat2 *= O.m_height/180.0, lon2 *= O.m_width/360.0;
+    
+    glBegin(GL_QUADS);
+
+    double x = 0;
+    if(lon1 > lon2) {
+        wxPoint p;
+        GetCanvasPixLL( &vp, &p, 0, 0 );
+        x = p.x;
+
+        glTexCoord2d(lon1,        lat1), glVertex2i(0, 0);
+        glTexCoord2d(O.m_width+1, lat1), glVertex2i(x, 0);
+        glTexCoord2d(O.m_width+1, lat2), glVertex2i(x, h);
+        glTexCoord2d(lon1,        lat2), glVertex2i(0, h);
+
+        lon1 = 0;
+    }
+
+    glTexCoord2d(lon1,   lat1), glVertex2i(x, 0);
+    glTexCoord2d(lon2+1, lat1), glVertex2i(w, 0);
+    glTexCoord2d(lon2+1, lat2), glVertex2i(w, h);
+    glTexCoord2d(lon1,   lat2), glVertex2i(x, h);
+    glEnd();
+    
+    glDisable(GL_BLEND);
+    glDisable(GL_TEXTURE_RECTANGLE_ARB);
 }
 
 /* return cached wxImage for a given number, or create it if not in the cache */
 wxImage &ClimatologyOverlayFactory::getLabel(double value)
 {
     std::map <double, wxImage >::iterator it;
-    it = m_labelCache.find(value);
+    double nvalue = isnan(value) ? 99999999 : value;
+            
+    it = m_labelCache.find(nvalue);
     if (it != m_labelCache.end())
-        return m_labelCache[value];
+        return m_labelCache[nvalue];
 
     wxString labels;
-    labels.Printf(_T("%d"), (int)(value+0.5));
-
+    if(isnan(value))
+        labels = _("N/A");
+    else
+        labels.Printf(_T("%.0f"), value);
     wxColour text_color;
     GetGlobalColor( _T ( "DILG3" ), &text_color );
     wxColour back_color;
@@ -354,11 +634,10 @@ wxImage &ClimatologyOverlayFactory::getLabel(double value)
           
     mdc.SelectObject(wxNullBitmap);
 
-    m_labelCache[value] = bm.ConvertToImage();
+    m_labelCache[nvalue] = bm.ConvertToImage();
+    m_labelCache[nvalue].InitAlpha();
 
-    m_labelCache[value].InitAlpha();
-
-    wxImage &image = m_labelCache[value];
+    wxImage &image = m_labelCache[nvalue];
 
     unsigned char *d = image.GetData();
     unsigned char *a = image.GetAlpha();
@@ -375,7 +654,7 @@ wxImage &ClimatologyOverlayFactory::getLabel(double value)
             a[ioff] = 255-(r+g+b)/3;
         }
 
-    return m_labelCache[value];
+    return m_labelCache[nvalue];
 }
 
 /* give value for y at a given x location on a segment */
@@ -397,46 +676,84 @@ double InterpArray(double x, double y, wxInt16 *a, int h)
     if(y<0) y+=h;
     int x0 = floor(x), x1 = x0+1;
     int y0 = floor(y), y1 = y0+1;
-    double v00 = ArrayValue(a, x0*h + y0), v01 = ArrayValue(a, x0*h + y1);
-    double v10 = ArrayValue(a, x1*h + y0), v11 = ArrayValue(a, x1*h + y1);
+    int y1v = y1;
+    if(y1v == h) y1v = 0;
 
-    double v0 = interp_value(x, x0, x1, v00, v01);
-    double v1 = interp_value(x, x0, x1, v10, v11);
-    return      interp_value(y, y0, y1, v0,  v1 );
+    double v00 = ArrayValue(a, x0*h + y0), v01 = ArrayValue(a, x0*h + y1v);
+    double v10 = ArrayValue(a, x1*h + y0), v11 = ArrayValue(a, x1*h + y1v);
+
+    double v0 = interp_value(y, y0, y1, v00, v01);
+    double v1 = interp_value(y, y0, y1, v10, v11);
+    return      interp_value(x, x0, x1, v0,  v1 );
 }
 
 double ClimatologyOverlayFactory::getValue(int setting, double lat, double lon)
 {
     switch(setting) {
     case ClimatologyOverlaySettings::SLP:
-        return InterpArray((-lat+90)/2, lon/2, m_slp[m_CurrentMonth][0], 180) * .01f + 1000.0;
+        return InterpArray((-lat+90)/2, positive_degrees(lon)/2,
+                           m_slp[m_CurrentMonth][0], 180) * .01f + 1000.0;
     case ClimatologyOverlaySettings::SST:
-        return InterpArray((-lat+90), lon, m_sst[m_CurrentMonth][0], 360) * .001f + 15.0;
-    default: return NAN;
+        return InterpArray((-lat+90), positive_degrees(lon),
+                           m_sst[m_CurrentMonth][0], 360) * .001f + 15.0;
+    default: return 0;
     }
 }
 
 double ClimatologyOverlayFactory::GetMin(int setting)
 {
     switch(setting) {
-    case ClimatologyOverlaySettings::SLP: return 880;
-    case ClimatologyOverlaySettings::SST: return -2;
-    default: return NAN;
+    case ClimatologyOverlaySettings::SLP: return 920;
+    case ClimatologyOverlaySettings::SST: return 0;
+    default: return 0;
     }
 }
 
 double ClimatologyOverlayFactory::GetMax(int setting)
 {
     switch(setting) {
-    case ClimatologyOverlaySettings::SLP: return 1040;
+    case ClimatologyOverlaySettings::SLP: return 1080;
     case ClimatologyOverlaySettings::SST: return 35;
     default: return NAN;
     }
 }
 
+void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &vp)
+{
+    if(!m_Settings.Settings[setting].m_bOverlayMap)
+        return;
+
+    ClimatologyOverlay &O = m_pOverlay[m_CurrentMonth][setting];
+
+    if( !m_pdc )
+    {
+        if( !O.m_iTexture )
+            CreateGLTexture( O, setting, vp);
+
+        DrawGLTexture( O, vp );
+    }
+    else
+    {
+#if 0  
+        if( !pO.m_pDCBitmap ) {
+            wxImage bl_image = CreateImage( settings, pGRA, vp, porg );
+            if( bl_image.IsOk() ) {
+                //    Create a Bitmap
+                pGO->m_pDCBitmap = new wxBitmap( bl_image );
+                wxMask *gr_mask = new wxMask( *( pGO->m_pDCBitmap ), wxColour( 0, 0, 0 ) );
+                pGO->m_pDCBitmap->SetMask( gr_mask );
+            }
+        }
+      
+        if( pGO->m_pDCBitmap )
+            m_pdc->DrawBitmap( *( pGO->m_pDCBitmap ), porg.x, porg.y, true );
+#endif        
+    }
+}
+
 void ClimatologyOverlayFactory::RenderIsoBars(int setting, PlugIn_ViewPort &vp)
 {
-    if(!m_Settings.Settings[setting].m_bNumbers)
+    if(!m_Settings.Settings[setting].m_bIsoBars)
         return;
 
     wxArrayPtrVoid *&pIsobarArray = m_Settings.Settings[setting].m_pIsobarArray;
@@ -456,9 +773,9 @@ void ClimatologyOverlayFactory::RenderIsoBars(int setting, PlugIn_ViewPort &vp)
                 progressdialog->Update(press-min);
             else {
                 wxDateTime now = wxDateTime::Now();
-                if((now-start).GetSeconds() > 3 && press-min < (max-min)/2) {
+                if((now-start).GetSeconds() > 1 && press-min < (max-min)/2) {
                     progressdialog = new wxProgressDialog(
-                        _("Building Isobar map"), _("Wind"), max-min+1, NULL,
+                        _("Building Isobar map"), _("Climatology"), max-min+1, &m_dlg,
                         wxPD_SMOOTH | wxPD_ELAPSED_TIME | wxPD_REMAINING_TIME);
                 }
             }
@@ -475,7 +792,7 @@ void ClimatologyOverlayFactory::RenderIsoBars(int setting, PlugIn_ViewPort &vp)
         piso->drawIsoLine( this, m_pdc, &vp, true);
 
         // Draw Isobar labels
-        int density = 40;
+        int density = 400;
         int first = 0;
         piso->drawIsoLineLabels( this, m_pdc, &vp, density,
                                  first, getLabel(piso->getValue()) );
@@ -488,10 +805,11 @@ void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)
         return;
 
     double space = m_Settings.Settings[setting].m_iNumbersSpacing;
-    for(double lat = vp.lat_min; lat <= vp.lat_max; lat+=space)
-        for(double lon = vp.lon_max; lon <= vp.lon_max; lon+=space) {
-            wxPoint p;
-            GetCanvasPixLL( &vp, &p, lat, lon );
+    wxPoint p;
+    for(p.y = space; p.y <= vp.rv_rect.height-space; p.y+=space)
+        for(p.x = space; p.x <= vp.rv_rect.width-space; p.x+=space) {
+            double lat, lon;
+            GetCanvasLLPix( &vp, p, &lat, &lon);
             double value = getValue(setting, lat, lon);
             wxImage &label = getLabel(value);
 
@@ -507,7 +825,7 @@ void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)
                 glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA,
                              w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, label.GetData());
                 glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, w, h,
-                                                GL_ALPHA, GL_UNSIGNED_BYTE, label.GetAlpha());
+                                GL_ALPHA, GL_UNSIGNED_BYTE, label.GetAlpha());
 
                 glEnable(GL_TEXTURE_RECTANGLE_ARB);
                 glBegin(GL_QUADS);
@@ -541,6 +859,32 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::
             if((ss->datetime < m_dlg.m_cfgdlg->m_dPStart->GetValue()) ||
                (ss->datetime > m_dlg.m_cfgdlg->m_dPEnd->GetValue()))
                 continue;
+
+            int year = ss->datetime.GetYear();
+            std::map<int, ElNinoYear>::iterator it;
+            it = m_ElNinoYears.find(year);
+            if (it == m_ElNinoYears.end()) {
+                if(!m_dlg.m_cfgdlg->m_cbNotAvailable->GetValue())
+                    continue;
+            } else {
+                ElNinoYear elninoyear = m_ElNinoYears[year];
+                int month = ss->datetime.GetMonth();
+                double value = elninoyear.months[month];
+
+                if(isnan(value)) {
+                    if(!m_dlg.m_cfgdlg->m_cbNotAvailable->GetValue())
+                        continue;
+                } else {
+                    if(value >= 1) {
+                        if(!m_dlg.m_cfgdlg->m_cbElNino->GetValue())
+                            continue;
+                    } else if(value <= -1) {
+                        if(!m_dlg.m_cfgdlg->m_cbLaNina->GetValue())
+                            continue;
+                    } else if(!m_dlg.m_cfgdlg->m_cbNeutral->GetValue())
+                        continue;
+                }
+            }
 
             switch(ss->state) {
             case CycloneState::TROPICAL: if(m_dlg.m_cfgdlg->m_cbTropical->GetValue()) break;
@@ -643,15 +987,23 @@ bool ClimatologyOverlayFactory::RenderGLOverlay( wxGLContext *pcontext, PlugIn_V
 {
     m_pdc = NULL;
 
+    if(m_dlg.m_cbCyclones->GetValue())
+        RenderCyclones(vp);
+
+    for(int overlay = 1; overlay >= 0; overlay--)
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
-        if((i == ClimatologyOverlaySettings::SLP && !m_dlg.m_cbPressure->GetValue()) ||
-           (i == ClimatologyOverlaySettings::SST && !m_dlg.m_cbSeaTemperature->GetValue()) ||
-           (i == ClimatologyOverlaySettings::CYCLONES && !m_dlg.m_cbCyclones->GetValue()))
+        if((i == ClimatologyOverlaySettings::WIND) ||
+           (i == ClimatologyOverlaySettings::CURRENT) ||
+           (i == ClimatologyOverlaySettings::SLP && !m_dlg.m_cbPressure->GetValue()) ||
+           (i == ClimatologyOverlaySettings::SST && !m_dlg.m_cbSeaTemperature->GetValue()))
             continue;
 
-        RenderIsoBars(i, vp);
-        RenderNumbers(i, vp);
-        RenderCyclones(vp);
+        if(overlay) /* render overlays first */
+            RenderOverlayMap( i, vp );
+        else {
+            RenderIsoBars(i, vp);
+            RenderNumbers(i, vp);
+        }
     }
     return true;
 }
