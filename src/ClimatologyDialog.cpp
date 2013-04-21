@@ -105,14 +105,13 @@ void ClimatologyDialog::UpdateTrackingControls()
     if(!pPlugIn->GetOverlayFactory())
         return;
 
+    /* move this to slider event? */
     pPlugIn->GetOverlayFactory()->m_CurrentMonth = m_sMonth->GetValue();
 
-    m_tPressure->SetValue
-        (wxString::Format(_T("%.1f"), pPlugIn->GetOverlayFactory()->
-                          getValue(ClimatologyOverlaySettings::SLP, m_cursorlat, m_cursorlon)));
-    m_tSeaTemperature->SetValue
-        (wxString::Format(_T("%.1f"), pPlugIn->GetOverlayFactory()->
-                          getValue(ClimatologyOverlaySettings::SST, m_cursorlat, m_cursorlon)));
+    m_tWind->SetValue(GetValue(ClimatologyOverlaySettings::WIND));
+    m_tCurrent->SetValue(GetValue(ClimatologyOverlaySettings::CURRENT));
+    m_tPressure->SetValue(GetValue(ClimatologyOverlaySettings::SLP));
+    m_tSeaTemperature->SetValue(GetValue(ClimatologyOverlaySettings::SST));
 }
 
 void ClimatologyDialog::SetFactoryOptions()
@@ -127,6 +126,12 @@ void  ClimatologyDialog::SetCursorLatLon(double lat, double lon)
     m_cursorlon = lon;
 
     UpdateTrackingControls();
+}
+
+wxString ClimatologyDialog::GetValue(int index)
+{
+    return wxString::Format(_T("%.1f"), pPlugIn->GetOverlayFactory()->
+                            getValue(index, m_cursorlat, m_cursorlon));
 }
 
 void ClimatologyDialog::OnMonth( wxCommandEvent& event )

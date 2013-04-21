@@ -113,12 +113,15 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     m_Settings.Read();
 
     wxFileConfig *pConf = GetOCPNConfigObject();;
-
     if(!pConf)
         return;
 
     pConf->SetPath ( _T ( "/Settings/Climatology" ) );
     pConf->Read ( _T ( "lastdatatype" ), &m_lastdatatype, 0);
+
+    int bWindAtlas;
+    pConf->Read ( _T ( "WindAtlas" ), &bWindAtlas, 1);
+    m_cbWindAtlas->SetValue(bWindAtlas);
  
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++)
         m_cDataType->Append(tname_from_index[i]);
@@ -126,7 +129,6 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     m_cDataType->SetSelection(m_lastdatatype);
     PopulateUnits(m_lastdatatype);
     ReadDataTypeSettings(m_lastdatatype);
-
 
     wxDateTime dt(1, 1, 1900);
     m_dPStart->SetValue(dt);
@@ -145,6 +147,7 @@ ClimatologyConfigDialog::~ClimatologyConfigDialog()
     pConf->SetPath ( _T ( "/Settings/Climatology" ) );
 
     pConf->Write ( _T ( "lastdatatype" ), m_lastdatatype);
+    pConf->Read ( _T ( "WindAtlas" ), m_cbWindAtlas->GetValue());
 
     m_Settings.Write();
 }

@@ -29,7 +29,6 @@
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
-#include <wx/filepicker.h>
 #include <wx/datectrl.h>
 #include <wx/dateevt.h>
 #include <wx/notebook.h>
@@ -45,7 +44,6 @@ class ClimatologyDialogBase : public wxDialog
 	private:
 	
 	protected:
-		wxCheckBox* m_cbWind;
 		wxTextCtrl* m_tWind;
 		wxTextCtrl* m_tCurrent;
 		wxTextCtrl* m_tPressure;
@@ -62,6 +60,7 @@ class ClimatologyDialogBase : public wxDialog
 	public:
 		wxChoice* m_cMonth;
 		wxSlider* m_sMonth;
+		wxCheckBox* m_cbWind;
 		wxCheckBox* m_cbCurrents;
 		wxCheckBox* m_cbPressure;
 		wxCheckBox* m_cbSeaTemperature;
@@ -93,9 +92,6 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxStaticText* m_staticText6;
 		wxSpinCtrl* m_sNumbersSpacing;
 		wxPanel* m_panel41;
-		wxStaticText* m_staticText7;
-		wxDirPickerCtrl* m_dirWindData;
-		wxCheckBox* m_cbWindNumbers;
 		wxPanel* m_panel2;
 		wxStaticText* m_staticText4;
 		wxStaticText* m_staticText5;
@@ -112,6 +108,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		
 	
 	public:
+		wxCheckBox* m_cbWindAtlas;
 		wxDatePickerCtrl* m_dPStart;
 		wxDatePickerCtrl* m_dPEnd;
 		wxSpinCtrl* m_sMinWindSpeed;

@@ -367,7 +367,7 @@ MySegList *IsoLine::BuildContinuousSegment(void)
 
 
 //---------------------------------------------------------------
-void IsoLine::drawIsoLine(ClimatologyOverlayFactory *pof, wxDC *dc, PlugIn_ViewPort *vp, bool bHiDef)
+void IsoLine::drawIsoLine(wxDC *dc, PlugIn_ViewPort *vp, bool bHiDef)
 {
       int nsegs = trace.size();
       if(nsegs < 1)
@@ -433,7 +433,7 @@ void IsoLine::drawIsoLine(ClimatologyOverlayFactory *pof, wxDC *dc, PlugIn_ViewP
 #endif
                       dc->DrawLine(ab.x, ab.y, cd.x, cd.y);
             } else { /* opengl */
-                pof->DrawGLLine(ab.x, ab.y, cd.x, cd.y, 2);
+                DrawGLLine(ab.x, ab.y, cd.x, cd.y, 2);
             }
         }
     }
@@ -560,8 +560,7 @@ void IsoLine::drawIsoLine(ClimatologyOverlayFactory *pof, wxDC *dc, PlugIn_ViewP
 
 //---------------------------------------------------------------
 
-void IsoLine::drawIsoLineLabels(ClimatologyOverlayFactory *pof, wxDC *dc,
-                                PlugIn_ViewPort *vp, int density, int first,
+void IsoLine::drawIsoLineLabels(wxDC *dc, PlugIn_ViewPort *vp, int density, int first,
                                 wxImage &imageLabel)
 
 {

@@ -110,14 +110,10 @@ class IsoLine
         IsoLine(double val, ClimatologyOverlayFactory &fac, int setting);
         ~IsoLine();
 
-
-        void drawIsoLine(ClimatologyOverlayFactory *pof, wxDC *dc, PlugIn_ViewPort *vp, bool bHiDef);
-
-        void drawIsoLineLabels(ClimatologyOverlayFactory *pof, wxDC *dc,
-                               PlugIn_ViewPort *vp, int density, int first,
+        void drawIsoLine(wxDC *dc, PlugIn_ViewPort *vp, bool bHiDef);
+        void drawIsoLineLabels(wxDC *dc, PlugIn_ViewPort *vp, int density, int first,
                                wxImage &imageLabel);
-
-        int getNbSegments()     {return trace.size();}
+        int getNbSegments() {return trace.size();}
 
         double getValue() {return value;}
     private:

@@ -27,6 +27,44 @@
 #include <list>
 #include <map>
 
+void DrawGLLine( double x1, double y1, double x2, double y2, double width );
+
+class PlugIn_ViewPort;
+
+struct WindData
+{
+    struct WindPolar
+    {
+        WindPolar() : directions(NULL), speeds(NULL) {}
+        ~WindPolar() { delete [] directions; delete [] speeds; }
+        wxUint8 storm, calm, *directions, *speeds;
+
+        double AvgSpeed(int dir_cnt) {
+            if(storm == 255)
+                return NAN;
+            int totald = 0, totals = 0;
+            for(int i=0; i<dir_cnt; i++) {
+                totald += directions[i];
+                totals += speeds[i];
+            }
+            return (double)totals / totald * 3.6 / 1.852; /* knots */
+        }
+    };
+
+    WindData(int lats, int lons, int dirs)
+    : latitudes(lats), longitudes(lons), dir_cnt(dirs), data(new WindPolar[lats*lons]) {}
+
+    double InterpWindSpeed(double lat, double lon);
+    WindPolar &GetPolar(double lat, double lon) {
+        int lati = round(latitudes*(.5+lat/180.0));
+        int loni = round(longitudes*lon/360.0);
+        return data[lati*longitudes + loni];
+    }
+
+    int latitudes, longitudes, dir_cnt;
+    WindPolar *data;
+};
+
 struct ElNinoYear
 {
     double months[12];
@@ -85,7 +123,6 @@ public:
 //    Climatology Overlay Factory Specification
 //----------------------------------------------------------------------------------------------------------
 
-class PlugIn_ViewPort;
 class ClimatologyDialog;
 class wxGLContext;
 
@@ -94,13 +131,12 @@ public:
     ClimatologyOverlayFactory( ClimatologyDialog &dlg );
     ~ClimatologyOverlayFactory();
 
+    void ReadWindData(int month, wxString filename);
     bool ReadCycloneDatabase(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
     bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones);
     bool ReadElNinoYears(wxString filename);
 
     void ClearCachedData();
-
-    void DrawGLLine( double x1, double y1, double x2, double y2, double width );
 
     wxImage &getLabel(double value);
 
@@ -114,9 +150,12 @@ public:
     int m_CurrentMonth;
 
 private:
+    void RenderNumber(wxPoint p, double v);
+
     void RenderIsoBars(int setting, PlugIn_ViewPort &vp);
     void RenderNumbers(int setting, PlugIn_ViewPort &vp);
 
+    void RenderWindAtlas(PlugIn_ViewPort &vp);
     void RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones);
     void RenderCyclones(PlugIn_ViewPort &vp);
 
@@ -135,6 +174,8 @@ private:
     wxGraphicsContext *m_gdc;
 
     std::map < double , wxImage > m_labelCache;
+
+    WindData *m_WindData[13];
 
     wxInt16 m_slp[13][90][180]; /* 12 months + year total and average at 2 degree intervals */
 

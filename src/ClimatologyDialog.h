@@ -63,6 +63,8 @@ public:
     ClimatologyConfigDialog *m_cfgdlg;
 
 private:
+    wxString GetValue(int index);
+
     void OnMonth( wxCommandEvent& event );
     void OnMonth( wxScrollEvent& event );
     void OnUpdate( wxCommandEvent& event );
