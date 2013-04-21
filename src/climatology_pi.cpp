@@ -156,7 +156,7 @@ wxBitmap *climatology_pi::GetPlugInBitmap()
 
 wxString climatology_pi::GetCommonName()
 {
-      return _("CLIMATOLOGY");
+      return _("Climatology");
 }
 
 
@@ -173,8 +173,9 @@ Provides overlay capabilities for history weather data.\n\n\
 Supported CLIMATOLOGY file types include:\n\
 - Average wind directions and speed\n\
 - Percentage of gale and calm conditions\n\
-- Average swell and seastate\n\
-- ITCZ (doldrum) positions\n\
+- Average swell and seastate (not implemented)\n\
+- ITCZ (doldrum) positions (not implemented)\n\
+- Monthly average Sea Level pressure and Sea Temperature\n\
 - Tropical Storm tracks.\
 ");
 
