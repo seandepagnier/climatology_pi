@@ -1,4 +1,15 @@
-/* quick hack to compile all the wind data into wind atlas */
+/* This program takes wind uv input files downloaded from:
+   ftp://eclipse.ncdc.noaa.gov/pub/seawinds/SI/uv/daily/ieee/
+
+   to produce the atlas file (read by the plugin execute)
+   where file1 to filen are the daily files in the month
+   ./program file1 file2 .. filen | > winddata01.gz
+
+   For each month, then all the files for winddata13 to generate
+   the yearly file.
+
+   It would also be possible to use the 6-hourly files
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +18,7 @@
 
 #include "zuFile.h"
 
+/* currently these must be the same (there is a bug) */
 #define INPUT_DEGREE_STEP 4 /* quarter degree map */
 #define OUTPUT_DEGREE_STEP 4 /* must divide input evenly */
 

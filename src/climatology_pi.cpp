@@ -126,7 +126,7 @@ bool climatology_pi::DeInit(void)
     delete m_pOverlayFactory;
     m_pOverlayFactory = NULL;
 
-      return true;
+    return true;
 }
 
 int climatology_pi::GetAPIVersionMajor()

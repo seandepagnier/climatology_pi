@@ -65,6 +65,23 @@ struct WindData
     WindPolar *data;
 };
 
+struct CurrentData
+{
+    CurrentData(int lats, int lons, int mul)
+    : latitudes(lats), longitudes(lons), multiplier(mul)
+        { data[0] = new float[lats*lons], data[1] = new float[lats*lons]; }
+
+    double Speed(int xi, int yi) {
+        return hypot(data[0][xi*longitudes + yi], data[1][xi*longitudes + yi])
+            * 3.6 / 1.852; /* knots */
+    }
+
+    double InterpCurrentSpeed(double lat, double lon);
+
+    int latitudes, longitudes, multiplier;
+    float *data[2];
+};
+
 struct ElNinoYear
 {
     double months[12];
@@ -132,6 +149,7 @@ public:
     ~ClimatologyOverlayFactory();
 
     void ReadWindData(int month, wxString filename);
+    void ReadCurrentData(int month, wxString filename);
     bool ReadCycloneDatabase(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
     bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones);
     bool ReadElNinoYears(wxString filename);
@@ -176,6 +194,7 @@ private:
     std::map < double , wxImage > m_labelCache;
 
     WindData *m_WindData[13];
+    CurrentData *m_CurrentData[13];
 
     wxInt16 m_slp[13][90][180]; /* 12 months + year total and average at 2 degree intervals */
 

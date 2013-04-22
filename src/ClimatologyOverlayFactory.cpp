@@ -73,21 +73,33 @@ ClimatologyOverlay::~ClimatologyOverlay()
 ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     : m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonelist(0)
 {
-    wxProgressDialog progressdialog( _("Climatology"), wxString(), 7, &m_dlg,
-                                     wxPD_CAN_ABORT | wxPD_ELAPSED_TIME | wxPD_REMAINING_TIME);
+    for(int month = 0; month<13; month++) {
+        m_WindData[month] = NULL;
+        m_CurrentData[month] = NULL;
+    }
+
+    wxProgressDialog progressdialog( _("Climatology"), wxString(), 35, &m_dlg,
+                                     wxPD_CAN_ABORT | wxPD_ELAPSED_TIME);
     ClearCachedData();
 
     wxString path = *GetpSharedDataLocation() + _T("plugins/climatology/data/");
 
     /* load wind data */
-    if(!progressdialog.Update(0, _("wind data")))
-        return;
-
-    for(int month = 0; month < 13; month++)
+    for(int month = 0; month < 13; month++) {
+        if(!progressdialog.Update(month, _("wind data")))
+            return;
         ReadWindData(month, path+wxString::Format(_T("wind%02d.gz"), month+1));
+    }
+
+    /* load current data */
+    for(int month = 0; month < 13; month++) {
+        if(!progressdialog.Update(month+13, _("current data")))
+            return;
+        ReadCurrentData(month, path+wxString::Format(_T("current%02d.gz"), month+1));
+    }
 
     /* load sea level pressure data */
-    if(!progressdialog.Update(1, _("sea level pressure data")))
+    if(!progressdialog.Update(26, _("sea level pressure data")))
         return;
 
     wxString slp_path = path + _T("slpcoadsclim5079.nc");
@@ -107,7 +119,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     }
 
     /* load sea temperature data */
-    if(!progressdialog.Update(2, _("sea temperature data")))
+    if(!progressdialog.Update(27, _("sea temperature data")))
         return;
     wxString sst_path = path + _T("sstcoadsclim6079.1deg.nc");
 
@@ -125,28 +137,34 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     }
 
     /* load cyclone tracks */
-    if(!progressdialog.Update(3, _("cyclone data (pacific)")))
+    if(!progressdialog.Update(28, _("cyclone data (east pacific)")))
         return;
     if(!ReadCycloneDatabase(path + _T("tracks.epa"), m_epa))
         m_dlg.m_cfgdlg->m_cbEastPacific->Disable();
+    if(!progressdialog.Update(29, _("cyclone data (west pacific)")))
+        return;
     if(!ReadCycloneDatabase(path + _T("tracks.bwp"), m_bwp))
         m_dlg.m_cfgdlg->m_cbWestPacific->Disable();
+    if(!progressdialog.Update(30, _("cyclone data (south pacific)")))
+        return;
     if(!ReadCycloneData(path + _T("tracks.spa.dat"), m_spa))
         m_dlg.m_cfgdlg->m_cbSouthPacific->Disable();
-    if(!progressdialog.Update(4, _("cyclone data (atlantic)")))
+    if(!progressdialog.Update(31, _("cyclone data (atlantic)")))
         return;
     if(!ReadCycloneDatabase(path + _T("tracks.atl"), m_atl))
         m_dlg.m_cfgdlg->m_cbAtlantic->Disable();
-    if(!progressdialog.Update(5, _("cyclone data (indian)")))
+    if(!progressdialog.Update(32, _("cyclone data (north indian)")))
         return;
     if(!ReadCycloneDatabase(path + _T("tracks.nio"), m_nio))
         m_dlg.m_cfgdlg->m_cbNorthIndian->Disable();
+    if(!progressdialog.Update(33, _("cyclone data (south indian)")))
+        return;
     if(!ReadCycloneDatabase(path + _T("tracks.she"), m_she, true))
         m_dlg.m_cfgdlg->m_cbSouthIndian->Disable();
 
     m_dlg.m_cbCyclones->Enable();
 
-    if(!progressdialog.Update(6, _("el nino years")))
+    if(!progressdialog.Update(34, _("el nino years")))
         return;
     if(!ReadElNinoYears(path + _T("elnino_years.txt"))) {
         m_dlg.m_cfgdlg->m_cbElNino->Disable();
@@ -167,7 +185,6 @@ ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
 
 void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
 {
-    m_WindData[month] = NULL;
     ZUFILE *f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f) {
         wxLogMessage(_("climatology_pi: failed to read file: ") + filename);
@@ -194,6 +211,35 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
             }
         }
     }
+    zu_close(f);
+}
+
+void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
+{
+    ZUFILE *f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
+    if(!f) {
+        wxLogMessage(_("climatology_pi: failed to read file: ") + filename);
+        return;
+    }
+
+    m_dlg.m_cbCurrent->Enable();
+
+    wxUint16 header[3];
+    zu_read(f, header, sizeof header);
+    m_CurrentData[month] = new CurrentData(header[0], header[1], header[2]);
+
+    for(int dim = 0; dim<2; dim++)
+        for(int lati = 0; lati < m_CurrentData[month]->latitudes; lati++)
+            for(int loni = 0; loni < m_CurrentData[month]->longitudes; loni++) {
+                int ind = m_CurrentData[month]->longitudes * lati + loni;
+                wxInt8 v;
+                zu_read(f, &v, 1);
+                if(v == -128)
+                    m_CurrentData[month]->data[dim][ind] = NAN;
+                else
+                    m_CurrentData[month]->data[dim][ind] = (float)v / m_CurrentData[month]->multiplier;
+            }
+
     zu_close(f);
 }
 
@@ -396,7 +442,7 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
 void ClimatologyOverlayFactory::ClearCachedData()
 {
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
-        delete m_Settings.Settings[i].m_pIsobarArray;
+//        delete m_Settings.Settings[i].m_pIsobarArray;
         m_Settings.Settings[i].m_pIsobarArray = NULL;
     }
 }
@@ -455,11 +501,11 @@ ColorMap WindMap[] =
  {25, _T("#0000d0")}, {30, _T("#000000")}};
 
 ColorMap CurrentMap[] =
-{{0,  _T("#d90000")},  {1, _T("#d92a00")},  {2, _T("#d96e00")},  {3, _T("#d9b200")},
- {4,  _T("#d4d404")},  {5, _T("#a6d906")},  {7, _T("#06d9a0")},  {9, _T("#00d9b0")},
- {12, _T("#00d9c0")}, {15, _T("#00aed0")}, {18, _T("#0083e0")}, {21, _T("#0057e0")},
- {24, _T("#0000f0")}, {27, _T("#0400f0")}, {30, _T("#1c00f0")}, {36, _T("#4800f0")},
- {42, _T("#6900f0")}, {48, _T("#a000f0")}, {56, _T("#f000f0")}};
+{{0,   _T("#0000d9")}, {.1,  _T("#002ad9")},  {.2, _T("#006ed9")},  {.3, _T("#00b2d9")},
+ {.4,  _T("#04d4d4")}, {.5,  _T("#06d9a6")},  {.7, _T("#a0d906")},  {.9, _T("#b0d900")},
+ {1.2, _T("#c0d900")}, {1.5, _T("#d0ae00")}, {1.8, _T("#e08300")}, {2.1, _T("#e05700")},
+ {2.4, _T("#f00000")}, {2.7, _T("#f00004")}, {3.0, _T("#f0001c")}, {3.6, _T("#f00048")},
+ {4.2, _T("#f00069")}, {4.8, _T("#f000a0")}, {5.6, _T("#f000f0")}};
 
 ColorMap PressureMap[] =
 {{900,  _T("#283282")}, {980,  _T("#273c8c")}, {990,  _T("#264696")}, {1000,  _T("#2350a0")},
@@ -544,6 +590,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture( ClimatologyOverlay &O, int sett
     double s;
     switch(setting) {
     case ClimatologyOverlaySettings::WIND: s = 2; break;
+    case ClimatologyOverlaySettings::CURRENT: s = 3; break;
     case ClimatologyOverlaySettings::SLP:  s = .5;   break;
     default: s=1;
     }
@@ -791,22 +838,47 @@ double WindData::InterpWindSpeed(double x, double y)
     return      interp_value(xi, x0, x1, v0,  v1 );
 }
 
+double CurrentData::InterpCurrentSpeed(double x, double y)
+{
+    y = positive_degrees(y);
+    double xi = latitudes*(.5 - x/160.0);
+    double yi = longitudes*y/360.0;
+    int h = longitudes;
+
+    if(xi<0) xi+=latitudes;
+
+    int x0 = floor(xi), x1 = x0+1;
+    int y0 = floor(yi), y1 = y0+1;
+    int y1v = y1;
+    if(y1v == h) y1v = 0;
+
+    double v00 = Speed(x0, y0), v01 = Speed(x0, y1);
+    double v10 = Speed(x1, y0), v11 = Speed(x1, y1);
+
+    double v0 = interp_value(yi, y0, y1, v00, v01);
+    double v1 = interp_value(yi, y0, y1, v10, v11);
+    return      interp_value(xi, x0, x1, v0,  v1 );
+}
+
 double ClimatologyOverlayFactory::getValue(int setting, double lat, double lon)
 {
     switch(setting) {
     case ClimatologyOverlaySettings::WIND:
         if(m_WindData[m_CurrentMonth])
             return m_WindData[m_CurrentMonth]->InterpWindSpeed(lat, lon);
-        return NAN;
-    case ClimatologyOverlaySettings::CURRENT: return NAN;
+        break;
+    case ClimatologyOverlaySettings::CURRENT:
+        if(m_CurrentData[m_CurrentMonth])
+            return m_CurrentData[m_CurrentMonth]->InterpCurrentSpeed(lat, lon);
+        break;
     case ClimatologyOverlaySettings::SLP:
         return InterpArray((-lat+90)/2-.5, positive_degrees(lon-1.5)/2,
                            m_slp[m_CurrentMonth][0], 180) * .01f + 1000.0;
     case ClimatologyOverlaySettings::SST:
         return InterpArray((-lat+90)-.5, positive_degrees(lon-.5),
                            m_sst[m_CurrentMonth][0], 360) * .001f + 15.0;
-    default: return 0;
     }
+    return NAN;
 }
 
 double ClimatologyOverlayFactory::GetMin(int setting)
@@ -1181,7 +1253,7 @@ bool ClimatologyOverlayFactory::RenderGLOverlay( wxGLContext *pcontext, PlugIn_V
     for(int overlay = 1; overlay >= 0; overlay--)
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
         if((i == ClimatologyOverlaySettings::WIND    && !m_dlg.m_cbWind->GetValue()) ||
-           (i == ClimatologyOverlaySettings::CURRENT && !m_dlg.m_cbPressure->GetValue()) ||
+           (i == ClimatologyOverlaySettings::CURRENT && !m_dlg.m_cbCurrent->GetValue()) ||
            (i == ClimatologyOverlaySettings::SLP     && !m_dlg.m_cbPressure->GetValue()) ||
            (i == ClimatologyOverlaySettings::SST     && !m_dlg.m_cbSeaTemperature->GetValue()))
             continue;

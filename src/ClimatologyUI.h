@@ -62,7 +62,7 @@ class ClimatologyDialogBase : public wxDialog
 		wxChoice* m_cMonth;
 		wxSlider* m_sMonth;
 		wxCheckBox* m_cbWind;
-		wxCheckBox* m_cbCurrents;
+		wxCheckBox* m_cbCurrent;
 		wxCheckBox* m_cbPressure;
 		wxCheckBox* m_cbSeaTemperature;
 		wxCheckBox* m_cbCyclones;
