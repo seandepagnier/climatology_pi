@@ -53,6 +53,12 @@ struct ClimatologyOverlaySettings
 
         bool m_bNumbers;
         double m_iNumbersSpacing;
+
+        bool m_bDirectionArrows;
+        int m_iDirectionArrowsLengthType, m_iDirectionArrowsWidth;
+        wxColour m_cDirectionArrowsColor;
+        int m_iDirectionArrowsOpacity;
+        int m_iDirectionArrowsSize, m_iDirectionArrowsSpacing;
     } Settings[SETTINGS_COUNT];
 };
 
@@ -76,11 +82,14 @@ private:
     void OnUpdate();
     void OnUpdate( wxCommandEvent& event ) { OnUpdate(); }
     void OnUpdate( wxSpinEvent& event ) { OnUpdate(); }
+    void OnUpdate( wxColourPickerEvent& event ) { OnUpdate(); }
+    void OnUpdate( wxScrollEvent& event ) { OnUpdate(); }
 
-    void OnCycloneConfig();
-    void OnCycloneConfig( wxCommandEvent& event ) { OnCycloneConfig(); }
-    void OnCycloneConfig( wxDateEvent& event ) { OnCycloneConfig(); }
-    void OnCycloneConfig( wxSpinEvent& event ) { OnCycloneConfig(); }
+    void OnConfig();
+    void OnConfig( wxCommandEvent& event ) { OnConfig(); }
+    void OnConfig( wxSpinEvent& event ) { OnConfig(); }
+    void OnConfig( wxScrollEvent& event ) { OnConfig(); }
+    void OnConfig( wxDateEvent& event ) { OnConfig(); }
 
     int m_lastdatatype;
 

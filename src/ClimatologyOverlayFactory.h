@@ -30,6 +30,7 @@
 void DrawGLLine( double x1, double y1, double x2, double y2, double width );
 
 class PlugIn_ViewPort;
+enum Coord {U, V, MAG};
 
 struct WindData
 {
@@ -38,23 +39,13 @@ struct WindData
         WindPolar() : directions(NULL), speeds(NULL) {}
         ~WindPolar() { delete [] directions; delete [] speeds; }
         wxUint8 storm, calm, *directions, *speeds;
-
-        double AvgSpeed(int dir_cnt) {
-            if(storm == 255)
-                return NAN;
-            int totald = 0, totals = 0;
-            for(int i=0; i<dir_cnt; i++) {
-                totald += directions[i];
-                totals += speeds[i];
-            }
-            return (double)totals / totald * 3.6 / 1.852; /* knots */
-        }
+        double Value(enum Coord coord, int dir_cnt);
     };
 
     WindData(int lats, int lons, int dirs)
     : latitudes(lats), longitudes(lons), dir_cnt(dirs), data(new WindPolar[lats*lons]) {}
 
-    double InterpWindSpeed(double lat, double lon);
+    double InterpWind(enum Coord coord, double lat, double lon);
     WindPolar &GetPolar(double lat, double lon) {
         int lati = round(latitudes*(.5+lat/180.0));
         int loni = round(longitudes*lon/360.0);
@@ -70,13 +61,8 @@ struct CurrentData
     CurrentData(int lats, int lons, int mul)
     : latitudes(lats), longitudes(lons), multiplier(mul)
         { data[0] = new float[lats*lons], data[1] = new float[lats*lons]; }
-
-    double Speed(int xi, int yi) {
-        return hypot(data[0][xi*longitudes + yi], data[1][xi*longitudes + yi])
-            * 3.6 / 1.852; /* knots */
-    }
-
-    double InterpCurrentSpeed(double lat, double lon);
+    double Value(enum Coord coord, int xi, int yi);
+    double InterpCurrent(enum Coord coord, double lat, double lon);
 
     int latitudes, longitudes, multiplier;
     float *data[2];
@@ -160,7 +146,8 @@ public:
 
     double GetMin(int setting);
     double GetMax(int setting);
-    double getValue(int setting, double lat, double lon);
+
+    double getValue(enum Coord coord, int setting, double lat, double lon);
 
     bool RenderOverlay( wxDC &dc, PlugIn_ViewPort &vp );
     bool RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPort &vp );
@@ -172,6 +159,7 @@ private:
 
     void RenderIsoBars(int setting, PlugIn_ViewPort &vp);
     void RenderNumbers(int setting, PlugIn_ViewPort &vp);
+    void RenderDirectionArrows(int setting, PlugIn_ViewPort &vp);
 
     void RenderWindAtlas(PlugIn_ViewPort &vp);
     void RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones);

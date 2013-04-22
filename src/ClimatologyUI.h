@@ -26,6 +26,8 @@
 #include <wx/dialog.h>
 #include <wx/stattext.h>
 #include <wx/spinctrl.h>
+#include <wx/radiobut.h>
+#include <wx/clrpicker.h>
 #include <wx/panel.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
@@ -92,7 +94,23 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxCheckBox* m_cbNumbers;
 		wxStaticText* m_staticText6;
 		wxSpinCtrl* m_sNumbersSpacing;
+		wxCheckBox* m_cbDirectionArrowsEnable;
+		wxRadioButton* m_rbDirectionArrowsBarbs;
+		wxRadioButton* m_rbDirectionArrowsLength;
+		wxStaticText* m_staticText7;
+		wxSpinCtrl* m_sDirectionArrowsWidth;
+		wxStaticText* m_staticText8;
+		wxColourPickerCtrl* m_cpDirectionArrows;
+		wxStaticText* m_staticText9;
+		wxSlider* m_sDirectionArrowsOpacity;
+		wxStaticText* m_staticText11;
+		wxSpinCtrl* m_sDirectionArrowsSize;
+		wxStaticText* m_staticText10;
+		wxSpinCtrl* m_sDirectionArrowsSpacing;
 		wxPanel* m_panel41;
+		wxStaticText* m_staticText12;
+		wxStaticText* m_staticText13;
+		wxStaticText* m_staticText14;
 		wxPanel* m_panel2;
 		wxStaticText* m_staticText4;
 		wxStaticText* m_staticText5;
@@ -103,13 +121,19 @@ class ClimatologyConfigDialogBase : public wxDialog
 		virtual void OnDataTypeChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxSpinEvent& event ) { event.Skip(); }
-		virtual void OnCycloneConfig( wxDateEvent& event ) { event.Skip(); }
-		virtual void OnCycloneConfig( wxSpinEvent& event ) { event.Skip(); }
-		virtual void OnCycloneConfig( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnUpdate( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void OnUpdate( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnConfig( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnConfig( wxSpinEvent& event ) { event.Skip(); }
+		virtual void OnConfig( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnConfig( wxDateEvent& event ) { event.Skip(); }
 		
 	
 	public:
-		wxCheckBox* m_cbWindAtlas;
+		wxCheckBox* m_cbWindAtlasEnable;
+		wxSpinCtrl* m_sWindAtlasSize;
+		wxSpinCtrl* m_sWindAtlasSpacing;
+		wxSlider* m_sWindAtlasOpacity;
 		wxDatePickerCtrl* m_dPStart;
 		wxDatePickerCtrl* m_dPEnd;
 		wxSpinCtrl* m_sMinWindSpeed;

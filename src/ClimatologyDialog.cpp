@@ -131,7 +131,7 @@ void  ClimatologyDialog::SetCursorLatLon(double lat, double lon)
 wxString ClimatologyDialog::GetValue(int index)
 {
     return wxString::Format(_T("%.1f"), pPlugIn->GetOverlayFactory()->
-                            getValue(index, m_cursorlat, m_cursorlon));
+                            getValue(MAG, index, m_cursorlat, m_cursorlon));
 }
 
 void ClimatologyDialog::OnMonth( wxCommandEvent& event )

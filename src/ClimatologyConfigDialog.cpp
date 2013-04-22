@@ -80,6 +80,21 @@ void ClimatologyOverlaySettings::Read()
 
         pConf->Read ( Name + _T ( "Numbers" ), &Settings[i].m_bNumbers, i==SST);
         pConf->Read ( Name + _T ( "NumbersSpacing" ), &Settings[i].m_iNumbersSpacing, 50);
+
+        if(i > CURRENT)
+            continue;
+
+        pConf->Read ( Name + _T ( "DirectionArrows" ), &Settings[i].m_bDirectionArrows, i==CURRENT);
+        pConf->Read ( Name + _T ( "DirectionArrowsLengthType" ), &Settings[i].m_iDirectionArrowsLengthType, 1);
+        pConf->Read ( Name + _T ( "DirectionArrowsWidth" ), &Settings[i].m_iDirectionArrowsWidth, 2);
+
+        wxString DirectionArrowsColorStr = Settings[i].m_cDirectionArrowsColor.GetAsString();
+        pConf->Read( _T("DirectionArrowsColor"), &DirectionArrowsColorStr, DirectionArrowsColorStr);
+        Settings[i].m_cDirectionArrowsColor = wxColour(DirectionArrowsColorStr);
+
+        pConf->Read ( Name + _T ( "DirectionArrowsOpacity" ), &Settings[i].m_iDirectionArrowsOpacity, 205);
+        pConf->Read ( Name + _T ( "DirectionArrowsSize" ), &Settings[i].m_iDirectionArrowsSize, 10);
+        pConf->Read ( Name + _T ( "DirectionArrowsSpacing" ), &Settings[i].m_iDirectionArrowsSpacing, 24);
     }
 }
 
@@ -102,6 +117,20 @@ void ClimatologyOverlaySettings::Write()
         pConf->Write ( Name + _T ( "OverlayMap" ), Settings[i].m_bOverlayMap);
         pConf->Write ( Name + _T ( "Numbers" ), Settings[i].m_bNumbers);
         pConf->Write ( Name + _T ( "NumbersSpacing" ), Settings[i].m_iNumbersSpacing);
+
+        if(i > CURRENT)
+            continue;
+
+        pConf->Write ( Name + _T ( "DirectionArrows" ), Settings[i].m_bDirectionArrows);
+        pConf->Write ( Name + _T ( "DirectionArrowsLengthType" ), Settings[i].m_iDirectionArrowsLengthType);
+        pConf->Write ( Name + _T ( "DirectionArrowsWidth" ), Settings[i].m_iDirectionArrowsWidth);
+
+        wxString DirectionArrowsColorStr = Settings[i].m_cDirectionArrowsColor.GetAsString();
+        pConf->Write( _T("DirectionArrowsColor"), DirectionArrowsColorStr);
+
+        pConf->Write ( Name + _T ( "DirectionArrowsOpacity" ), Settings[i].m_iDirectionArrowsOpacity);
+        pConf->Write ( Name + _T ( "DirectionArrowsSize" ), Settings[i].m_iDirectionArrowsSize);
+        pConf->Write ( Name + _T ( "DirectionArrowsSpacing" ), Settings[i].m_iDirectionArrowsSpacing);
     }
 }
 
@@ -121,7 +150,19 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
 
     int bWindAtlas;
     pConf->Read ( _T ( "WindAtlas" ), &bWindAtlas, 1);
-    m_cbWindAtlas->SetValue(bWindAtlas);
+    m_cbWindAtlasEnable->SetValue(bWindAtlas);
+
+    int iWindAtlasSize;
+    pConf->Read ( _T ( "WindAtlasSize" ), &iWindAtlasSize, 100);
+    m_sWindAtlasSize->SetValue(iWindAtlasSize);
+
+    int iWindAtlasSpacing;
+    pConf->Read ( _T ( "WindAtlasSpacing" ), &iWindAtlasSpacing, 100);
+    m_sWindAtlasSpacing->SetValue(iWindAtlasSpacing);
+
+    int iWindAtlasOpacity;
+    pConf->Read ( _T ( "WindAtlasOpacity" ), &iWindAtlasOpacity, 205);
+    m_sWindAtlasOpacity->SetValue(iWindAtlasOpacity);
  
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++)
         m_cDataType->Append(tname_from_index[i]);
@@ -147,7 +188,11 @@ ClimatologyConfigDialog::~ClimatologyConfigDialog()
     pConf->SetPath ( _T ( "/Settings/Climatology" ) );
 
     pConf->Write ( _T ( "lastdatatype" ), m_lastdatatype);
-    pConf->Read ( _T ( "WindAtlas" ), m_cbWindAtlas->GetValue());
+
+    pConf->Write ( _T ( "WindAtlas" ), m_cbWindAtlasEnable->GetValue());
+    pConf->Write ( _T ( "WindAtlasSize" ), m_sWindAtlasSize->GetValue());
+    pConf->Write ( _T ( "WindAtlasSpacing" ), m_sWindAtlasSpacing->GetValue());
+    pConf->Write ( _T ( "WindAtlasOpacity" ), m_sWindAtlasOpacity->GetValue());
 
     m_Settings.Write();
 }
@@ -161,6 +206,17 @@ void ClimatologyConfigDialog::SetDataTypeSettings(int settings)
     odc.m_bOverlayMap = m_cbOverlayMap->GetValue();
     odc.m_bNumbers = m_cbNumbers->GetValue();
     odc.m_iNumbersSpacing = m_sNumbersSpacing->GetValue();
+
+    if(settings > ClimatologyOverlaySettings::CURRENT)
+        return;
+
+    odc.m_bDirectionArrows = m_cbDirectionArrowsEnable->GetValue();
+    odc.m_iDirectionArrowsLengthType = m_rbDirectionArrowsLength->GetValue();
+    odc.m_iDirectionArrowsWidth = m_sDirectionArrowsWidth->GetValue();
+    odc.m_cDirectionArrowsColor = m_cpDirectionArrows->GetColour();
+    odc.m_iDirectionArrowsOpacity = m_sDirectionArrowsOpacity->GetValue();
+    odc.m_iDirectionArrowsSize = m_sDirectionArrowsSize->GetValue();
+    odc.m_iDirectionArrowsSpacing = m_sDirectionArrowsSpacing->GetValue();
 }
 
 void ClimatologyConfigDialog::ReadDataTypeSettings(int settings)
@@ -172,6 +228,27 @@ void ClimatologyConfigDialog::ReadDataTypeSettings(int settings)
     m_cbOverlayMap->SetValue(odc.m_bOverlayMap);
     m_cbNumbers->SetValue(odc.m_bNumbers);
     m_sNumbersSpacing->SetValue(odc.m_iNumbersSpacing);
+
+    bool enable = settings <= ClimatologyOverlaySettings::CURRENT;
+    m_cbDirectionArrowsEnable->Enable(enable);
+    m_rbDirectionArrowsLength->Enable(enable);
+    m_sDirectionArrowsWidth->Enable(enable);
+    m_cpDirectionArrows->Enable(enable);
+    m_sDirectionArrowsOpacity->Enable(enable);
+    m_sDirectionArrowsSize->Enable(enable);
+    m_sDirectionArrowsSpacing->Enable(enable);
+
+    if(!enable)
+        return;
+
+    m_cbDirectionArrowsEnable->SetValue(odc.m_bDirectionArrows);
+    m_rbDirectionArrowsBarbs->SetValue(!odc.m_iDirectionArrowsLengthType);
+    m_rbDirectionArrowsLength->SetValue(odc.m_iDirectionArrowsLengthType);
+    m_sDirectionArrowsWidth->SetValue(odc.m_iDirectionArrowsWidth);
+    m_cpDirectionArrows->SetColour(odc.m_cDirectionArrowsColor);
+    m_sDirectionArrowsOpacity->SetValue(odc.m_iDirectionArrowsOpacity);
+    m_sDirectionArrowsSize->SetValue(odc.m_iDirectionArrowsSize);
+    m_sDirectionArrowsSpacing->SetValue(odc.m_iDirectionArrowsSpacing);
 }
 
 void ClimatologyConfigDialog::PopulateUnits(int settings)
@@ -195,7 +272,7 @@ void ClimatologyConfigDialog::OnUpdate()
     pParent->SetFactoryOptions();
 }
 
-void ClimatologyConfigDialog::OnCycloneConfig()
+void ClimatologyConfigDialog::OnConfig()
 {
     pParent->SetFactoryOptions();
 }
