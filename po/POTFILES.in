@@ -1,0 +1,16 @@
+src/climatology_pi.h
+src/zuFile.cpp
+src/ClimatologyConfigDialog.cpp
+src/ClimatologyUI.h
+src/climatology_pi.cpp
+src/ClimatologyUI.cpp
+src/zuFile.h
+src/ClimatologyConfigDialog.h
+src/ClimatologyDialog.cpp
+src/icons.h
+src/IsoLine.h
+src/ClimatologyDialog.h
+src/ClimatologyOverlayFactory.h
+src/ClimatologyOverlayFactory.cpp
+src/IsoLine.cpp
+src/icons.cpp
