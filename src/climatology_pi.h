@@ -42,6 +42,9 @@
 
 #include "../../../include/ocpn_plugin.h"
 
+#include "../../../include/wx/jsonreader.h"
+#include "../../../include/wx/jsonwriter.h"
+
 #include "ClimatologyDialog.h"
 #include "ClimatologyOverlayFactory.h"
 #include "ClimatologyUI.h"
@@ -75,9 +78,8 @@ public:
 //    The override PlugIn Methods
       bool RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp);
       void SetCursorLatLon(double lat, double lon);
+      void SetPluginMessage(wxString &message_id, wxString &message_body);
       bool RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp);
-
-
       void SetDefaults(void);
 
       int GetToolbarToolCount(void);

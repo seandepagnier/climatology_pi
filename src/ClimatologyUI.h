@@ -51,6 +51,7 @@ class ClimatologyDialogBase : public wxDialog
 		wxTextCtrl* m_tCurrent;
 		wxTextCtrl* m_tPressure;
 		wxTextCtrl* m_tSeaTemperature;
+		wxTextCtrl* m_tCloudCover;
 		wxButton* m_bConfig;
 		
 		// Virtual event handlers, overide them in your derived class
@@ -67,6 +68,7 @@ class ClimatologyDialogBase : public wxDialog
 		wxCheckBox* m_cbCurrent;
 		wxCheckBox* m_cbPressure;
 		wxCheckBox* m_cbSeaTemperature;
+		wxCheckBox* m_cbCloudCover;
 		wxCheckBox* m_cbCyclones;
 		
 		ClimatologyDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Display Control"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxCLOSE_BOX|wxDIALOG_NO_PARENT|wxRESIZE_BORDER|wxSYSTEM_MENU ); 

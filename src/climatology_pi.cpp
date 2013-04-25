@@ -111,7 +111,8 @@ int climatology_pi::Init(void)
            WANTS_TOOLBAR_CALLBACK    |
            INSTALLS_TOOLBAR_TOOL     |
            WANTS_CONFIG              |
-           WANTS_PREFERENCES
+//           WANTS_PREFERENCES         |
+           WANTS_PLUGIN_MESSAGING
             );
 }
 
@@ -255,6 +256,40 @@ void climatology_pi::SetCursorLatLon(double lat, double lon)
 {
     if(m_pClimatologyDialog)
         m_pClimatologyDialog->SetCursorLatLon(lat, lon);
+}
+
+static ClimatologyOverlayFactory *s_pOverlayFactory = NULL;
+static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lon,
+                            double &windspeed, double &winddir)
+{
+    if(!s_pOverlayFactory)
+        return false;
+
+    double u = s_pOverlayFactory->getValue(U, setting, lat, lon);
+    double v = s_pOverlayFactory->getValue(V, setting, lat, lon);
+    if(isnan(u) || isnan(v))
+        return false;
+
+    windspeed = hypot(u, v);
+    winddir = atan2(u, v);
+    return true;
+}
+
+void climatology_pi::SetPluginMessage(wxString &message_id, wxString &message_body)
+{
+    if(message_id == _T("CLIMATOLOGY_REQUEST")) {
+        wxJSONValue v;
+        v[_T("ClimatologyRequestVersion")] = 1;
+
+        char ptr[64];
+        snprintf(ptr, sizeof ptr, "%p", ClimatologyData);
+        v[_T("ClimatologyDataPtr")] = wxString::From8BitData(ptr);
+
+        wxJSONWriter w;
+        wxString out;
+        w.Write(v, out);
+        SendPluginMessage(wxString(_T("GRIB_TIMELINE_RECORD")), out);
+    }
 }
 
 bool climatology_pi::LoadConfig(void)

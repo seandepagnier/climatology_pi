@@ -40,7 +40,7 @@ struct ClimatologyOverlaySettings
     void Read();
     void Write();
 
-    enum SettingsType {WIND, CURRENT, SLP, SST, SETTINGS_COUNT};
+    enum SettingsType {WIND, CURRENT, SLP, SST, CLOUD, SETTINGS_COUNT};
 
     struct OverlayDataSettings {
         int m_Units;

@@ -2,13 +2,8 @@ The data files needed for the program are obtained from various sources.
 
 Wind and current data are compiled by programs in winddata and currentdata respectively.
 
-I can only distribute the elnino_years data in git, the rest must be downloaded separately:
-
-slpcoadsclim5079.nc -- sea level pressure
-www.jisao.washington.edu/data/coads_climatologies/sstcoadsclim5079.nc
-
-sstcoadsclim6079.1deg.nc -- sea surface temperature
-www.jisao.washington.edu/data/coads_climatologies/sstcoadsclim6079.1deg.nc
+I can only distribute the elnino_years data in git, the rest must be downloaded separately,
+see separate folders for generating compiled data
 
 weather.unisys.com has:
        tracks.bio  tracks.epa   tracks.bsh  tracks.nio

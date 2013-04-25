@@ -43,16 +43,18 @@ static const wxString units1_names[] = {_("MilliBars"), _("mmHG"), wxEmptyString
 static const wxString units2_names[] = {_("Meters"), _("Feet"), wxEmptyString};
 static const wxString units3_names[] = {_("Celcius"), _("Farenheight"), wxEmptyString};
 static const wxString units4_names[] = {_("Millimeters"), _("Inches"), wxEmptyString};
-static const wxString units5_names[] = {_("Percentage"), wxEmptyString};
+static const wxString units5_names[] = {_("Oktas"), wxEmptyString};
 static const wxString *unit_names[] = {units0_names, units1_names, units2_names,
                                        units3_names, units4_names, units5_names};
 
 static const wxString name_from_index[] = {_T("Wind"), _T("Current"),
-                                           _T("SeaLevelPressure"), _T("SeaSurfaceTemperature")};
+                                           _T("SeaLevelPressure"), _T("SeaSurfaceTemperature"),
+                                           _T("CloudCover")};
 static const wxString tname_from_index[] = {_("Wind"), _("Current"),
-                                            _("Sea Level Pressure"), _("Sea Surface Temperature")};
+                                            _("Sea Level Pressure"), _("Sea Surface Temperature"),
+                                            _("Cloud Cover")};
 
-static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3};
+static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 5};
 
 void ClimatologyOverlaySettings::Read()
 {
@@ -72,11 +74,11 @@ void ClimatologyOverlaySettings::Read()
         Settings[i].m_Units = (SettingsType)units;
 
         pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars, i==SLP);
-        double defspacing[SETTINGS_COUNT] = {10, 1, 10, 1};
+        double defspacing[SETTINGS_COUNT] = {10, 1, 10, 1, 1};
         pConf->Read ( Name + _T ( "IsoBarSpacing" ), &Settings[i].m_iIsoBarSpacing, defspacing[i]);
         Settings[i].m_pIsobarArray = NULL;
 
-        pConf->Read ( Name + _T ( "OverlayMap" ), &Settings[i].m_bOverlayMap, 0);
+        pConf->Read ( Name + _T ( "OverlayMap" ), &Settings[i].m_bOverlayMap, i==CLOUD);
 
         pConf->Read ( Name + _T ( "Numbers" ), &Settings[i].m_bNumbers, i==SST);
         pConf->Read ( Name + _T ( "NumbersSpacing" ), &Settings[i].m_iNumbersSpacing, 50);

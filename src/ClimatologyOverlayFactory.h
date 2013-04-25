@@ -184,9 +184,9 @@ private:
     WindData *m_WindData[13];
     CurrentData *m_CurrentData[13];
 
-    wxInt16 m_slp[13][90][180]; /* 12 months + year total and average at 2 degree intervals */
-
+    wxInt16 m_slp[13][90][180];  /* 12 months + year total and average at 2 degree intervals */
     wxInt16 m_sst[13][180][360]; /* 12 months + year total and average at 1 degree intervals */
+    wxInt16 m_cld[13][90][180];  /* 12 months + year total and average at 2 degree intervals */
 
     unsigned int m_cyclonelist; /* for opengl display list */
     bool m_cyclonelistok;
