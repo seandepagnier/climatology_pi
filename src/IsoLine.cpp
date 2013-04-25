@@ -630,8 +630,8 @@ void Segment::intersectionAreteGrille(int i,int j, int k,int l, double *x, doubl
                                       double pressure)
 {
     double a,b, pa, pb, dec;
-    pa = fac.getValue(MAG, setting,j,i);
-    pb = fac.getValue(MAG, setting,l,k);
+    pa = fac.getCurValue(MAG, setting,j,i);
+    pb = fac.getCurValue(MAG, setting,l,k);
     // Abscisse
     a = i;
     b = k;
@@ -680,10 +680,10 @@ void IsoLine::extractIsoLine(ClimatologyOverlayFactory &fac, int setting)
 //            x = rec->getX(i);
 //            y = rec->getY(j);
             
-            a = fac.getValue(MAG, setting, j,   i  );
-            b = fac.getValue(MAG, setting, j,   i+1);
-            c = fac.getValue(MAG, setting, j+1, i  );
-            d = fac.getValue(MAG, setting, j+1, i+1);
+            a = fac.getCurValue(MAG, setting, j,   i  );
+            b = fac.getCurValue(MAG, setting, j,   i+1);
+            c = fac.getCurValue(MAG, setting, j+1, i  );
+            d = fac.getCurValue(MAG, setting, j+1, i+1);
 
             // Détermine si 1 ou 2 segments traversent la case ab-cd
             // a  b

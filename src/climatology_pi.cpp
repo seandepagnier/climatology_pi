@@ -118,6 +118,7 @@ int climatology_pi::Init(void)
 
 bool climatology_pi::DeInit(void)
 {
+    SendClimatology(NULL);
     if(m_pClimatologyDialog) {
         m_pClimatologyDialog->Close();
         delete m_pClimatologyDialog;
@@ -204,6 +205,23 @@ void climatology_pi::ShowPreferencesDialog( wxWindow* parent )
     }
 }
 
+static ClimatologyOverlayFactory *s_pOverlayFactory = NULL;
+static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lon,
+                            double &dir, double &speed)
+{
+    if(!s_pOverlayFactory)
+        return false;
+
+    double u = s_pOverlayFactory->getValue(U, setting, lat, lon, &date);
+    double v = s_pOverlayFactory->getValue(V, setting, lat, lon, &date);
+    if(isnan(u) || isnan(v))
+        return false;
+
+    dir = positive_degrees(rad2deg(atan2(u, v)));
+    speed = hypot(u, v) * 3.6 / 1.852; /* knots */
+    return true;
+}
+
 void climatology_pi::OnToolbarToolCallback(int id)
 {
     if(!m_pClimatologyDialog)
@@ -213,6 +231,9 @@ void climatology_pi::OnToolbarToolCallback(int id)
 
         // Create the drawing factory
         m_pOverlayFactory = new ClimatologyOverlayFactory( *m_pClimatologyDialog );
+
+        s_pOverlayFactory = m_pOverlayFactory;
+        SendClimatology(ClimatologyData);
     }
 
     m_pClimatologyDialog->Show(!m_pClimatologyDialog->IsShown());
@@ -258,37 +279,27 @@ void climatology_pi::SetCursorLatLon(double lat, double lon)
         m_pClimatologyDialog->SetCursorLatLon(lat, lon);
 }
 
-static ClimatologyOverlayFactory *s_pOverlayFactory = NULL;
-static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lon,
-                            double &windspeed, double &winddir)
+void climatology_pi::SendClimatology(bool (*ClimatologyData)(int, wxDateTime &, double, double,
+                                                             double &, double &))
 {
-    if(!s_pOverlayFactory)
-        return false;
+    wxJSONValue v;
+    v[_T("ClimatologyVersionMajor")] = GetPlugInVersionMajor();
+    v[_T("ClimatologyVersionMinor")] = GetPlugInVersionMinor();
 
-    double u = s_pOverlayFactory->getValue(U, setting, lat, lon);
-    double v = s_pOverlayFactory->getValue(V, setting, lat, lon);
-    if(isnan(u) || isnan(v))
-        return false;
-
-    windspeed = hypot(u, v);
-    winddir = atan2(u, v);
-    return true;
+    char ptr[64];
+    snprintf(ptr, sizeof ptr, "%p", ClimatologyData);
+    v[_T("ClimatologyDataPtr")] = wxString::From8BitData(ptr);
+    
+    wxJSONWriter w;
+    wxString out;
+    w.Write(v, out);
+    SendPluginMessage(wxString(_T("CLIMATOLOGY")), out);
 }
 
 void climatology_pi::SetPluginMessage(wxString &message_id, wxString &message_body)
 {
     if(message_id == _T("CLIMATOLOGY_REQUEST")) {
-        wxJSONValue v;
-        v[_T("ClimatologyRequestVersion")] = 1;
-
-        char ptr[64];
-        snprintf(ptr, sizeof ptr, "%p", ClimatologyData);
-        v[_T("ClimatologyDataPtr")] = wxString::From8BitData(ptr);
-
-        wxJSONWriter w;
-        wxString out;
-        w.Write(v, out);
-        SendPluginMessage(wxString(_T("GRIB_TIMELINE_RECORD")), out);
+        SendClimatology(ClimatologyData);
     }
 }
 

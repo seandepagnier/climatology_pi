@@ -49,6 +49,19 @@
 #include "ClimatologyOverlayFactory.h"
 #include "ClimatologyUI.h"
 
+static inline double rad2deg(double radians)
+{
+  return 180.0 * radians / M_PI;
+}
+
+static inline double positive_degrees(double degrees)
+{
+    while(degrees < 0)
+        degrees += 360;
+    while(degrees >= 360)
+        degrees -= 360;
+    return degrees;
+}
 
 //----------------------------------------------------------------------------------------------------------
 //    The PlugIn Class Definition
@@ -78,6 +91,8 @@ public:
 //    The override PlugIn Methods
       bool RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp);
       void SetCursorLatLon(double lat, double lon);
+      void SendClimatology(bool (*ClimatologyData)(int, wxDateTime &, double, double,
+                                                   double &, double &));
       void SetPluginMessage(wxString &message_id, wxString &message_body);
       bool RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp);
       void SetDefaults(void);

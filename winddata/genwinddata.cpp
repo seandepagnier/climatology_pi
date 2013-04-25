@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
                     int lono = loni*OUTPUT_DEGREE_STEP/INPUT_DEGREE_STEP;
                     struct windpilot *wp = &map[lato*LONGITUDES*OUTPUT_DEGREE_STEP + lono];
 
-                    int direction = round(atan2(v, -u) * DIRECTIONS / (2.0 * M_PI));
+                    int direction = round(atan2(v, u) * DIRECTIONS / (2.0 * M_PI));
                     if(direction < 0)
                         direction += DIRECTIONS;
 

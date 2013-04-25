@@ -147,7 +147,9 @@ public:
     double GetMin(int setting);
     double GetMax(int setting);
 
-    double getValue(enum Coord coord, int setting, double lat, double lon);
+    double getValue(enum Coord coord, int setting, double lat, double lon, wxDateTime *date);
+    double getCurValue(enum Coord coord, int setting, double lat, double lon)
+    { return getValue(coord, setting, lat, lon, 0); }
 
     bool RenderOverlay( wxDC &dc, PlugIn_ViewPort &vp );
     bool RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPort &vp );

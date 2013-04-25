@@ -44,20 +44,6 @@ double deg2rad(double degrees)
   return M_PI * degrees / 180.0;
 }
 
-double rad2deg(double radians)
-{
-  return 180.0 * radians / M_PI;
-}
-
-double positive_degrees(double degrees)
-{
-    while(degrees < 0)
-        degrees += 360;
-    while(degrees >= 360)
-        degrees -= 360;
-    return degrees;
-}
-
 ClimatologyOverlay::~ClimatologyOverlay()
 {
     if(m_iTexture)
@@ -666,7 +652,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture( ClimatologyOverlay &O, int sett
             lat = 2*rad2deg(atan(exp(lat))) - 90;
             double lon = x/s;
 
-            double v = getValue(MAG, setting, lat, lon);
+            double v = getCurValue(MAG, setting, lat, lon);
             unsigned char r, g, b, a;
             if(isnan(v))
                 a = 0; /* transparent */
@@ -886,8 +872,8 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
 
         double mul = 0;
         switch(coord) {
-        case U: mul =  cos(i*2*M_PI/dir_cnt); break;
-        case V: mul =  sin(i*2*M_PI/dir_cnt); break;
+        case U: mul = cos(i*2*M_PI/dir_cnt); break;
+        case V: mul = sin(i*2*M_PI/dir_cnt); break;
         case MAG: mul = 1;
         }
 
@@ -900,7 +886,7 @@ double CurrentData::Value(enum Coord coord, int xi, int yi)
 {
     double v = NAN;
     switch(coord) {
-    case U: v = -data[0][xi*longitudes + yi]; break;
+    case U: v =  data[0][xi*longitudes + yi]; break;
     case V: v =  data[1][xi*longitudes + yi]; break;
     case MAG: v = hypot(data[0][xi*longitudes + yi], data[1][xi*longitudes + yi]); break;
     }
@@ -951,29 +937,32 @@ double CurrentData::InterpCurrent(enum Coord coord, double x, double y)
     return      interp_value(xi, x0, x1, v0,  v1 );
 }
 
-double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting, double lat, double lon)
+double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
+                                           double lat, double lon, wxDateTime *date)
 {
+    /* todo: interpolate values between months to date */
+    int month = date ? date->GetMonth() : m_CurrentMonth;
     switch(setting) {
     case ClimatologyOverlaySettings::WIND:
-        if(m_WindData[m_CurrentMonth])
-            return m_WindData[m_CurrentMonth]->InterpWind(coord, lat, lon);
+        if(m_WindData[month])
+            return m_WindData[month]->InterpWind(coord, lat, lon);
         break;
     case ClimatologyOverlaySettings::CURRENT:
-        if(m_CurrentData[m_CurrentMonth])
-            return m_CurrentData[m_CurrentMonth]->InterpCurrent(coord, lat, lon);
+        if(m_CurrentData[month])
+            return m_CurrentData[month]->InterpCurrent(coord, lat, lon);
         break;
     case ClimatologyOverlaySettings::SLP:
         if(coord == MAG)
             return InterpArray((-lat+90)/2-.5, positive_degrees(lon-1.5)/2,
-                               m_slp[m_CurrentMonth][0], 180) * .01f + 1000.0;
+                               m_slp[month][0], 180) * .01f + 1000.0;
     case ClimatologyOverlaySettings::SST:
         if(coord == MAG)
             return InterpArray((-lat+90)-.5, positive_degrees(lon-.5),
-                               m_sst[m_CurrentMonth][0], 360) * .001f + 15.0;
+                               m_sst[month][0], 360) * .001f + 15.0;
     case ClimatologyOverlaySettings::CLOUD:
         if(coord == MAG)
             return InterpArray((-lat+90)/2-.5, positive_degrees(lon-1.5)/2,
-                               m_cld[m_CurrentMonth][0], 180) * .001f;
+                               m_cld[month][0], 180) * .001f;
     }
     return NAN;
 }
@@ -1008,7 +997,6 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
         return;
 
     ClimatologyOverlay &O = m_pOverlay[m_CurrentMonth][setting];
-
     if( !m_pdc )
     {
         if( !O.m_iTexture )
@@ -1123,7 +1111,7 @@ void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)
             double lat, lon;
             GetCanvasLLPix( &vp, p, &lat, &lon);
             glColor4f(0, 0, 0, 1);
-            RenderNumber(p, getValue(MAG, setting, lat, lon));
+            RenderNumber(p, getCurValue(MAG, setting, lat, lon));
         }
 }
 
@@ -1161,7 +1149,7 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
     glColor4ub(color.Red(), color.Green(), color.Blue(), opacity);
     for(double lat = round(vp.lat_min/step)*step-1; lat <= vp.lat_max+1; lat+=step)
         for(double lon = round(vp.lon_min/step)*step-1; lon <= vp.lon_max+1; lon+=step) {
-            double u = getValue(U, setting, lat, lon), v = getValue(V, setting, lat, lon);
+            double u = getCurValue(U, setting, lat, lon), v = getCurValue(V, setting, lat, lon);
             double mag = hypot(u, v);
 
             double cstep, minv;
@@ -1180,7 +1168,7 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
             else if(mag < minv)
                 continue;
 
-            double x = size*u, y = size*v;
+            double x = -size*u, y = size*v;
             wxPoint p;
             GetCanvasPixLL( &vp, &p, lat, lon );
             DrawGLLine(p.x+x, p.y+y, p.x-x, p.y-y, width);

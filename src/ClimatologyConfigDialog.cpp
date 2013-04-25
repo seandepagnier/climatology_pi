@@ -91,7 +91,7 @@ void ClimatologyOverlaySettings::Read()
         pConf->Read ( Name + _T ( "DirectionArrowsWidth" ), &Settings[i].m_iDirectionArrowsWidth, 2);
 
         wxString DirectionArrowsColorStr = Settings[i].m_cDirectionArrowsColor.GetAsString();
-        pConf->Read( _T("DirectionArrowsColor"), &DirectionArrowsColorStr, DirectionArrowsColorStr);
+        pConf->Read(Name + _T("DirectionArrowsColor"), &DirectionArrowsColorStr, DirectionArrowsColorStr);
         Settings[i].m_cDirectionArrowsColor = wxColour(DirectionArrowsColorStr);
 
         pConf->Read ( Name + _T ( "DirectionArrowsOpacity" ), &Settings[i].m_iDirectionArrowsOpacity, 205);
@@ -128,7 +128,7 @@ void ClimatologyOverlaySettings::Write()
         pConf->Write ( Name + _T ( "DirectionArrowsWidth" ), Settings[i].m_iDirectionArrowsWidth);
 
         wxString DirectionArrowsColorStr = Settings[i].m_cDirectionArrowsColor.GetAsString();
-        pConf->Write( _T("DirectionArrowsColor"), DirectionArrowsColorStr);
+        pConf->Write( Name + _T("DirectionArrowsColor"), DirectionArrowsColorStr);
 
         pConf->Write ( Name + _T ( "DirectionArrowsOpacity" ), Settings[i].m_iDirectionArrowsOpacity);
         pConf->Write ( Name + _T ( "DirectionArrowsSize" ), Settings[i].m_iDirectionArrowsSize);
