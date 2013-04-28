@@ -1,11 +1,5 @@
-The data files needed for the program are obtained from various sources.
-
-Wind and current data are compiled by programs in winddata and currentdata respectively.
+The data files needed for the program are obtained from various sources, and compiled
+into smaller binary files which can be compressed to reduce size still.
 
 I can only distribute the elnino_years data in git, the rest must be downloaded separately,
-see separate folders for generating compiled data
-
-weather.unisys.com has:
-       tracks.bio  tracks.epa   tracks.bsh  tracks.nio
-       tracks.atl tracks.bwp  tracks.she 
-       tracks.spa.dat -- is concatination of all the files in that folder
+see gendata folder

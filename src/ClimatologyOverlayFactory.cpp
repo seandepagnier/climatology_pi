@@ -85,7 +85,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     /* load sea level pressure and sea surface temperature */
     if(!progressdialog.Update(26, _("sea level presure")))
         return;
-    wxString slp_path = path + _T("slp.gz");
+    wxString slp_path = path + _T("sealevelpressure");
     f = zu_open(slp_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f)
         wxLogMessage(climatology_pi + _("failed to read file: ") + slp_path);
@@ -116,7 +116,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(27, _("sea surface tempertature")))
         return;
-    wxString sst_path = path + _T("sst.gz");
+    wxString sst_path = path + _T("seasurfacetemperature");
     f = zu_open(sst_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f)
         wxLogMessage(climatology_pi + _("failed to read file: ") + sst_path);
@@ -149,7 +149,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(28, _("cloud cover")))
         return;
-    wxString cld_path = path + _T("cld.gz");
+    wxString cld_path = path + _T("cloud");
     f = zu_open(cld_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f)
         wxLogMessage(climatology_pi + _("failed to read file: ") + cld_path);
@@ -183,27 +183,31 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     /* load cyclone tracks */
     if(!progressdialog.Update(29, _("cyclone (east pacific)")))
         return;
-    if(!ReadCycloneDatabase(path + _T("tracks.epa"), m_epa))
+    if(!ReadCycloneData(path + _T("cyclone-epa"), m_epa))
         m_dlg.m_cfgdlg->m_cbEastPacific->Disable();
+
     if(!progressdialog.Update(30, _("cyclone (west pacific)")))
         return;
-    if(!ReadCycloneDatabase(path + _T("tracks.bwp"), m_bwp))
+    if(!ReadCycloneData(path + _T("cyclone-bwp"), m_bwp))
         m_dlg.m_cfgdlg->m_cbWestPacific->Disable();
+
     if(!progressdialog.Update(31, _("cyclone (south pacific)")))
         return;
-    if(!ReadCycloneData(path + _T("tracks.spa.dat"), m_spa))
+    if(!ReadCycloneData(path + _T("cyclone-spa"), m_spa, true))
         m_dlg.m_cfgdlg->m_cbSouthPacific->Disable();
+
     if(!progressdialog.Update(32, _("cyclone (atlantic)")))
         return;
-    if(!ReadCycloneDatabase(path + _T("tracks.atl"), m_atl))
+    if(!ReadCycloneData(path + _T("cyclone-atl"), m_atl))
         m_dlg.m_cfgdlg->m_cbAtlantic->Disable();
     if(!progressdialog.Update(33, _("cyclone (north indian)")))
         return;
-    if(!ReadCycloneDatabase(path + _T("tracks.nio"), m_nio))
+    if(!ReadCycloneData(path + _T("cyclone-nio"), m_nio))
         m_dlg.m_cfgdlg->m_cbNorthIndian->Disable();
+
     if(!progressdialog.Update(34, _("cyclone (south indian)")))
         return;
-    if(!ReadCycloneDatabase(path + _T("tracks.she"), m_she, true))
+    if(!ReadCycloneData(path + _T("cyclone-she"), m_she, true))
         m_dlg.m_cfgdlg->m_cbSouthIndian->Disable();
 
     m_dlg.m_cbCyclones->Enable();
@@ -283,11 +287,11 @@ void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
                 else
                     m_CurrentData[month]->data[dim][ind] = (float)v / m_CurrentData[month]->multiplier;
             }
+
     zu_close(f);
 }
 
-bool ClimatologyOverlayFactory::ReadCycloneDatabase(
-    wxString filename, std::list<Cyclone*> &cyclones, bool south)
+bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south)
 {
     FILE *f = fopen(filename.mb_str(), "r");
     if (!f) {
@@ -295,153 +299,58 @@ bool ClimatologyOverlayFactory::ReadCycloneDatabase(
         return false;
     }
 
-    char line[128];
-    while(fgets(line, sizeof line, f)) {
-        char *year  = line+12; line[16] = 0;
-        char *days  = line+19; line[21] = 0;
-//        char *synum = line+22; line[24] = 0; /* cyclone this year */
-//        char *snum  = line+30; line[34] = 0; /* cyclone number in total */
-//        char *sname = line+35; line[46] = 0;
-        
-        long lyear = strtol(year, 0, 10);
-        long ldays = strtol(days, 0, 10);
-
+    uint16_t lyear, llastmonth;
+    while(fread(&lyear, sizeof lyear, 1, f)==1) {
         Cyclone *cyclone = new Cyclone;
+        llastmonth = 0;
+        for(;;) {
+            char state;
+            if(fread(&state, sizeof state, 1, f) != 1 || state == -128)
+                break;
 
-        /* daily */
-        for(int i=0; i<ldays; i++) {
-            if(!fgets(line, sizeof line, f)) {
-                wxLogMessage(climatology_pi + _("cyclone text file ended before it should"));
-                fclose(f);
-                return false;
+            CycloneState::State cyclonestate;
+            switch(state) {
+            case '*': cyclonestate = CycloneState::TROPICAL; break;
+            case 'S': cyclonestate = CycloneState::SUBTROPICAL; break;
+            case 'E': cyclonestate = CycloneState::EXTRATROPICAL; break;
+            case 'W': cyclonestate = CycloneState::WAVE; break;
+            case 'L': cyclonestate = CycloneState::REMANENT; break;
+            default: cyclonestate = CycloneState::UNKNOWN; break;
             }
 
-            char month[3] = {line[6], line[7], 0};
-            char day[3] =   {line[9], line[10], 0};
+            char lday, lmonth;
+            if(fread(&lday, sizeof lday, 1, f) != 1 ||
+               fread(&lmonth, sizeof lmonth, 1, f) != 1)
+                break;
 
-            int lmonth = strtol(month, 0, 10);
-            int lday = strtol(day, 0, 10);
+            if(lmonth < llastmonth)
+                lyear++;
+            llastmonth = lmonth;
 
-            char *s = line + 11;
-            for(int h = 0; h<4; h++) {
-                char state = s[0];
-                char lat[5] = {s[1], s[2], '.', s[3], 0};
-                char lon[6] = {s[4], s[5], s[6], '.', s[7], 0};
-                char *wk = s+9; s[12] = 0;
-                char press[5] = {s[13], s[14], s[15], s[15], 0};
+            wxDateTime datetime;
+            datetime.SetDay(lday/4);
+            datetime.SetMonth((wxDateTime::Month)(lmonth-1));
+            datetime.SetYear(lyear);
+            datetime.SetHour((lday%4)*6);
 
-                CycloneState::State cyclonestate;
-                switch(state) {
-                case '*': cyclonestate = CycloneState::TROPICAL; break;
-                case 'S': cyclonestate = CycloneState::SUBTROPICAL; break;
-                case 'E': cyclonestate = CycloneState::EXTRATROPICAL; break;
-                case 'W': cyclonestate = CycloneState::WAVE; break;
-                case 'L': cyclonestate = CycloneState::REMANENT; break;
-                default: cyclonestate = CycloneState::UNKNOWN; break;
-                }
+            wxInt16 lat, lon;
+            if(fread(&lat, sizeof lat, 1, f) != 1 ||
+               fread(&lon, sizeof lon, 1, f) != 1)
+                break;
 
-                double dlat = (south ? -1 : 1) * strtod(lat, 0), dlon = -strtod(lon, 0);
-                if(dlat || dlon) {
-                    wxDateTime datetime;
-                    datetime.SetDay(lday);
-                    datetime.SetMonth((wxDateTime::Month)(lmonth-1));
-                    datetime.SetYear(lyear);
-                    datetime.SetHour(h*6);
-                    cyclone->states.push_back
-                        (new CycloneState(cyclonestate, datetime,
-                                        dlat, dlon, strtod(wk, 0), strtod(press, 0)));
-                }
-                s += 17;
-            }
+            wxUint8 wk;
+            wxUint16 press;
+            if(fread(&wk, sizeof wk, 1, f) != 1 ||
+               fread(&press, sizeof press, 1, f) != 1)
+                break;
+
+            cyclone->states.push_back
+                (new CycloneState(cyclonestate, datetime,
+                                  (south ? -1 : 1) * (double)lat/10, (double)lon/10, wk, press));
         }
-
-        /* trailer */
-        if(!fgets(line, sizeof line, f)) {
-            wxLogMessage(climatology_pi + _T("cyclone text file ended before it should"));
-            fclose(f);
-            return false;
-        }
-
-        if(line[6] == 'H' && line[7] == 'R')
-            cyclone->type = Cyclone::HURRICANE;
-        else
-        if(line[6] == 'T' && line[7] == 'S')
-            cyclone->type = Cyclone::TROPICAL_CYCLONE;
-        else
-        if(line[6] == 'S' && line[7] == 'S')
-            cyclone->type = Cyclone::SUBTROPICAL_CYCLONE;
-        else
-            cyclone->type = Cyclone::UNKNOWN;
-        
         cyclones.push_back(cyclone);
     }
 
-    fclose(f);
-    return true;
-}
-
-bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones)
-{
-    FILE *f = fopen(filename.mb_str(), "r");
-    if (!f) {
-        wxLogMessage(climatology_pi + _("failed to open file: ") + filename);
-        return false;
-    }
-
-    char line[1024];
-    int year;
-    wxDateTime datetime;
-    Cyclone *cyclone = NULL;
-    int header = 0;
-    while(fgets(line, sizeof line, f)) {
-        if(header) {
-            header--;
-        } else
-        if(!strncmp(line, "Date", 4)) {
-            wxString s = wxString::FromUTF8(line+6);
-            char *saveptr;
-            strtok_r(line, " ", &saveptr);
-            strtok_r(0, " ", &saveptr);
-            strtok_r(0, " ", &saveptr);
-            year = strtol(strtok_r(0, " ", &saveptr), 0, 10);
-            datetime.SetMonth((wxDateTime::Month)0);
-
-            if(cyclone)
-                cyclones.push_back(cyclone);
-            cyclone = new Cyclone;
-            header = 2;
-        } else if(cyclone) {
-            char *saveptr;
-            strtok_r(line, " ", &saveptr);
-            double lat = strtod(strtok_r(0, " ", &saveptr), 0);
-            double lon = strtod(strtok_r(0, " ", &saveptr), 0);
-            int month = strtol(strtok_r(0, "/", &saveptr), 0, 10);
-            int day = strtol(strtok_r(0, "/", &saveptr), 0, 10);
-            int hour = strtol(strtok_r(0, " ", &saveptr), 0, 10);
-            double wind = strtod(strtok_r(0, " ", &saveptr), 0);
-            double pressure = strtod(strtok_r(0, " ", &saveptr), 0);
-            char *stat = strtok_r(0, "\n", &saveptr);
-
-            if(month < datetime.GetMonth())
-                year++;
-
-            datetime.SetYear(year);
-            datetime.SetMonth((wxDateTime::Month)(month-1));
-            datetime.SetDay(day);
-            datetime.SetHour(hour);
-
-            CycloneState::State s;
-            if(!strncmp(stat, "TROPICAL DEPRESSION", 19))
-                s = CycloneState::REMANENT;
-            else
-                s = CycloneState::TROPICAL;
-
-            cyclone->states.push_back(new CycloneState(s, datetime, lat, lon, wind, pressure));
-        }
-    }
-
-    if(cyclone)
-        cyclones.push_back(cyclone);
     fclose(f);
     return true;
 }
@@ -640,12 +549,28 @@ bool ClimatologyOverlayFactory::CreateGLTexture( ClimatologyOverlay &O, int sett
     default: s=1;
     }
 
+    wxProgressDialog *progressdialog = NULL;
+    wxDateTime start = wxDateTime::Now();
+
     int width = s*360+1;
     int height = s*360;
 
     unsigned char *data = new unsigned char[width*height*4];
 
     for(int x = 0; x < width; x++) {
+        if(x % 50 == 0) {
+            if(progressdialog)
+                progressdialog->Update(x);
+            else {
+                wxDateTime now = wxDateTime::Now();
+                if((now-start).GetSeconds() > 1 && x < width/2) {
+                    progressdialog = new wxProgressDialog(
+                        _("Building Overlay map"), _("Climatology"), width+1, &m_dlg,
+                        wxPD_SMOOTH | wxPD_ELAPSED_TIME | wxPD_REMAINING_TIME);
+                }
+            }
+        }
+
         for(int y = 0; y < height; y++) {
             /* put in mercator coordinates */
             double lat = M_PI*(2.0*y/height-1);
@@ -671,6 +596,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture( ClimatologyOverlay &O, int sett
             data[doff + 3] = a;
         }
     }
+    delete progressdialog;
 
     GLuint texture;
     glGenTextures(1, &texture);

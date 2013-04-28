@@ -89,14 +89,7 @@ public:
 class Cyclone
 {
 public:
-    Cyclone() { }
-
-//    int stormindex, stormindex_year;
-//    wxString name;
-
     std::list<CycloneState*> states;
-
-    enum CycloneType {HURRICANE, TROPICAL_CYCLONE, SUBTROPICAL_CYCLONE, UNKNOWN} type;
 };
 
 //----------------------------------------------------------------------------------------------------------
@@ -136,8 +129,7 @@ public:
 
     void ReadWindData(int month, wxString filename);
     void ReadCurrentData(int month, wxString filename);
-    bool ReadCycloneDatabase(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
-    bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones);
+    bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
     bool ReadElNinoYears(wxString filename);
 
     void ClearCachedData();
