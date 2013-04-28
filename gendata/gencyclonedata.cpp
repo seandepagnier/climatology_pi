@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
         fwrite(&lyear, sizeof lyear, 1, stdout);
 
         /* daily */
+        char state;
         for(int i=0; i<ldays; i++) {
             if(!fgets(line, sizeof line, f)) {
                 fprintf(stderr, "cyclone text file ended before it should");
@@ -45,10 +46,10 @@ int main(int argc, char *argv[])
             char month[3] = {line[6], line[7], 0};
             char day[3] =   {line[9], line[10], 0};
 
-            int lmonth = strtol(month, 0, 10);
-            int lday = strtol(day, 0, 10);
+            char lmonth = strtol(month, 0, 10);
+            char lday = strtol(day, 0, 10);
 
-            char *s = line + 11, state;
+            char *s = line + 11;
             for(int h = 0; h<4; h++) {
                 state = s[0];
                 char lat[5] = {s[1], s[2], s[3], 0};
@@ -73,10 +74,9 @@ int main(int argc, char *argv[])
                 }
                 s += 17;
             }
-
-            state = -128;
-            fwrite(&state, sizeof state, 1, stdout);
         }
+        state = -128;
+        fwrite(&state, sizeof state, 1, stdout);
 
         /* trailer */
         if(!fgets(line, sizeof line, f)) {

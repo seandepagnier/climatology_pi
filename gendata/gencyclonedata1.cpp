@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
         } else {
             char *saveptr;
             strtok_r(line, " ", &saveptr);
-            int lat = 10*strtod(strtok_r(0, " ", &saveptr), 0);
-            int lon = 10*strtod(strtok_r(0, " ", &saveptr), 0);
+            int16_t lat = 10*strtod(strtok_r(0, " ", &saveptr), 0);
+            int16_t lon = 10*strtod(strtok_r(0, " ", &saveptr), 0);
             char month = strtol(strtok_r(0, "/", &saveptr), 0, 10);
             long day = strtol(strtok_r(0, "/", &saveptr), 0, 10);
             long hour = strtol(strtok_r(0, " ", &saveptr), 0, 10);

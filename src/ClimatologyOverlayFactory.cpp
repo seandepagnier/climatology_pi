@@ -193,7 +193,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(31, _("cyclone (south pacific)")))
         return;
-    if(!ReadCycloneData(path + _T("cyclone-spa"), m_spa, true))
+    if(!ReadCycloneData(path + _T("cyclone-spa"), m_spa))
         m_dlg.m_cfgdlg->m_cbSouthPacific->Disable();
 
     if(!progressdialog.Update(32, _("cyclone (atlantic)")))
@@ -221,7 +221,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     }
 
     wxDateTime datetime;
-    datetime.SetYear(1980);
+    datetime.SetYear(1985);
     m_dlg.m_cfgdlg->m_dPStart->SetValue(datetime);
 }
 
