@@ -69,6 +69,9 @@
 #define isnan _isnan
 #define isinf(x) (!_finite(x) && !_isnan(x))
 
+inline double trunc(double d){ return (d>0) ? floor(d) : ceil(d) ; }
+inline double round(double n) { return n < 0.0 ? ceil(n - 0.5) : floor(n + 0.5); }
+
 #endif
 
 static inline double rad2deg(double radians)

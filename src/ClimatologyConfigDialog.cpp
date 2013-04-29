@@ -150,7 +150,7 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     pConf->SetPath ( _T ( "/Settings/Climatology" ) );
     pConf->Read ( _T ( "lastdatatype" ), &m_lastdatatype, 0);
 
-    int bWindAtlas;
+    bool bWindAtlas;
     pConf->Read ( _T ( "WindAtlas" ), &bWindAtlas, 1);
     m_cbWindAtlasEnable->SetValue(bWindAtlas);
 
@@ -244,8 +244,8 @@ void ClimatologyConfigDialog::ReadDataTypeSettings(int settings)
         return;
 
     m_cbDirectionArrowsEnable->SetValue(odc.m_bDirectionArrows);
-    m_rbDirectionArrowsBarbs->SetValue(!odc.m_iDirectionArrowsLengthType);
-    m_rbDirectionArrowsLength->SetValue(odc.m_iDirectionArrowsLengthType);
+    m_rbDirectionArrowsBarbs->SetValue(odc.m_iDirectionArrowsLengthType==0);
+    m_rbDirectionArrowsLength->SetValue(odc.m_iDirectionArrowsLengthType==1);
     m_sDirectionArrowsWidth->SetValue(odc.m_iDirectionArrowsWidth);
     m_cpDirectionArrows->SetColour(odc.m_cDirectionArrowsColor);
     m_sDirectionArrowsOpacity->SetValue(odc.m_iDirectionArrowsOpacity);
