@@ -45,10 +45,6 @@
 #include "../../../include/wx/jsonreader.h"
 #include "../../../include/wx/jsonwriter.h"
 
-#include "ClimatologyDialog.h"
-#include "ClimatologyOverlayFactory.h"
-#include "ClimatologyUI.h"
-
 #ifdef __MSVC__
 #include <float.h>
 #include <iostream>
@@ -87,6 +83,10 @@ static inline double positive_degrees(double degrees)
         degrees -= 360;
     return degrees;
 }
+
+#include "ClimatologyDialog.h"
+#include "ClimatologyOverlayFactory.h"
+#include "ClimatologyUI.h"
 
 //----------------------------------------------------------------------------------------------------------
 //    The PlugIn Class Definition

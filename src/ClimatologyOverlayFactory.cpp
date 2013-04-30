@@ -299,7 +299,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
         return false;
     }
 
-    uint16_t lyear, llastmonth;
+    wxUint16 lyear, llastmonth;
     while(fread(&lyear, sizeof lyear, 1, f)==1) {
         Cyclone *cyclone = new Cyclone;
         llastmonth = 0;
