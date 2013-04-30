@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 
         /* trailer */
         if(!fgets(line, sizeof line, f)) {
-            fprintf(stderr, "cyclone text file ended before it should");
+            fprintf(stderr, "cyclone text file ended before it should\n");
             break;
         }
     }

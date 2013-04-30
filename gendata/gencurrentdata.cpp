@@ -48,12 +48,12 @@ int main(int argc, char *argv[])
     memset(vtotal, 0, sizeof vtotal);
 
     for(int i=1; i<argc; i++) {
-        fprintf(stderr, "reading file: %s\n", argv[i]);
         NcFile f(argv[i], NcFile::ReadOnly);
         if(!f.is_valid()) {
-            fprintf(stderr, "failed reading file: %s\n", argv[i]);
-            return 1;
+            fprintf(stderr, "failed reading file: %s, skipping\n", argv[i]);
+            continue;
         }
+        fprintf(stderr, "reading file: %s\n", argv[i]);
 
         NcVar* udata = f.get_var("u");
         float u_data[LATITUDES*LONGITUDES];

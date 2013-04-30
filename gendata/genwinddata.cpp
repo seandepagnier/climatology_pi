@@ -18,9 +18,8 @@
 
 #include "zuFile.h"
 
-/* currently these must be the same (there is a bug) */
 #define INPUT_DEGREE_STEP 4 /* quarter degree map */
-#define OUTPUT_DEGREE_STEP 4 /* must divide input evenly */
+#define OUTPUT_DEGREE_STEP 1 /* must divide input evenly (1, 2 or 4) */
 
 #define LATITUDES 180
 #define LONGITUDES 360

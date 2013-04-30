@@ -450,7 +450,8 @@ ColorMap WindMap[] =
  {10, _T("#00d900")}, {11, _T("#2ad900")}, {12, _T("#6ed900")}, {13, _T("#b2d900")},
  {14, _T("#d4d400")}, {15, _T("#d9a600")}, {16, _T("#d90000")}, {17, _T("#d90040")},
  {18, _T("#d90060")}, {19, _T("#ae0080")}, {20, _T("#8300a0")}, {21, _T("#5700c0")},
- {25, _T("#0000d0")}, {30, _T("#000000")}};
+ {25, _T("#0000d0")}, {30, _T("#0000f0")}, {35, _T("#00a0ff")}, {40, _T("#a0a0ff")},
+ {50, _T("#ffffff")}};
 
 ColorMap CurrentMap[] =
 {{0,   _T("#0000d9")}, {.1,  _T("#002ad9")},  {.2, _T("#006ed9")},  {.3, _T("#00b2d9")},
@@ -542,7 +543,9 @@ bool ClimatologyOverlayFactory::CreateGLTexture( ClimatologyOverlay &O, int sett
 {
     double s;
     switch(setting) {
-    case ClimatologyOverlaySettings::WIND:    s = 2;  break;
+    case ClimatologyOverlaySettings::WIND:   
+        s = (m_WindData[m_CurrentMonth] && m_WindData[m_CurrentMonth]->longitudes > 360) ? 2 : 1;
+        break;
     case ClimatologyOverlaySettings::CURRENT: s = 3;  break;
     case ClimatologyOverlaySettings::SLP:     s = .5; break;
     case ClimatologyOverlaySettings::CLOUD:   s = .5; break;
@@ -821,12 +824,12 @@ double CurrentData::Value(enum Coord coord, int xi, int yi)
 
 double WindData::InterpWind(enum Coord coord, double x, double y)
 {
-    y = positive_degrees(y);
-    double xi = latitudes*(.5 + (x-.25)/180.0);
+    y = positive_degrees(y - 135.0/longitudes + .25);
+    double xi = latitudes*(.5 - (90.0/latitudes - x)/180.0);
     double yi = longitudes*y/360.0;
     int h = longitudes, d = dir_cnt;
 
-    if(xi<0) xi+=latitudes;
+    if(yi<0) yi+=h;
 
     int x0 = floor(xi), x1 = x0+1;
     int y0 = floor(yi), y1 = y0+1;

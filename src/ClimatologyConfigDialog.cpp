@@ -91,12 +91,19 @@ void ClimatologyOverlaySettings::Read()
         pConf->Read ( Name + _T ( "DirectionArrowsWidth" ), &Settings[i].m_iDirectionArrowsWidth, 2);
 
         wxString DirectionArrowsColorStr = Settings[i].m_cDirectionArrowsColor.GetAsString();
+        wxString defarrowcolor[CURRENT+1] = {_T("#0022ff"), _T("#c51612")};
         pConf->Read(Name + _T("DirectionArrowsColor"), &DirectionArrowsColorStr, DirectionArrowsColorStr);
         Settings[i].m_cDirectionArrowsColor = wxColour(DirectionArrowsColorStr);
 
         pConf->Read ( Name + _T ( "DirectionArrowsOpacity" ), &Settings[i].m_iDirectionArrowsOpacity, 205);
-        pConf->Read ( Name + _T ( "DirectionArrowsSize" ), &Settings[i].m_iDirectionArrowsSize, 10);
-        pConf->Read ( Name + _T ( "DirectionArrowsSpacing" ), &Settings[i].m_iDirectionArrowsSpacing, 24);
+
+        double defarrowsize[CURRENT+1] = {10, 7};
+        pConf->Read ( Name + _T ( "DirectionArrowsSize" ), &Settings[i].m_iDirectionArrowsSize,
+                      defarrowsize[i]);
+
+        double defarrowspacing[CURRENT+1] = {24, 18};
+        pConf->Read ( Name + _T ( "DirectionArrowsSpacing" ), &Settings[i].m_iDirectionArrowsSpacing,
+                      defarrowspacing[i]);
     }
 }
 
