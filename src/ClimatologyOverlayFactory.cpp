@@ -1248,10 +1248,10 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
                 totald += polar.directions[i];
             
             if(polar.storm*2 > polar.calm) {
-                glColor3f(1, 0, 0);
+                glColor3d(1, 0, 0);
                 RenderNumber(p, polar.storm);
             } else if(polar.calm > 0) {
-                glColor3f(0, 0, .7);
+                glColor3d(0, 0, .7);
                 RenderNumber(p, polar.calm);
             }
             
