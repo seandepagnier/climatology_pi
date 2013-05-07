@@ -301,6 +301,10 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
 
     wxUint16 lyear, llastmonth;
     while(fread(&lyear, sizeof lyear, 1, f)==1) {
+#ifdef __MSVC__
+        if(lyear < 1970)
+            lyear = 1970;
+#endif
         Cyclone *cyclone = new Cyclone;
         llastmonth = 0;
         for(;;) {

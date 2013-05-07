@@ -181,7 +181,11 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     ReadDataTypeSettings(m_lastdatatype);
 
     wxDateTime dt;
+#ifdef __MSVC__
+    dt.SetYear(1970);
+#else
     dt.SetYear(1945);
+#endif
     m_dPStart->SetValue(dt);
 
     DimeWindow( this );
