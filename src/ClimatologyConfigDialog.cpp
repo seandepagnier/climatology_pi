@@ -180,12 +180,14 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     PopulateUnits(m_lastdatatype);
     ReadDataTypeSettings(m_lastdatatype);
 
-    wxDateTime dt;
+    wxDateTime dt(1, 1,
 #ifdef __MSVC__
-    dt.SetYear(1970);
+                  1970
 #else
-    dt.SetYear(1945);
+                  1945
 #endif
+        );
+
     m_dPStart->SetValue(dt);
 
     DimeWindow( this );
