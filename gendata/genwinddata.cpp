@@ -55,12 +55,14 @@ void fix_data(float *data, int count)
 
 int main(int argc, char *argv[])
 {
-    if(argc < 2) {
-        fprintf(stderr, "Usage: %s file1 .. filen > output\n", argv[0]);
+    if(argc < 3) {
+        fprintf(stderr, "Usage: %s parts-per-file file1 .. filen > output\n", argv[0]);
         return 0;
     }
 
-    for(int i=1; i<argc; i++) {
+    int parts_per_file = strtol(argv[1], NULL, 10);
+
+    for(int i=2; i<argc; i++) {
         fprintf(stderr, "reading file: %s\n", argv[i]);
         float u_data[(LATITUDES*INPUT_DEGREE_STEP-1)*LONGITUDES*INPUT_DEGREE_STEP];
         float v_data[(LATITUDES*INPUT_DEGREE_STEP-1)*LONGITUDES*INPUT_DEGREE_STEP];
@@ -71,44 +73,46 @@ int main(int argc, char *argv[])
             continue;
         }
 
-        zu_seek(file, 4, SEEK_CUR);
-        zu_read(file, u_data, sizeof u_data);
-        zu_seek(file, 4, SEEK_CUR);
+        for(int j=0; j<parts_per_file; j++) {
+            zu_seek(file, 4, SEEK_CUR);
+            zu_read(file, u_data, sizeof u_data);
+            zu_seek(file, 4, SEEK_CUR);
 
-        fix_data(u_data, (sizeof u_data) / sizeof *u_data);
+            fix_data(u_data, (sizeof u_data) / sizeof *u_data);
+            
+            zu_seek(file, 4, SEEK_CUR);
+            zu_read(file, v_data, sizeof v_data);
+            zu_seek(file, 4, SEEK_CUR);
 
-        zu_seek(file, 4, SEEK_CUR);
-        zu_read(file, v_data, sizeof v_data);
-        zu_seek(file, 4, SEEK_CUR);
+            fix_data(v_data, (sizeof v_data) / sizeof *v_data);
 
-        fix_data(v_data, (sizeof v_data) / sizeof *v_data);
-
+            for(int lati = 0; lati<LATITUDES*INPUT_DEGREE_STEP-1; lati++)
+                for(int loni = 0; loni<LONGITUDES*INPUT_DEGREE_STEP; loni++) {
+                    float u = u_data[lati*LONGITUDES*INPUT_DEGREE_STEP + loni];
+                    float v = v_data[lati*LONGITUDES*INPUT_DEGREE_STEP + loni];
+                    if(!isnan(u) && !isnan(v)) {
+                        int lato = lati*OUTPUT_DEGREE_STEP/INPUT_DEGREE_STEP;
+                        int lono = loni*OUTPUT_DEGREE_STEP/INPUT_DEGREE_STEP;
+                        struct windpilot *wp = &map[lato*LONGITUDES*OUTPUT_DEGREE_STEP + lono];
+                        
+                        int direction = round(atan2(v, u) * DIRECTIONS / (2.0 * M_PI));
+                        if(direction < 0)
+                            direction += DIRECTIONS;
+                        
+                        float velocity = hypot(v, u);
+                        if(velocity > 20)
+                            wp->storm++;
+                        else if(velocity < 2.5)
+                            wp->calm++;
+                        
+                        wp->directions[direction]++;
+                        wp->speeds[direction]+=velocity;
+                    }
+                }
+        }
+            
     	if (file != NULL)
             zu_close(file);
-
-        for(int lati = 0; lati<LATITUDES*INPUT_DEGREE_STEP-1; lati++)
-            for(int loni = 0; loni<LONGITUDES*INPUT_DEGREE_STEP; loni++) {
-                float u = u_data[lati*LONGITUDES*INPUT_DEGREE_STEP + loni];
-                float v = v_data[lati*LONGITUDES*INPUT_DEGREE_STEP + loni];
-                if(!isnan(u) && !isnan(v)) {
-                    int lato = lati*OUTPUT_DEGREE_STEP/INPUT_DEGREE_STEP;
-                    int lono = loni*OUTPUT_DEGREE_STEP/INPUT_DEGREE_STEP;
-                    struct windpilot *wp = &map[lato*LONGITUDES*OUTPUT_DEGREE_STEP + lono];
-
-                    int direction = round(atan2(v, u) * DIRECTIONS / (2.0 * M_PI));
-                    if(direction < 0)
-                        direction += DIRECTIONS;
-
-                    float velocity = hypot(v, u);
-                    if(velocity > 20)
-                        wp->storm++;
-                    else if(velocity < 2.5)
-                        wp->calm++;
-                    
-                    wp->directions[direction]++;
-                    wp->speeds[direction]+=velocity;
-                }
-            }
     }
 
     uint16_t header[3] = {LATITUDES*OUTPUT_DEGREE_STEP, LONGITUDES*OUTPUT_DEGREE_STEP, DIRECTIONS};

@@ -1,0 +1,27 @@
+#!/bin/sh
+
+echo "Generating Makefile to build climatology data..."
+
+cat Makefile.in > Makefile
+
+echo 'PARTS_PER_FILE = 1# 1 for daily data, for 6hrly change to 4' >> Makefile
+echo 'WIND_DATA_DIR = winddata' >> Makefile
+echo >> Makefile
+
+for i in `seq -f %02.0f 1 12`; do
+    echo -n 'WIND_DATA_' >> Makefile
+    echo -n $i >> Makefile
+    echo -n ' := $(WIND_DATA_DIR)/uv[1-2][0-9][0-9][0-9]' >> Makefile
+    echo -n $i >> Makefile
+    echo    '[0-3][0-9].be.gz' >> Makefile
+    echo -n '$(DATA)/wind' >> Makefile
+    echo -n $i >> Makefile
+    echo -n '.gz: Makefile genwinddata $(WIND_DATA_' >> Makefile
+    echo -n $i >> Makefile
+    echo    ')' >> Makefile
+    echo -n "\t" >> Makefile
+    echo -n './genwinddata $(PARTS_PER_FILE) $(WIND_DATA_' >> Makefile
+    echo -n $i >> Makefile
+    echo    ') | gzip > $@' >> Makefile
+    echo >> Makefile
+done

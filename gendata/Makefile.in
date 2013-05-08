@@ -1,6 +1,9 @@
 DATA = ../data
 
-ALL_WIND = $(DATA)/wind01.gz $(DATA)/wind02.gz
+ALL_WIND  = $(DATA)/wind01.gz $(DATA)/wind02.gz $(DATA)/wind03.gz $(DATA)/wind04.gz
+ALL_WIND += $(DATA)/wind05.gz $(DATA)/wind06.gz $(DATA)/wind07.gz $(DATA)/wind08.gz
+ALL_WIND += $(DATA)/wind09.gz $(DATA)/wind10.gz $(DATA)/wind11.gz $(DATA)/wind12.gz
+
 ALL_CURRENT = $(DATA)/current01.gz
 ALL_OTHER = $(DATA)/sealevelpressure $(DATA)/seasurfacetemperature $(DATA)/cloud
 ALL_CYCLONE = $(DATA)/cyclone-atl $(DATA)/cyclone-bio $(DATA)/cyclone-bsh $(DATA)/cyclone-bwp $(DATA)/cyclone-epa $(DATA)/cyclone-she $(DATA)/cyclone-spa
@@ -10,12 +13,6 @@ all: $(ALL)
 clean:
 	rm -rf $(ALL)
 	rm -rf genclddata gencurrentdata gencyclonedata gencyclonedata1 genslpdata gensstdata genwinddata
-
-$(DATA)/wind01.gz: uv200001* genwinddata
-	./genwinddata uv200001* | gzip > $@
-
-$(DATA)/wind02.gz: uv200002* genwinddata
-	./genwinddata uv200002* | gzip > $@
 
 JANUARY_CURRENTS  = oscar_vel7047.nc oscar_vel7032.nc oscar_vel7057.nc
 JANUARY_CURRENTS += oscar_vel7042.nc oscar_vel7037.nc oscar_vel7027.nc
@@ -67,3 +64,4 @@ gencyclonedata: gencyclonedata.cpp
 
 gencyclonedata1: gencyclonedata1.cpp
 	g++ -o gencyclonedata1 gencyclonedata1.cpp -g
+
