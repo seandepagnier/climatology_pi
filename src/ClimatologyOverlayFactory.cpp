@@ -1253,10 +1253,10 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
             
             if(polar.storm*2 > polar.calm) {
                 glColor3d(1, 0, 0);
-                RenderNumber(p, polar.storm);
+                RenderNumber(p, polar.storm/totald);
             } else if(polar.calm > 0) {
                 glColor3d(0, 0, .7);
-                RenderNumber(p, polar.calm);
+                RenderNumber(p, polar.calm/totald);
             }
             
             glColor4ub(0, 0, 0, m_dlg.m_cfgdlg->m_sWindAtlasOpacity->GetValue());
@@ -1264,14 +1264,17 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
 
             for(int d = 0; d<dir_cnt; d++) {
                 double theta = 2*M_PI*d/dir_cnt;
-                double x1 = p.x+r*cos(theta), y1 = p.y+r*sin(theta);
+                double x1 = p.x-r*cos(theta), y1 = p.y+r*sin(theta);
                 
                 double per = (double)polar.directions[d]/totald;
+
+                if(per == 0)
+                    continue;
 
                 const double maxper = .35;
                 bool split = per >= maxper;
                 double u = r + size*(split ? maxper : per);
-                double x2 = p.x+u*cos(theta), y2 = p.y+u*sin(theta);
+                double x2 = p.x-u*cos(theta), y2 = p.y+u*sin(theta);
 
                 if(split) {
                     wxPoint q((x1 + x2)/2, (y1 + y2)/2);
@@ -1286,10 +1289,10 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
                 double dir = 1;
                 const double a = 10, b = M_PI*2/3;
                 while(avg_speed > 2) {
-                    DrawGLLine(x2, y2, x2-a*cos(theta+dir*b), y2-a*sin(theta+dir*b), 2);
+                    DrawGLLine(x2, y2, x2+a*cos(theta+dir*b), y2-a*sin(theta+dir*b), 2);
                     dir = -dir;
                     if(dir > 0)
-                        x2 -= 3*cos(theta), y2 -= 3*sin(theta);
+                        x2 += 3*cos(theta), y2 -= 3*sin(theta);
                     avg_speed -= 5;
                 }
             }

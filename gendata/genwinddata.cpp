@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
                             direction += DIRECTIONS;
                         
                         float velocity = hypot(v, u);
-                        if(velocity > 20)
+                        if(velocity > 24)
                             wp->storm++;
                         else if(velocity < 2.5)
                             wp->calm++;
