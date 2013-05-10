@@ -123,7 +123,12 @@ int main(int argc, char *argv[])
     for(int lati = 0; lati < LATITUDES*OUTPUT_DEGREE_STEP; lati++) {
         for(int loni = 0; loni < LONGITUDES*OUTPUT_DEGREE_STEP; loni++) {
             struct windpilot *wp = &map[lati*LONGITUDES*OUTPUT_DEGREE_STEP + loni];
-            while(max_value(wp->directions) >= 256 || max_value(wp->speeds) >= 256) {
+            int total = 0;
+            for(int i=0; i<DIRECTIONS; i++)
+                total += wp->directions[i];
+            uint8_t storm = (double)wp->storm*100.0/total, calm = (double)wp->calm*100.0/total;
+
+            while(max_value(wp->directions) >= 256 || max_value(wp->speeds) >= 256)
                 for(int i=0; i<DIRECTIONS; i++)
                     if(wp->directions[i]) {
                         wp->speeds[i] /= wp->directions[i];
@@ -131,16 +136,14 @@ int main(int argc, char *argv[])
                         wp->directions[i] = floor(wp->directions[i]);
                         wp->speeds[i] *= wp->directions[i];
                     }
-            }
 
-            uint8_t storm, calm, directions[DIRECTIONS], speeds[DIRECTIONS];
-            int total = 0;
+            uint8_t directions[DIRECTIONS], speeds[DIRECTIONS];
+            total = 0;
             for(int i=0; i<DIRECTIONS; i++) {
                 directions[i] = wp->directions[i];
                 speeds[i] = wp->speeds[i];
                 total += directions[i];
             }
-            storm = (double)wp->storm*100/total, calm = (double)wp->calm*100/total;
 
             if(total) {
                 fwrite(&storm, 1, 1, stdout);
