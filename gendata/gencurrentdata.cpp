@@ -90,5 +90,4 @@ int main(int argc, char *argv[])
 
     fwrite(uavg, LATITUDES*OUTPUT_LONGITUDES, 1, stdout);
     fwrite(vavg, LATITUDES*OUTPUT_LONGITUDES, 1, stdout);
-    return 0;
 }

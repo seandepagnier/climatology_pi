@@ -14,11 +14,50 @@ clean:
 	rm -rf $(ALL)
 	rm -rf genclddata gencurrentdata gencyclonedata gencyclonedata1 genslpdata gensstdata genwinddata
 
-JANUARY_CURRENTS  = oscar_vel7047.nc oscar_vel7032.nc oscar_vel7057.nc
-JANUARY_CURRENTS += oscar_vel7042.nc oscar_vel7037.nc oscar_vel7027.nc
-JANUARY_CURRENTS += oscar_vel7052.nc
-$(DATA)/current01.gz: gencurrentdata
-	./gencurrentdata $(JANUARY_CURRENTS) | gzip > $@
+CURRENT_01  = oscar_vel7047.nc oscar_vel7032.nc oscar_vel7057.nc
+CURRENT_01 += oscar_vel7042.nc oscar_vel7037.nc oscar_vel7027.nc
+CURRENT_01 += oscar_vel7052.nc
+
+CURRENT_02  = oscar_vel7072.nc oscar_vel7082.nc oscar_vel7077.nc
+CURRENT_02 += oscar_vel7088.nc oscar_vel7067.nc oscar_vel7062.nc
+
+CURRENT_03  = oscar_vel7118.nc oscar_vel7088.nc oscar_vel7113.nc
+CURRENT_03 += oscar_vel7108.nc oscar_vel7098.nc oscar_vel7093.nc
+CURRENT_03 += oscar_vel7103.nc
+
+CURRENT_04  = oscar_vel7143.nc oscar_vel7133.nc oscar_vel7118.nc
+CURRENT_04 += oscar_vel7128.nc oscar_vel7138.nc oscar_vel7123.nc
+
+CURRENT_05  = oscar_vel7154.nc oscar_vel7179.nc oscar_vel7169.nc
+CURRENT_05 += oscar_vel7174.nc oscar_vel7149.nc oscar_vel7159.nc
+CURRENT_05 += oscar_vel7164.nc
+
+CURRENT_06  = oscar_vel7179.nc oscar_vel7204.nc oscar_vel7199.nc
+CURRENT_06 += oscar_vel7189.nc oscar_vel7194.nc oscar_vel7184.nc
+
+CURRENT_07  = oscar_vel7240.nc oscar_vel7235.nc oscar_vel7220.nc
+CURRENT_07 += oscar_vel7225.nc oscar_vel7215.nc oscar_vel7210.nc
+CURRENT_07 += oscar_vel7230.nc
+
+CURRENT_08  = oscar_vel7240.nc oscar_vel7250.nc oscar_vel7265.nc
+CURRENT_08 += oscar_vel7271.nc oscar_vel7255.nc oscar_vel7245.nc
+CURRENT_08 += oscar_vel7260.nc
+
+CURRENT_09  = oscar_vel7301.nc oscar_vel7271.nc oscar_vel7276.nc
+CURRENT_09 += oscar_vel7286.nc oscar_vel7296.nc oscar_vel7291.nc
+CURRENT_09 += oscar_vel7281.nc
+
+CURRENT_10  = oscar_vel7301.nc oscar_vel7311.nc oscar_vel7306.nc
+CURRENT_10 += oscar_vel7316.nc oscar_vel7326.nc oscar_vel7321.nc
+CURRENT_10 += oscar_vel7332.nc
+
+CURRENT_11  = oscar_vel7362.nc oscar_vel7347.nc oscar_vel7337.nc
+CURRENT_11 += oscar_vel7342.nc oscar_vel7352.nc oscar_vel7357.nc
+CURRENT_11 += oscar_vel7332.nc
+
+CURRENT_12  = oscar_vel7372.nc oscar_vel7362.nc oscar_vel7393.nc
+CURRENT_12 += oscar_vel7382.nc oscar_vel7387.nc oscar_vel7367.nc
+CURRENT_12 += oscar_vel7377.nc
 
 genwinddata: genwinddata.cpp zuFile.cpp
 	g++ -o genwinddata genwinddata.cpp zuFile.cpp -lbz2 -lz -g -O2
@@ -65,3 +104,4 @@ gencyclonedata: gencyclonedata.cpp
 gencyclonedata1: gencyclonedata1.cpp
 	g++ -o gencyclonedata1 gencyclonedata1.cpp -g
 
+CURRENT_DATA_DIR = currentdata

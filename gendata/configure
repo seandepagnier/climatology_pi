@@ -8,8 +8,16 @@ echo 'PARTS_PER_FILE = 1# 1 for daily data, for 6hrly change to 4' >> Makefile
 echo 'WIND_DATA_DIR = winddata' >> Makefile
 echo >> Makefile
 
+# Wind
 for i in `seq -f %02.0f 1 12`; do
     echo 'WIND_DATA_'$i' := $(WIND_DATA_DIR)/uv[1-2][0-9][0-9][0-9]'$i'[0-3][0-9].be.gz' >> Makefile
     echo '$(DATA)/wind'$i'.gz: Makefile genwinddata $(WIND_DATA_'$i')' >> Makefile
     echo "\t"'./genwinddata $(PARTS_PER_FILE) $(WIND_DATA_'$i') | gzip > $@'"\n" >> Makefile
+done
+
+# Current
+for i in `seq -f %02.0f 1 12`; do
+    echo 'CURRENT_DATA_'$i' = $(foreach file,$(CURRENT_'$i'),$(CURRENT_DATA_DIR)/$(file))' >> Makefile
+    echo '$(DATA)/current'$i'.gz: Makefile gencurrentdata $(CURRENT_DATA_'$i')' >> Makefile
+    echo "\t"'./gencurrentdata $(CURRENT_DATA_'$i') | gzip > $@'"\n" >> Makefile
 done
