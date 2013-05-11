@@ -182,7 +182,7 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
 
     wxDateTime dt(1, 1,
 #ifdef __MSVC__
-                  1970
+                  1972
 #else
                   1945
 #endif

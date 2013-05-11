@@ -66,20 +66,29 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     ClearCachedData();
 
     wxString path = *GetpSharedDataLocation() + _T("plugins/climatology/data/");
+    wxString fmt = _T(" %d");
 
     /* load wind */
-    for(int month = 0; month < 13; month++) {
-        if(!progressdialog.Update(month, _("wind")))
+    for(int month = 0; month < 12; month++) {
+        if(!progressdialog.Update(month, wxString::Format(_("wind")+fmt, month+1)))
             return;
         ReadWindData(month, path+wxString::Format(_T("wind%02d.gz"), month+1));
     }
 
+    if(!progressdialog.Update(12, _("averaging wind")))
+        return;
+    AverageWindData();
+
     /* load current */
-    for(int month = 0; month < 13; month++) {
-        if(!progressdialog.Update(month+13, _("current")))
+    for(int month = 0; month < 12; month++) {
+        if(!progressdialog.Update(month+13, wxString::Format(_("current")+fmt, month+1)))
             return;
         ReadCurrentData(month, path+wxString::Format(_T("current%02d.gz"), month+1));
     }
+
+    if(!progressdialog.Update(25, _("averaging current")))
+        return;
+    AverageCurrentData();
 
     ZUFILE *f;
     /* load sea level pressure and sea surface temperature */
@@ -262,6 +271,100 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
     zu_close(f);
 }
 
+float max_value(float *values, int cnt)
+{
+    float max = 0;
+    for(int i=0; i<cnt; i++)
+        if(values[i] > max)
+            max = values[i];
+    return max;
+}
+
+void ClimatologyOverlayFactory::AverageWindData()
+{
+    int fmonth;
+    for(fmonth=0; fmonth<12; fmonth++)
+        if(m_WindData[fmonth])
+            goto havedata;
+    return;
+
+havedata:
+    int latitudes = m_WindData[fmonth]->latitudes;
+    int longitudes = m_WindData[fmonth]->longitudes;
+    int dir_cnt = m_WindData[fmonth]->dir_cnt;
+    m_WindData[12] = new WindData(latitudes, longitudes, dir_cnt);
+
+
+    float *directions = new float[dir_cnt];
+    float *speeds = new float[dir_cnt];
+
+    for(int lati = 0; lati < latitudes; lati++) {
+        for(int loni = 0; loni < longitudes; loni++) {
+            double lat = 180.0*((double)lati/latitudes-.5);
+            double lon = 360.0*loni/longitudes;
+
+            double storm = 0, calm = 0;
+            for(int i=0; i<dir_cnt; i++)
+                directions[i] = speeds[i] = 0;
+
+            int mcount = 0;
+            for(int month=0; month<12; month++) {
+                if(!m_WindData[month])
+                    continue;
+                WindData::WindPolar *polar = m_WindData[month]->GetPolar(lat, lon);
+                if(!polar || polar->storm == 255)
+                    continue;
+
+                int mdir_cnt = m_WindData[month]->dir_cnt;
+                storm += polar->storm;
+                calm +=  polar->calm;
+                for(int i=0; i<dir_cnt; i++) {
+                    directions[i] += polar->directions[i*mdir_cnt/dir_cnt];
+                    speeds[i] += polar->speeds[i*mdir_cnt/dir_cnt];
+                }
+                mcount++;
+            }
+
+            WindData::WindPolar &wp = m_WindData[12]->data[lati*longitudes + loni];
+            if(mcount == 0) {
+                wp.storm = 255;
+                goto done;
+            }
+
+            wp.storm = storm / mcount;
+            wp.calm = calm / mcount;
+
+            /* fit  back to 256 */
+            while(max_value(directions, dir_cnt) >= 256 || max_value(speeds, dir_cnt) >= 256) {
+                if(max_value(directions, dir_cnt) == 0) { /* corrupted data */
+                    wp.storm = 255;
+                    goto done;
+                }
+
+                for(int i=0; i<dir_cnt; i++)
+                    if(directions[i]) {
+                        speeds[i] /= directions[i];
+                        directions[i] /= 2;
+                        directions[i] = floor(directions[i]);
+                        speeds[i] *= directions[i];
+                    }
+            }
+
+            wp.directions = new wxUint8[dir_cnt];
+            wp.speeds = new wxUint8[dir_cnt];
+
+            for(int i=0; i<dir_cnt; i++) {
+                wp.directions[i] = directions[i];
+                wp.speeds[i] = speeds[i];
+            }
+
+        done:;
+        }
+    }
+    delete [] directions;
+    delete [] speeds;
+}
+
 void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
 {
     ZUFILE *f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
@@ -291,6 +394,10 @@ void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
     zu_close(f);
 }
 
+void ClimatologyOverlayFactory::AverageCurrentData()
+{
+}
+
 bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south)
 {
     FILE *f = fopen(filename.mb_str(), "r");
@@ -302,8 +409,8 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
     wxUint16 lyear, llastmonth;
     while(fread(&lyear, sizeof lyear, 1, f)==1) {
 #ifdef __MSVC__
-        if(lyear < 1970)
-            lyear = 1970;
+        if(lyear < 1972)
+            lyear = 1972;
 #endif
         Cyclone *cyclone = new Cyclone;
         llastmonth = 0;
@@ -1240,33 +1347,33 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
     int dir_cnt = m_WindData[m_CurrentMonth]->dir_cnt;
     for(double lat = round(vp.lat_min/step)*step-1; lat <= vp.lat_max+1; lat+=step)
         for(double lon = round(vp.lon_min/step)*step-1; lon <= vp.lon_max+1; lon+=step) {
-            WindData::WindPolar &polar = m_WindData[m_CurrentMonth]->GetPolar(lat, positive_degrees(lon));
-            if(polar.storm == 255)
+            WindData::WindPolar *polar = m_WindData[m_CurrentMonth]->GetPolar(lat, positive_degrees(lon));
+            if(!polar || polar->storm == 255)
                 continue;
 
             wxPoint p;
             GetCanvasPixLL(&vp, &p, lat, lon);
-            
-            int totald = 0;
-            for(int i=0; i<dir_cnt; i++)
-                totald += polar.directions[i];
-            
-            if(polar.storm*2 > polar.calm) {
+                        
+            if(polar->storm*2 > polar->calm) {
                 glColor3d(1, 0, 0);
-                RenderNumber(p, polar.storm/totald);
-            } else if(polar.calm > 0) {
+                RenderNumber(p, polar->storm);
+            } else if(polar->calm > 0) {
                 glColor3d(0, 0, .7);
-                RenderNumber(p, polar.calm/totald);
+                RenderNumber(p, polar->calm);
             }
             
             glColor4ub(0, 0, 0, m_dlg.m_cfgdlg->m_sWindAtlasOpacity->GetValue());
             DrawGLCircle(p.x, p.y, r, 2);
 
+            int totald = 0;
+            for(int i=0; i<dir_cnt; i++)
+                totald += polar->directions[i];
+
             for(int d = 0; d<dir_cnt; d++) {
                 double theta = 2*M_PI*d/dir_cnt;
                 double x1 = p.x-r*cos(theta), y1 = p.y+r*sin(theta);
                 
-                double per = (double)polar.directions[d]/totald;
+                double per = (double)polar->directions[d]/totald;
 
                 if(per == 0)
                     continue;
@@ -1285,7 +1392,7 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
                 } else
                     DrawGLLine(x1, y1, x2, y2, 2);
 
-                double avg_speed = (double)polar.speeds[d] / polar.directions[d] * 3.6 / 1.852; /* knots */
+                double avg_speed = (double)polar->speeds[d] / polar->directions[d] * 3.6 / 1.852; /* knots */
                 double dir = 1;
                 const double a = 10, b = M_PI*2/3;
                 while(avg_speed > 2) {
@@ -1343,6 +1450,34 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 bool ClimatologyOverlayFactory::RenderOverlay( wxDC &dc, PlugIn_ViewPort &vp )
 {
     m_pdc = &dc;
+
+    wxString msg = _("Climatology rendering unsupported unless OpenGL is enabled");
+
+    wxMemoryDC mdc;
+    wxBitmap bm( 1000, 1000 );
+    mdc.SelectObject( bm );
+    mdc.Clear();
+
+    wxFont font( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+
+    mdc.SetFont( font );
+    mdc.SetPen( *wxTRANSPARENT_PEN);
+
+    mdc.SetBrush( wxColour(243, 47, 229 ) );
+    int w, h;
+    mdc.GetMultiLineTextExtent( msg, &w, &h );
+    h += 2;
+    int label_offset = 10;
+    int wdraw = w + ( label_offset * 2 );
+    mdc.DrawRectangle( 0, 0, wdraw, h );
+
+    mdc.DrawLabel( msg, wxRect( label_offset, 0, wdraw, h ), wxALIGN_LEFT| wxALIGN_CENTRE_VERTICAL);
+    mdc.SelectObject( wxNullBitmap );
+
+    wxBitmap sbm = bm.GetSubBitmap( wxRect( 0, 0, wdraw, h ) );
+    int x = vp.pix_width, y = vp.pix_height;
+    m_pdc->DrawBitmap( sbm, (x-wdraw)/2, y - ( GetChartbarHeight() + h ), false );
+
     return true;
 }
 

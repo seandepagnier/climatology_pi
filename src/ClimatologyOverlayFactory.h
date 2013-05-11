@@ -46,10 +46,12 @@ struct WindData
     : latitudes(lats), longitudes(lons), dir_cnt(dirs), data(new WindPolar[lats*lons]) {}
 
     double InterpWind(enum Coord coord, double lat, double lon);
-    WindPolar &GetPolar(double lat, double lon) {
+    WindPolar *GetPolar(double lat, double lon) {
         int lati = round(latitudes*(.5+lat/180.0));
         int loni = round(longitudes*lon/360.0);
-        return data[lati*longitudes + loni];
+        if(lati < 0 || lati >= latitudes || loni < 0 || loni >= longitudes)
+            return NULL;
+        return &data[lati*longitudes + loni];
     }
 
     int latitudes, longitudes, dir_cnt;
@@ -128,7 +130,9 @@ public:
     ~ClimatologyOverlayFactory();
 
     void ReadWindData(int month, wxString filename);
+    void AverageWindData();
     void ReadCurrentData(int month, wxString filename);
+    void AverageCurrentData();
     bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
     bool ReadElNinoYears(wxString filename);
 

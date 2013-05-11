@@ -234,6 +234,8 @@ void climatology_pi::OnToolbarToolCallback(int id)
 
         s_pOverlayFactory = m_pOverlayFactory;
         SendClimatology(ClimatologyData);
+
+        RequestRefresh(m_parent_window); // refresh main window
     }
 
     m_pClimatologyDialog->Show(!m_pClimatologyDialog->IsShown());
