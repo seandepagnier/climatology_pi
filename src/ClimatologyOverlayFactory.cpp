@@ -298,7 +298,7 @@ havedata:
     float *directions = new float[dir_cnt];
     float *speeds = new float[dir_cnt];
 
-    for(int lati = 0; lati < latitudes; lati++) {
+    for(int lati = 0; lati < latitudes; lati++)
         for(int loni = 0; loni < longitudes; loni++) {
             double lat = 180.0*((double)lati/latitudes-.5);
             double lon = 360.0*loni/longitudes;
@@ -360,7 +360,7 @@ havedata:
 
         done:;
         }
-    }
+
     delete [] directions;
     delete [] speeds;
 }
@@ -396,6 +396,44 @@ void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
 
 void ClimatologyOverlayFactory::AverageCurrentData()
 {
+    int fmonth;
+    for(fmonth=0; fmonth<12; fmonth++)
+        if(m_CurrentData[fmonth])
+            goto havedata;
+    return;
+
+havedata:
+    int latitudes = m_CurrentData[fmonth]->latitudes;
+    int longitudes = m_CurrentData[fmonth]->longitudes;
+    m_CurrentData[12] = new CurrentData(latitudes, longitudes, 1);
+
+    for(int lati = 0; lati < latitudes; lati++)
+        for(int loni = 0; loni < longitudes; loni++) {
+            double u = 0, v = 0;
+            int mcount = 0;
+            for(int month=0; month<12; month++) {
+                if(!m_CurrentData[month]
+                   || m_CurrentData[month]->latitudes != latitudes
+                   || m_CurrentData[month]->longitudes != longitudes)
+                    continue;
+                
+                u += m_CurrentData[month]->Value(U, lati, loni);
+                v += m_CurrentData[month]->Value(V, lati, loni);
+                mcount++;
+            }
+
+            static bool nwarned = true;
+            if(nwarned && mcount < 12) {
+                wxString fmt = _T(" %d ");
+                wxLogMessage(climatology_pi + wxString::Format(_("Average Current includes only")
+                                                               + fmt + _("months"), mcount));
+
+                nwarned = false;
+            }
+
+            m_CurrentData[12]->data[0][lati*longitudes + loni] = u / mcount;
+            m_CurrentData[12]->data[1][lati*longitudes + loni] = v / mcount;
+        }
 }
 
 bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south)
@@ -874,7 +912,11 @@ wxImage &ClimatologyOverlayFactory::getLabel(double value)
 /* give value for y at a given x location on a segment */
 double interp_value(double x, double x1, double x2, double y1, double y2)
 {
-    return x2 - x1 ? (y2 - y1)*(x - x1)/(x2 - x1) + y1 : y1;
+    if(x == x1)
+        return y1;
+    if(x == x2)
+        return y2;
+    return (y2 - y1)*(x - x1)/(x2 - x1) + y1;
 }
 
 double ArrayValue(wxInt16 *a, int index)
@@ -919,18 +961,21 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
 
         totals += mul*speeds[i];
     }
-    return (double)totals / totald * 3.6 / 1.852; /* knots */
+    return (double)totals / totald;
 }
 
 double CurrentData::Value(enum Coord coord, int xi, int yi)
 {
+    if(xi < 0 || xi >= latitudes)
+        return NAN;
+
     double v = NAN;
     switch(coord) {
     case U: v =  data[0][xi*longitudes + yi]; break;
     case V: v =  data[1][xi*longitudes + yi]; break;
     case MAG: v = hypot(data[0][xi*longitudes + yi], data[1][xi*longitudes + yi]); break;
     }
-    return v * 3.6 / 1.852;
+    return v;
 }
 
 double WindData::InterpWind(enum Coord coord, double x, double y)
@@ -958,7 +1003,7 @@ double WindData::InterpWind(enum Coord coord, double x, double y)
 double CurrentData::InterpCurrent(enum Coord coord, double x, double y)
 {
     y = positive_degrees(y);
-    double xi = latitudes*(.5 - x/160.0);
+    double xi = (latitudes-1)*(.5 - x/160.0);
     double yi = longitudes*y/360.0;
     int h = longitudes;
 
@@ -1392,7 +1437,7 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
                 } else
                     DrawGLLine(x1, y1, x2, y2, 2);
 
-                double avg_speed = (double)polar->speeds[d] / polar->directions[d] * 3.6 / 1.852; /* knots */
+                double avg_speed = (double)polar->speeds[d] / polar->directions[d];
                 double dir = 1;
                 const double a = 10, b = M_PI*2/3;
                 while(avg_speed > 2) {

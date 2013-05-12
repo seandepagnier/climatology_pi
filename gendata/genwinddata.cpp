@@ -50,6 +50,7 @@ void fix_data(float *data, int count)
         t[i] = ntohl(t[i]);
         if(data[i] == -9999)
             data[i] = NAN;
+        data[i] *= 3.6 / 1.852; /* knots */
     }
 }
 
@@ -100,7 +101,7 @@ int main(int argc, char *argv[])
                             direction += DIRECTIONS;
                         
                         float velocity = hypot(v, u);
-                        if(velocity > 24)
+                        if(velocity >= 47)
                             wp->storm++;
                         else if(velocity < 2.5)
                             wp->calm++;

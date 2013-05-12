@@ -26,14 +26,15 @@
 
 #define OUTPUT_LONGITUDES 1080 /* dont need duplicates */
 
-#define MULTIPLIER 45
+#define MULTIPLIER 20
 
 int8_t encode_value(float value)
 {
-    if(isnan(value) || fabs(value*MULTIPLIER) > 127)
+    value = value*MULTIPLIER * 3.6 / 1.852; /* in knots */
+    if(isnan(value) || fabs(value) > 127)
         return -128;
     else
-        return value*MULTIPLIER;
+        return value;
 }
 
 int main(int argc, char *argv[])
