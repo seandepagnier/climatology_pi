@@ -4,7 +4,11 @@ ALL_WIND  = $(DATA)/wind01.gz $(DATA)/wind02.gz $(DATA)/wind03.gz $(DATA)/wind04
 ALL_WIND += $(DATA)/wind05.gz $(DATA)/wind06.gz $(DATA)/wind07.gz $(DATA)/wind08.gz
 ALL_WIND += $(DATA)/wind09.gz $(DATA)/wind10.gz $(DATA)/wind11.gz $(DATA)/wind12.gz
 
-ALL_CURRENT = $(DATA)/current01.gz
+ALL_CURRENT  = $(DATA)/current01.gz $(DATA)/current02.gz $(DATA)/current03.gz
+ALL_CURRENT += $(DATA)/current04.gz $(DATA)/current05.gz $(DATA)/current06.gz
+ALL_CURRENT += $(DATA)/current07.gz $(DATA)/current08.gz $(DATA)/current09.gz
+ALL_CURRENT += $(DATA)/current10.gz $(DATA)/current11.gz $(DATA)/current12.gz
+
 ALL_OTHER = $(DATA)/sealevelpressure $(DATA)/seasurfacetemperature $(DATA)/cloud
 ALL_CYCLONE = $(DATA)/cyclone-atl $(DATA)/cyclone-bio $(DATA)/cyclone-bsh $(DATA)/cyclone-bwp $(DATA)/cyclone-epa $(DATA)/cyclone-she $(DATA)/cyclone-spa
 ALL = $(ALL_WIND) $(ALL_CURRENT) $(ALL_OTHER) $(ALL_CYCLONE)
