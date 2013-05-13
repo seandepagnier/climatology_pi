@@ -251,23 +251,37 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
     m_dlg.m_cbWind->Enable();
 
     wxUint16 header[3];
-    zu_read(f, header, sizeof header);
+    if(zu_read(f, header, sizeof header) != sizeof header ||
+       header[0] > 180*16 || header[1] > 360*16 || header[2] > 64)
+        goto corrupt;
+
     m_WindData[month] = new WindData(header[0], header[1], header[2]);
 
     for(int lati = 0; lati < m_WindData[month]->latitudes; lati++) {
         for(int loni = 0; loni < m_WindData[month]->longitudes; loni++) {
             WindData::WindPolar &wp = m_WindData[month]->data[lati*m_WindData[month]->longitudes + loni];
             int dirs = m_WindData[month]->dir_cnt;
-            zu_read(f, &wp.storm, 1);
+            if(zu_read(f, &wp.storm, 1) != 1)
+                goto corrupt;
             if(wp.storm != 255) {
-                zu_read(f, &wp.calm, 1);
+                if(zu_read(f, &wp.calm, 1) != 1)
+                    goto corrupt;
                 wp.directions = new wxUint8[dirs];
-                zu_read(f, wp.directions, dirs);
+                if(zu_read(f, wp.directions, dirs) != dirs)
+                    goto corrupt;
                 wp.speeds = new wxUint8[dirs];
-                zu_read(f, wp.speeds, dirs);
+                if(zu_read(f, wp.speeds, dirs) != dirs)
+                    goto corrupt;
             }
         }
     }
+    zu_close(f);
+    return;
+
+corrupt:
+    delete m_WindData[month];
+    m_WindData[month] = NULL;
+    wxLogMessage(climatology_pi + _("wind data file corrupt: ") + filename);
     zu_close(f);
 }
 

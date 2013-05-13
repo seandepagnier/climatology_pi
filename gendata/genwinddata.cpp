@@ -51,6 +51,9 @@ void fix_data(float *data, int count)
         if(data[i] == -9999)
             data[i] = NAN;
         data[i] *= 3.6 / 1.852; /* knots */
+
+        if(fabs(data[i]) > 100) /* above 100 knots is probably invalid */
+            data[i] = NAN;
     }
 }
 
