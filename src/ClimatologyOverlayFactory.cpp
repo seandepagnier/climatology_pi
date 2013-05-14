@@ -190,36 +190,51 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     zu_close(f);
 
     /* load cyclone tracks */
+    bool anycyclone = false;
     if(!progressdialog.Update(29, _("cyclone (east pacific)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-epa"), m_epa))
         m_dlg.m_cfgdlg->m_cbEastPacific->Disable();
+    else
+        anycyclone = true;
 
     if(!progressdialog.Update(30, _("cyclone (west pacific)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-bwp"), m_bwp))
         m_dlg.m_cfgdlg->m_cbWestPacific->Disable();
+    else
+        anycyclone = true;
 
     if(!progressdialog.Update(31, _("cyclone (south pacific)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-spa"), m_spa))
         m_dlg.m_cfgdlg->m_cbSouthPacific->Disable();
+    else
+        anycyclone = true;
 
     if(!progressdialog.Update(32, _("cyclone (atlantic)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-atl"), m_atl))
         m_dlg.m_cfgdlg->m_cbAtlantic->Disable();
+    else
+        anycyclone = true;
+
     if(!progressdialog.Update(33, _("cyclone (north indian)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-nio"), m_nio))
         m_dlg.m_cfgdlg->m_cbNorthIndian->Disable();
+    else
+        anycyclone = true;
 
     if(!progressdialog.Update(34, _("cyclone (south indian)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-she"), m_she, true))
         m_dlg.m_cfgdlg->m_cbSouthIndian->Disable();
+    else
+        anycyclone = true;
 
-    m_dlg.m_cbCyclones->Enable();
+    if(anycyclone)
+        m_dlg.m_cbCyclones->Enable();
 
     if(!progressdialog.Update(35, _("el nino years")))
         return;
