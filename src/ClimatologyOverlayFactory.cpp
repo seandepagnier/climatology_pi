@@ -974,7 +974,7 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
         switch(coord) {
         case U: mul = cos(i*2*M_PI/dir_cnt); break;
         case V: mul = sin(i*2*M_PI/dir_cnt); break;
-        case MAG: mul = 1;
+        case MAG: mul = 1; break;
         default: mul = NAN;
         }
 
