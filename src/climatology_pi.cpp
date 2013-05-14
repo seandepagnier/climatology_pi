@@ -218,7 +218,13 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
         return false;
 
     dir = positive_degrees(rad2deg(atan2(u, v)));
-    speed = hypot(u, v) * 3.6 / 1.852; /* knots */
+
+    if(setting == ClimatologyOverlaySettings::WIND) {
+        if(isnan(speed = s_pOverlayFactory->getValue(MAG, setting, lat, lon, &date)))
+            return false;
+    } else
+        speed = hypot(u, v);
+
     return true;
 }
 

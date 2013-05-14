@@ -182,9 +182,9 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
 
     wxDateTime dt;
 #ifdef __MSVC__
-    datetime.SetYear(1972);
+    dt.SetYear(1972);
 #else
-    datetime.SetYear(1945);
+    dt.SetYear(1945);
 #endif
     m_dPStart->SetValue(dt);
 
