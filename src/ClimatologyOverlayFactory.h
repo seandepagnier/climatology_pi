@@ -30,7 +30,7 @@
 void DrawGLLine( double x1, double y1, double x2, double y2, double width );
 
 class PlugIn_ViewPort;
-enum Coord {U, V, MAG};
+enum Coord {U, V, MAG, DIRECTION};
 
 struct WindData
 {

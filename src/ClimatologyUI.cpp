@@ -36,26 +36,45 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Climatology Data") ), wxVERTICAL );
 	
-	wxFlexGridSizer* fgSizer4;
-	fgSizer4 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer4->SetFlexibleDirection( wxBOTH );
-	fgSizer4->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	wxFlexGridSizer* fgSizer14;
+	fgSizer14 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer14->SetFlexibleDirection( wxBOTH );
+	fgSizer14->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxFlexGridSizer* fgSizer15;
+	fgSizer15 = new wxFlexGridSizer( 0, 3, 0, 0 );
+	fgSizer15->SetFlexibleDirection( wxBOTH );
+	fgSizer15->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	m_cbWind = new wxCheckBox( this, wxID_ANY, _("Wind"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbWind->Enable( false );
 	
-	fgSizer4->Add( m_cbWind, 0, wxALL, 5 );
+	fgSizer15->Add( m_cbWind, 0, wxALL, 5 );
 	
-	m_tWind = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer4->Add( m_tWind, 0, wxALL, 5 );
+	m_tWind = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 70,-1 ), 0 );
+	fgSizer15->Add( m_tWind, 0, wxALL, 5 );
+	
+	m_tWindDir = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 60,-1 ), 0 );
+	fgSizer15->Add( m_tWindDir, 0, wxALL, 5 );
 	
 	m_cbCurrent = new wxCheckBox( this, wxID_ANY, _("Current"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbCurrent->Enable( false );
 	
-	fgSizer4->Add( m_cbCurrent, 0, wxALL, 5 );
+	fgSizer15->Add( m_cbCurrent, 0, wxALL, 5 );
 	
-	m_tCurrent = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer4->Add( m_tCurrent, 0, wxALL, 5 );
+	m_tCurrent = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 70,-1 ), 0 );
+	fgSizer15->Add( m_tCurrent, 0, wxALL, 5 );
+	
+	m_tCurrentDir = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 60,-1 ), 0 );
+	fgSizer15->Add( m_tCurrentDir, 0, wxALL, 5 );
+	
+	
+	fgSizer14->Add( fgSizer15, 1, wxEXPAND, 5 );
+	
+	wxFlexGridSizer* fgSizer4;
+	fgSizer4 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer4->SetFlexibleDirection( wxBOTH );
+	fgSizer4->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	m_cbPressure = new wxCheckBox( this, wxID_ANY, _("Pressure"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbPressure->Enable( false );
@@ -87,7 +106,10 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer4->Add( m_cbCyclones, 0, wxALL, 5 );
 	
 	
-	sbSizer2->Add( fgSizer4, 1, wxEXPAND, 5 );
+	fgSizer14->Add( fgSizer4, 1, wxEXPAND, 5 );
+	
+	
+	sbSizer2->Add( fgSizer14, 1, wxEXPAND, 5 );
 	
 	
 	fgSizer1->Add( sbSizer2, 1, wxFIXED_MINSIZE, 5 );

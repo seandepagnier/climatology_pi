@@ -212,18 +212,11 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
     if(!s_pOverlayFactory)
         return false;
 
-    double u = s_pOverlayFactory->getValue(U, setting, lat, lon, &date);
-    double v = s_pOverlayFactory->getValue(V, setting, lat, lon, &date);
-    if(isnan(u) || isnan(v))
+    if(isnan(speed = s_pOverlayFactory->getValue(MAG, setting, lat, lon, &date)))
         return false;
 
-    dir = positive_degrees(rad2deg(atan2(u, v)));
-
-    if(setting == ClimatologyOverlaySettings::WIND) {
-        if(isnan(speed = s_pOverlayFactory->getValue(MAG, setting, lat, lon, &date)))
-            return false;
-    } else
-        speed = hypot(u, v);
+    if(isnan(dir = s_pOverlayFactory->getValue(DIRECTION, setting, lat, lon, &date)))
+        return false;
 
     return true;
 }

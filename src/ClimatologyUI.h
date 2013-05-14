@@ -48,7 +48,9 @@ class ClimatologyDialogBase : public wxDialog
 	
 	protected:
 		wxTextCtrl* m_tWind;
+		wxTextCtrl* m_tWindDir;
 		wxTextCtrl* m_tCurrent;
+		wxTextCtrl* m_tCurrentDir;
 		wxTextCtrl* m_tPressure;
 		wxTextCtrl* m_tSeaTemperature;
 		wxTextCtrl* m_tCloudCover;

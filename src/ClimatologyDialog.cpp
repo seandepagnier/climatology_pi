@@ -109,7 +109,9 @@ void ClimatologyDialog::UpdateTrackingControls()
     pPlugIn->GetOverlayFactory()->m_CurrentMonth = m_sMonth->GetValue();
 
     m_tWind->SetValue(GetValue(ClimatologyOverlaySettings::WIND));
+    m_tWindDir->SetValue(GetValue(ClimatologyOverlaySettings::WIND, DIRECTION));
     m_tCurrent->SetValue(GetValue(ClimatologyOverlaySettings::CURRENT));
+    m_tCurrentDir->SetValue(GetValue(ClimatologyOverlaySettings::CURRENT, DIRECTION));
     m_tPressure->SetValue(GetValue(ClimatologyOverlaySettings::SLP));
     m_tSeaTemperature->SetValue(GetValue(ClimatologyOverlaySettings::SST));
     m_tCloudCover->SetValue(GetValue(ClimatologyOverlaySettings::CLOUD));
@@ -129,10 +131,10 @@ void  ClimatologyDialog::SetCursorLatLon(double lat, double lon)
     UpdateTrackingControls();
 }
 
-wxString ClimatologyDialog::GetValue(int index)
+wxString ClimatologyDialog::GetValue(int index, Coord coord)
 {
     return wxString::Format(_T("%.1f"), pPlugIn->GetOverlayFactory()->
-                            getCurValue(MAG, index, m_cursorlat, m_cursorlon));
+                            getCurValue(coord, index, m_cursorlat, m_cursorlon));
 }
 
 void ClimatologyDialog::OnMonth( wxCommandEvent& event )

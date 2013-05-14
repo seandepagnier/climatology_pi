@@ -962,6 +962,10 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
     if(storm == 255)
         return NAN;
 
+    if(coord == DIRECTION)
+        return positive_degrees(rad2deg(atan2(-Value(U, dir_cnt),
+                                              -Value(V, dir_cnt))));
+
     int totald = 0, totals = 0;
     for(int i=0; i<dir_cnt; i++) {
         totald += directions[i];
@@ -971,6 +975,7 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
         case U: mul = cos(i*2*M_PI/dir_cnt); break;
         case V: mul = sin(i*2*M_PI/dir_cnt); break;
         case MAG: mul = 1;
+        default: mul = NAN;
         }
 
         totals += mul*speeds[i];
@@ -983,13 +988,14 @@ double CurrentData::Value(enum Coord coord, int xi, int yi)
     if(xi < 0 || xi >= latitudes)
         return NAN;
 
-    double v = NAN;
+    double u = data[0][xi*longitudes + yi], v = data[1][xi*longitudes + yi];
     switch(coord) {
-    case U: v =  data[0][xi*longitudes + yi]; break;
-    case V: v =  data[1][xi*longitudes + yi]; break;
-    case MAG: v = hypot(data[0][xi*longitudes + yi], data[1][xi*longitudes + yi]); break;
+    case U: return u;
+    case V: return v;
+    case MAG: return hypot(u, v);
+    case DIRECTION: return positive_degrees(rad2deg(atan2(-u, -v)));
     }
-    return v;
+    return NAN;
 }
 
 double WindData::InterpWind(enum Coord coord, double x, double y)

@@ -94,7 +94,6 @@ static inline double positive_degrees(double degrees)
 }
 
 #include "ClimatologyDialog.h"
-#include "ClimatologyOverlayFactory.h"
 #include "ClimatologyUI.h"
 
 //----------------------------------------------------------------------------------------------------------

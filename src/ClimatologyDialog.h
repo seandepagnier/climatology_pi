@@ -35,12 +35,9 @@
 #include <wx/fileconf.h>
 #include <wx/glcanvas.h>
 
-#include "ClimatologyUI.h"
 #include "ClimatologyConfigDialog.h"
-
-#ifndef PI
-#define PI        3.1415926535897931160E0      /* pi */
-#endif
+#include "ClimatologyOverlayFactory.h"
+#include "ClimatologyUI.h"
 
 class ClimatologyOverlayFactory;
 
@@ -63,7 +60,7 @@ public:
     ClimatologyConfigDialog *m_cfgdlg;
 
 private:
-    wxString GetValue(int index);
+    wxString GetValue(int index, Coord coord=MAG);
 
     void OnMonth( wxCommandEvent& event );
     void OnMonth( wxScrollEvent& event );
