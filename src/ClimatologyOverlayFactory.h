@@ -27,7 +27,7 @@
 #include <list>
 #include <map>
 
-void DrawGLLine( double x1, double y1, double x2, double y2, double width );
+void DrawGLLine( double x1, double y1, double x2, double y2 );
 
 class PlugIn_ViewPort;
 enum Coord {U, V, MAG, DIRECTION};
@@ -137,6 +137,10 @@ public:
     bool ReadElNinoYears(wxString filename);
 
     void ClearCachedData();
+    void DrawLine( double x1, double y1, double x2, double y2,
+                   const wxColour &color, int opacity, double width );
+    void DrawCircle( double x, double y, double r,
+                     const wxColour &color, int opacity, double width );
 
     wxImage &getLabel(double value);
 
@@ -147,13 +151,12 @@ public:
     double getCurValue(enum Coord coord, int setting, double lat, double lon)
     { return getValue(coord, setting, lat, lon, 0); }
 
-    bool RenderOverlay( wxDC &dc, PlugIn_ViewPort &vp );
-    bool RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPort &vp );
+    bool RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp );
 
     int m_CurrentMonth;
 
 private:
-    void RenderNumber(wxPoint p, double v);
+    void RenderNumber(wxPoint p, const wxColour &color, double v);
 
     void RenderIsoBars(int setting, PlugIn_ViewPort &vp);
     void RenderNumbers(int setting, PlugIn_ViewPort &vp);

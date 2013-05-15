@@ -577,44 +577,60 @@ void ClimatologyOverlayFactory::ClearCachedData()
     }
 }
 
-void DrawGLLine( double x1, double y1, double x2, double y2, double width )
+void DrawGLLine(double x1, double y1, double x2, double y2)
 {
-    glPushAttrib(GL_COLOR_BUFFER_BIT | GL_LINE_BIT | GL_ENABLE_BIT |
-                 GL_POLYGON_BIT | GL_HINT_BIT ); //Save state
-    {
-        //      Enable anti-aliased lines, at best quality
-        glEnable( GL_LINE_SMOOTH );
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-        glLineWidth( width );
+    //      Enable anti-aliased lines, at best quality
+    glEnable( GL_LINE_SMOOTH );
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
         
-        glBegin( GL_LINES );
-        glVertex2d( x1, y1 );
-        glVertex2d( x2, y2 );
-        glEnd();
-    }
-    glPopAttrib();
+    glBegin( GL_LINES );
+    glVertex2d( x1, y1 );
+    glVertex2d( x2, y2 );
+    glEnd();
 }
 
-static void DrawGLCircle( double x, double y, double r, double width )
+void ClimatologyOverlayFactory::DrawLine( double x1, double y1, double x2, double y2,
+                                          const wxColour &color, int opacity, double width )
 {
-    glPushAttrib(GL_COLOR_BUFFER_BIT | GL_LINE_BIT | GL_ENABLE_BIT |
-                 GL_POLYGON_BIT | GL_HINT_BIT ); //Save state
-    {
-        //      Enable anti-aliased lines, at best quality
-        glEnable( GL_LINE_SMOOTH );
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+    if( m_pdc ) {
+        m_pdc->SetPen( wxPen(color, width ) );
+        m_pdc->SetBrush( *wxTRANSPARENT_BRUSH);
+        m_pdc->DrawLine(x1, y1, x2, y2);
+    } else {
+        glColor4ub(color.Red(), color.Green(), color.Blue(), opacity);
         glLineWidth( width );
-        
-        glBegin( GL_LINE_LOOP );
-        for(double t=0; t<2*M_PI; t+=M_PI/30)
-            glVertex2d(x+r*cos(t), y+r*sin(t));
-        glEnd();
+        DrawGLLine(x1, y1, x2, y2);
     }
-    glPopAttrib();
+}
+
+static void DrawGLCircle( double x, double y, double r )
+{
+    //      Enable anti-aliased lines, at best quality
+    glEnable( GL_LINE_SMOOTH );
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+    
+    glBegin( GL_LINE_LOOP );
+    for(double t=0; t<2*M_PI; t+=M_PI/30)
+        glVertex2d(x+r*cos(t), y+r*sin(t));
+    glEnd();
+}
+
+void ClimatologyOverlayFactory::DrawCircle( double x, double y, double r,
+                                            const wxColour &color, int opacity, double width )
+{
+    if( m_pdc ) {
+        m_pdc->SetPen( wxPen(color, width ) );
+        m_pdc->SetBrush( *wxTRANSPARENT_BRUSH);
+        m_pdc->DrawCircle(x, y, r);
+    } else {
+        glColor4ub(color.Red(), color.Green(), color.Blue(), opacity);
+        glLineWidth( width );
+        DrawGLCircle(x, y, r);
+    }
 }
 
 struct ColorMap {
@@ -1139,18 +1155,46 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
       
         if( pGO->m_pDCBitmap )
             m_pdc->DrawBitmap( *( pGO->m_pDCBitmap ), porg.x, porg.y, true );
+#else
+    wxString msg = _("Climatology overlay map unsupported unless OpenGL is enabled");
+
+    wxMemoryDC mdc;
+    wxBitmap bm( 1000, 1000 );
+    mdc.SelectObject( bm );
+    mdc.Clear();
+
+    wxFont font( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+
+    mdc.SetFont( font );
+    mdc.SetPen( *wxTRANSPARENT_PEN);
+
+    mdc.SetBrush( wxColour(243, 47, 229 ) );
+    int w, h;
+    mdc.GetMultiLineTextExtent( msg, &w, &h );
+    h += 2;
+    int label_offset = 10;
+    int wdraw = w + ( label_offset * 2 );
+    mdc.DrawRectangle( 0, 0, wdraw, h );
+
+    mdc.DrawLabel( msg, wxRect( label_offset, 0, wdraw, h ), wxALIGN_LEFT| wxALIGN_CENTRE_VERTICAL);
+    mdc.SelectObject( wxNullBitmap );
+
+    wxBitmap sbm = bm.GetSubBitmap( wxRect( 0, 0, wdraw, h ) );
+    int x = vp.pix_width, y = vp.pix_height;
+    m_pdc->DrawBitmap( sbm, (x-wdraw)/2, y - ( GetChartbarHeight() + h ), false );
 #endif        
     }
 }
 
-void ClimatologyOverlayFactory::RenderNumber(wxPoint p, double v)
+void ClimatologyOverlayFactory::RenderNumber(wxPoint p, const wxColour &color, double v)
 {
     wxImage &label = getLabel(v);
     int w = label.GetWidth(), h = label.GetHeight();
 
-    if( m_pdc )
+    if( m_pdc ) {
+        m_pdc->SetPen( wxPen(color) );        
         m_pdc->DrawBitmap(label, p.x-w/2, p.y-h/2, true);
-    else {
+    } else {
         glEnable( GL_BLEND );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
@@ -1160,6 +1204,8 @@ void ClimatologyOverlayFactory::RenderNumber(wxPoint p, double v)
         glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, w, h,
                         GL_ALPHA, GL_UNSIGNED_BYTE, label.GetAlpha());
         
+        glColor3ub(color.Red(), color.Green(), color.Blue());
+
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glBegin(GL_QUADS);
         glTexCoord2i(0, 0), glVertex2i(p.x-w/2, p.y-h/2);
@@ -1230,8 +1276,7 @@ void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)
         for(p.x = space/2; p.x <= vp.rv_rect.width-space/2; p.x+=space) {
             double lat, lon;
             GetCanvasLLPix( &vp, p, &lat, &lon);
-            glColor4f(0, 0, 0, 1);
-            RenderNumber(p, getCurValue(MAG, setting, lat, lon));
+            RenderNumber(p, *wxBLACK, getCurValue(MAG, setting, lat, lon));
         }
 }
 
@@ -1266,7 +1311,6 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
           (vp.lon_max - vp.lon_min) / step > w / spacing)
         step *= 2;
 
-    glColor4ub(color.Red(), color.Green(), color.Blue(), opacity);
     for(double lat = round(vp.lat_min/step)*step-1; lat <= vp.lat_max+1; lat+=step)
         for(double lon = round(vp.lon_min/step)*step-1; lon <= vp.lon_max+1; lon+=step) {
             double u = getCurValue(U, setting, lat, lon), v = getCurValue(V, setting, lat, lon);
@@ -1291,12 +1335,13 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
             double x = -size*u, y = size*v;
             wxPoint p;
             GetCanvasPixLL( &vp, &p, lat, lon );
-            DrawGLLine(p.x+x, p.y+y, p.x-x, p.y-y, width);
+            DrawLine(p.x+x, p.y+y, p.x-x, p.y-y, color, opacity, width);
 
             if(!lengthtype) {
                 double ix = x, iy = y, dir = 1;
                 while(mag > cstep) {
-                    DrawGLLine(p.x+ix, p.y+iy, p.x+ix+x/3+dir*y/2, p.y+iy+y/3-dir*x/2, width);
+                    DrawLine(p.x+ix, p.y+iy, p.x+ix+x/3+dir*y/2, p.y+iy+y/3-dir*x/2,
+                             color, opacity, width);
                     dir = -dir;
                     if(dir > 0) {
                         ix = ix*2/3;
@@ -1306,8 +1351,10 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
                 }
             }
 
-            DrawGLLine(p.x-x, p.y-y, p.x-x/3+y*2/3, p.y-y/3-x*2/3, width);
-            DrawGLLine(p.x-x, p.y-y, p.x-x/3-y*2/3, p.y-y/3+x*2/3, width);
+            DrawLine(p.x-x, p.y-y, p.x-x/3+y*2/3, p.y-y/3-x*2/3,
+                     color, opacity, width);
+            DrawLine(p.x-x, p.y-y, p.x-x/3-y*2/3, p.y-y/3+x*2/3,
+                     color, opacity, width);
         }
 }
 
@@ -1389,18 +1436,18 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::
 #endif
                 {
 
-                    double intense =  (ss->windknots / 150);
+                    int intense =  (ss->windknots * 2);
 
-                    if(intense > 1) intense = 1;
+                    if(intense > 255) intense = 255;
+                    wxColour color;
                     switch(ss->state) {
-                    case CycloneState::TROPICAL:      glColor3d(intense, 0, 0); break;
-                    case CycloneState::SUBTROPICAL:   glColor3d(intense/2, intense/2, 0); break;
-                    case CycloneState::EXTRATROPICAL: glColor3d(0, intense, 0); break;
-                    default:                        glColor3d(0, 0, intense); break;
+                    case CycloneState::TROPICAL:      color = wxColor(intense, 0, 0); break;
+                    case CycloneState::SUBTROPICAL:   color = wxColor(intense/2, intense/2, 0); break;
+                    case CycloneState::EXTRATROPICAL: color = wxColor(0, intense, 0); break;
+                    default:                          color = wxColor(0, 0, intense); break;
                     }
                     
-                    glVertex2i(lastp.x, lastp.y);
-                    glVertex2i(p.x, p.y);
+                    DrawLine(lastp.x, lastp.y, p.x, p.y, color, 255, 1);
                 }
             }
 
@@ -1434,16 +1481,13 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
             wxPoint p;
             GetCanvasPixLL(&vp, &p, lat, lon);
                         
-            if(polar->storm*2 > polar->calm) {
-                glColor3d(1, 0, 0);
-                RenderNumber(p, polar->storm);
-            } else if(polar->calm > 0) {
-                glColor3d(0, 0, .7);
-                RenderNumber(p, polar->calm);
-            }
+            if(polar->storm*2 > polar->calm)
+                RenderNumber(p, *wxRED, polar->storm);
+            else if(polar->calm > 0)
+                RenderNumber(p, wxColour(0, 0, 180), polar->calm);
             
-            glColor4ub(0, 0, 0, m_dlg.m_cfgdlg->m_sWindAtlasOpacity->GetValue());
-            DrawGLCircle(p.x, p.y, r, 2);
+            int opacity = m_dlg.m_cfgdlg->m_sWindAtlasOpacity->GetValue();
+            DrawCircle(p.x, p.y, r, *wxBLACK, opacity, 2);
 
             int totald = 0;
             for(int i=0; i<dir_cnt; i++)
@@ -1465,26 +1509,24 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
 
                 if(split) {
                     wxPoint q((x1 + x2)/2, (y1 + y2)/2);
-                    RenderNumber(q, 100*per);
+                    RenderNumber(q, *wxBLACK, 100*per);
 
-                    DrawGLLine(x1, y1, (3*x1+x2)/4, (3*y1+y2)/4, 2);
-                    DrawGLLine((x1+3*x2)/4, (y1+3*y2)/4, x2, y2, 2);
+                    DrawLine(x1, y1, (3*x1+x2)/4, (3*y1+y2)/4, *wxBLACK, opacity, 2);
+                    DrawLine((x1+3*x2)/4, (y1+3*y2)/4, x2, y2, *wxBLACK, opacity, 2);
                 } else
-                    DrawGLLine(x1, y1, x2, y2, 2);
+                    DrawLine(x1, y1, x2, y2, *wxBLACK, opacity, 2);
 
                 double avg_speed = (double)polar->speeds[d] / polar->directions[d];
                 double dir = 1;
                 const double a = 10, b = M_PI*2/3;
                 while(avg_speed > 2) {
-                    DrawGLLine(x2, y2, x2+a*cos(theta+dir*b), y2-a*sin(theta+dir*b), 2);
+                    DrawLine(x2, y2, x2+a*cos(theta+dir*b), y2-a*sin(theta+dir*b), *wxBLACK, opacity, 2);
                     dir = -dir;
                     if(dir > 0)
                         x2 += 3*cos(theta), y2 -= 3*sin(theta);
                     avg_speed -= 5;
                 }
             }
-            
-            /* todo: draw barbs */
         }
 }
 
@@ -1502,10 +1544,6 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
     glNewList(m_cyclonelist, GL_COMPILE_AND_EXECUTE);
 #endif
 
-    glLineWidth(1);
-
-    glBegin(GL_LINES);
-
     if(m_dlg.m_cfgdlg->m_cbEastPacific->GetValue())
         RenderCyclonesTheatre(vp, m_epa);
     if(m_dlg.m_cfgdlg->m_cbWestPacific->GetValue())
@@ -1518,8 +1556,6 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
         RenderCyclonesTheatre(vp, m_nio);
     if(m_dlg.m_cfgdlg->m_cbSouthIndian->GetValue())
         RenderCyclonesTheatre(vp, m_she);
-
-    glEnd();
     
 #if 0
     glEndList();
@@ -1527,43 +1563,9 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 #endif
 }
 
-bool ClimatologyOverlayFactory::RenderOverlay( wxDC &dc, PlugIn_ViewPort &vp )
+bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
 {
-    m_pdc = &dc;
-
-    wxString msg = _("Climatology rendering unsupported unless OpenGL is enabled");
-
-    wxMemoryDC mdc;
-    wxBitmap bm( 1000, 1000 );
-    mdc.SelectObject( bm );
-    mdc.Clear();
-
-    wxFont font( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
-
-    mdc.SetFont( font );
-    mdc.SetPen( *wxTRANSPARENT_PEN);
-
-    mdc.SetBrush( wxColour(243, 47, 229 ) );
-    int w, h;
-    mdc.GetMultiLineTextExtent( msg, &w, &h );
-    h += 2;
-    int label_offset = 10;
-    int wdraw = w + ( label_offset * 2 );
-    mdc.DrawRectangle( 0, 0, wdraw, h );
-
-    mdc.DrawLabel( msg, wxRect( label_offset, 0, wdraw, h ), wxALIGN_LEFT| wxALIGN_CENTRE_VERTICAL);
-    mdc.SelectObject( wxNullBitmap );
-
-    wxBitmap sbm = bm.GetSubBitmap( wxRect( 0, 0, wdraw, h ) );
-    int x = vp.pix_width, y = vp.pix_height;
-    m_pdc->DrawBitmap( sbm, (x-wdraw)/2, y - ( GetChartbarHeight() + h ), false );
-
-    return true;
-}
-
-bool ClimatologyOverlayFactory::RenderGLOverlay( wxGLContext *pcontext, PlugIn_ViewPort &vp )
-{
-    m_pdc = NULL;
+    m_pdc = dc;
 
     for(int overlay = 1; overlay >= 0; overlay--)
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
@@ -1591,3 +1593,4 @@ bool ClimatologyOverlayFactory::RenderGLOverlay( wxGLContext *pcontext, PlugIn_V
 
     return true;
 }
+

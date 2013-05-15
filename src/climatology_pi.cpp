@@ -254,23 +254,21 @@ void climatology_pi::OnClimatologyDialogClose()
 
 bool climatology_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
 {
-    if(!m_pClimatologyDialog ||
-       !m_pClimatologyDialog->IsShown() ||
+    if(!m_pClimatologyDialog || !m_pClimatologyDialog->IsShown() ||
        !m_pOverlayFactory)
         return false;
 
-    m_pOverlayFactory->RenderOverlay ( dc, *vp );
+    m_pOverlayFactory->RenderOverlay ( &dc, *vp );
     return true;
 }
 
 bool climatology_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
 {
-    if(!m_pClimatologyDialog ||
-       !m_pClimatologyDialog->IsShown() ||
+    if(!m_pClimatologyDialog || !m_pClimatologyDialog->IsShown() ||
        !m_pOverlayFactory)
         return false;
 
-    m_pOverlayFactory->RenderGLOverlay ( pcontext, *vp );
+    m_pOverlayFactory->RenderOverlay ( NULL, *vp );
     return true;
 }
 
@@ -330,10 +328,10 @@ bool climatology_pi::SaveConfig(void)
 
     pConf->SetPath ( _T ( "/Settings/Climatology" ) );
 
-    pConf->Write ( _T ( "DialogSizeX" ),  m_climatology_dialog_sx );
-    pConf->Write ( _T ( "DialogSizeY" ),  m_climatology_dialog_sy );
-    pConf->Write ( _T ( "DialogPosX" ),   m_climatology_dialog_x );
-    pConf->Write ( _T ( "DialogPosY" ),   m_climatology_dialog_y );
+    pConf->Write ( _T ( "DialogSizeX" ), m_climatology_dialog_sx );
+    pConf->Write ( _T ( "DialogSizeY" ), m_climatology_dialog_sy );
+    pConf->Write ( _T ( "DialogPosX" ),  m_climatology_dialog_x );
+    pConf->Write ( _T ( "DialogPosY" ),  m_climatology_dialog_y );
     
     return true;
 }

@@ -433,7 +433,8 @@ void IsoLine::drawIsoLine(wxDC *dc, PlugIn_ViewPort *vp, bool bHiDef)
 #endif
                       dc->DrawLine(ab.x, ab.y, cd.x, cd.y);
             } else { /* opengl */
-                DrawGLLine(ab.x, ab.y, cd.x, cd.y, 2);
+                glLineWidth( 2 );
+                DrawGLLine(ab.x, ab.y, cd.x, cd.y);
             }
         }
     }
