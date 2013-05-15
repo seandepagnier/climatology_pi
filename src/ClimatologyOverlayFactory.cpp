@@ -244,7 +244,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
         m_dlg.m_cfgdlg->m_cbNeutral->Disable();
     }
 
-    wxDateTime datetime;
+    wxDateTime datetime = wxDateTime::Now();
     datetime.SetYear(1985);
     m_dlg.m_cfgdlg->m_dPStart->SetValue(datetime);
 }
@@ -505,7 +505,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
                 lyear++;
             llastmonth = lmonth;
 
-            wxDateTime datetime;
+            wxDateTime datetime = wxDateTime::Now();
             datetime.SetDay(lday/4);
             datetime.SetMonth((wxDateTime::Month)(lmonth-1));
             datetime.SetYear(lyear);

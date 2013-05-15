@@ -180,7 +180,7 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     PopulateUnits(m_lastdatatype);
     ReadDataTypeSettings(m_lastdatatype);
 
-    wxDateTime dt;
+    wxDateTime dt = wxDateTime::Now();
 #ifdef __MSVC__
     dt.SetYear(1972);
 #else

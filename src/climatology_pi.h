@@ -38,7 +38,7 @@
 #define     PLUGIN_VERSION_MINOR    1
 
 #define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    8
+#define     MY_API_VERSION_MINOR    9
 
 #include "../../../include/ocpn_plugin.h"
 
@@ -102,7 +102,7 @@ static inline double positive_degrees(double degrees)
 
 #define CLIMATOLOGY_TOOL_POSITION    -1          // Request default positioning of toolbar tool
 
-class climatology_pi : public opencpn_plugin_18
+class climatology_pi : public opencpn_plugin_19
 {
 public:
       climatology_pi(void *ppimgr);
