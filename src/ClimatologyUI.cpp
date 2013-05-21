@@ -100,6 +100,14 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	m_tCloudCover = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer4->Add( m_tCloudCover, 0, wxALL, 5 );
 	
+	m_cbPrecipitation = new wxCheckBox( this, wxID_ANY, _("Precipitation"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbPrecipitation->Enable( false );
+	
+	fgSizer4->Add( m_cbPrecipitation, 0, wxALL, 5 );
+	
+	m_tPrecipitation = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer4->Add( m_tPrecipitation, 0, wxALL, 5 );
+	
 	m_cbCyclones = new wxCheckBox( this, wxID_ANY, _("Cyclones"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbCyclones->Enable( false );
 	
@@ -140,6 +148,7 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	m_cbPressure->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_cbSeaTemperature->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_cbCloudCover->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
+	m_cbPrecipitation->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_cbCyclones->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_bConfig->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnConfig ), NULL, this );
 }
@@ -162,6 +171,7 @@ ClimatologyDialogBase::~ClimatologyDialogBase()
 	m_cbPressure->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_cbSeaTemperature->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_cbCloudCover->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
+	m_cbPrecipitation->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_cbCyclones->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_bConfig->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnConfig ), NULL, this );
 	

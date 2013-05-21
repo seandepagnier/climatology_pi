@@ -115,6 +115,7 @@ void ClimatologyDialog::UpdateTrackingControls()
     m_tPressure->SetValue(GetValue(ClimatologyOverlaySettings::SLP));
     m_tSeaTemperature->SetValue(GetValue(ClimatologyOverlaySettings::SST));
     m_tCloudCover->SetValue(GetValue(ClimatologyOverlaySettings::CLOUD));
+    m_tPrecipitation->SetValue(GetValue(ClimatologyOverlaySettings::PRECIPITATION));
 }
 
 void ClimatologyDialog::SetFactoryOptions()

@@ -9,7 +9,7 @@ ALL_CURRENT += $(DATA)/current04.gz $(DATA)/current05.gz $(DATA)/current06.gz
 ALL_CURRENT += $(DATA)/current07.gz $(DATA)/current08.gz $(DATA)/current09.gz
 ALL_CURRENT += $(DATA)/current10.gz $(DATA)/current11.gz $(DATA)/current12.gz
 
-ALL_OTHER = $(DATA)/sealevelpressure $(DATA)/seasurfacetemperature $(DATA)/cloud
+ALL_OTHER = $(DATA)/sealevelpressure.gz $(DATA)/seasurfacetemperature.gz $(DATA)/cloud.gz
 ALL_CYCLONE = $(DATA)/cyclone-atl $(DATA)/cyclone-bio $(DATA)/cyclone-bsh $(DATA)/cyclone-bwp $(DATA)/cyclone-epa $(DATA)/cyclone-she $(DATA)/cyclone-spa
 ALL = $(ALL_WIND) $(ALL_CURRENT) $(ALL_OTHER) $(ALL_CYCLONE)
 
@@ -69,32 +69,41 @@ genwinddata: genwinddata.cpp zuFile.cpp
 gencurrentdata: gencurrentdata.cpp
 	g++ -o gencurrentdata gencurrentdata.cpp -lnetcdf -lnetcdf_c++ -g
 
-$(DATA)/sealevelpressure: slpcoadsclim5079.nc genslpdata
-	./genslpdata > $@
+$(DATA)/sealevelpressure.gz: slpcoadsclim5079.nc genslpdata
+	./genslpdata | gzip > $@
 
 slpcoadsclim5079.nc:
 	wget -c http://www.jisao.washington.edu/data/coads_climatologies/slpcoadsclim5079.nc
 
-genslpdata: genslpdata.cpp slpcoadsclim5079.nc
+genslpdata: genslpdata.cpp
 	g++ -o genslpdata genslpdata.cpp -lnetcdf -lnetcdf_c++ -g
 
-$(DATA)/seasurfacetemperature: sstcoadsclim6079.1deg.nc gensstdata
-	./gensstdata > $@
+$(DATA)/seasurfacetemperature.gz: sstcoadsclim6079.1deg.nc gensstdata
+	./gensstdata | gzip > $@
 
 sstcoadsclim6079.1deg.nc:
 	wget -c http://www.jisao.washington.edu/data/coads_climatologies/sstcoadsclim6079.1deg.nc
 
-gensstdata: gensstdata.cpp sstcoadsclim6079.1deg.nc
+gensstdata: gensstdata.cpp
 	g++ -o gensstdata gensstdata.cpp -lnetcdf -lnetcdf_c++ -g
 
-$(DATA)/cloud: cldccoadsclim5079.nc genclddata
-	./genclddata > $@
+$(DATA)/cloud.gz: cldccoadsclim5079.nc genclddata
+	./genclddata | gzip > $@
 
 cldccoadsclim5079.nc:
 	wget -c http://www.jisao.washington.edu/data/coads_climatologies/cldccoadsclim5079.nc
 
-genclddata: genclddata.cpp cldccoadsclim5079.nc
+genclddata: genclddata.cpp
 	g++ -o genclddata genclddata.cpp -lnetcdf -lnetcdf_c++ -g
+
+$(DATA)/precipitation.gz: precip.mon.mean.nc genprecipdata
+	./genprecipdata | gzip > $@
+
+precip.mon.mean.nc:
+	wget -c ftp://ftp.cdc.noaa.gov/Datasets/cmap/std/precip.mon.mean.nc
+
+genprecipdata: genprecipdata.cpp
+	g++ -o genprecipdata genprecipdata.cpp -lnetcdf -lnetcdf_c++ -g
 
 $(DATA)/cyclone-%: tracks.% gencyclonedata
 	./gencyclonedata $< > $@

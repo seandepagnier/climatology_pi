@@ -61,7 +61,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
         m_CurrentData[month] = NULL;
     }
 
-    wxProgressDialog progressdialog( _("Climatology"), wxString(), 36, &m_dlg,
+    wxProgressDialog progressdialog( _("Climatology"), wxString(), 37, &m_dlg,
                                      wxPD_CAN_ABORT | wxPD_ELAPSED_TIME);
     ClearCachedData();
 
@@ -72,7 +72,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     for(int month = 0; month < 12; month++) {
         if(!progressdialog.Update(month, wxString::Format(_("wind")+fmt, month+1)))
             return;
-        ReadWindData(month, path+wxString::Format(_T("wind%02d.gz"), month+1));
+        ReadWindData(month, path+wxString::Format(_T("wind%02d"), month+1));
     }
 
     if(!progressdialog.Update(12, _("averaging wind")))
@@ -83,7 +83,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     for(int month = 0; month < 12; month++) {
         if(!progressdialog.Update(month+13, wxString::Format(_("current")+fmt, month+1)))
             return;
-        ReadCurrentData(month, path+wxString::Format(_T("current%02d.gz"), month+1));
+        ReadCurrentData(month, path+wxString::Format(_T("current%02d"), month+1));
     }
 
     if(!progressdialog.Update(25, _("averaging current")))
@@ -94,7 +94,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     /* load sea level pressure and sea surface temperature */
     if(!progressdialog.Update(26, _("sea level presure")))
         return;
-    wxString slp_path = path + _T("sealevelpressure");
+    wxString slp_path = path + _T("sealevelpressure.gz");
     f = zu_open(slp_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f)
         wxLogMessage(climatology_pi + _("failed to read file: ") + slp_path);
@@ -125,7 +125,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(27, _("sea surface tempertature")))
         return;
-    wxString sst_path = path + _T("seasurfacetemperature");
+    wxString sst_path = path + _T("seasurfacetemperature.gz");
     f = zu_open(sst_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f)
         wxLogMessage(climatology_pi + _("failed to read file: ") + sst_path);
@@ -158,7 +158,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(28, _("cloud cover")))
         return;
-    wxString cld_path = path + _T("cloud");
+    wxString cld_path = path + _T("cloud.gz");
     f = zu_open(cld_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f)
         wxLogMessage(climatology_pi + _("failed to read file: ") + cld_path);
@@ -189,44 +189,77 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     }
     zu_close(f);
 
+    if(!progressdialog.Update(29, _("precipitation")))
+        return;
+    wxString precip_path = path + _T("precipitation.gz");
+    f = zu_open(precip_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
+    if(!f)
+        wxLogMessage(climatology_pi + _("failed to read file: ") + precip_path);
+    else {
+        wxUint8 precip[12][72][144];
+        if(zu_read(f, precip, sizeof precip) != sizeof precip)
+            wxLogMessage(climatology_pi + _("precip file truncated"));
+        else {
+            for(int j=0; j<72; j++)
+                for(int k=0; k<144; k++) {
+                    long total = 0, totalcount = 0;
+                    for(int i=0; i<12; i++) {
+                        if(precip[i][j][k] == 255)
+                            m_precip[i][j][k] = 32767;
+                        else {
+                            m_precip[i][j][k] = precip[i][j][k]*100;
+                            total += m_precip[i][j][k];
+                            totalcount++;
+                        }
+                        if(totalcount)
+                            m_precip[12][j][k] = total / totalcount;
+                        else
+                            m_precip[12][j][k] = 32767;
+                    }
+                }
+            m_dlg.m_cbPrecipitation->Enable();
+        }
+    }
+    zu_close(f);
+
     /* load cyclone tracks */
     bool anycyclone = false;
-    if(!progressdialog.Update(29, _("cyclone (east pacific)")))
+    if(!progressdialog.Update(30, _("cyclone (east pacific)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-epa"), m_epa))
         m_dlg.m_cfgdlg->m_cbEastPacific->Disable();
     else
         anycyclone = true;
 
-    if(!progressdialog.Update(30, _("cyclone (west pacific)")))
+    if(!progressdialog.Update(31, _("cyclone (west pacific)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-bwp"), m_bwp))
         m_dlg.m_cfgdlg->m_cbWestPacific->Disable();
     else
         anycyclone = true;
 
-    if(!progressdialog.Update(31, _("cyclone (south pacific)")))
+    if(!progressdialog.Update(32, _("cyclone (south pacific)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-spa"), m_spa))
         m_dlg.m_cfgdlg->m_cbSouthPacific->Disable();
     else
         anycyclone = true;
 
-    if(!progressdialog.Update(32, _("cyclone (atlantic)")))
+    if(!progressdialog.Update(33, _("cyclone (atlantic)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-atl"), m_atl))
         m_dlg.m_cfgdlg->m_cbAtlantic->Disable();
     else
         anycyclone = true;
 
-    if(!progressdialog.Update(33, _("cyclone (north indian)")))
+    if(!progressdialog.Update(35, _("cyclone (north indian)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-nio"), m_nio))
         m_dlg.m_cfgdlg->m_cbNorthIndian->Disable();
     else
         anycyclone = true;
 
-    if(!progressdialog.Update(34, _("cyclone (south indian)")))
+    if(!progressdialog.Update(36, _("cyclone (south indian)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-she"), m_she, true))
         m_dlg.m_cfgdlg->m_cbSouthIndian->Disable();
@@ -236,7 +269,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     if(anycyclone)
         m_dlg.m_cbCyclones->Enable();
 
-    if(!progressdialog.Update(35, _("el nino years")))
+    if(!progressdialog.Update(36, _("el nino years")))
         return;
     if(!ReadElNinoYears(path + _T("elnino_years.txt"))) {
         m_dlg.m_cfgdlg->m_cbElNino->Disable();
@@ -636,85 +669,75 @@ void ClimatologyOverlayFactory::DrawCircle( double x, double y, double r,
 struct ColorMap {
     double val;
     wxString text;
+    wxUint8 transp;
 };
 
 ColorMap WindMap[] =
-{{0,  _T("#ffffff")}, {2, _T("#00ffff")},  {4,  _T("#00e4e4")}, {5,  _T("#00d9e4")},
- {6,  _T("#00d9d4")}, {7, _T("#00d9b2")},  {8,  _T("#00d96e")}, {9,  _T("#00d92a")},
- {10, _T("#00d900")}, {11, _T("#2ad900")}, {12, _T("#6ed900")}, {13, _T("#b2d900")},
- {14, _T("#d4d400")}, {15, _T("#d9a600")}, {16, _T("#d90000")}, {17, _T("#d90040")},
- {18, _T("#d90060")}, {19, _T("#ae0080")}, {20, _T("#8300a0")}, {21, _T("#5700c0")},
- {25, _T("#0000d0")}, {30, _T("#0000f0")}, {35, _T("#00a0ff")}, {40, _T("#a0a0ff")},
- {50, _T("#ffffff")}};
+{{0,  _T("#ffffff"), 0}, {2, _T("#00ffff"), 0},  {4,  _T("#00e4e4"), 0}, {5,  _T("#00d9e4"), 0},
+ {6,  _T("#00d9d4"), 0}, {7, _T("#00d9b2"), 0},  {8,  _T("#00d96e"), 0}, {9,  _T("#00d92a"), 0},
+ {10, _T("#00d900"), 0}, {11, _T("#2ad900"), 0}, {12, _T("#6ed900"), 0}, {13, _T("#b2d900"), 0},
+ {14, _T("#d4d400"), 0}, {15, _T("#d9a600"), 0}, {16, _T("#d90000"), 0}, {17, _T("#d90040"), 0},
+ {18, _T("#d90060"), 0}, {19, _T("#ae0080"), 0}, {20, _T("#8300a0"), 0}, {21, _T("#5700c0"), 0},
+ {25, _T("#0000d0"), 0}, {30, _T("#0000f0"), 0}, {35, _T("#00a0ff"), 0}, {40, _T("#a0a0ff"), 0},
+ {50, _T("#ffffff"), 0}};
 
 ColorMap CurrentMap[] =
-{{0,   _T("#0000d9")}, {.1,  _T("#002ad9")},  {.2, _T("#006ed9")},  {.3, _T("#00b2d9")},
- {.4,  _T("#04d4d4")}, {.5,  _T("#06d9a6")},  {.7, _T("#a0d906")},  {.9, _T("#b0d900")},
- {1.2, _T("#c0d900")}, {1.5, _T("#d0ae00")}, {1.8, _T("#e08300")}, {2.1, _T("#e05700")},
- {2.4, _T("#f00000")}, {2.7, _T("#f00004")}, {3.0, _T("#f0001c")}, {3.6, _T("#f00048")},
- {4.2, _T("#f00069")}, {4.8, _T("#f000a0")}, {5.6, _T("#f000f0")}};
+{{0,   _T("#0000d9"), 0}, {.1,  _T("#002ad9"), 0},  {.2, _T("#006ed9"), 0},  {.3, _T("#00b2d9"), 0},
+ {.4,  _T("#04d4d4"), 0}, {.5,  _T("#06d9a6"), 0},  {.7, _T("#a0d906"), 0},  {.9, _T("#b0d900"), 0},
+ {1.2, _T("#c0d900"), 0}, {1.5, _T("#d0ae00"), 0}, {1.8, _T("#e08300"), 0}, {2.1, _T("#e05700"), 0},
+ {2.4, _T("#f00000"), 0}, {2.7, _T("#f00004"), 0}, {3.0, _T("#f0001c"), 0}, {3.6, _T("#f00048"), 0},
+ {4.2, _T("#f00069"), 0}, {4.8, _T("#f000a0"), 0}, {5.6, _T("#f000f0"), 0}};
 
 ColorMap PressureMap[] =
-{{900,  _T("#283282")}, {980,  _T("#273c8c")}, {990,  _T("#264696")}, {1000,  _T("#2350a0")},
- {1001, _T("#1f5aaa")}, {1002, _T("#1a64b4")}, {1003, _T("#136ec8")}, {1004, _T("#0c78e1")},
- {1005, _T("#0382e6")}, {1006, _T("#0091e6")}, {1007, _T("#009ee1")}, {1008, _T("#00a6dc")},
- {1009, _T("#00b2d7")}, {1010, _T("#00bed2")}, {1011, _T("#28c8c8")}, {1012, _T("#78d2aa")},
- {1013, _T("#8cdc78")}, {1014, _T("#a0eb5f")}, {1015, _T("#c8f550")}, {1016, _T("#f3fb02")},
- {1017, _T("#ffed00")}, {1018, _T("#ffdd00")}, {1019, _T("#ffc900")}, {1020, _T("#ffab00")},
- {1021, _T("#ff8100")}, {1022, _T("#f1780c")}, {1024, _T("#e26a23")}, {1028, _T("#d5453c")},
- {1040, _T("#b53c59")}};
+{{900,  _T("#283282"), 0}, {980,  _T("#273c8c"), 0}, {990,  _T("#264696"), 0}, {1000,  _T("#2350a0"), 0},
+ {1001, _T("#1f5aaa"), 0}, {1002, _T("#1a64b4"), 0}, {1003, _T("#136ec8"), 0}, {1004, _T("#0c78e1"), 0},
+ {1005, _T("#0382e6"), 0}, {1006, _T("#0091e6"), 0}, {1007, _T("#009ee1"), 0}, {1008, _T("#00a6dc"), 0},
+ {1009, _T("#00b2d7"), 0}, {1010, _T("#00bed2"), 0}, {1011, _T("#28c8c8"), 0}, {1012, _T("#78d2aa"), 0},
+ {1013, _T("#8cdc78"), 0}, {1014, _T("#a0eb5f"), 0}, {1015, _T("#c8f550"), 0}, {1016, _T("#f3fb02"), 0},
+ {1017, _T("#ffed00"), 0}, {1018, _T("#ffdd00"), 0}, {1019, _T("#ffc900"), 0}, {1020, _T("#ffab00"), 0},
+ {1021, _T("#ff8100"), 0}, {1022, _T("#f1780c"), 0}, {1024, _T("#e26a23"), 0}, {1028, _T("#d5453c"), 0},
+ {1040, _T("#b53c59"), 0}};
 
 ColorMap SeaTempMap[] =
-{{0, _T("#0000d9")},  {3, _T("#002ad9")},  {6, _T("#006ed9")},  {9, _T("#00b2d9")},
- {12, _T("#00d4d4")}, {15, _T("#00d9a6")}, {18, _T("#00d900")}, {20, _T("#95d900")},
- {22, _T("#d9d900")}, {23, _T("#d9ae00")}, {24, _T("#d98300")}, {25, _T("#d95700")},
- {26, _T("#d90000")}, {27, _T("#ae0000")}, {28, _T("#8c0000")}, {29, _T("#870000")},
- {30, _T("#690000")}, {32, _T("#550000")}, {35, _T("#410000")}};
+{{0, _T("#0000d9"), 0},  {3, _T("#002ad9"), 0},  {6, _T("#006ed9"), 0},  {9, _T("#00b2d9"), 0},
+ {12, _T("#00d4d4"), 0}, {15, _T("#00d9a6"), 0}, {18, _T("#00d900"), 0}, {20, _T("#95d900"), 0},
+ {22, _T("#d9d900"), 0}, {23, _T("#d9ae00"), 0}, {24, _T("#d98300"), 0}, {25, _T("#d95700"), 0},
+ {26, _T("#d90000"), 0}, {27, _T("#ae0000"), 0}, {28, _T("#8c0000"), 0}, {29, _T("#870000"), 0},
+ {30, _T("#690000"), 0}, {32, _T("#550000"), 0}, {35, _T("#410000"), 0}};
 
 ColorMap CloudMap[] =
-{{0, _T("#f0f0e6")}, {1, _T("#e6e6dc")}, {2, _T("#dcdcd2")},
- {3, _T("#c8c8b4")}, {4, _T("#aaaa8c")}, {5, _T("#969678")}, {6, _T("#787864")},
- {7, _T("#646450")}, {8, _T("#5a5a46")}, {9, _T("#505036")}};
+{{0, _T("#f0f0e6"), 255}, {1, _T("#e6e6dc"), 224}, {2, _T("#dcdcd2"), 192},
+ {3, _T("#c8c8b4"), 160}, {4, _T("#aaaa8c"), 128}, {5, _T("#969678"), 96}, {6, _T("#787864"), 64},
+ {7, _T("#646450"), 32}, {8, _T("#5a5a46"), 0}, {9, _T("#505036"), 0}};
 
-ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap, CloudMap};
-enum {WIND_GRAPHIC, CURRENT_GRAPHIC, PRESSURE_GRAPHIC, SEATEMP_GRAPHIC, CLOUD_GRAPHIC};
+ColorMap PrecipitationMap[] =
+{{0, _T("#000080"), 255}, {1, _T("#0000a0"), 208}, {2, _T("#4040f0"), 164},
+ {3, _T("#8080f0"), 128}, {4, _T("#f0f0f0"), 64}, {5, _T("#f0a0f0"), 32}, {8, _T("#f080f0"), 0},
+ {10, _T("#f04080"), 0}, {13, _T("#f00040"), 0}, {16, _T("#f00000"), 0}, {19, _T("#800000"), 0}};
 
-wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in)
+ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap, CloudMap, PrecipitationMap};
+const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
+                             (sizeof CurrentMap) / (sizeof *CurrentMap),
+                             (sizeof PressureMap) / (sizeof *PressureMap),
+                             (sizeof SeaTempMap) / (sizeof *SeaTempMap),
+                             (sizeof CloudMap) / (sizeof *CloudMap),
+                             (sizeof PrecipitationMap) / (sizeof *PrecipitationMap) };
+
+enum {WIND_GRAPHIC, CURRENT_GRAPHIC, PRESSURE_GRAPHIC, SEATEMP_GRAPHIC, CLOUD_GRAPHIC,
+      PRECIPITATION_GRAPHIC};
+
+wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in, wxUint8 &transp)
 {
-    int colormap_index = setting;
-    ColorMap *map;
-    int maplen;
-
-    switch(colormap_index) {
-    case WIND_GRAPHIC:
-        map = WindMap;
-        maplen = (sizeof WindMap) / (sizeof *WindMap);
-        break;
-    case CURRENT_GRAPHIC:
-        map = CurrentMap;
-        maplen = (sizeof CurrentMap) / (sizeof *CurrentMap);
-        break;
-    case PRESSURE_GRAPHIC: 
-        map = PressureMap;
-        maplen = (sizeof PressureMap) / (sizeof *PressureMap);
-        break;
-    case SEATEMP_GRAPHIC: 
-        map = SeaTempMap;
-        maplen = (sizeof SeaTempMap) / (sizeof *SeaTempMap);
-        break;
-    case CLOUD_GRAPHIC: 
-        map = CloudMap;
-        maplen = (sizeof CloudMap) / (sizeof *CloudMap);
-        break;
+    if(isnan(val_in)) {
+        transp = 255; /* transparent */
+        return *wxBLACK;
     }
 
-#if 0
-    /* normalize map from 0 to 1 */
-    double cmax = map[maplen-1].val;
-#else
-    double cmax = 1;
-#endif
+    int colormap_index = setting;
+    ColorMap *map = ColorMaps[colormap_index];
+    int maplen = ColorMapLens[colormap_index];
 
+    double cmax = 1;
     for(int i=1; i<maplen; i++) {
         double nmapvala = map[i-1].val/cmax;
         double nmapvalb = map[i].val/cmax;
@@ -726,6 +749,7 @@ wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in)
             c.Set((1-d)*b.Red()   + d*c.Red(),
                   (1-d)*b.Green() + d*c.Green(),
                   (1-d)*b.Blue()  + d*c.Blue());
+            transp = (1-d)*map[i-1].transp + d*map[i].transp;
             return c;
         }
     }
@@ -776,15 +800,12 @@ bool ClimatologyOverlayFactory::CreateGLTexture( ClimatologyOverlay &O, int sett
 
             double v = getCurValue(MAG, setting, lat, lon);
             unsigned char r, g, b, a;
-            if(isnan(v))
-                a = 0; /* transparent */
-            else {
-                wxColour c = GetGraphicColor(setting, v);
-                r = c.Red();
-                g = c.Green();
-                b = c.Blue();
-                a = 220;
-            }
+            wxUint8 t;
+            wxColour c = GetGraphicColor(setting, v, t);
+            r = c.Red();
+            g = c.Green();
+            b = c.Blue();
+            a = 255-t;
 
             int doff = 4*(y*width + x);
             data[doff + 0] = 255-r;
@@ -1097,8 +1118,12 @@ double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
                                m_sst[month][0], 360) * .001f + 15.0;
     case ClimatologyOverlaySettings::CLOUD:
         if(coord == MAG)
-            return InterpArray((-lat+90)/2-.5, positive_degrees(lon-1.5)/2,
+            return InterpArray((-lat+90)/2-.5, positive_degrees(lon-.5)/2,
                                m_cld[month][0], 180) * .001f;
+    case ClimatologyOverlaySettings::PRECIPITATION:
+        if(coord == MAG)
+            return InterpArray((-lat+90)/2.5, positive_degrees(lon-2)/2.5,
+                               m_precip[month][0], 144) * .002f;
     }
     return NAN;
 }
@@ -1569,11 +1594,12 @@ bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
 
     for(int overlay = 1; overlay >= 0; overlay--)
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
-        if((i == ClimatologyOverlaySettings::WIND    && !m_dlg.m_cbWind->GetValue()) ||
-           (i == ClimatologyOverlaySettings::CURRENT && !m_dlg.m_cbCurrent->GetValue()) ||
-           (i == ClimatologyOverlaySettings::SLP     && !m_dlg.m_cbPressure->GetValue()) ||
-           (i == ClimatologyOverlaySettings::SST     && !m_dlg.m_cbSeaTemperature->GetValue()) ||
-           (i == ClimatologyOverlaySettings::CLOUD   && !m_dlg.m_cbCloudCover->GetValue()))
+        if((i == ClimatologyOverlaySettings::WIND           && !m_dlg.m_cbWind->GetValue()) ||
+           (i == ClimatologyOverlaySettings::CURRENT        && !m_dlg.m_cbCurrent->GetValue()) ||
+           (i == ClimatologyOverlaySettings::SLP            && !m_dlg.m_cbPressure->GetValue()) ||
+           (i == ClimatologyOverlaySettings::SST            && !m_dlg.m_cbSeaTemperature->GetValue()) ||
+           (i == ClimatologyOverlaySettings::CLOUD          && !m_dlg.m_cbCloudCover->GetValue()) ||
+           (i == ClimatologyOverlaySettings::PRECIPITATION  && !m_dlg.m_cbPrecipitation->GetValue()))
             continue;
 
         if(overlay) /* render overlays first */

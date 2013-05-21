@@ -166,7 +166,7 @@ private:
     void RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones);
     void RenderCyclones(PlugIn_ViewPort &vp);
 
-    wxColour GetGraphicColor(int setting, double val_in);
+    wxColour GetGraphicColor(int setting, double val_in, wxUint8 &transp);
     bool CreateGLTexture(ClimatologyOverlay &O, int setting, PlugIn_ViewPort &vp);
     void DrawGLTexture(ClimatologyOverlay &O, PlugIn_ViewPort &vp);
 
@@ -185,9 +185,11 @@ private:
     WindData *m_WindData[13];
     CurrentData *m_CurrentData[13];
 
-    wxInt16 m_slp[13][90][180];  /* 12 months + year total and average at 2 degree intervals */
-    wxInt16 m_sst[13][180][360]; /* 12 months + year total and average at 1 degree intervals */
-    wxInt16 m_cld[13][90][180];  /* 12 months + year total and average at 2 degree intervals */
+    /* 12 months + year total and average */
+    wxInt16 m_slp[13][90][180];    /* 2 degree intervals   */
+    wxInt16 m_sst[13][180][360];   /* 1 degree intervals   */
+    wxInt16 m_cld[13][90][180];    /* 2 degree intervals   */
+    wxInt16 m_precip[13][72][144]; /* 2.5 degree intervals */
 
     unsigned int m_cyclonelist; /* for opengl display list */
     bool m_cyclonelistok;

@@ -49,10 +49,10 @@ static const wxString *unit_names[] = {units0_names, units1_names, units2_names,
 
 static const wxString name_from_index[] = {_T("Wind"), _T("Current"),
                                            _T("SeaLevelPressure"), _T("SeaSurfaceTemperature"),
-                                           _T("CloudCover")};
+                                           _T("CloudCover"), _T("Precipitation")};
 static const wxString tname_from_index[] = {_("Wind"), _("Current"),
                                             _("Sea Level Pressure"), _("Sea Surface Temperature"),
-                                            _("Cloud Cover")};
+                                            _("Cloud Cover"), _("Precipitation")};
 
 static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 5};
 
@@ -73,14 +73,21 @@ void ClimatologyOverlaySettings::Read()
         pConf->Read ( Name + _T ( "Units" ), &units);
         Settings[i].m_Units = (SettingsType)units;
 
-        pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars, i==SLP);
+        pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars,
+#ifdef __MSVC__
+                      i==SLP
+#else
+                      0
+#endif
+            );
         double defspacing[SETTINGS_COUNT] = {10, 1, 10, 1, 1};
         pConf->Read ( Name + _T ( "IsoBarSpacing" ), &Settings[i].m_iIsoBarSpacing, defspacing[i]);
         Settings[i].m_pIsobarArray = NULL;
 
-        pConf->Read ( Name + _T ( "OverlayMap" ), &Settings[i].m_bOverlayMap, i==CLOUD);
+        pConf->Read ( Name + _T ( "OverlayMap" ), &Settings[i].m_bOverlayMap,
+                      i == SST || i==CLOUD || i == PRECIPITATION);
 
-        pConf->Read ( Name + _T ( "Numbers" ), &Settings[i].m_bNumbers, i==SST);
+        pConf->Read ( Name + _T ( "Numbers" ), &Settings[i].m_bNumbers, 0);
         pConf->Read ( Name + _T ( "NumbersSpacing" ), &Settings[i].m_iNumbersSpacing, 50);
 
         if(i > CURRENT)
@@ -183,6 +190,7 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     wxDateTime dt = wxDateTime::Now();
 #ifdef __MSVC__
     dt.SetYear(1972);
+    m_cbIsoBars->Disable();
 #else
     dt.SetYear(1945);
 #endif

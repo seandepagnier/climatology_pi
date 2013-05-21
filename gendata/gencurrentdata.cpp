@@ -26,11 +26,17 @@
 
 #define OUTPUT_LONGITUDES 1080 /* dont need duplicates */
 
-#define MULTIPLIER 20
+#define MULTIPLIER 20 /* 127 / 20 = 6.35 max current speed */
 
 int8_t encode_value(float value)
 {
+    if(fabs(value) < .3) /* throw away small currents,
+                            this greatly improves
+                            compressed file size */
+        value = 0;
+
     value = value*MULTIPLIER * 3.6 / 1.852; /* in knots */
+
     if(isnan(value) || fabs(value) > 127)
         return -128;
     else
@@ -85,6 +91,7 @@ int main(int argc, char *argv[])
     for(int lat = 0; lat < LATITUDES; lat++)
         for(int lon = 0; lon < OUTPUT_LONGITUDES; lon++) {
             int indout = lat*OUTPUT_LONGITUDES + lon;
+
             uavg[indout] = encode_value(utotal[indout] / count);
             vavg[indout] = encode_value(vtotal[indout] / count);
         }

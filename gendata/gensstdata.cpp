@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     data->get(&sstd[0][0][0], 12, 180, 360);
     
     /* use a single byte instead of 2 to save memory,
-       resolution of 1/5th of a degree C is enough */
+       resolution of 1/5th degree C resolution */
     int8_t sstbyte[12][180][360];
     for(int i = 0; i<12; i++)
         for(int j = 0; j<180; j++)

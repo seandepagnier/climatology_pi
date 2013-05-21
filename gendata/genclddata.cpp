@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     data->get(&cldd[0][0][0], 12, 90, 180);
     
     /* use a single byte instead of 2 to save memory,
-       resolution of 1/5th of a degree C is enough */
+       resolution of 1/40th of a Oktas resolution */
     uint8_t cldbyte[12][90][180];
     for(int i = 0; i<12; i++)
         for(int j = 0; j<90; j++)
