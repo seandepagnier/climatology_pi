@@ -66,13 +66,14 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     ClearCachedData();
 
     wxString path = *GetpSharedDataLocation() + _T("plugins/climatology/data/");
-    wxString fmt = _T(" %d");
+    wxString fmt = _T("%02d");
 
     /* load wind */
     for(int month = 0; month < 12; month++) {
-        if(!progressdialog.Update(month, wxString::Format(_("wind")+fmt, month+1)))
+        wxString filename = wxString::Format(_("wind")+fmt, month+1);
+        if(!progressdialog.Update(month, filename))
             return;
-        ReadWindData(month, path+wxString::Format(_T("wind%02d"), month+1));
+        ReadWindData(month, path+filename);
     }
 
     if(!progressdialog.Update(12, _("averaging wind")))
@@ -81,9 +82,10 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     /* load current */
     for(int month = 0; month < 12; month++) {
-        if(!progressdialog.Update(month+13, wxString::Format(_("current")+fmt, month+1)))
+        wxString filename = wxString::Format(_("current")+fmt, month+1);
+        if(!progressdialog.Update(month+13, filename))
             return;
-        ReadCurrentData(month, path+wxString::Format(_T("current%02d"), month+1));
+        ReadCurrentData(month, path+filename);
     }
 
     if(!progressdialog.Update(25, _("averaging current")))
@@ -347,10 +349,14 @@ ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
 
 void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
 {
-    ZUFILE *f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
+    wxString ext = _T(".gz");
+    ZUFILE *f = zu_open((filename+ext).mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f) {
-        wxLogMessage(climatology_pi + _("failed to read file: ") + filename);
-        return;
+        f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
+        if(!f) {
+            wxLogMessage(climatology_pi + _("failed to read file: ") + filename);
+            return;
+        }
     }
 
     m_dlg.m_cbWind->Enable();
@@ -486,10 +492,14 @@ havedata:
 
 void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
 {
-    ZUFILE *f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
+    wxString ext = _T(".gz");
+    ZUFILE *f = zu_open((filename+ext).mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f) {
-        wxLogMessage(climatology_pi + _("failed to read file: ") + filename);
-        return;
+        f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
+        if(!f) {
+            wxLogMessage(climatology_pi + _("failed to read file: ") + filename);
+            return;
+        }
     }
 
     m_dlg.m_cbCurrent->Enable();
@@ -1125,6 +1135,7 @@ double CurrentData::Value(enum Coord coord, int xi, int yi)
     case V: return v;
     case MAG: return hypot(u, v);
     case DIRECTION: return positive_degrees(rad2deg(atan2(u, v)));
+    default: break;
     }
     return NAN;
 }
