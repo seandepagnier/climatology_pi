@@ -1091,6 +1091,9 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
         return NAN;
 
     if(coord == DIRECTION)
+        return positive_degrees(rad2deg(atan2(Value(U, dir_cnt),
+                                              Value(V, dir_cnt))));
+    if(coord == MDIRECTION)
         return positive_degrees(rad2deg(atan2(-Value(U, dir_cnt),
                                               -Value(V, dir_cnt))));
 
@@ -1121,7 +1124,7 @@ double CurrentData::Value(enum Coord coord, int xi, int yi)
     case U: return u;
     case V: return v;
     case MAG: return hypot(u, v);
-    case DIRECTION: return positive_degrees(rad2deg(atan2(-u, -v)));
+    case DIRECTION: return positive_degrees(rad2deg(atan2(u, v)));
     }
     return NAN;
 }

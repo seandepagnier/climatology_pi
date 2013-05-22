@@ -187,7 +187,6 @@ void climatology_pi::SetDefaults(void)
 {
 }
 
-
 int climatology_pi::GetToolbarToolCount(void)
 {
       return 1;
@@ -195,7 +194,7 @@ int climatology_pi::GetToolbarToolCount(void)
 
 void climatology_pi::ShowPreferencesDialog( wxWindow* parent )
 {
-      wxDialog *dialog = new wxDialog( parent, wxID_ANY, _("CLIMATOLOGY Preferences"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE );
+      wxDialog *dialog = new wxDialog( parent, wxID_ANY, _("Climatology Preferences"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE );
 
    dialog->Fit();
 
