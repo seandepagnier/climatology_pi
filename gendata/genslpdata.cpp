@@ -1,4 +1,5 @@
-/* This program takes the slp and sst data from:
+/* This program takes the slp data from:
+
    http://www.jisao.washington.edu/data/coads_climatologies/slpcoadsclim5079.nc
    to produce a much condensed binary file to be compressed
 */

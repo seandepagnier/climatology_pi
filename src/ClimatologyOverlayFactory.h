@@ -46,7 +46,7 @@ struct WindData
     : latitudes(lats), longitudes(lons), dir_cnt(dirs), data(new WindPolar[lats*lons]) {}
 
     double InterpWind(enum Coord coord, double lat, double lon);
-    WindPolar *GetPolar(double lat, double lon) {
+   WindPolar *GetPolar(double lat, double lon) {
         int lati = round(latitudes*(.5+lat/180.0));
         int loni = round(longitudes*lon/360.0);
         if(lati < 0 || lati >= latitudes || loni < 0 || loni >= longitudes)
@@ -167,7 +167,7 @@ private:
     void RenderCyclones(PlugIn_ViewPort &vp);
 
     wxColour GetGraphicColor(int setting, double val_in, wxUint8 &transp);
-    bool CreateGLTexture(ClimatologyOverlay &O, int setting, PlugIn_ViewPort &vp);
+    bool CreateGLTexture(ClimatologyOverlay &O, int setting, int month, PlugIn_ViewPort &vp);
     void DrawGLTexture(ClimatologyOverlay &O, PlugIn_ViewPort &vp);
 
     void RenderOverlayMap( int setting, PlugIn_ViewPort &vp);
@@ -188,8 +188,10 @@ private:
     /* 12 months + year total and average */
     wxInt16 m_slp[13][90][180];    /* 2 degree intervals   */
     wxInt16 m_sst[13][180][360];   /* 1 degree intervals   */
+    wxInt16 m_at[13][90][180];     /* 2 degree intervals   */
     wxInt16 m_cld[13][90][180];    /* 2 degree intervals   */
     wxInt16 m_precip[13][72][144]; /* 2.5 degree intervals */
+    wxInt16 m_seadepth[180][360];  /* 1 degree intervals   */
 
     unsigned int m_cyclonelist; /* for opengl display list */
     bool m_cyclonelistok;

@@ -53,6 +53,7 @@ class ClimatologyDialogBase : public wxDialog
 		wxTextCtrl* m_tCurrentDir;
 		wxTextCtrl* m_tPressure;
 		wxTextCtrl* m_tSeaTemperature;
+		wxTextCtrl* m_tAirTemperature;
 		wxTextCtrl* m_tCloudCover;
 		wxButton* m_bConfig;
 		
@@ -70,9 +71,12 @@ class ClimatologyDialogBase : public wxDialog
 		wxCheckBox* m_cbCurrent;
 		wxCheckBox* m_cbPressure;
 		wxCheckBox* m_cbSeaTemperature;
+		wxCheckBox* m_cbAirTemperature;
 		wxCheckBox* m_cbCloudCover;
 		wxCheckBox* m_cbPrecipitation;
 		wxTextCtrl* m_tPrecipitation;
+		wxCheckBox* m_cbSeaDepth;
+		wxTextCtrl* m_tSeaDepth;
 		wxCheckBox* m_cbCyclones;
 		
 		ClimatologyDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Display Control"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxCLOSE_BOX|wxDIALOG_NO_PARENT|wxRESIZE_BORDER|wxSYSTEM_MENU ); 

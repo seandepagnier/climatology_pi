@@ -9,14 +9,14 @@ ALL_CURRENT += $(DATA)/current04.gz $(DATA)/current05.gz $(DATA)/current06.gz
 ALL_CURRENT += $(DATA)/current07.gz $(DATA)/current08.gz $(DATA)/current09.gz
 ALL_CURRENT += $(DATA)/current10.gz $(DATA)/current11.gz $(DATA)/current12.gz
 
-ALL_OTHER = $(DATA)/sealevelpressure.gz $(DATA)/seasurfacetemperature.gz $(DATA)/cloud.gz
+ALL_OTHER = $(DATA)/sealevelpressure.gz $(DATA)/seasurfacetemperature.gz $(DATA)/airsealeveltemperature.gz $(DATA)/cloud.gz $(DATA)/precipitation.gz $(DATA)/seadepth.gz
 ALL_CYCLONE = $(DATA)/cyclone-atl $(DATA)/cyclone-bio $(DATA)/cyclone-bsh $(DATA)/cyclone-bwp $(DATA)/cyclone-epa $(DATA)/cyclone-she $(DATA)/cyclone-spa
 ALL = $(ALL_WIND) $(ALL_CURRENT) $(ALL_OTHER) $(ALL_CYCLONE)
 
 all: $(ALL)
 clean:
 	rm -rf $(ALL)
-	rm -rf genclddata gencurrentdata gencyclonedata gencyclonedata1 genslpdata gensstdata genwinddata
+	rm -rf genclddata gencurrentdata gencyclonedata gencyclonedata1 genslpdata gensstdata genastdata genprecipdata genwinddata
 
 CURRENT_01  = oscar_vel7047.nc oscar_vel7032.nc oscar_vel7057.nc
 CURRENT_01 += oscar_vel7042.nc oscar_vel7037.nc oscar_vel7027.nc
@@ -87,6 +87,15 @@ sstcoadsclim6079.1deg.nc:
 gensstdata: gensstdata.cpp
 	g++ -o gensstdata gensstdata.cpp -lnetcdf -lnetcdf_c++ -g
 
+$(DATA)/airtemperature.gz: air.mean.nc genatdata
+	./genatdata | gzip > $@
+
+air.mean.nc:
+	wget -c    ftp://ftp.cdc.noaa.gov/Datasets/ncep.marine/air.mean.nc
+
+genatdata: genatdata.cpp
+	g++ -o genatdata genatdata.cpp -lnetcdf -lnetcdf_c++ -g
+
 $(DATA)/cloud.gz: cldccoadsclim5079.nc genclddata
 	./genclddata | gzip > $@
 
@@ -104,6 +113,15 @@ precip.mon.mean.nc:
 
 genprecipdata: genprecipdata.cpp
 	g++ -o genprecipdata genprecipdata.cpp -lnetcdf -lnetcdf_c++ -g
+
+$(DATA)/seadepth.gz: landseadepth.nc genseadepthdata
+	./genseadepthdata | gzip > $@
+
+landseadepth.nc:
+	echo "I forget the url for this file"
+
+genseadepthdata: genseadepthdata.cpp
+	g++ -o genseadepthdata genseadepthdata.cpp -lnetcdf -lnetcdf_c++ -g
 
 $(DATA)/cyclone-%: tracks.% gencyclonedata
 	./gencyclonedata $< > $@

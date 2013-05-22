@@ -1,0 +1,4 @@
+You must install libnetcdf (on debian):
+sudo apt-get install libnetcdf-dev
+
+next 

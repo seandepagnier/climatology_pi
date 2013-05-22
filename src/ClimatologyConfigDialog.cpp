@@ -49,12 +49,14 @@ static const wxString *unit_names[] = {units0_names, units1_names, units2_names,
 
 static const wxString name_from_index[] = {_T("Wind"), _T("Current"),
                                            _T("SeaLevelPressure"), _T("SeaSurfaceTemperature"),
-                                           _T("CloudCover"), _T("Precipitation")};
+                                           _T("AirTemperature"),
+                                           _T("CloudCover"), _T("Precipitation"), _T("Depth")};
 static const wxString tname_from_index[] = {_("Wind"), _("Current"),
                                             _("Sea Level Pressure"), _("Sea Surface Temperature"),
-                                            _("Cloud Cover"), _("Precipitation")};
+                                            _T("Air Temperature"),
+                                            _("Cloud Cover"), _("Precipitation"), _("Sea Depth")};
 
-static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 5};
+static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 3, 5, 4, 2};
 
 void ClimatologyOverlaySettings::Read()
 {
@@ -85,7 +87,7 @@ void ClimatologyOverlaySettings::Read()
         Settings[i].m_pIsobarArray = NULL;
 
         pConf->Read ( Name + _T ( "OverlayMap" ), &Settings[i].m_bOverlayMap,
-                      i == SST || i==CLOUD || i == PRECIPITATION);
+                      i == SST || i == AT || i==CLOUD || i == PRECIPITATION || i == SEADEPTH);
 
         pConf->Read ( Name + _T ( "Numbers" ), &Settings[i].m_bNumbers, 0);
         pConf->Read ( Name + _T ( "NumbersSpacing" ), &Settings[i].m_iNumbersSpacing, 50);
