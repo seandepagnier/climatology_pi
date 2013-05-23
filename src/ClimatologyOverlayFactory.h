@@ -191,6 +191,7 @@ private:
     wxInt16 m_at[13][90][180];     /* 2 degree intervals   */
     wxInt16 m_cld[13][90][180];    /* 2 degree intervals   */
     wxInt16 m_precip[13][72][144]; /* 2.5 degree intervals */
+    wxInt16 m_rhum[13][180][360];  /* 1 degree intervals */
     wxInt16 m_seadepth[180][360];  /* 1 degree intervals   */
 
     unsigned int m_cyclonelist; /* for opengl display list */

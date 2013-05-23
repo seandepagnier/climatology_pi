@@ -257,8 +257,41 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     }
     zu_close(f);
 
+    if(!progressdialog.Update(30, _("relative humidity")))
+        return;
+    wxString rhum_path = path + _T("relativehumidity.gz");
+    f = zu_open(rhum_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
+    if(!f)
+        wxLogMessage(climatology_pi + _("failed to read file: ") + rhum_path);
+    else {
+        wxUint8 rhum[12][180][360];
+        if(zu_read(f, rhum, sizeof rhum) != sizeof rhum)
+            wxLogMessage(climatology_pi + _("relative humidity file truncated"));
+        else {
+            for(int j=0; j<180; j++)
+                for(int k=0; k<360; k++) {
+                    long total = 0, totalcount = 0;
+                    for(int i=0; i<12; i++) {
+                        if(rhum[i][j][k] == 255)
+                            m_rhum[i][j][k] = 32767;
+                        else {
+                            m_rhum[i][j][k] = rhum[i][j][k];
+                            total += m_rhum[i][j][k];
+                            totalcount++;
+                        }
+                        if(totalcount)
+                            m_rhum[12][j][k] = total / totalcount;
+                        else
+                            m_rhum[12][j][k] = 32767;
+                    }
+                }
+            m_dlg.m_cbRelativeHumidity->Enable();
+        }
+    }
+    zu_close(f);
+
     /* load sea level pressure and sea surface temperature */
-    if(!progressdialog.Update(26, _("sea depth")))
+    if(!progressdialog.Update(31, _("sea depth")))
         return;
     wxString seadepth_path = path + _T("seadepth.gz");
     f = zu_open(seadepth_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
@@ -789,6 +822,12 @@ ColorMap PrecipitationMap[] =
  {3, _T("#8080f0"), 128}, {4, _T("#f0f0f0"), 64}, {5, _T("#f0a0f0"), 32}, {8, _T("#f080f0"), 0},
  {10, _T("#f04080"), 0}, {13, _T("#f00040"), 0}, {16, _T("#f00000"), 0}, {19, _T("#800000"), 0}};
 
+ColorMap RelativeHumidityMap[] =
+{{0,  _T("#000000"), 0}, {30, _T("#303030"), 0}, {60, _T("#606060"), 0},
+ {65, _T("#a06060"), 0}, {70, _T("#ff6060"), 0}, {75, _T("#ffc080"), 0},
+ {80, _T("#a0f0a0"), 0}, {85, _T("#60f0f0"), 0}, {95, _T("#40a0f0"), 0},
+ {100, _T("#2080f0"), 0}};
+
 ColorMap SeaDepthMap[] =
 {{0, _T("#0000d9"), 0},  {3, _T("#002ad9"), 0},  {6, _T("#006ed9"), 0},  {9, _T("#00b2d9"), 0},
  {12, _T("#00d4d4"), 0}, {15, _T("#00d9a6"), 0}, {18, _T("#00d900"), 0}, {21, _T("#95d900"), 0},
@@ -796,8 +835,8 @@ ColorMap SeaDepthMap[] =
  {31, _T("#a9c040"), 0}, {32, _T("#a0a040"), 0}, {33, _T("#808060"), 0}, {34, _T("#606060"), 0},
  {35, _T("#404040"), 0}, {36, _T("#202020"), 0}, {40, _T("#000000"), 0}};
 
-ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap,
-                         AirTempMap, CloudMap, PrecipitationMap, SeaDepthMap};
+ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap, AirTempMap,
+                         CloudMap, PrecipitationMap, RelativeHumidityMap, SeaDepthMap};
 const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
                              (sizeof CurrentMap) / (sizeof *CurrentMap),
                              (sizeof PressureMap) / (sizeof *PressureMap),
@@ -805,10 +844,8 @@ const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
                              (sizeof AirTempMap) / (sizeof *AirTempMap),
                              (sizeof CloudMap) / (sizeof *CloudMap),
                              (sizeof PrecipitationMap) / (sizeof *PrecipitationMap),
+                             (sizeof RelativeHumidityMap) / (sizeof *RelativeHumidityMap),
                              (sizeof SeaDepthMap) / (sizeof *SeaDepthMap) };
-
-enum {WIND_GRAPHIC, CURRENT_GRAPHIC, PRESSURE_GRAPHIC, SEATEMP_GRAPHIC, AIRTEMP_GRAPHIC,
-      CLOUD_GRAPHIC, PRECIPITATION_GRAPHIC, SEADEPTH_GRAPHIC};
 
 wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in, wxUint8 &transp)
 {
@@ -1220,6 +1257,9 @@ double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
     case ClimatologyOverlaySettings::PRECIPITATION:
         return InterpArray((-lat+90)/2.5, positive_degrees(lon-2)/2.5,
                            m_precip[month][0], 144) * .002f;
+    case ClimatologyOverlaySettings::RELATIVE_HUMIDITY:
+        return InterpArray((-lat+90), positive_degrees(lon-.5),
+                           m_rhum[month][0], 360)/2.0;
     case ClimatologyOverlaySettings::SEADEPTH:
         return InterpArray((-lat+90), positive_degrees(lon-.5),
                            m_seadepth[0], 360);
@@ -1237,6 +1277,7 @@ double ClimatologyOverlayFactory::GetMin(int setting)
     case ClimatologyOverlaySettings::AT:  return -50;
     case ClimatologyOverlaySettings::CLOUD: return 0;
     case ClimatologyOverlaySettings::PRECIPITATION:  return 0;
+    case ClimatologyOverlaySettings::RELATIVE_HUMIDITY:  return 0;
     case ClimatologyOverlaySettings::SEADEPTH:  return 0;
     default: return 0;
     }
@@ -1252,6 +1293,7 @@ double ClimatologyOverlayFactory::GetMax(int setting)
     case ClimatologyOverlaySettings::AT:  return 50;
     case ClimatologyOverlaySettings::CLOUD: return 8;
     case ClimatologyOverlaySettings::PRECIPITATION:  return 1000;
+    case ClimatologyOverlaySettings::RELATIVE_HUMIDITY:  return 100;
     case ClimatologyOverlaySettings::SEADEPTH:  return 40;
     default: return NAN;
     }
@@ -1710,6 +1752,7 @@ bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
            (i == ClimatologyOverlaySettings::AT             && !m_dlg.m_cbAirTemperature->GetValue()) ||
            (i == ClimatologyOverlaySettings::CLOUD          && !m_dlg.m_cbCloudCover->GetValue()) ||
            (i == ClimatologyOverlaySettings::PRECIPITATION  && !m_dlg.m_cbPrecipitation->GetValue()) ||
+           (i == ClimatologyOverlaySettings::RELATIVE_HUMIDITY  && !m_dlg.m_cbRelativeHumidity->GetValue()) ||
            (i == ClimatologyOverlaySettings::SEADEPTH       && !m_dlg.m_cbSeaDepth->GetValue()))
             continue;
 

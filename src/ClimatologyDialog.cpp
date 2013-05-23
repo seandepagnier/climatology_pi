@@ -117,6 +117,7 @@ void ClimatologyDialog::UpdateTrackingControls()
     m_tAirTemperature->SetValue(GetValue(ClimatologyOverlaySettings::AT));
     m_tCloudCover->SetValue(GetValue(ClimatologyOverlaySettings::CLOUD));
     m_tPrecipitation->SetValue(GetValue(ClimatologyOverlaySettings::PRECIPITATION));
+    m_tRelativeHumidity->SetValue(GetValue(ClimatologyOverlaySettings::RELATIVE_HUMIDITY));
     m_tSeaDepth->SetValue(GetValue(ClimatologyOverlaySettings::SEADEPTH));
 }
 
