@@ -118,7 +118,7 @@ $(DATA)/seadepth.gz: landseadepth.nc genseadepthdata
 	./genseadepthdata | gzip > $@
 
 landseadepth.nc:
-	echo "I forget the url for this file"
+	wget -O "landseadepth.nc" "http://www.esrl.noaa.gov/psd/repository/entry/get/PSD Climate Data Repository/Public/PSD Datasets/PSD Gridded Datasets/nodc.woa98/masks/landseadepth.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL25vZGMud29hOTgvbWFza3MvbGFuZHNlYWRlcHRoLm5j"
 
 genseadepthdata: genseadepthdata.cpp
 	g++ -o genseadepthdata genseadepthdata.cpp -lnetcdf -lnetcdf_c++ -g
