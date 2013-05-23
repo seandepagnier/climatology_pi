@@ -9,7 +9,7 @@ ALL_CURRENT += $(DATA)/current04.gz $(DATA)/current05.gz $(DATA)/current06.gz
 ALL_CURRENT += $(DATA)/current07.gz $(DATA)/current08.gz $(DATA)/current09.gz
 ALL_CURRENT += $(DATA)/current10.gz $(DATA)/current11.gz $(DATA)/current12.gz
 
-ALL_OTHER = $(DATA)/sealevelpressure.gz $(DATA)/seasurfacetemperature.gz $(DATA)/airsealeveltemperature.gz $(DATA)/cloud.gz $(DATA)/precipitation.gz $(DATA)/relativehumidity.gz $(DATA)/seadepth.gz
+ALL_OTHER = $(DATA)/sealevelpressure.gz $(DATA)/seasurfacetemperature.gz $(DATA)/airtemperature.gz $(DATA)/cloud.gz $(DATA)/precipitation.gz $(DATA)/relativehumidity.gz $(DATA)/seadepth.gz
 ALL_CYCLONE = $(DATA)/cyclone-atl $(DATA)/cyclone-bio $(DATA)/cyclone-bsh $(DATA)/cyclone-bwp $(DATA)/cyclone-epa $(DATA)/cyclone-she $(DATA)/cyclone-spa
 ALL = $(ALL_WIND) $(ALL_CURRENT) $(ALL_OTHER) $(ALL_CYCLONE)
 

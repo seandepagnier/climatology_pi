@@ -39,9 +39,9 @@ int main(int argc, char *argv[])
         for(int j = 0; j<180; j++)
             for(int k = 0; k<360; k++)
                 if(sstd[i][j][k] == 1)
-                    sstbyte[j][k] = -128;
+                    sstbyte[i][j][k] = -128;
                 else
-                    sstbyte[j][k] = sstd[i][j][k];
+                    sstbyte[i][j][k] = sstd[i][j][k];
     
     fwrite(sstbyte, sizeof sstbyte, 1, stdout);
     return 0;
