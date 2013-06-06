@@ -79,9 +79,9 @@ void ClimatologyOverlaySettings::Read()
 
         pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars,
 #ifdef __MSVC__
-                      i==SLP
-#else
                       0
+#else
+                      i==SLP
 #endif
             );
         double defspacing[SETTINGS_COUNT] = {10, 1, 10, 1, 1};
