@@ -639,9 +639,9 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
             llastmonth = lmonth;
 
             wxDateTime datetime = wxDateTime::Now();
-            datetime.SetDay(lday/4);
-            datetime.SetMonth((wxDateTime::Month)(lmonth-1));
             datetime.SetYear(lyear);
+            datetime.SetMonth((wxDateTime::Month)(lmonth-1));
+            datetime.SetDay(lday/4);
             datetime.SetHour((lday%4)*6);
 
             wxInt16 lat, lon;
