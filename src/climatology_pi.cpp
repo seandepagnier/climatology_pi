@@ -51,18 +51,11 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
     delete p;
 }
 
-//---------------------------------------------------------------------------------------------------------
-//
-//    Climatology PlugIn Implementation
-//
-//---------------------------------------------------------------------------------------------------------
 
-
-//---------------------------------------------------------------------------------------------------------
-//
-//          PlugIn initialization and de-init
-//
-//---------------------------------------------------------------------------------------------------------
+wxString ClimatologyDataDirectory()
+{
+    return *GetpSharedDataLocation() + _T("plugins/climatology/data/");
+}
 
 climatology_pi::climatology_pi(void *ppimgr)
       :opencpn_plugin_19(ppimgr)
@@ -175,10 +168,11 @@ Provides overlay capabilities for history weather data.\n\n\
 Supported CLIMATOLOGY file types include:\n\
 - Average wind directions and speed\n\
 - Percentage of gale and calm conditions\n\
-- Average swell and seastate (not implemented)\n\
-- ITCZ (doldrum) positions (not implemented)\n\
+- Average swell and seastate (not yet implemented)\n\
+- ITCZ (doldrum) positions (not yet implemented)\n\
 - Monthly average Sea Level pressure and Sea Temperature\n\
 - Tropical Storm tracks.\
+- Additional data.\
 ");
 
 }

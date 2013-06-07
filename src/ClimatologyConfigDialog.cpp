@@ -77,20 +77,19 @@ void ClimatologyOverlaySettings::Read()
         pConf->Read ( Name + _T ( "Units" ), &units);
         Settings[i].m_Units = (SettingsType)units;
 
-        pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars,
-#ifdef __MSVC__
-                      0
-#else
-                      i==SLP
-#endif
-            );
-        double defspacing[SETTINGS_COUNT] = {10, 1, 10, 1, 1};
-        pConf->Read ( Name + _T ( "IsoBarSpacing" ), &Settings[i].m_iIsoBarSpacing, defspacing[i]);
-        Settings[i].m_pIsobarArray = NULL;
-
+        pConf->Read ( Name + _T ( "Enabled" ), &Settings[i].m_bEnabled,
+                      i == WIND || i == CURRENT );
         pConf->Read ( Name + _T ( "OverlayMap" ), &Settings[i].m_bOverlayMap,
                       i == SST || i == AT || i==CLOUD || i == PRECIPITATION
                       || i == RELATIVE_HUMIDITY || i == SEADEPTH);
+
+        pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars, i==SLP);
+        double defspacing[SETTINGS_COUNT] = {5, 1, 10, 1, 1, 1, 1, 10, 5};
+        pConf->Read ( Name + _T ( "IsoBarSpacing" ), &Settings[i].m_iIsoBarSpacing, defspacing[i]);
+        pConf->Read ( Name + _T ( "IsoBarStep" ), &Settings[i].m_iIsoBarStep, 2);
+
+        for(int m = 0; m<13; m++)
+            Settings[i].m_pIsobars[m] = NULL;
 
         pConf->Read ( Name + _T ( "Numbers" ), &Settings[i].m_bNumbers, 0);
         pConf->Read ( Name + _T ( "NumbersSpacing" ), &Settings[i].m_iNumbersSpacing, 50);
@@ -133,9 +132,11 @@ void ClimatologyOverlaySettings::Write()
         wxString Name=name_from_index[i];
 
         pConf->Write ( Name + _T ( "Units" ), (int)Settings[i].m_Units);
+        pConf->Write ( Name + _T ( "Enabled" ), Settings[i].m_bEnabled);
+        pConf->Write ( Name + _T ( "OverlayMap" ), Settings[i].m_bOverlayMap);
         pConf->Write ( Name + _T ( "IsoBars" ), Settings[i].m_bIsoBars);
         pConf->Write ( Name + _T ( "IsoBarSpacing" ), Settings[i].m_iIsoBarSpacing);
-        pConf->Write ( Name + _T ( "OverlayMap" ), Settings[i].m_bOverlayMap);
+        pConf->Write ( Name + _T ( "IsoBarStep" ), Settings[i].m_iIsoBarStep);
         pConf->Write ( Name + _T ( "Numbers" ), Settings[i].m_bNumbers);
         pConf->Write ( Name + _T ( "NumbersSpacing" ), Settings[i].m_iNumbersSpacing);
 
@@ -186,7 +187,7 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     m_sWindAtlasOpacity->SetValue(iWindAtlasOpacity);
  
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++)
-        m_cDataType->Append(tname_from_index[i]);
+        m_cDataType->Append(SettingName(i));
 
     m_cDataType->SetSelection(m_lastdatatype);
     PopulateUnits(m_lastdatatype);
@@ -195,15 +196,17 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     wxDateTime dt = wxDateTime::Now();
 #ifdef __MSVC__
     dt.SetYear(1972);
-    m_cbIsoBars->Disable();
 #else
     dt.SetYear(1945);
 #endif
     m_dPStart->SetValue(dt);
 
+    m_stVersion->SetLabel(wxString::Format(_T("%d.%d"),
+                                           PLUGIN_VERSION_MAJOR, PLUGIN_VERSION_MINOR));
+    m_tDataDirectory->SetValue(ClimatologyDataDirectory());
+
     DimeWindow( this );
 }
-
 
 ClimatologyConfigDialog::~ClimatologyConfigDialog()
 {
@@ -224,13 +227,28 @@ ClimatologyConfigDialog::~ClimatologyConfigDialog()
     m_Settings.Write();
 }
 
+wxString ClimatologyConfigDialog::SettingName(int setting)
+{
+    return tname_from_index[setting];
+}
+
+void ClimatologyConfigDialog::DisableIsoBars(int setting)
+{
+    m_Settings.Settings[setting].m_bIsoBars = false;
+    
+    if(setting == m_cDataType->GetSelection())
+        m_cbIsoBars->SetValue(false);
+}
+
 void ClimatologyConfigDialog::SetDataTypeSettings(int settings)
 {
     ClimatologyOverlaySettings::OverlayDataSettings &odc = m_Settings.Settings[settings];
     odc.m_Units = m_cDataUnits->GetSelection();
+    odc.m_bEnabled = m_cbEnabled->GetValue();
+    odc.m_bOverlayMap = m_cbOverlayMap->GetValue();
     odc.m_bIsoBars = m_cbIsoBars->GetValue();
     odc.m_iIsoBarSpacing = m_sIsoBarSpacing->GetValue();
-    odc.m_bOverlayMap = m_cbOverlayMap->GetValue();
+    odc.m_iIsoBarStep = m_cIsoBarStep->GetSelection();
     odc.m_bNumbers = m_cbNumbers->GetValue();
     odc.m_iNumbersSpacing = m_sNumbersSpacing->GetValue();
 
@@ -250,9 +268,11 @@ void ClimatologyConfigDialog::ReadDataTypeSettings(int settings)
 {
     ClimatologyOverlaySettings::OverlayDataSettings &odc = m_Settings.Settings[settings];
     m_cDataUnits->SetSelection(odc.m_Units);
+    m_cbEnabled->SetValue(odc.m_bEnabled);
+    m_cbOverlayMap->SetValue(odc.m_bOverlayMap);
     m_cbIsoBars->SetValue(odc.m_bIsoBars);
     m_sIsoBarSpacing->SetValue(odc.m_iIsoBarSpacing);
-    m_cbOverlayMap->SetValue(odc.m_bOverlayMap);
+    m_cIsoBarStep->SetSelection(odc.m_iIsoBarStep);
     m_cbNumbers->SetValue(odc.m_bNumbers);
     m_sNumbersSpacing->SetValue(odc.m_iNumbersSpacing);
 
@@ -285,6 +305,13 @@ void ClimatologyConfigDialog::PopulateUnits(int settings)
         m_cDataUnits->Append(unit_names[unittype[settings]][i]);
 }
 
+void ClimatologyConfigDialog::OnPageChanged( wxNotebookEvent& event )
+{
+    /* delay loading html until last moment because it can take a few seconds */
+    if(event.GetSelection() == 3)
+        m_htmlInformation->LoadFile(ClimatologyDataDirectory() + _T("ClimatologyInformation.html"));
+}
+
 void ClimatologyConfigDialog::OnDataTypeChoice( wxCommandEvent& event )
 {
     m_lastdatatype = m_cDataType->GetSelection();
@@ -302,4 +329,15 @@ void ClimatologyConfigDialog::OnUpdate()
 void ClimatologyConfigDialog::OnConfig()
 {
     pParent->SetFactoryOptions();
+}
+
+void ClimatologyConfigDialog::OnEnabled( wxCommandEvent& event )
+{
+    OnUpdate();
+    pParent->PopulateTrackingControls();
+}
+
+void ClimatologyConfigDialog::OnDonate( wxCommandEvent& event )
+{
+      wxLaunchDefaultBrowser(_T("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=sean%40depagnier%2ecom&lc=US&item_name=climatology&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest"));
 }

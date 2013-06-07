@@ -45,7 +45,7 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
     pParent = parent;
     pPlugIn = ppi;
 
-    wxFileConfig *pConf = GetOCPNConfigObject();;
+    wxFileConfig *pConf = GetOCPNConfigObject();
 
     if(pConf) {
         pConf->SetPath ( _T ( "/Settings/Climatology" ) );
@@ -71,10 +71,9 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 
     m_cfgdlg = new ClimatologyConfigDialog(this);
 
-    DimeWindow( this );
+    PopulateTrackingControls();
 
-    Fit();
-    SetMinSize( GetBestSize() );
+    DimeWindow( this );
 }
 
 
@@ -121,9 +120,24 @@ void ClimatologyDialog::UpdateTrackingControls()
     m_tSeaDepth->SetValue(GetValue(ClimatologyOverlaySettings::SEADEPTH));
 }
 
+void ClimatologyDialog::PopulateTrackingControls()
+{
+    SetControlsVisible(ClimatologyOverlaySettings::WIND, m_cbWind, m_tWind, m_tWindDir);
+    SetControlsVisible(ClimatologyOverlaySettings::CURRENT, m_cbCurrent, m_tCurrent, m_tCurrentDir);
+    SetControlsVisible(ClimatologyOverlaySettings::SLP, m_cbPressure, m_tPressure);
+    SetControlsVisible(ClimatologyOverlaySettings::SST, m_cbSeaTemperature, m_tSeaTemperature);
+    SetControlsVisible(ClimatologyOverlaySettings::AT, m_cbAirTemperature, m_tAirTemperature);
+    SetControlsVisible(ClimatologyOverlaySettings::CLOUD, m_cbCloudCover, m_tCloudCover);
+    SetControlsVisible(ClimatologyOverlaySettings::PRECIPITATION, m_cbPrecipitation, m_tPrecipitation);
+    SetControlsVisible(ClimatologyOverlaySettings::RELATIVE_HUMIDITY, m_cbRelativeHumidity, m_tRelativeHumidity);
+    SetControlsVisible(ClimatologyOverlaySettings::SEADEPTH, m_cbSeaDepth, m_tSeaDepth);
+
+    Fit();
+    Refresh();
+}
+
 void ClimatologyDialog::SetFactoryOptions()
 {
-    pPlugIn->GetOverlayFactory()->ClearCachedData();
     RequestRefresh( pParent );
 }
 
@@ -135,9 +149,23 @@ void  ClimatologyDialog::SetCursorLatLon(double lat, double lon)
     UpdateTrackingControls();
 }
 
+void ClimatologyDialog::SetControlsVisible(ClimatologyOverlaySettings::SettingsType type,
+                                           wxControl *ctrl1, wxControl *ctrl2, wxControl *ctrl3)
+{
+    if(m_cfgdlg->m_Settings.Settings[type].m_bEnabled) {
+        ctrl1->Show();
+        if(ctrl2) ctrl2->Show();
+        if(ctrl3) ctrl3->Show();
+    } else {
+        ctrl1->Hide();
+        if(ctrl2) ctrl2->Hide();
+        if(ctrl3) ctrl3->Hide();
+    }
+}
+
 wxString ClimatologyDialog::GetValue(int index, Coord coord)
 {
-    return wxString::Format(_T("%.1f"), pPlugIn->
+    return wxString::Format(_T("%.2f"), pPlugIn->
                             GetOverlayFactory()->getCurValue
                             (coord, index, m_cursorlat, m_cursorlon));
 }

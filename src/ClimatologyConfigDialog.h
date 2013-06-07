@@ -35,6 +35,8 @@
 
 #include "ClimatologyUI.h"
 
+class ClimatologyIsoBarMap;
+
 struct ClimatologyOverlaySettings
 {
     void Read();
@@ -46,11 +48,11 @@ struct ClimatologyOverlaySettings
     struct OverlayDataSettings {
         int m_Units;
 
-        bool m_bIsoBars;
-        int m_iIsoBarSpacing;
-        wxArrayPtrVoid *m_pIsobarArray;
+        bool m_bEnabled, m_bOverlayMap;
 
-        bool m_bOverlayMap;
+        bool m_bIsoBars;
+        int m_iIsoBarSpacing, m_iIsoBarStep;
+        ClimatologyIsoBarMap *m_pIsobars[13];
 
         bool m_bNumbers;
         double m_iNumbersSpacing;
@@ -71,6 +73,9 @@ public:
     ClimatologyConfigDialog(ClimatologyDialog *parent);
     ~ClimatologyConfigDialog();
 
+    wxString SettingName(int setting);
+    void DisableIsoBars(int setting);
+
     ClimatologyOverlaySettings m_Settings;
 
 private:
@@ -78,6 +83,8 @@ private:
     void SetDataTypeSettings(int settings);
     void ReadDataTypeSettings(int settings);
     void PopulateUnits(int settings);
+
+    void OnPageChanged( wxNotebookEvent& event );
     void OnDataTypeChoice( wxCommandEvent& event );
 
     void OnUpdate();
@@ -92,9 +99,11 @@ private:
     void OnConfig( wxScrollEvent& event ) { OnConfig(); }
     void OnConfig( wxDateEvent& event ) { OnConfig(); }
 
+    void OnEnabled( wxCommandEvent& event );
+    void OnDonate( wxCommandEvent& event );
+
     int m_lastdatatype;
 
-    
     ClimatologyDialog *pParent;
 };
 

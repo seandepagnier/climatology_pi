@@ -54,12 +54,16 @@ public:
 
     void Init();
     void UpdateTrackingControls();
+    void PopulateTrackingControls();
     void SetFactoryOptions();
     void SetCursorLatLon(double lat, double lon);
 
     ClimatologyConfigDialog *m_cfgdlg;
 
 private:
+    void SetControlsVisible(ClimatologyOverlaySettings::SettingsType type,
+                            wxControl *ctrl1, wxControl *ctrl2=NULL, wxControl *ctrl3=NULL);
+
     wxString GetValue(int index, Coord coord=MAG);
 
     void OnMonth( wxCommandEvent& event );

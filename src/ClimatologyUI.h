@@ -34,6 +34,7 @@
 #include <wx/icon.h>
 #include <wx/datectrl.h>
 #include <wx/dateevt.h>
+#include <wx/html/htmlwin.h>
 #include <wx/notebook.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -99,10 +100,13 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxChoice* m_cDataType;
 		wxStaticText* m_staticText3;
 		wxChoice* m_cDataUnits;
+		wxCheckBox* m_cbEnabled;
+		wxCheckBox* m_cbOverlayMap;
 		wxCheckBox* m_cbIsoBars;
 		wxStaticText* m_staticText41;
 		wxSpinCtrl* m_sIsoBarSpacing;
-		wxCheckBox* m_cbOverlayMap;
+		wxStaticText* m_staticText17;
+		wxChoice* m_cIsoBarStep;
 		wxCheckBox* m_cbNumbers;
 		wxStaticText* m_staticText6;
 		wxSpinCtrl* m_sNumbersSpacing;
@@ -126,12 +130,21 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxPanel* m_panel2;
 		wxStaticText* m_staticText4;
 		wxStaticText* m_staticText5;
+		wxPanel* m_panel4;
+		wxStaticText* m_staticText141;
+		wxStaticText* m_stVersion;
+		wxStaticText* m_staticText16;
+		wxTextCtrl* m_tDataDirectory;
+		wxHtmlWindow* m_htmlInformation;
+		wxButton* m_bOnDonate;
 		wxStdDialogButtonSizer* m_sdbSizer1;
 		wxButton* m_sdbSizer1OK;
 		
 		// Virtual event handlers, overide them in your derived class
+		virtual void OnPageChanged( wxNotebookEvent& event ) { event.Skip(); }
 		virtual void OnDataTypeChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnEnabled( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxColourPickerEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxScrollEvent& event ) { event.Skip(); }
@@ -139,6 +152,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		virtual void OnConfig( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnConfig( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnConfig( wxDateEvent& event ) { event.Skip(); }
+		virtual void OnDonate( wxCommandEvent& event ) { event.Skip(); }
 		
 	
 	public:

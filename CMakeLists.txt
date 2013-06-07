@@ -81,8 +81,8 @@ SET(SRC_CLIMATOLOGY
             src/ClimatologyConfigDialog.h
             src/zuFile.cpp
             src/zuFile.h
-            src/IsoLine.cpp
-            src/IsoLine.h
+            src/IsoBarMap.cpp
+            src/IsoBarMap.h
             src/icons.cpp
             src/icons.h
 

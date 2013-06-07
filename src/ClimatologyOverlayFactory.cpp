@@ -37,7 +37,6 @@
 #include "zuFile.h"
 
 #include "climatology_pi.h"
-#include "IsoLine.h"
 
 double deg2rad(double degrees)
 {
@@ -53,6 +52,12 @@ ClimatologyOverlay::~ClimatologyOverlay()
 
 static const wxString climatology_pi = _T("climatology_pi: ");
 
+
+double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
+{
+    return m_factory.getCurValue(MAG, m_setting, lat, lon);
+}
+
 ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     : m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonelist(0)
 {
@@ -63,9 +68,8 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     wxProgressDialog progressdialog( _("Climatology"), wxString(), 37, &m_dlg,
                                      wxPD_CAN_ABORT | wxPD_ELAPSED_TIME);
-    ClearCachedData();
 
-    wxString path = *GetpSharedDataLocation() + _T("plugins/climatology/data/");
+    wxString path = ClimatologyDataDirectory();
     wxString fmt = _T("%02d");
 
     /* load wind */
@@ -377,7 +381,9 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
 {
     glDeleteLists(m_cyclonelist, 1);
-    ClearCachedData();
+    for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++)
+        for(int m=0; m<13; m++)
+            delete m_Settings.Settings[i].m_pIsobars[m];
 }
 
 void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
@@ -700,14 +706,6 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
         }
     }
     return true;
-}
-
-void ClimatologyOverlayFactory::ClearCachedData()
-{
-    for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
-//        delete m_Settings.Settings[i].m_pIsobarArray;
-        m_Settings.Settings[i].m_pIsobarArray = NULL;
-    }
 }
 
 void DrawGLLine(double x1, double y1, double x2, double y2)
@@ -1140,9 +1138,13 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
     if(coord == DIRECTION)
         return positive_degrees(rad2deg(atan2(Value(U, dir_cnt),
                                               Value(V, dir_cnt))));
-    if(coord == MDIRECTION)
-        return positive_degrees(rad2deg(atan2(-Value(U, dir_cnt),
-                                              -Value(V, dir_cnt))));
+    if(coord == MDIRECTION) {
+        if(U == 0 && V == 0)
+            return NAN;
+        else
+            return positive_degrees(rad2deg(atan2(-Value(U, dir_cnt),
+                                                  -Value(V, dir_cnt))));
+    }
 
     int totald = 0, totals = 0;
     for(int i=0; i<dir_cnt; i++) {
@@ -1398,47 +1400,37 @@ void ClimatologyOverlayFactory::RenderIsoBars(int setting, PlugIn_ViewPort &vp)
     if(!m_Settings.Settings[setting].m_bIsoBars)
         return;
 
-    wxArrayPtrVoid *&pIsobarArray = m_Settings.Settings[setting].m_pIsobarArray;
-    if( !pIsobarArray ) {
-        pIsobarArray = new wxArrayPtrVoid;
-        IsoLine *piso;
+    int month = m_CurrentMonth;
+    if(setting == ClimatologyOverlaySettings::SEADEPTH)
+        month = 0;
 
-        wxProgressDialog *progressdialog = NULL;
-        wxDateTime start = wxDateTime::Now();
+    ClimatologyIsoBarMap *&pIsobars = m_Settings.Settings[setting].m_pIsobars[month];
+    double spacing = m_Settings.Settings[setting].m_iIsoBarSpacing, step;
+    switch(m_Settings.Settings[setting].m_iIsoBarStep) {
+    case 0: step = 4; break;
+    case 1: step = 2; break;
+    case 2: step = 1; break;
+    case 3: step = .5; break;
+    case 4: step = .25; break;
+    }
 
-        double min = GetMin(setting);
-        double max = GetMax(setting);
+    if(pIsobars && !pIsobars->SameSettings(spacing, step)) {
+        delete pIsobars;
+        pIsobars = NULL;
+    }
 
-        /* convert min and max to units being used */
-        for( double press = min; press <= max; press += m_Settings.Settings[setting].m_iIsoBarSpacing) {
-            if(progressdialog)
-                progressdialog->Update(press-min);
-            else {
-                wxDateTime now = wxDateTime::Now();
-                if((now-start).GetSeconds() > 1 && press-min < (max-min)/2) {
-                    progressdialog = new wxProgressDialog(
-                        _("Building Isobar map"), _("Climatology"), max-min+1, &m_dlg,
-                        wxPD_SMOOTH | wxPD_ELAPSED_TIME | wxPD_REMAINING_TIME);
-                }
-            }
-
-            piso = new IsoLine( press, *this, setting);
-            pIsobarArray->Add( piso );
+    if( !pIsobars ) {
+        pIsobars = new ClimatologyIsoBarMap(m_dlg.m_cfgdlg->SettingName(setting),
+                                            spacing, step, *this, setting);
+        if(!pIsobars->Recompute(&m_dlg)) {
+            delete pIsobars;
+            pIsobars = NULL;
+            m_dlg.m_cfgdlg->DisableIsoBars(setting);
+            return;
         }
-        delete progressdialog;
     }
 
-    //    Draw the Isobars
-    for( unsigned int i = 0; i < pIsobarArray->GetCount(); i++ ) {
-        IsoLine *piso = (IsoLine *) pIsobarArray->Item( i );
-        piso->drawIsoLine( m_pdc, &vp, true);
-
-        // Draw Isobar labels
-        int density = 400;
-        int first = 0;
-        piso->drawIsoLineLabels( m_pdc, &vp, density,
-                                 first, getLabel(piso->getValue()) );
-    }
+    pIsobars->Plot(m_pdc, vp);
 }
 
 void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)
@@ -1754,6 +1746,9 @@ bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
            (i == ClimatologyOverlaySettings::PRECIPITATION  && !m_dlg.m_cbPrecipitation->GetValue()) ||
            (i == ClimatologyOverlaySettings::RELATIVE_HUMIDITY  && !m_dlg.m_cbRelativeHumidity->GetValue()) ||
            (i == ClimatologyOverlaySettings::SEADEPTH       && !m_dlg.m_cbSeaDepth->GetValue()))
+            continue;
+
+        if(!m_Settings.Settings[i].m_bEnabled)
             continue;
 
         if(overlay) /* render overlays first */

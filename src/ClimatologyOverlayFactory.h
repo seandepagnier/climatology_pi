@@ -27,6 +27,8 @@
 #include <list>
 #include <map>
 
+#include "IsoBarMap.h"
+
 void DrawGLLine( double x1, double y1, double x2, double y2 );
 
 class PlugIn_ViewPort;
@@ -124,6 +126,27 @@ public:
 class ClimatologyDialog;
 class wxGLContext;
 
+class ClimatologyOverlayFactory;
+
+class ClimatologyIsoBarMap : public IsoBarMap
+{
+public:
+ ClimatologyIsoBarMap(wxString name, double spacing, double step,
+                      ClimatologyOverlayFactory &factory, int setting)
+     : IsoBarMap(name, spacing, step),
+        m_factory(factory), m_setting(setting) {}
+
+    double CalcParameter(double lat, double lon);
+    bool SameSettings(double spacing, double step)
+    {
+        return spacing == m_Spacing && step == m_Step;
+    }
+
+private:
+    ClimatologyOverlayFactory &m_factory;
+    int m_setting;
+};
+
 class ClimatologyOverlayFactory {
 public:
     ClimatologyOverlayFactory( ClimatologyDialog &dlg );
@@ -136,7 +159,6 @@ public:
     bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
     bool ReadElNinoYears(wxString filename);
 
-    void ClearCachedData();
     void DrawLine( double x1, double y1, double x2, double y2,
                    const wxColour &color, int opacity, double width );
     void DrawCircle( double x, double y, double r,

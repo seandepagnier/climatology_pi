@@ -93,6 +93,8 @@ static inline double positive_degrees(double degrees)
     return degrees;
 }
 
+wxString ClimatologyDataDirectory();
+
 #include "ClimatologyDialog.h"
 #include "ClimatologyUI.h"
 
