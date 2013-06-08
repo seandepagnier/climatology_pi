@@ -45,53 +45,7 @@
 #include "../../../include/wx/jsonreader.h"
 #include "../../../include/wx/jsonwriter.h"
 
-#ifdef __MSVC__
-#include <float.h>
-#include <iostream>
-#include <limits>
-
-# if !defined(M_PI)
-# define M_PI		3.14159265358979323846	/* pi */
-# endif
-
-# if !defined(NAN)
-# define NAN std::numeric_limits<double>::quiet_NaN ()
-# endif
-
-# if !defined(INFINITY)
-# define INFINITY std::numeric_limits<double>::infinity ()
-# endif
-
-#define isnan _isnan
-#define isinf(x) (!_finite(x) && !_isnan(x))
-
-inline double trunc(double d){ return (d>0) ? floor(d) : ceil(d) ; }
-inline double round(double n) { return n < 0.0 ? ceil(n - 0.5) : floor(n + 0.5); }
-
-# if !defined(snprintf)
-# define snprintf _snprintf
-# endif
-#define vsnprintf _vsnprintf
-#define strcasecmp _stricmp
-#define strncasecmp _strnicmp
-
-#define strtok_r strtok_s
-
-#endif
-
-static inline double rad2deg(double radians)
-{
-  return 180.0 * radians / M_PI;
-}
-
-static inline double positive_degrees(double degrees)
-{
-    while(degrees < 0)
-        degrees += 360;
-    while(degrees >= 360)
-        degrees -= 360;
-    return degrees;
-}
+#include "defs.h"
 
 wxString ClimatologyDataDirectory();
 

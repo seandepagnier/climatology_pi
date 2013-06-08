@@ -35,12 +35,7 @@
 #include "../../../include/ocpn_plugin.h"
 
 #include "IsoBarMap.h"
-
-#if defined(__WIN32__)
-#define isnan(x) _isnan(x)
-#endif
-
-double square(double x) { return x*x; }
+#include "defs.h"
 
 /* initialize cache to contain data */
 void ParamCache::Initialize(double step)
