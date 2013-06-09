@@ -42,10 +42,12 @@ static const wxString units0_names[] = {_("Knots"), _("M/S"), _("MPH"), _("KPH")
 static const wxString units1_names[] = {_("MilliBars"), _("mmHG"), wxEmptyString};
 static const wxString units2_names[] = {_("Meters"), _("Feet"), wxEmptyString};
 static const wxString units3_names[] = {_("Celcius"), _("Farenheight"), wxEmptyString};
-static const wxString units4_names[] = {_("Millimeters"), _("Inches"), wxEmptyString};
+static const wxString units4_names[] = {_("Meters"), _("Inches"), wxEmptyString};
 static const wxString units5_names[] = {_("Percent"), wxEmptyString};
+static const wxString units6_names[] = {_("Unknown"), wxEmptyString};
 static const wxString *unit_names[] = {units0_names, units1_names, units2_names,
-                                       units3_names, units4_names, units5_names};
+                                       units3_names, units4_names, units5_names,
+                                       units6_names};
 
 static const wxString name_from_index[] = {_T("Wind"), _T("Current"),
                                            _T("SeaLevelPressure"), _T("SeaSurfaceTemperature"),
@@ -58,7 +60,7 @@ static const wxString tname_from_index[] = {_("Wind"), _("Current"),
                                             _("Cloud Cover"), _("Precipitation"),
                                             _("Relative Humidity"), _("Sea Depth")};
 
-static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 3, 5, 4, 5, 2};
+static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 3, 5, 4, 5, 6};
 
 double ClimatologyOverlaySettings::CalibrationOffset(int setting)
 {
@@ -123,7 +125,7 @@ void ClimatologyOverlaySettings::Read()
                       || i == RELATIVE_HUMIDITY || i == SEADEPTH);
 
         pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars, i==SLP);
-        double defspacing[SETTINGS_COUNT] = {5, 1, 10, 1, 1, 1, 1, 10, 5};
+        double defspacing[SETTINGS_COUNT] = {5, 1, 10, 1, 1, 20, 1, 10, 5};
         pConf->Read ( Name + _T ( "IsoBarSpacing" ), &Settings[i].m_iIsoBarSpacing, defspacing[i]);
         pConf->Read ( Name + _T ( "IsoBarStep" ), &Settings[i].m_iIsoBarStep, 2);
 
