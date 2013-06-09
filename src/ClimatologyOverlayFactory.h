@@ -172,6 +172,7 @@ public:
     double getValue(enum Coord coord, int setting, double lat, double lon, wxDateTime *date);
     double getCurValue(enum Coord coord, int setting, double lat, double lon)
     { return getValue(coord, setting, lat, lon, 0); }
+    double getCurCalibratedValue(enum Coord coord, int setting, double lat, double lon);
 
     bool RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp );
 

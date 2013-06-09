@@ -166,7 +166,7 @@ void ClimatologyDialog::SetControlsVisible(ClimatologyOverlaySettings::SettingsT
 wxString ClimatologyDialog::GetValue(int index, Coord coord)
 {
     return wxString::Format(_T("%.2f"), pPlugIn->
-                            GetOverlayFactory()->getCurValue
+                            GetOverlayFactory()->getCurCalibratedValue
                             (coord, index, m_cursorlat, m_cursorlon));
 }
 

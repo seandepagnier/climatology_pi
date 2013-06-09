@@ -55,7 +55,7 @@ static const wxString climatology_pi = _T("climatology_pi: ");
 
 double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
 {
-    return m_factory.getCurValue(MAG, m_setting, lat, lon);
+    return m_factory.getCurCalibratedValue(MAG, m_setting, lat, lon);
 }
 
 ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
@@ -1269,6 +1269,15 @@ double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
     return NAN;
 }
 
+double ClimatologyOverlayFactory::getCurCalibratedValue(enum Coord coord, int setting, double lat, double lon)
+{
+    double v = getCurValue(coord, setting, lat, lon);
+    if(coord == DIRECTION || coord == MDIRECTION)
+        return v;
+
+    return m_dlg.m_cfgdlg->m_Settings.CalibrateValue(setting, v);
+}
+
 double ClimatologyOverlayFactory::GetMin(int setting)
 {
     switch(setting) {
@@ -1444,7 +1453,7 @@ void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)
         for(p.x = space/2; p.x <= vp.rv_rect.width-space/2; p.x+=space) {
             double lat, lon;
             GetCanvasLLPix( &vp, p, &lat, &lon);
-            RenderNumber(p, *wxBLACK, getCurValue(MAG, setting, lat, lon));
+            RenderNumber(p, *wxBLACK, getCurCalibratedValue(MAG, setting, lat, lon));
         }
 }
 
