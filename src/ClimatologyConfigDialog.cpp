@@ -62,13 +62,9 @@ static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1
 
 double ClimatologyOverlaySettings::CalibrationOffset(int setting)
 {
-    switch(unittype[setting]) {
-    case 3: switch(Settings[setting].m_Units) { /* only have offset for temperature */
-        case CELCIUS:    return -273.15;
-        case FAHRENHEIT: return -273.15 + 32*5/9.0;
-        } break;
-    }
-        
+    /* only have offset for fahrenheit */
+    if(unittype[setting] == 3 && Settings[setting].m_Units == FAHRENHEIT)
+        return 32*5/9.0;
     return 0;
 }
 

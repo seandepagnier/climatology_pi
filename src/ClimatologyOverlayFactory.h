@@ -132,19 +132,19 @@ class ClimatologyIsoBarMap : public IsoBarMap
 {
 public:
  ClimatologyIsoBarMap(wxString name, double spacing, double step,
-                      ClimatologyOverlayFactory &factory, int setting)
+                      ClimatologyOverlayFactory &factory, int setting, int units)
      : IsoBarMap(name, spacing, step),
-        m_factory(factory), m_setting(setting) {}
+        m_factory(factory), m_setting(setting), m_units(units) {}
 
     double CalcParameter(double lat, double lon);
-    bool SameSettings(double spacing, double step)
+    bool SameSettings(double spacing, double step, int units)
     {
-        return spacing == m_Spacing && step == m_Step;
+        return spacing == m_Spacing && step == m_Step && units == m_units;
     }
 
 private:
     ClimatologyOverlayFactory &m_factory;
-    int m_setting;
+    int m_setting, m_units;
 };
 
 class ClimatologyOverlayFactory {

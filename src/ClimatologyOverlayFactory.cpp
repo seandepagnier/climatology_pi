@@ -1255,7 +1255,7 @@ double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
                            m_at[month][0], 180) / 3.0;
     case ClimatologyOverlaySettings::CLOUD:
         return InterpArray((-lat+90)/2-.5, positive_degrees(lon-.5)/2,
-                           m_cld[month][0], 180) * .001f;
+                           m_cld[month][0], 180) * .001f * 12.5;
     case ClimatologyOverlaySettings::PRECIPITATION:
         return InterpArray((-lat+90)/2.5, positive_degrees(lon-2)/2.5,
                            m_precip[month][0], 144) * .002f;
@@ -1423,14 +1423,15 @@ void ClimatologyOverlayFactory::RenderIsoBars(int setting, PlugIn_ViewPort &vp)
     case 4: step = .25; break;
     }
 
-    if(pIsobars && !pIsobars->SameSettings(spacing, step)) {
+    int units = m_Settings.Settings[setting].m_Units;
+    if(pIsobars && !pIsobars->SameSettings(spacing, step, units)) {
         delete pIsobars;
         pIsobars = NULL;
     }
 
     if( !pIsobars ) {
         pIsobars = new ClimatologyIsoBarMap(m_dlg.m_cfgdlg->SettingName(setting),
-                                            spacing, step, *this, setting);
+                                            spacing, step, *this, setting, units);
         if(!pIsobars->Recompute(&m_dlg)) {
             delete pIsobars;
             pIsobars = NULL;
