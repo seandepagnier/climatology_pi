@@ -1,7 +1,7 @@
 /*
 weather.unisys.com has:
-       tracks.bio  tracks.epa   tracks.bsh  tracks.nio
-       tracks.atl tracks.bwp  tracks.she 
+       tracks.epa   tracks.nio
+       tracks.atl tracks.wpa  tracks.she 
        tracks.spa.dat -- is concatination of all the files in that folder
 */
 
@@ -60,7 +60,14 @@ int main(int argc, char *argv[])
                 int16_t ilat = strtol(lat, 0, 10), ilon = -strtol(lon, 0, 10);
                 if(ilat || ilon) {
                     fwrite(&state, 1, 1, stdout);
+
+                    if(lday == 0 || lday > 31) {
+                        fprintf(stderr, "invalid day: %s\n", line);
+                        lday = 1;
+                    }
+
                     char dayhour = lday*4 + h;
+
                     fwrite(&dayhour, 1, 1, stdout);
                     fwrite(&lmonth, 1, 1, stdout);
 

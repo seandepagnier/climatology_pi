@@ -329,7 +329,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(31, _("cyclone (west pacific)")))
         return;
-    if(!ReadCycloneData(path + _T("cyclone-bwp"), m_bwp))
+    if(!ReadCycloneData(path + _T("cyclone-wpa"), m_wpa))
         m_dlg.m_cfgdlg->m_cbWestPacific->Disable();
     else
         anycyclone = true;
@@ -1725,7 +1725,7 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
     if(m_dlg.m_cfgdlg->m_cbEastPacific->GetValue())
         RenderCyclonesTheatre(vp, m_epa);
     if(m_dlg.m_cfgdlg->m_cbWestPacific->GetValue())
-        RenderCyclonesTheatre(vp, m_bwp);
+        RenderCyclonesTheatre(vp, m_wpa);
     if(m_dlg.m_cfgdlg->m_cbSouthPacific->GetValue())
         RenderCyclonesTheatre(vp, m_spa);
     if(m_dlg.m_cfgdlg->m_cbAtlantic->GetValue())

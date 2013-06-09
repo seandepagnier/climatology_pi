@@ -124,7 +124,7 @@ void ClimatologyOverlaySettings::Read()
                       || i == RELATIVE_HUMIDITY || i == SEADEPTH);
 
         pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars, i==SLP);
-        double defspacing[SETTINGS_COUNT] = {5, 1, 10, 1, 1, 20, 1, 10, 5};
+        double defspacing[SETTINGS_COUNT] = {5, 2, 10, 5, 5, 20, 1, 10, 5};
         pConf->Read ( Name + _T ( "IsoBarSpacing" ), &Settings[i].m_iIsoBarSpacing, defspacing[i]);
         pConf->Read ( Name + _T ( "IsoBarStep" ), &Settings[i].m_iIsoBarStep, 2);
 
@@ -318,6 +318,7 @@ void ClimatologyConfigDialog::ReadDataTypeSettings(int settings)
 
     bool enable = settings <= ClimatologyOverlaySettings::CURRENT;
     m_cbDirectionArrowsEnable->Enable(enable);
+    m_rbDirectionArrowsBarbs->Enable(enable);
     m_rbDirectionArrowsLength->Enable(enable);
     m_sDirectionArrowsWidth->Enable(enable);
     m_cpDirectionArrows->Enable(enable);

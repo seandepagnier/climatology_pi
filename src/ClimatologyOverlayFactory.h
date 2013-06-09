@@ -220,7 +220,7 @@ private:
     unsigned int m_cyclonelist; /* for opengl display list */
     bool m_cyclonelistok;
 
-    std::list<Cyclone*> m_bwp, m_epa, m_spa, m_atl, m_she, m_nio;
+    std::list<Cyclone*> m_wpa, m_epa, m_spa, m_atl, m_she, m_nio;
 
     std::map<int, ElNinoYear> m_ElNinoYears;
 };
