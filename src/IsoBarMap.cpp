@@ -369,7 +369,7 @@ bool IsoBarMap::Recompute(wxWindow *parent)
     /* clear out old data */
   ClearMap();
 
-#if 0
+#if 1
   wxProgressDialog *progressdialog = NULL;
   wxDateTime start = wxDateTime::Now();
 #endif
@@ -384,31 +384,22 @@ bool IsoBarMap::Recompute(wxWindow *parent)
 
   double lastupdate = min;
   for(double lat = min; lat + m_Step <= max; lat += m_Step) {
-#if 0
-      if(progressdialog && lat - lastupdate > 20) {
+      if(lat - lastupdate > 10) {
           lastupdate = lat;
-          if(!progressdialog->Update(lat - min)) {
-              delete progressdialog;
-              return false;
-          }
-      } else {
-          wxDateTime now = wxDateTime::Now();
-          if((now-start).GetSeconds() > 1 && lat < (max - min)/2) {
-              progressdialog = new wxProgressDialog(
-                  _("Building Isobar Map"), m_Name, max - min + 1, /*parent*/GetOCPNCanvasWindow(),
-                  wxPD_APP_MODAL | 
-                  wxPD_SMOOTH | wxPD_ELAPSED_TIME | wxPD_REMAINING_TIME
-//                  | wxPD_CAN_ABORT
-                  );
+          if(progressdialog) {
+              if(!progressdialog->Update(lat - min)) {
+                  delete progressdialog;
+                  return false;
+              }
+          } else {
+              wxDateTime now = wxDateTime::Now();
+              if((now-start).GetMilliseconds() > 500 && lat < (max - min)/2) {
+                  progressdialog = new wxProgressDialog(
+                      _("Building Isobar Map"), m_Name, max - min + 1, parent,
+                      wxPD_ELAPSED_TIME | wxPD_CAN_ABORT);
+              }
           }
       }
-#else
-      if(lat - lastupdate > 20) {
-          lastupdate = lat;
-          wxThread::Yield();
-      }
-#endif
-
       cachepage = !cachepage;
       BuildParamCache(m_Cache[cachepage], lat+m_Step);
 
@@ -422,9 +413,7 @@ bool IsoBarMap::Recompute(wxWindow *parent)
       }
   }
 
-#if 0
   delete progressdialog;
-#endif
 
   m_MinContour /= m_Spacing;
   m_MinContour = floor(m_MinContour);

@@ -40,14 +40,12 @@
 
 static const wxString units0_names[] = {_("Knots"), _("M/S"), _("MPH"), _("KPH"), wxEmptyString};
 static const wxString units1_names[] = {_("MilliBars"), _("mmHG"), wxEmptyString};
-static const wxString units2_names[] = {_("Meters"), _("Feet"), wxEmptyString};
+static const wxString units2_names[] = {_("Meters"), _("Feet"), _("Inches"), wxEmptyString};
 static const wxString units3_names[] = {_("Celcius"), _("Farenheight"), wxEmptyString};
-static const wxString units4_names[] = {_("Meters"), _("Inches"), wxEmptyString};
-static const wxString units5_names[] = {_("Percent"), wxEmptyString};
-static const wxString units6_names[] = {_("Unknown"), wxEmptyString};
+static const wxString units4_names[] = {_("Percent"), wxEmptyString};
+static const wxString units5_names[] = {_("Unknown"), wxEmptyString};
 static const wxString *unit_names[] = {units0_names, units1_names, units2_names,
-                                       units3_names, units4_names, units5_names,
-                                       units6_names};
+                                       units3_names, units4_names, units5_names};
 
 static const wxString name_from_index[] = {_T("Wind"), _T("Current"),
                                            _T("SeaLevelPressure"), _T("SeaSurfaceTemperature"),
@@ -60,7 +58,7 @@ static const wxString tname_from_index[] = {_("Wind"), _("Current"),
                                             _("Cloud Cover"), _("Precipitation"),
                                             _("Relative Humidity"), _("Sea Depth")};
 
-static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 3, 5, 4, 5, 6};
+static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 3, 4, 2, 4, 5};
 
 double ClimatologyOverlaySettings::CalibrationOffset(int setting)
 {
@@ -74,26 +72,27 @@ double ClimatologyOverlaySettings::CalibrationFactor(int setting)
 {
     switch(unittype[setting]) {
     case 0: switch(Settings[setting].m_Units) {
-        case KNOTS:  return 3.6 / 1.852;
-        case M_S:    return 1;
-        case MPH:    return 3.6 / 1.852 * 1.15;
-        case KPH:    return 3.6 / 1.852 * 1.85;
+        case KNOTS:  return 1;
+        case M_S:    return 1.852 / 3.6;
+        case MPH:    return 1.15;
+        case KPH:    return 1.85;
         } break;
     case 1: switch(Settings[setting].m_Units) {
-        case MILLIBARS: return 1 / 100.;
-        case MMHG: return 1 / (100. * 1.33);
+        case MILLIBARS: return 1;
+        case MMHG: return 1 / (1.33);
         } break;
     case 2: switch(Settings[setting].m_Units) {
         case METERS: return 1;
         case FEET:   return 3.28;
+        case INCHES: return 39.37;
         } break;
     case 3: switch(Settings[setting].m_Units) {
         case CELCIUS:     return 1;
         case FAHRENHEIT: return 9./5;
         } break;
     case 4: switch(Settings[setting].m_Units) {
-        case MILLIMETERS: return 1;
-        case INCHES:      return 25.4;
+        case METERS: return 1;
+        case INCHES: return 39.37;
         } break;
     case 5: return 1;
     }

@@ -348,14 +348,14 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     else
         anycyclone = true;
 
-    if(!progressdialog.Update(35, _("cyclone (north indian)")))
+    if(!progressdialog.Update(34, _("cyclone (north indian)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-nio"), m_nio))
         m_dlg.m_cfgdlg->m_cbNorthIndian->Disable();
     else
         anycyclone = true;
 
-    if(!progressdialog.Update(36, _("cyclone (south indian)")))
+    if(!progressdialog.Update(35, _("cyclone (south indian)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-she"), m_she, true))
         m_dlg.m_cfgdlg->m_cbSouthIndian->Disable();
@@ -900,12 +900,12 @@ bool ClimatologyOverlayFactory::CreateGLTexture( ClimatologyOverlay &O,
     unsigned char *data = new unsigned char[width*height*4];
 
     for(int x = 0; x < width; x++) {
-        if(x % 50 == 0) {
+        if(x % 40 == 0) {
             if(progressdialog)
                 progressdialog->Update(x);
             else {
                 wxDateTime now = wxDateTime::Now();
-                if((now-start).GetSeconds() > 1 && x < width/2) {
+                if((now-start).GetMilliseconds() > 1000 && x < width/2) {
                     progressdialog = new wxProgressDialog(
                         _("Building Overlay map"), _("Climatology"), width+1, &m_dlg,
                         wxPD_SMOOTH | wxPD_ELAPSED_TIME | wxPD_REMAINING_TIME);
