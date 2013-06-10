@@ -24,16 +24,16 @@
 #include <wx/textctrl.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
+#include <wx/datectrl.h>
+#include <wx/dateevt.h>
 #include <wx/stattext.h>
 #include <wx/spinctrl.h>
-#include <wx/radiobut.h>
-#include <wx/clrpicker.h>
 #include <wx/panel.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
-#include <wx/datectrl.h>
-#include <wx/dateevt.h>
+#include <wx/radiobut.h>
+#include <wx/clrpicker.h>
 #include <wx/html/htmlwin.h>
 #include <wx/notebook.h>
 
@@ -96,6 +96,13 @@ class ClimatologyConfigDialogBase : public wxDialog
 	
 	protected:
 		wxNotebook* m_notebook1;
+		wxPanel* m_panel2;
+		wxStaticText* m_staticText4;
+		wxStaticText* m_staticText5;
+		wxPanel* m_panel41;
+		wxStaticText* m_staticText12;
+		wxStaticText* m_staticText13;
+		wxStaticText* m_staticText14;
 		wxPanel* m_panel5;
 		wxChoice* m_cDataType;
 		wxStaticText* m_staticText3;
@@ -125,13 +132,6 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxSpinCtrl* m_sDirectionArrowsSize;
 		wxStaticText* m_staticText10;
 		wxSpinCtrl* m_sDirectionArrowsSpacing;
-		wxPanel* m_panel41;
-		wxStaticText* m_staticText12;
-		wxStaticText* m_staticText13;
-		wxStaticText* m_staticText14;
-		wxPanel* m_panel2;
-		wxStaticText* m_staticText4;
-		wxStaticText* m_staticText5;
 		wxPanel* m_panel4;
 		wxStaticText* m_staticText141;
 		wxStaticText* m_stVersion;
@@ -143,24 +143,17 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxButton* m_sdbSizer1OK;
 		
 		// Virtual event handlers, overide them in your derived class
-		virtual void OnDataTypeChoice( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnEnabled( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnUpdate( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnUpdate( wxDateEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxSpinEvent& event ) { event.Skip(); }
+		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnUpdate( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnDataTypeChoice( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnEnabled( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxColourPickerEvent& event ) { event.Skip(); }
-		virtual void OnConfig( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnConfig( wxSpinEvent& event ) { event.Skip(); }
-		virtual void OnConfig( wxScrollEvent& event ) { event.Skip(); }
-		virtual void OnConfig( wxDateEvent& event ) { event.Skip(); }
 		virtual void OnDonate( wxCommandEvent& event ) { event.Skip(); }
 		
 	
 	public:
-		wxCheckBox* m_cbWindAtlasEnable;
-		wxSpinCtrl* m_sWindAtlasSize;
-		wxSpinCtrl* m_sWindAtlasSpacing;
-		wxSlider* m_sWindAtlasOpacity;
 		wxDatePickerCtrl* m_dPStart;
 		wxDatePickerCtrl* m_dPEnd;
 		wxSpinCtrl* m_sMinWindSpeed;
@@ -179,6 +172,10 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxCheckBox* m_cbSubTropical;
 		wxCheckBox* m_cbExtraTropical;
 		wxCheckBox* m_cbRemanent;
+		wxCheckBox* m_cbWindAtlasEnable;
+		wxSpinCtrl* m_sWindAtlasSize;
+		wxSpinCtrl* m_sWindAtlasSpacing;
+		wxSlider* m_sWindAtlasOpacity;
 		
 		ClimatologyConfigDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Configuration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,480 ), long style = wxDEFAULT_DIALOG_STYLE ); 
 		~ClimatologyConfigDialogBase();

@@ -1451,17 +1451,23 @@ void ClimatologyOverlayFactory::RenderIsoBars(int setting, PlugIn_ViewPort &vp)
     }
 
     if( !pIsobars ) {
+        m_dlg.m_bCanRefresh = false;
         pIsobars = new ClimatologyIsoBarMap(m_dlg.m_cfgdlg->SettingName(setting),
                                             spacing, step, *this, setting, units);
-        if(!pIsobars->Recompute(&m_dlg)) {
+        bool ret = pIsobars->Recompute(&m_dlg);
+        m_dlg.m_bCanRefresh = true;
+        if(!ret) {
             delete pIsobars;
             pIsobars = NULL;
+
             m_dlg.m_cfgdlg->DisableIsoBars(setting);
-            return;
+            goto mayberefresh;
         }
     }
 
     pIsobars->Plot(m_pdc, vp);
+mayberefresh:
+    m_dlg.ClearRefresh();
 }
 
 void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)

@@ -369,12 +369,7 @@ void ClimatologyConfigDialog::OnUpdate()
 {
     int setting = m_cDataType->GetSelection();
     SetDataTypeSettings(setting);
-    pParent->SetFactoryOptions();
-}
-
-void ClimatologyConfigDialog::OnConfig()
-{
-    pParent->SetFactoryOptions();
+    pParent->TryRefresh();
 }
 
 void ClimatologyConfigDialog::OnEnabled( wxCommandEvent& event )

@@ -106,12 +106,7 @@ private:
     void OnUpdate( wxSpinEvent& event ) { OnUpdate(); }
     void OnUpdate( wxColourPickerEvent& event ) { OnUpdate(); }
     void OnUpdate( wxScrollEvent& event ) { OnUpdate(); }
-
-    void OnConfig();
-    void OnConfig( wxCommandEvent& event ) { OnConfig(); }
-    void OnConfig( wxSpinEvent& event ) { OnConfig(); }
-    void OnConfig( wxScrollEvent& event ) { OnConfig(); }
-    void OnConfig( wxDateEvent& event ) { OnConfig(); }
+    void OnUpdate( wxDateEvent& event ) { OnUpdate(); }
 
     void OnEnabled( wxCommandEvent& event );
     void OnDonate( wxCommandEvent& event );
