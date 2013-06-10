@@ -643,7 +643,6 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	this->Centre( wxBOTH );
 	
 	// Connect Events
-	m_notebook1->Connect( wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler( ClimatologyConfigDialogBase::OnPageChanged ), NULL, this );
 	m_cDataType->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnDataTypeChoice ), NULL, this );
 	m_cDataUnits->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cbEnabled->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnEnabled ), NULL, this );
@@ -705,7 +704,6 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 ClimatologyConfigDialogBase::~ClimatologyConfigDialogBase()
 {
 	// Disconnect Events
-	m_notebook1->Disconnect( wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler( ClimatologyConfigDialogBase::OnPageChanged ), NULL, this );
 	m_cDataType->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnDataTypeChoice ), NULL, this );
 	m_cDataUnits->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cbEnabled->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnEnabled ), NULL, this );

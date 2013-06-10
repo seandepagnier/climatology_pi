@@ -41,7 +41,7 @@
 static const wxString units0_names[] = {_("Knots"), _("M/S"), _("MPH"), _("KPH"), wxEmptyString};
 static const wxString units1_names[] = {_("MilliBars"), _("mmHG"), wxEmptyString};
 static const wxString units2_names[] = {_("Meters"), _("Feet"), _("Inches"), wxEmptyString};
-static const wxString units3_names[] = {_("Celcius"), _("Farenheight"), wxEmptyString};
+static const wxString units3_names[] = {_("Celcius"), _("Fahrenheit"), wxEmptyString};
 static const wxString units4_names[] = {_("Percent"), wxEmptyString};
 static const wxString units5_names[] = {_("Unknown"), wxEmptyString};
 static const wxString *unit_names[] = {units0_names, units1_names, units2_names,
