@@ -10,7 +10,7 @@ ALL_CURRENT += $(DATA)/current07.gz $(DATA)/current08.gz $(DATA)/current09.gz
 ALL_CURRENT += $(DATA)/current10.gz $(DATA)/current11.gz $(DATA)/current12.gz
 
 ALL_OTHER = $(DATA)/sealevelpressure.gz $(DATA)/seasurfacetemperature.gz $(DATA)/airtemperature.gz $(DATA)/cloud.gz $(DATA)/precipitation.gz $(DATA)/relativehumidity.gz $(DATA)/seadepth.gz
-ALL_CYCLONE = $(DATA)/cyclone-atl $(DATA)/cyclone-bio $(DATA)/cyclone-bsh $(DATA)/cyclone-bwp $(DATA)/cyclone-epa $(DATA)/cyclone-she $(DATA)/cyclone-spa
+ALL_CYCLONE = $(DATA)/cyclone-atl $(DATA)/cyclone-nio $(DATA)/cyclone-wpa $(DATA)/cyclone-epa $(DATA)/cyclone-she $(DATA)/cyclone-spa
 ALL = $(ALL_WIND) $(ALL_CURRENT) $(ALL_OTHER) $(ALL_CYCLONE)
 
 all: $(ALL)
@@ -131,6 +131,21 @@ landseadepth.nc:
 
 genseadepthdata: genseadepthdata.cpp
 	g++ -o genseadepthdata genseadepthdata.cpp -lnetcdf -lnetcdf_c++ -g
+
+tracks.atl:
+	wget -c http://weather.unisys.com/hurricane/atlantic/tracks.atl
+
+tracks.epa:
+	wget -c http://weather.unisys.com/hurricane/e_pacific/tracks.epa
+
+tracks.wpa:
+	wget -c http://weather.unisys.com/hurricane/w_pacific/tracks.wpa
+
+tracks.she:
+	wget -c http://weather.unisys.com/hurricane/s_indian/tracks.she
+
+tracks.nio:
+	wget -c http://weather.unisys.com/hurricane/n_indian/tracks.nio
 
 $(DATA)/cyclone-%: tracks.% gencyclonedata
 	./gencyclonedata $< > $@
