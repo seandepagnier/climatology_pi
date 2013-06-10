@@ -827,11 +827,11 @@ ColorMap RelativeHumidityMap[] =
  {100, _T("#2080f0"), 0}};
 
 ColorMap SeaDepthMap[] =
-{{0, _T("#0000d9"), 0},  {3, _T("#002ad9"), 0},  {6, _T("#006ed9"), 0},  {9, _T("#00b2d9"), 0},
- {12, _T("#00d4d4"), 0}, {15, _T("#00d9a6"), 0}, {18, _T("#00d900"), 0}, {21, _T("#95d900"), 0},
- {24, _T("#d9d900"), 0}, {26, _T("#d9ae00"), 0}, {28, _T("#d9f000"), 0}, {30, _T("#d9c040"), 0},
- {31, _T("#a9c040"), 0}, {32, _T("#a0a040"), 0}, {33, _T("#808060"), 0}, {34, _T("#606060"), 0},
- {35, _T("#404040"), 0}, {36, _T("#202020"), 0}, {40, _T("#000000"), 0}};
+{{0, _T("#0000d9"), 255},  {20, _T("#002ad9"), 0},  {50, _T("#006ed9"), 0},  {100, _T("#00b2d9"), 0},
+ {150, _T("#00d4d4"), 0}, {250, _T("#00d9a6"), 0}, {400, _T("#00d900"), 0}, {600, _T("#95d900"), 0},
+ {800, _T("#d9d900"), 0}, {1000, _T("#d9ae00"), 0}, {1200, _T("#d9f000"), 0}, {1400, _T("#d9c040"), 0},
+ {2000, _T("#a9c040"), 0}, {3000, _T("#a0a040"), 0}, {4000, _T("#808060"), 0}, {5000, _T("#606060"), 0},
+ {6000, _T("#404040"), 0}, {8000, _T("#202020"), 0}, {10000, _T("#000000"), 0}};
 
 ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap, AirTempMap,
                          CloudMap, PrecipitationMap, RelativeHumidityMap, SeaDepthMap};
@@ -962,7 +962,8 @@ bool ClimatologyOverlayFactory::CreateGLTexture( ClimatologyOverlay &O,
     return true;
 }
 
-void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_ViewPort &vp)
+void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_ViewPort &vp,
+    double transparency)
 { 
     if( !O.m_iTexture )
         return;
@@ -978,7 +979,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_Vie
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glColor4f(1, 1, 1, 1);
+    glColor4f(1, 1, 1, 1 - transparency);
     glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
     
     int w = vp.pix_width, h = vp.pix_height;
@@ -1225,6 +1226,17 @@ double CurrentData::InterpCurrent(enum Coord coord, double x, double y)
     return      interp_value(xi, x0, x1, v0,  v1 );
 }
 
+double InterpTable(double ind, const double table[], int tablesize)
+{
+    int ind1 = floor(ind), ind2 = ceil(ind);
+    if(ind1 < 0)
+        return table[0];
+    if(ind2 >= tablesize)
+        return table[tablesize - 1];
+
+    return interp_value(ind, ind1, ind2, table[ind1], table[ind2]);
+}
+
 double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
                                            double lat, double lon, wxDateTime *date)
 {
@@ -1263,8 +1275,17 @@ double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
         return InterpArray((-lat+90), positive_degrees(lon-.5),
                            m_rhum[month][0], 360)/2.0;
     case ClimatologyOverlaySettings::SEADEPTH:
-        return InterpArray((-lat+90), positive_degrees(lon-.5),
+    {
+        double ind = InterpArray((-lat+90), positive_degrees(lon-.5),
                            m_seadepth[0], 360);
+        const double table[] = {0, 10, 20, 30, 50, 75, 100, 125, 150,
+                                200, 250, 300, 400, 500, 600, 700, 800,
+                                900, 1000, 1100, 1200, 1300, 1400, 1500,
+                                1750, 2000, 2500, 3000, 3500, 4000, 4500,
+                                5000, 5500, 6000, 6500, 7000, 7500, 8000,
+                                9000, 10000};
+        return InterpTable(ind, table, (sizeof table) / (sizeof *table));
+    }
     }
     return NAN;
 }
@@ -1325,7 +1346,7 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
         if( !O.m_iTexture )
             CreateGLTexture( O, setting, month, vp);
 
-        DrawGLTexture( O, vp );
+        DrawGLTexture( O, vp, m_Settings.Settings[setting].m_iOverlayTransparency/100.0 );
     }
     else
     {

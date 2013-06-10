@@ -249,19 +249,27 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_cDataUnits->SetSelection( 0 );
 	fgSizer18->Add( m_cDataUnits, 0, wxALL, 5 );
 	
+	m_cbEnabled = new wxCheckBox( m_panel5, wxID_ANY, _("Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer18->Add( m_cbEnabled, 0, wxALL, 5 );
+	
 	
 	fgSizer7->Add( fgSizer18, 1, wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer19;
 	fgSizer19 = new wxFlexGridSizer( 1, 0, 0, 0 );
+	fgSizer19->AddGrowableCol( 2 );
 	fgSizer19->SetFlexibleDirection( wxBOTH );
 	fgSizer19->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_cbEnabled = new wxCheckBox( m_panel5, wxID_ANY, _("Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer19->Add( m_cbEnabled, 0, wxALL, 5 );
-	
 	m_cbOverlayMap = new wxCheckBox( m_panel5, wxID_ANY, _("OverlayMap"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer19->Add( m_cbOverlayMap, 0, wxALL, 5 );
+	
+	m_staticText18 = new wxStaticText( m_panel5, wxID_ANY, _("Transparency"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText18->Wrap( -1 );
+	fgSizer19->Add( m_staticText18, 0, wxALL, 5 );
+	
+	m_sOverlayTransparency = new wxSlider( m_panel5, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	fgSizer19->Add( m_sOverlayTransparency, 0, wxALL|wxEXPAND, 5 );
 	
 	
 	fgSizer7->Add( fgSizer19, 1, wxEXPAND, 5 );
@@ -647,6 +655,15 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_cDataUnits->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cbEnabled->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnEnabled ), NULL, this );
 	m_cbOverlayMap->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cbIsoBars->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_sIsoBarSpacing->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cIsoBarStep->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
@@ -708,6 +725,15 @@ ClimatologyConfigDialogBase::~ClimatologyConfigDialogBase()
 	m_cDataUnits->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cbEnabled->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnEnabled ), NULL, this );
 	m_cbOverlayMap->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Disconnect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Disconnect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Disconnect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Disconnect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sOverlayTransparency->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cbIsoBars->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_sIsoBarSpacing->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cIsoBarStep->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );

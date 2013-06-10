@@ -58,7 +58,7 @@ static const wxString tname_from_index[] = {_("Wind"), _("Current"),
                                             _("Cloud Cover"), _("Precipitation"),
                                             _("Relative Humidity"), _("Sea Depth")};
 
-static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 3, 4, 2, 4, 5};
+static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 3, 4, 2, 4, 2};
 
 double ClimatologyOverlaySettings::CalibrationOffset(int setting)
 {
@@ -122,9 +122,11 @@ void ClimatologyOverlaySettings::Read()
         pConf->Read ( Name + _T ( "OverlayMap" ), &Settings[i].m_bOverlayMap,
                       i == SST || i == AT || i==CLOUD || i == PRECIPITATION
                       || i == RELATIVE_HUMIDITY || i == SEADEPTH);
+        pConf->Read ( Name + _T ( "OverlayTransparency" ), &Settings[i].m_iOverlayTransparency,
+                      0 );
 
         pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars, i==SLP);
-        double defspacing[SETTINGS_COUNT] = {5, 2, 10, 5, 5, 20, 1, 10, 5};
+        double defspacing[SETTINGS_COUNT] = {5, 2, 10, 5, 5, 20, 1, 10, 1000};
         pConf->Read ( Name + _T ( "IsoBarSpacing" ), &Settings[i].m_iIsoBarSpacing, defspacing[i]);
         pConf->Read ( Name + _T ( "IsoBarStep" ), &Settings[i].m_iIsoBarStep, 2);
 
@@ -174,6 +176,7 @@ void ClimatologyOverlaySettings::Write()
         pConf->Write ( Name + _T ( "Units" ), (int)Settings[i].m_Units);
         pConf->Write ( Name + _T ( "Enabled" ), Settings[i].m_bEnabled);
         pConf->Write ( Name + _T ( "OverlayMap" ), Settings[i].m_bOverlayMap);
+        pConf->Write ( Name + _T ( "OverlayTransparency" ), Settings[i].m_iOverlayTransparency);
         pConf->Write ( Name + _T ( "IsoBars" ), Settings[i].m_bIsoBars);
         pConf->Write ( Name + _T ( "IsoBarSpacing" ), Settings[i].m_iIsoBarSpacing);
         pConf->Write ( Name + _T ( "IsoBarStep" ), Settings[i].m_iIsoBarStep);
@@ -286,6 +289,7 @@ void ClimatologyConfigDialog::SetDataTypeSettings(int settings)
     odc.m_Units = m_cDataUnits->GetSelection();
     odc.m_bEnabled = m_cbEnabled->GetValue();
     odc.m_bOverlayMap = m_cbOverlayMap->GetValue();
+    odc.m_iOverlayTransparency = m_sOverlayTransparency->GetValue();
     odc.m_bIsoBars = m_cbIsoBars->GetValue();
     odc.m_iIsoBarSpacing = m_sIsoBarSpacing->GetValue();
     odc.m_iIsoBarStep = m_cIsoBarStep->GetSelection();
@@ -310,6 +314,7 @@ void ClimatologyConfigDialog::ReadDataTypeSettings(int settings)
     m_cDataUnits->SetSelection(odc.m_Units);
     m_cbEnabled->SetValue(odc.m_bEnabled);
     m_cbOverlayMap->SetValue(odc.m_bOverlayMap);
+    m_sOverlayTransparency->SetValue(odc.m_iOverlayTransparency);
     m_cbIsoBars->SetValue(odc.m_bIsoBars);
     m_sIsoBarSpacing->SetValue(odc.m_iIsoBarSpacing);
     m_cIsoBarStep->SetSelection(odc.m_iIsoBarStep);

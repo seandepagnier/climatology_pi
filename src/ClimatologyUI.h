@@ -102,6 +102,8 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxChoice* m_cDataUnits;
 		wxCheckBox* m_cbEnabled;
 		wxCheckBox* m_cbOverlayMap;
+		wxStaticText* m_staticText18;
+		wxSlider* m_sOverlayTransparency;
 		wxCheckBox* m_cbIsoBars;
 		wxStaticText* m_staticText41;
 		wxSpinCtrl* m_sIsoBarSpacing;
@@ -144,9 +146,9 @@ class ClimatologyConfigDialogBase : public wxDialog
 		virtual void OnDataTypeChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnEnabled( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnUpdate( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxColourPickerEvent& event ) { event.Skip(); }
-		virtual void OnUpdate( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnConfig( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfig( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnConfig( wxScrollEvent& event ) { event.Skip(); }

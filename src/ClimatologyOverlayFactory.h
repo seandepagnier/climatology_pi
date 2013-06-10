@@ -191,7 +191,7 @@ private:
 
     wxColour GetGraphicColor(int setting, double val_in, wxUint8 &transp);
     bool CreateGLTexture(ClimatologyOverlay &O, int setting, int month, PlugIn_ViewPort &vp);
-    void DrawGLTexture(ClimatologyOverlay &O, PlugIn_ViewPort &vp);
+    void DrawGLTexture(ClimatologyOverlay &O, PlugIn_ViewPort &vp, double transparency);
 
     void RenderOverlayMap( int setting, PlugIn_ViewPort &vp);
 
