@@ -38,10 +38,10 @@ int main(int argc, char *argv[])
     for(int i = 0; i<12; i++)
         for(int j = 0; j<180; j++)
             for(int k = 0; k<360; k++)
-                if(sstd[i][j][k] == 1)
+                if(sstd[i][j][k] == 32767)
                     sstbyte[i][j][k] = -128;
                 else
-                    sstbyte[i][j][k] = sstd[i][j][k];
+                    sstbyte[i][j][k] = sstd[i][j][k]/200;
     
     fwrite(sstbyte, sizeof sstbyte, 1, stdout);
     return 0;
