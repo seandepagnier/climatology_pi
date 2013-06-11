@@ -34,8 +34,6 @@
 
 #include <wx/progdlg.h>
 
-#include "zuFile.h"
-
 #include "climatology_pi.h"
 
 double deg2rad(double degrees)
@@ -59,7 +57,7 @@ double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
 }
 
 ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
-    : m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonelist(0)
+    : m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonelist(0), m_bFailedLoading(false)
 {
     for(int month = 0; month<13; month++) {
         m_WindData[month] = NULL;
@@ -101,10 +99,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     if(!progressdialog.Update(26, _("sea level presure")))
         return;
     wxString slp_path = path + _T("sealevelpressure.gz");
-    f = zu_open(slp_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
-    if(!f)
-        wxLogMessage(climatology_pi + _("failed to read file: ") + slp_path);
-    else {
+    if((f = TryOpenFile(slp_path))) {
         wxInt16 slp[12][90][180];
         if(zu_read(f, slp, sizeof slp) != sizeof slp)
             wxLogMessage(climatology_pi + _("slp file truncated"));
@@ -132,10 +127,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     if(!progressdialog.Update(27, _("sea surface tempertature")))
         return;
     wxString sst_path = path + _T("seasurfacetemperature.gz");
-    f = zu_open(sst_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
-    if(!f)
-        wxLogMessage(climatology_pi + _("failed to read file: ") + sst_path);
-    else {
+    if((f = TryOpenFile(sst_path))) {
         wxInt8 sst[12][180][360];
         if(zu_read(f, sst, sizeof sst) != sizeof sst)
             wxLogMessage(climatology_pi + _("sst file truncated"));
@@ -165,10 +157,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     if(!progressdialog.Update(28, _("air tempertature")))
         return;
     wxString at_path = path + _T("airtemperature.gz");
-    f = zu_open(at_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
-    if(!f)
-        wxLogMessage(climatology_pi + _("failed to read file: ") + at_path);
-    else {
+    if((f = TryOpenFile(at_path))) {
         wxInt8 at[12][90][180];
         if(zu_read(f, at, sizeof at) != sizeof at)
             wxLogMessage(climatology_pi + _("at file truncated"));
@@ -198,10 +187,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     if(!progressdialog.Update(28, _("cloud cover")))
         return;
     wxString cld_path = path + _T("cloud.gz");
-    f = zu_open(cld_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
-    if(!f)
-        wxLogMessage(climatology_pi + _("failed to read file: ") + cld_path);
-    else {
+    if((f = TryOpenFile(cld_path))) {
         wxUint8 cld[12][90][180];
         if(zu_read(f, cld, sizeof cld) != sizeof cld)
             wxLogMessage(climatology_pi + _("cld file truncated"));
@@ -231,10 +217,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     if(!progressdialog.Update(29, _("precipitation")))
         return;
     wxString precip_path = path + _T("precipitation.gz");
-    f = zu_open(precip_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
-    if(!f)
-        wxLogMessage(climatology_pi + _("failed to read file: ") + precip_path);
-    else {
+    if((f = TryOpenFile(precip_path))) {
         wxUint8 precip[12][72][144];
         if(zu_read(f, precip, sizeof precip) != sizeof precip)
             wxLogMessage(climatology_pi + _("precip file truncated"));
@@ -264,10 +247,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     if(!progressdialog.Update(30, _("relative humidity")))
         return;
     wxString rhum_path = path + _T("relativehumidity.gz");
-    f = zu_open(rhum_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
-    if(!f)
-        wxLogMessage(climatology_pi + _("failed to read file: ") + rhum_path);
-    else {
+    if((f = TryOpenFile(rhum_path))) {
         wxUint8 rhum[12][180][360];
         if(zu_read(f, rhum, sizeof rhum) != sizeof rhum)
             wxLogMessage(climatology_pi + _("relative humidity file truncated"));
@@ -298,10 +278,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     if(!progressdialog.Update(30, _("sea depth")))
         return;
     wxString seadepth_path = path + _T("seadepth.gz");
-    f = zu_open(seadepth_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
-    if(!f)
-        wxLogMessage(climatology_pi + _("failed to read file: ") + seadepth_path);
-    else {
+    if((f = TryOpenFile(seadepth_path))) {
         wxInt8 seadepth[180][360];
         if(zu_read(f, seadepth, sizeof seadepth) != sizeof seadepth)
             wxLogMessage(climatology_pi + _("seadepth file truncated"));
@@ -376,6 +353,19 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     wxDateTime datetime = wxDateTime::Now();
     datetime.SetYear(1985);
     m_dlg.m_cfgdlg->m_dPStart->SetValue(datetime);
+
+    if(m_bFailedLoading) {
+        wxMessageDialog mdlg(&m_dlg, 
+                             _("Some Data Failed to load.  Would you like to try to download it?"),
+                             _("Climatology"), wxYES | wxNO | wxICON_WARNING);
+        if(mdlg.ShowModal() == wxID_YES) {
+            wxLaunchDefaultBrowser(_T("http://www.tgp-architects.com/Ocpn/DATA/Climate-Data-5/CL-DATA-5.zip "));
+            wxMessageDialog mdlg(&m_dlg, _("You must extract this data, and place in: ") + path +
+                                 _("\nthen restart opencpn"),
+                                 _("Climatology"), wxOK);
+            mdlg.ShowModal();
+        }
+    }
 }
 
 ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
@@ -388,15 +378,9 @@ ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
 
 void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
 {
-    wxString ext = _T(".gz");
-    ZUFILE *f = zu_open((filename+ext).mb_str(), "rb", ZU_COMPRESS_AUTO);
-    if(!f) {
-        f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
-        if(!f) {
-            wxLogMessage(climatology_pi + _("failed to read file: ") + filename);
-            return;
-        }
-    }
+    ZUFILE *f;
+    if(!(f = TryOpenFile(filename)))
+        return;
 
     m_dlg.m_cbWind->Enable();
 
@@ -531,15 +515,9 @@ havedata:
 
 void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
 {
-    wxString ext = _T(".gz");
-    ZUFILE *f = zu_open((filename+ext).mb_str(), "rb", ZU_COMPRESS_AUTO);
-    if(!f) {
-        f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
-        if(!f) {
-            wxLogMessage(climatology_pi + _("failed to read file: ") + filename);
-            return;
-        }
-    }
+    ZUFILE *f;
+    if(!(f = TryOpenFile(filename)))
+        return;
 
     m_dlg.m_cbCurrent->Enable();
 
@@ -1392,6 +1370,19 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
     m_pdc->DrawBitmap( sbm, (x-wdraw)/2, y - ( GetChartbarHeight() + h ), false );
 #endif        
     }
+}
+
+ZUFILE *ClimatologyOverlayFactory::TryOpenFile(wxString filename)
+{
+    const wxString ext = _T(".gz");
+    ZUFILE *f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
+    if(!f)
+        f = zu_open((filename+ext).mb_str(), "rb", ZU_COMPRESS_AUTO);
+    if(!f) {
+        m_bFailedLoading = true;
+        wxLogMessage(climatology_pi + _("failed to read file: ") + filename);
+    }
+    return f;
 }
 
 void ClimatologyOverlayFactory::RenderNumber(wxPoint p, const wxColour &color, double v)

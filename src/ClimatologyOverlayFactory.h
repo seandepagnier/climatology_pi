@@ -27,6 +27,8 @@
 #include <list>
 #include <map>
 
+#include "zuFile.h"
+
 #include "IsoBarMap.h"
 
 void DrawGLLine( double x1, double y1, double x2, double y2 );
@@ -48,7 +50,7 @@ struct WindData
     : latitudes(lats), longitudes(lons), dir_cnt(dirs), data(new WindPolar[lats*lons]) {}
 
     double InterpWind(enum Coord coord, double lat, double lon);
-   WindPolar *GetPolar(double lat, double lon) {
+    WindPolar *GetPolar(double lat, double lon) {
         int lati = round(latitudes*(.5+lat/180.0));
         int loni = round(longitudes*lon/360.0);
         if(lati < 0 || lati >= latitudes || loni < 0 || loni >= longitudes)
@@ -125,7 +127,6 @@ public:
 
 class ClimatologyDialog;
 class wxGLContext;
-
 class ClimatologyOverlayFactory;
 
 class ClimatologyIsoBarMap : public IsoBarMap
@@ -179,6 +180,8 @@ public:
     int m_CurrentMonth;
 
 private:
+    ZUFILE *TryOpenFile(wxString filename);
+
     void RenderNumber(wxPoint p, const wxColour &color, double v);
 
     void RenderIsoBars(int setting, PlugIn_ViewPort &vp);
@@ -223,4 +226,6 @@ private:
     std::list<Cyclone*> m_wpa, m_epa, m_spa, m_atl, m_she, m_nio;
 
     std::map<int, ElNinoYear> m_ElNinoYears;
+
+    bool m_bFailedLoading;
 };
