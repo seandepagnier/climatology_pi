@@ -40,7 +40,7 @@
 #include "ClimatologyConfigDialog.h"
 
 ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
-    : ClimatologyDialogBase(parent), m_bCanRefresh(true), m_bNeedsRefresh(false)
+    : ClimatologyDialogBase(parent)
 {
     pParent = parent;
     pPlugIn = ppi;
@@ -136,25 +136,9 @@ void ClimatologyDialog::PopulateTrackingControls()
     Refresh();
 }
 
-void ClimatologyDialog::Refresh()
+void ClimatologyDialog::RefreshRedraw()
 {
     RequestRefresh( pParent );
-}
-
-void ClimatologyDialog::TryRefresh()
-{
-    if(m_bCanRefresh)
-        Refresh();
-    else
-        m_bNeedsRefresh = true;
-}
-
-void ClimatologyDialog::ClearRefresh()
-{
-    if(!m_bNeedsRefresh)
-        return;
-    RequestRefresh( pParent );
-    m_bNeedsRefresh = false;
 }
 
 void  ClimatologyDialog::SetCursorLatLon(double lat, double lon)
@@ -190,19 +174,19 @@ void ClimatologyDialog::OnMonth( wxCommandEvent& event )
 {
     m_sMonth->SetValue(event.GetSelection());
     UpdateTrackingControls();
-    Refresh();
+    RefreshRedraw();
 }
 
 void ClimatologyDialog::OnMonth( wxScrollEvent& event )
 {
     m_cMonth->SetSelection(event.GetPosition());
     UpdateTrackingControls();
-    Refresh();
+    RefreshRedraw();
 }
 
 void ClimatologyDialog::OnUpdate( wxCommandEvent& event )
 {
-    Refresh();
+    RefreshRedraw();
 }
 
 void ClimatologyDialog::OnConfig( wxCommandEvent& event )
@@ -217,5 +201,5 @@ void ClimatologyDialog::OnClose( wxCloseEvent& event )
 
 void ClimatologyDialog::OnCBAny( wxCommandEvent& event )
 {
-    Refresh();                     // Reload the visibility options
+    RefreshRedraw();                     // Reload the visibility options
 }

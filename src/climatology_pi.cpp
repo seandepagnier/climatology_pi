@@ -54,7 +54,9 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
 
 wxString ClimatologyDataDirectory()
 {
-    return *GetpSharedDataLocation() + _T("plugins/climatology/data/");
+    wxString s =wxFileName::GetPathSeparator();
+    return *GetpSharedDataLocation() + _T("plugins")
+        + s + _T("climatology") + s + _T("data") + _T("/");
 }
 
 climatology_pi::climatology_pi(void *ppimgr)

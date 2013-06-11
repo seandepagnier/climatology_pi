@@ -295,7 +295,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     zu_close(f);
 
     /* load sea level pressure and sea surface temperature */
-    if(!progressdialog.Update(31, _("sea depth")))
+    if(!progressdialog.Update(30, _("sea depth")))
         return;
     wxString seadepth_path = path + _T("seadepth.gz");
     f = zu_open(seadepth_path.mb_str(), "rb", ZU_COMPRESS_AUTO);
@@ -1427,6 +1427,7 @@ void ClimatologyOverlayFactory::RenderNumber(wxPoint p, const wxColour &color, d
 
 void ClimatologyOverlayFactory::RenderIsoBars(int setting, PlugIn_ViewPort &vp)
 {
+recompute:
     if(!m_Settings.Settings[setting].m_bIsoBars)
         return;
 
@@ -1437,7 +1438,7 @@ void ClimatologyOverlayFactory::RenderIsoBars(int setting, PlugIn_ViewPort &vp)
     ClimatologyIsoBarMap *&pIsobars = m_Settings.Settings[setting].m_pIsobars[month];
     double spacing = m_Settings.Settings[setting].m_iIsoBarSpacing, step;
     switch(m_Settings.Settings[setting].m_iIsoBarStep) {
-    case 0: step = 4; break;
+    default: step = 4; break;
     case 1: step = 2; break;
     case 2: step = 1; break;
     case 3: step = .5; break;
@@ -1446,28 +1447,31 @@ void ClimatologyOverlayFactory::RenderIsoBars(int setting, PlugIn_ViewPort &vp)
 
     int units = m_Settings.Settings[setting].m_Units;
     if(pIsobars && !pIsobars->SameSettings(spacing, step, units)) {
+        if(pIsobars->m_bComputing) {
+            pIsobars->m_bNeedsRecompute = true;
+            return;
+        }
+
         delete pIsobars;
         pIsobars = NULL;
     }
 
     if( !pIsobars ) {
-        m_dlg.m_bCanRefresh = false;
         pIsobars = new ClimatologyIsoBarMap(m_dlg.m_cfgdlg->SettingName(setting),
                                             spacing, step, *this, setting, units);
         bool ret = pIsobars->Recompute(&m_dlg);
-        m_dlg.m_bCanRefresh = true;
         if(!ret) {
-            delete pIsobars;
+            if(pIsobars->m_bNeedsRecompute)
+                goto recompute;
             pIsobars = NULL;
 
             m_dlg.m_cfgdlg->DisableIsoBars(setting);
-            goto mayberefresh;
+            return;
         }
+        goto recompute;
     }
 
     pIsobars->Plot(m_pdc, vp);
-mayberefresh:
-    m_dlg.ClearRefresh();
 }
 
 void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)
@@ -1498,8 +1502,9 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
         step = 360.0 / m_WindData[m_CurrentMonth]->longitudes;
         break;
     case ClimatologyOverlaySettings::CURRENT:
-        if(m_CurrentData[m_CurrentMonth])
-            step = 360.0 / m_CurrentData[m_CurrentMonth]->longitudes;
+        if(!m_CurrentData[m_CurrentMonth])
+            return;
+        step = 360.0 / m_CurrentData[m_CurrentMonth]->longitudes;
         break;
     default: return;
     }
@@ -1569,7 +1574,7 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::
         Cyclone *s = *it;
 
         bool first = true;
-        double lastlon;
+        double lastlon = 0;
         wxPoint lastp;
 
         for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {

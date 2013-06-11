@@ -55,14 +55,10 @@ public:
     void Init();
     void UpdateTrackingControls();
     void PopulateTrackingControls();
-    void Refresh();
-    void TryRefresh();
-    void ClearRefresh();
+    void RefreshRedraw();
     void SetCursorLatLon(double lat, double lon);
 
     ClimatologyConfigDialog *m_cfgdlg;
-
-    bool m_bCanRefresh, m_bNeedsRefresh;
 
 private:
     void SetControlsVisible(ClimatologyOverlaySettings::SettingsType type,

@@ -651,6 +651,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	this->Centre( wxBOTH );
 	
 	// Connect Events
+	m_notebook1->Connect( wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler( ClimatologyConfigDialogBase::OnPageChanged ), NULL, this );
 	m_dPStart->Connect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_dPEnd->Connect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_sMinWindSpeed->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
@@ -721,6 +722,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 ClimatologyConfigDialogBase::~ClimatologyConfigDialogBase()
 {
 	// Disconnect Events
+	m_notebook1->Disconnect( wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler( ClimatologyConfigDialogBase::OnPageChanged ), NULL, this );
 	m_dPStart->Disconnect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_dPEnd->Disconnect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_sMinWindSpeed->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );

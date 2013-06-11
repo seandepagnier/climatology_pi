@@ -143,6 +143,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxButton* m_sdbSizer1OK;
 		
 		// Virtual event handlers, overide them in your derived class
+		virtual void OnPageChanged( wxNotebookEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxDateEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }

@@ -83,6 +83,7 @@ public:
 
     void Plot(wxDC *dc, PlugIn_ViewPort &vp);
 
+    bool m_bNeedsRecompute, m_bComputing;
 protected:
     double m_Spacing, m_Step, m_PoleAccuracy;
 

@@ -139,10 +139,12 @@ void IsoBarMap::BuildParamCache(ParamCache &cache, double lat)
 }
 
 IsoBarMap::IsoBarMap(wxString name, double spacing, double step) :
+    m_bNeedsRecompute(false), m_bComputing(false),
     m_Spacing(spacing), m_Step(step), m_PoleAccuracy(1e-4),
     m_MinContour(NAN), m_MaxContour(NAN),
     m_contourcachesize(0), m_contourcache(NULL),
-    m_Name(name), m_bPolar(false), m_Color(*wxBLACK) {}
+    m_Name(name), m_bPolar(false), m_Color(*wxBLACK)
+     {}
 
 IsoBarMap::~IsoBarMap() { ClearMap(); }
 
@@ -369,6 +371,8 @@ bool IsoBarMap::Recompute(wxWindow *parent)
     /* clear out old data */
   ClearMap();
 
+  m_bComputing = true;
+
 #if 1
   wxProgressDialog *progressdialog = NULL;
   wxDateTime start = wxDateTime::Now();
@@ -384,7 +388,12 @@ bool IsoBarMap::Recompute(wxWindow *parent)
 
   double lastupdate = min;
   for(double lat = min; lat + m_Step <= max; lat += m_Step) {
-      if(lat - lastupdate > 10) {
+      if(m_bNeedsRecompute) {
+          delete progressdialog;
+          return false;
+      }
+
+      if(lat - lastupdate > 8) {
           lastupdate = lat;
           if(progressdialog) {
               if(!progressdialog->Update(lat - min)) {
@@ -414,6 +423,8 @@ bool IsoBarMap::Recompute(wxWindow *parent)
   }
 
   delete progressdialog;
+
+  m_bComputing = false;
 
   m_MinContour /= m_Spacing;
   m_MinContour = floor(m_MinContour);

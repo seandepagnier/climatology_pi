@@ -42,7 +42,7 @@ struct ClimatologyOverlaySettings
     double CalibrationOffset(int settings);
     double CalibrationFactor(int settings);
     double CalibrateValue(int setting, double v) {
-        return CalibrationFactor(setting)*v + CalibrationOffset(setting);
+        return CalibrationFactor(setting)*(v + CalibrationOffset(setting));
     }
 
     void Read();
