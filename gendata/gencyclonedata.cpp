@@ -12,6 +12,8 @@ weather.unisys.com has:
 
 #include <string.h>
 
+const int firstyear = 1968; /* before this, without satellites, data is questionable */
+
 int main(int argc, char *argv[])
 {
     FILE *f = fopen(argv[1], "r");
@@ -32,7 +34,8 @@ int main(int argc, char *argv[])
         uint16_t lyear = strtol(year, 0, 10);
         uint16_t ldays = strtol(days, 0, 10);
 
-        fwrite(&lyear, sizeof lyear, 1, stdout);
+        if(lyear >= firstyear)
+            fwrite(&lyear, sizeof lyear, 1, stdout);
 
         /* daily */
         char state;
@@ -58,7 +61,7 @@ int main(int argc, char *argv[])
                 char press[5] = {s[13], s[14], s[15], s[15], 0};
 
                 int16_t ilat = strtol(lat, 0, 10), ilon = -strtol(lon, 0, 10);
-                if(ilat || ilon) {
+                if((ilat || ilon) && lyear >= firstyear) {
                     fwrite(&state, 1, 1, stdout);
 
                     if(lday == 0 || lday > 31) {
@@ -83,7 +86,8 @@ int main(int argc, char *argv[])
             }
         }
         state = -128;
-        fwrite(&state, sizeof state, 1, stdout);
+        if(lyear >= firstyear)
+            fwrite(&state, sizeof state, 1, stdout);
 
         /* trailer */
         if(!fgets(line, sizeof line, f)) {

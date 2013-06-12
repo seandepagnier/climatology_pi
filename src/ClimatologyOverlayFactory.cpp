@@ -98,7 +98,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     /* load sea level pressure and sea surface temperature */
     if(!progressdialog.Update(26, _("sea level presure")))
         return;
-    wxString slp_path = path + _T("sealevelpressure.gz");
+    wxString slp_path = path + _T("sealevelpressure");
     if((f = TryOpenFile(slp_path))) {
         wxInt16 slp[12][90][180];
         if(zu_read(f, slp, sizeof slp) != sizeof slp)
@@ -126,7 +126,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(27, _("sea surface tempertature")))
         return;
-    wxString sst_path = path + _T("seasurfacetemperature.gz");
+    wxString sst_path = path + _T("seasurfacetemperature");
     if((f = TryOpenFile(sst_path))) {
         wxInt8 sst[12][180][360];
         if(zu_read(f, sst, sizeof sst) != sizeof sst)
@@ -156,7 +156,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(28, _("air tempertature")))
         return;
-    wxString at_path = path + _T("airtemperature.gz");
+    wxString at_path = path + _T("airtemperature");
     if((f = TryOpenFile(at_path))) {
         wxInt8 at[12][90][180];
         if(zu_read(f, at, sizeof at) != sizeof at)
@@ -186,7 +186,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(28, _("cloud cover")))
         return;
-    wxString cld_path = path + _T("cloud.gz");
+    wxString cld_path = path + _T("cloud");
     if((f = TryOpenFile(cld_path))) {
         wxUint8 cld[12][90][180];
         if(zu_read(f, cld, sizeof cld) != sizeof cld)
@@ -216,7 +216,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(29, _("precipitation")))
         return;
-    wxString precip_path = path + _T("precipitation.gz");
+    wxString precip_path = path + _T("precipitation");
     if((f = TryOpenFile(precip_path))) {
         wxUint8 precip[12][72][144];
         if(zu_read(f, precip, sizeof precip) != sizeof precip)
@@ -246,7 +246,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(30, _("relative humidity")))
         return;
-    wxString rhum_path = path + _T("relativehumidity.gz");
+    wxString rhum_path = path + _T("relativehumidity");
     if((f = TryOpenFile(rhum_path))) {
         wxUint8 rhum[12][180][360];
         if(zu_read(f, rhum, sizeof rhum) != sizeof rhum)
@@ -277,7 +277,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     /* load sea level pressure and sea surface temperature */
     if(!progressdialog.Update(30, _("sea depth")))
         return;
-    wxString seadepth_path = path + _T("seadepth.gz");
+    wxString seadepth_path = path + _T("seadepth");
     if((f = TryOpenFile(seadepth_path))) {
         wxInt8 seadepth[180][360];
         if(zu_read(f, seadepth, sizeof seadepth) != sizeof seadepth)
@@ -584,14 +584,12 @@ havedata:
 
 bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south)
 {
-    FILE *f = fopen(filename.mb_str(), "r");
-    if (!f) {
-        wxLogMessage(climatology_pi + _("failed to open file: ") + filename);
+    ZUFILE *f = TryOpenFile(filename);
+    if (!f)
         return false;
-    }
 
     wxUint16 lyear, llastmonth;
-    while(fread(&lyear, sizeof lyear, 1, f)==1) {
+    while(zu_read(f, &lyear, sizeof lyear)==sizeof lyear) {
 #ifdef __MSVC__
         if(lyear < 1972)
             lyear = 1972;
@@ -600,7 +598,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
         llastmonth = 0;
         for(;;) {
             char state;
-            if(fread(&state, sizeof state, 1, f) != 1 || state == -128)
+            if(zu_read(f, &state, sizeof state) != sizeof state || state == -128)
                 break;
 
             CycloneState::State cyclonestate;
@@ -614,8 +612,8 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
             }
 
             char lday, lmonth;
-            if(fread(&lday, sizeof lday, 1, f) != 1 ||
-               fread(&lmonth, sizeof lmonth, 1, f) != 1)
+            if(zu_read(f, &lday, sizeof lday) != sizeof lday ||
+               zu_read(f, &lmonth, sizeof lmonth) != sizeof lmonth)
                 break;
 
             if(lmonth < llastmonth)
@@ -629,14 +627,14 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
             datetime.SetHour((lday%4)*6);
 
             wxInt16 lat, lon;
-            if(fread(&lat, sizeof lat, 1, f) != 1 ||
-               fread(&lon, sizeof lon, 1, f) != 1)
+            if(zu_read(f, &lat, sizeof lat) != sizeof lat ||
+               zu_read(f, &lon, sizeof lon) != sizeof lon)
                 break;
 
             wxUint8 wk;
             wxUint16 press;
-            if(fread(&wk, sizeof wk, 1, f) != 1 ||
-               fread(&press, sizeof press, 1, f) != 1)
+            if(zu_read(f, &wk, sizeof wk) != sizeof wk ||
+               zu_read(f, &press, sizeof press) != sizeof press)
                 break;
 
             cyclone->states.push_back
@@ -646,7 +644,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
         cyclones.push_back(cyclone);
     }
 
-    fclose(f);
+    zu_close(f);
     return true;
 }
 

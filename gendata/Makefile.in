@@ -10,13 +10,13 @@ ALL_CURRENT += $(DATA)/current07.gz $(DATA)/current08.gz $(DATA)/current09.gz
 ALL_CURRENT += $(DATA)/current10.gz $(DATA)/current11.gz $(DATA)/current12.gz
 
 ALL_OTHER = $(DATA)/sealevelpressure.gz $(DATA)/seasurfacetemperature.gz $(DATA)/airtemperature.gz $(DATA)/cloud.gz $(DATA)/precipitation.gz $(DATA)/relativehumidity.gz $(DATA)/seadepth.gz
-ALL_CYCLONE = $(DATA)/cyclone-atl $(DATA)/cyclone-nio $(DATA)/cyclone-wpa $(DATA)/cyclone-epa $(DATA)/cyclone-she $(DATA)/cyclone-spa
+ALL_CYCLONE = $(DATA)/cyclone-atl.gz $(DATA)/cyclone-nio.gz $(DATA)/cyclone-wpa.gz $(DATA)/cyclone-epa.gz $(DATA)/cyclone-she.gz $(DATA)/cyclone-spa.gz
 ALL = $(ALL_WIND) $(ALL_CURRENT) $(ALL_OTHER) $(ALL_CYCLONE)
 
 all: $(ALL)
 clean:
 	rm -rf $(ALL)
-	rm -rf genclddata gencurrentdata gencyclonedata gencyclonedata1 genslpdata gensstdata genastdata genprecipdata genwinddata
+	rm -rf genatdata genrelativehumiditydata genseadepthdata genclddata gencurrentdata gencyclonedata gencyclonedata1 genslpdata gensstdata genastdata genprecipdata genwinddata
 
 CURRENT_01  = oscar_vel7047.nc oscar_vel7032.nc oscar_vel7057.nc
 CURRENT_01 += oscar_vel7042.nc oscar_vel7037.nc oscar_vel7027.nc
@@ -147,11 +147,11 @@ tracks.she:
 tracks.nio:
 	wget -c http://weather.unisys.com/hurricane/n_indian/tracks.nio
 
-$(DATA)/cyclone-%: tracks.% gencyclonedata
-	./gencyclonedata $< > $@
+$(DATA)/cyclone-%.gz: tracks.% gencyclonedata
+	./gencyclonedata $< | gzip > $@
 
-$(DATA)/cyclone-%: tracks.%.dat gencyclonedata1
-	./gencyclonedata1 $< > $@
+$(DATA)/cyclone-%.gz: tracks.%.dat gencyclonedata1
+	./gencyclonedata1 $< | gzip > $@
 
 gencyclonedata: gencyclonedata.cpp
 	g++ -o gencyclonedata gencyclonedata.cpp -g
