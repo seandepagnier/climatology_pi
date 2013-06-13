@@ -356,7 +356,7 @@ void ClimatologyConfigDialog::OnPageChanged( wxNotebookEvent& event )
     /* delay loading html until last moment because it can take a few seconds */
     if(event.GetSelection() == 3)
         m_htmlInformation->LoadFile(ClimatologyDataDirectory() + _T("ClimatologyInformation.html"));
-    event.skip();
+    event.Skip();
 }
 
 void ClimatologyConfigDialog::OnDataTypeChoice( wxCommandEvent& event )
