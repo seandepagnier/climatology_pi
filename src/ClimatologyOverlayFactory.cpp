@@ -370,10 +370,12 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
 ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
 {
-    glDeleteLists(m_cyclonelist, 1);
+//    glDeleteLists(m_cyclonelist, 1);
+#if 0
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++)
         for(int m=0; m<13; m++)
             delete m_Settings.Settings[i].m_pIsobars[m];
+#endif
 }
 
 void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
