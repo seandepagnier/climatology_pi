@@ -361,7 +361,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
         if(mdlg.ShowModal() == wxID_YES) {
             wxLaunchDefaultBrowser(
 //_T("http://www.tgp-architects.com/Ocpn/DATA/Climate-Data-5/CL-DATA-5.zip ")
-                _T("http://sourceforge.net/projects/opencpnplugins/files/climatology_pi/")
+                _T("http://sourceforge.net/projects/opencpnplugins/files/climatology_pi/"));
             wxMessageDialog mdlg(&m_dlg, _("You must extract this data, and place in: ") + path +
                                  _("\nthen restart opencpn"),
                                  _("Climatology"), wxOK);
