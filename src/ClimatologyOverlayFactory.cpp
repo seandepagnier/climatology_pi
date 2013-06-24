@@ -359,7 +359,10 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
                              _("Some Data Failed to load.  Would you like to try to download it?"),
                              _("Climatology"), wxYES | wxNO | wxICON_WARNING);
         if(mdlg.ShowModal() == wxID_YES) {
-            wxLaunchDefaultBrowser(_T("http://www.tgp-architects.com/Ocpn/DATA/Climate-Data-5/CL-DATA-5.zip "));
+            wxLaunchDefaultBrowser(
+//_T("http://www.tgp-architects.com/Ocpn/DATA/Climate-Data-5/CL-DATA-5.zip ")
+                _T("downloads.sourceforge.net/project/opencpnplugins/climatology_pi/CL-DATA-5.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fopencpnplugins%2Ffiles%2Fclimatology_pi%2F&ts=1372052090&use_mirror=iweb")
+);
             wxMessageDialog mdlg(&m_dlg, _("You must extract this data, and place in: ") + path +
                                  _("\nthen restart opencpn"),
                                  _("Climatology"), wxOK);
