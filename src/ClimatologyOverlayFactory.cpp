@@ -624,26 +624,35 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
                 lyear++;
             llastmonth = lmonth;
 
-            wxDateTime datetime = wxDateTime::Now();
-            datetime.SetYear(lyear);
-            datetime.SetMonth((wxDateTime::Month)(lmonth-1));
-            datetime.SetDay(lday/4);
-            datetime.SetHour((lday%4)*6);
+            wxDateTime::Month month = (wxDateTime::Month)(lmonth-1);
+            int day = lday/4, hour = (lday%4)*6;
+            if(lmonth >= 1 && lmonth <= 12 &&
+               day >= 1 && day <= wxDateTime::GetNumberOfDays(month, lyear) &&
+               hour >= 0 && hour < 24) {
+                                                       
+                wxDateTime datetime = wxDateTime::Now();
+                datetime.SetDay(1);
 
-            wxInt16 lat, lon;
-            if(zu_read(f, &lat, sizeof lat) != sizeof lat ||
-               zu_read(f, &lon, sizeof lon) != sizeof lon)
-                break;
-
-            wxUint8 wk;
-            wxUint16 press;
-            if(zu_read(f, &wk, sizeof wk) != sizeof wk ||
-               zu_read(f, &press, sizeof press) != sizeof press)
-                break;
-
-            cyclone->states.push_back
-                (new CycloneState(cyclonestate, datetime,
+                datetime.SetYear(lyear);
+                datetime.SetMonth(month);
+                datetime.SetDay(day);
+                datetime.SetHour(hour);
+                
+                wxInt16 lat, lon;
+                if(zu_read(f, &lat, sizeof lat) != sizeof lat ||
+                   zu_read(f, &lon, sizeof lon) != sizeof lon)
+                    break;
+                
+                wxUint8 wk;
+                wxUint16 press;
+                if(zu_read(f, &wk, sizeof wk) != sizeof wk ||
+                   zu_read(f, &press, sizeof press) != sizeof press)
+                    break;
+                
+                cyclone->states.push_back
+                    (new CycloneState(cyclonestate, datetime,
                                   (south ? -1 : 1) * (double)lat/10, (double)lon/10, wk, press));
+            }
         }
         cyclones.push_back(cyclone);
     }
