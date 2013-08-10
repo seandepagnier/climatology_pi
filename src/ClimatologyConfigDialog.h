@@ -110,6 +110,7 @@ private:
 
     void OnEnabled( wxCommandEvent& event );
     void OnDonate( wxCommandEvent& event );
+    void OnClose( wxCommandEvent& event ) { Hide(); }
 
     int m_lastdatatype;
 

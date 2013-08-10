@@ -1534,9 +1534,12 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
                 minv = .25;
             } else {
                 cstep = 5;
-                u /= 15;
-                v /= 15;
                 minv = 2;
+
+                if(lengthtype) {
+                    u /= 15;
+                    v /= 15;
+                }
             }
 
             if(!lengthtype)
@@ -1583,7 +1586,7 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::
             wxPoint p;
             CycloneState *ss = *it2;
 
-            if(m_dlg.m_sMonth->GetValue() != 12 &&
+            if(!m_dlg.m_cbAll->GetValue() &&
                m_dlg.m_sMonth->GetValue() != ss->datetime.GetMonth())
                 continue;
 

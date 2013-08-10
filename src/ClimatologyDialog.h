@@ -68,6 +68,7 @@ private:
 
     void OnMonth( wxCommandEvent& event );
     void OnMonth( wxScrollEvent& event );
+    void OnAll( wxCommandEvent& event );
     void OnUpdate( wxCommandEvent& event );
     void OnConfig( wxCommandEvent& event );
 

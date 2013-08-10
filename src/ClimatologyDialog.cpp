@@ -104,8 +104,7 @@ void ClimatologyDialog::UpdateTrackingControls()
     if(!pPlugIn->GetOverlayFactory())
         return;
 
-    /* move this to slider event? */
-    pPlugIn->GetOverlayFactory()->m_CurrentMonth = m_sMonth->GetValue();
+    pPlugIn->GetOverlayFactory()->m_CurrentMonth = m_cbAll->GetValue() ? 12 : (m_sMonth->GetValue() % 12);
 
     m_tWind->SetValue(GetValue(ClimatologyOverlaySettings::WIND));
     m_tWindDir->SetValue(GetValue(ClimatologyOverlaySettings::WIND, MDIRECTION));
@@ -179,7 +178,15 @@ void ClimatologyDialog::OnMonth( wxCommandEvent& event )
 
 void ClimatologyDialog::OnMonth( wxScrollEvent& event )
 {
-    m_cMonth->SetSelection(event.GetPosition());
+    m_cMonth->SetSelection(event.GetPosition() % 12);
+    UpdateTrackingControls();
+    RefreshRedraw();
+}
+
+void ClimatologyDialog::OnAll( wxCommandEvent& event )
+{
+    m_cMonth->Enable(!m_cbAll->GetValue());
+    m_sMonth->Enable(!m_cbAll->GetValue());
     UpdateTrackingControls();
     RefreshRedraw();
 }

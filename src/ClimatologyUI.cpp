@@ -21,13 +21,25 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	wxStaticBoxSizer* sbSizer21;
 	sbSizer21 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Month") ), wxVERTICAL );
 	
+	wxFlexGridSizer* fgSizer23;
+	fgSizer23 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer23->AddGrowableCol( 0 );
+	fgSizer23->SetFlexibleDirection( wxBOTH );
+	fgSizer23->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
 	wxString m_cMonthChoices[] = { _("January"), _("Febuary"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"), _("September"), _("October"), _("November"), _("December"), _("All") };
 	int m_cMonthNChoices = sizeof( m_cMonthChoices ) / sizeof( wxString );
 	m_cMonth = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cMonthNChoices, m_cMonthChoices, 0 );
 	m_cMonth->SetSelection( 0 );
-	sbSizer21->Add( m_cMonth, 0, wxALL|wxEXPAND, 5 );
+	fgSizer23->Add( m_cMonth, 0, wxALL|wxEXPAND, 5 );
 	
-	m_sMonth = new wxSlider( this, wxID_ANY, 0, 0, 12, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	m_cbAll = new wxCheckBox( this, wxID_ANY, _("All"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer23->Add( m_cbAll, 0, wxALL, 5 );
+	
+	
+	sbSizer21->Add( fgSizer23, 1, wxEXPAND, 5 );
+	
+	m_sMonth = new wxSlider( this, wxID_ANY, 0, 0, 17, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
 	sbSizer21->Add( m_sMonth, 0, wxEXPAND, 5 );
 	
 	
@@ -137,6 +149,9 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	fgSizer4->Add( m_cbCyclones, 0, wxALL, 5 );
 	
+	m_bConfig = new wxButton( this, wxID_ANY, _("Config"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer4->Add( m_bConfig, 0, wxALL, 5 );
+	
 	
 	fgSizer14->Add( fgSizer4, 1, wxEXPAND, 5 );
 	
@@ -145,9 +160,6 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	
 	fgSizer1->Add( sbSizer2, 1, wxFIXED_MINSIZE, 5 );
-	
-	m_bConfig = new wxButton( this, wxID_ANY, _("Config"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer1->Add( m_bConfig, 0, wxALL, 5 );
 	
 	
 	this->SetSizer( fgSizer1 );
@@ -158,6 +170,7 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	// Connect Events
 	m_cMonth->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
+	m_cbAll->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnAll ), NULL, this );
 	m_sMonth->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
 	m_sMonth->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
 	m_sMonth->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
@@ -184,6 +197,7 @@ ClimatologyDialogBase::~ClimatologyDialogBase()
 {
 	// Disconnect Events
 	m_cMonth->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
+	m_cbAll->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnAll ), NULL, this );
 	m_sMonth->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
 	m_sMonth->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
 	m_sMonth->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
@@ -219,198 +233,6 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer3->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	m_notebook1 = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_panel2 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxFlexGridSizer* fgSizer5;
-	fgSizer5 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer5->SetFlexibleDirection( wxBOTH );
-	fgSizer5->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	wxStaticBoxSizer* sbSizer7;
-	sbSizer7 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Start Date") ), wxVERTICAL );
-	
-	m_dPStart = new wxDatePickerCtrl( m_panel2, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT|wxDP_SHOWCENTURY );
-	sbSizer7->Add( m_dPStart, 0, wxALL|wxEXPAND, 5 );
-	
-	
-	fgSizer5->Add( sbSizer7, 1, wxEXPAND, 5 );
-	
-	wxStaticBoxSizer* sbSizer8;
-	sbSizer8 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("End Date") ), wxVERTICAL );
-	
-	m_dPEnd = new wxDatePickerCtrl( m_panel2, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT );
-	sbSizer8->Add( m_dPEnd, 0, wxALL|wxEXPAND, 5 );
-	
-	
-	fgSizer5->Add( sbSizer8, 1, wxEXPAND, 5 );
-	
-	m_staticText4 = new wxStaticText( m_panel2, wxID_ANY, _("Min Windspeed"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText4->Wrap( -1 );
-	fgSizer5->Add( m_staticText4, 0, wxALL, 5 );
-	
-	m_sMinWindSpeed = new wxSpinCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 200, 60 );
-	fgSizer5->Add( m_sMinWindSpeed, 0, wxALL, 5 );
-	
-	m_staticText5 = new wxStaticText( m_panel2, wxID_ANY, _("Max Pressure"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText5->Wrap( -1 );
-	fgSizer5->Add( m_staticText5, 0, wxALL, 5 );
-	
-	m_sMaxPressure = new wxSpinCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1200, 1000 );
-	fgSizer5->Add( m_sMaxPressure, 0, wxALL, 5 );
-	
-	wxStaticBoxSizer* sbSizer3;
-	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Theatre") ), wxVERTICAL );
-	
-	wxFlexGridSizer* fgSizer9;
-	fgSizer9 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer9->SetFlexibleDirection( wxBOTH );
-	fgSizer9->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	m_cbEastPacific = new wxCheckBox( m_panel2, wxID_ANY, _("East Pacific"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbEastPacific->SetValue(true); 
-	fgSizer9->Add( m_cbEastPacific, 0, wxALL, 5 );
-	
-	m_cbWestPacific = new wxCheckBox( m_panel2, wxID_ANY, _("West Pacific"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbWestPacific->SetValue(true); 
-	fgSizer9->Add( m_cbWestPacific, 0, wxALL, 5 );
-	
-	m_cbSouthPacific = new wxCheckBox( m_panel2, wxID_ANY, _("South Pacific"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbSouthPacific->SetValue(true); 
-	fgSizer9->Add( m_cbSouthPacific, 0, wxALL, 5 );
-	
-	m_cbAtlantic = new wxCheckBox( m_panel2, wxID_ANY, _("Atlantic"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbAtlantic->SetValue(true); 
-	fgSizer9->Add( m_cbAtlantic, 0, wxALL, 5 );
-	
-	m_cbNorthIndian = new wxCheckBox( m_panel2, wxID_ANY, _("North Indian"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbNorthIndian->SetValue(true); 
-	fgSizer9->Add( m_cbNorthIndian, 0, wxALL, 5 );
-	
-	m_cbSouthIndian = new wxCheckBox( m_panel2, wxID_ANY, _("South Indian"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbSouthIndian->SetValue(true); 
-	fgSizer9->Add( m_cbSouthIndian, 0, wxALL, 5 );
-	
-	
-	sbSizer3->Add( fgSizer9, 1, wxEXPAND, 5 );
-	
-	
-	fgSizer5->Add( sbSizer3, 1, wxEXPAND, 5 );
-	
-	wxStaticBoxSizer* sbSizer4;
-	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("El Nino Period") ), wxVERTICAL );
-	
-	wxFlexGridSizer* fgSizer10;
-	fgSizer10 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer10->SetFlexibleDirection( wxBOTH );
-	fgSizer10->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	m_cbElNino = new wxCheckBox( m_panel2, wxID_ANY, _("El Nino"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbElNino->SetValue(true); 
-	fgSizer10->Add( m_cbElNino, 0, wxALL, 5 );
-	
-	m_cbLaNina = new wxCheckBox( m_panel2, wxID_ANY, _("La Nina"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbLaNina->SetValue(true); 
-	fgSizer10->Add( m_cbLaNina, 0, wxALL, 5 );
-	
-	m_cbNeutral = new wxCheckBox( m_panel2, wxID_ANY, _("Neutral"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbNeutral->SetValue(true); 
-	fgSizer10->Add( m_cbNeutral, 0, wxALL, 5 );
-	
-	m_cbNotAvailable = new wxCheckBox( m_panel2, wxID_ANY, _("N/A"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer10->Add( m_cbNotAvailable, 0, wxALL, 5 );
-	
-	
-	sbSizer4->Add( fgSizer10, 1, wxEXPAND, 5 );
-	
-	
-	fgSizer5->Add( sbSizer4, 1, wxEXPAND, 5 );
-	
-	wxStaticBoxSizer* sbSizer5;
-	sbSizer5 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Storm Types") ), wxVERTICAL );
-	
-	wxFlexGridSizer* fgSizer11;
-	fgSizer11 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer11->SetFlexibleDirection( wxBOTH );
-	fgSizer11->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	m_cbTropical = new wxCheckBox( m_panel2, wxID_ANY, _("Tropical"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbTropical->SetValue(true); 
-	fgSizer11->Add( m_cbTropical, 0, wxALL, 5 );
-	
-	m_cbSubTropical = new wxCheckBox( m_panel2, wxID_ANY, _("Sub Tropical"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbSubTropical->SetValue(true); 
-	fgSizer11->Add( m_cbSubTropical, 0, wxALL, 5 );
-	
-	m_cbExtraTropical = new wxCheckBox( m_panel2, wxID_ANY, _("ExtraTropical"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbExtraTropical->SetValue(true); 
-	fgSizer11->Add( m_cbExtraTropical, 0, wxALL, 5 );
-	
-	m_cbRemanent = new wxCheckBox( m_panel2, wxID_ANY, _("Remanent"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer11->Add( m_cbRemanent, 0, wxALL, 5 );
-	
-	
-	sbSizer5->Add( fgSizer11, 1, wxEXPAND, 5 );
-	
-	
-	fgSizer5->Add( sbSizer5, 1, wxEXPAND, 5 );
-	
-	
-	m_panel2->SetSizer( fgSizer5 );
-	m_panel2->Layout();
-	fgSizer5->Fit( m_panel2 );
-	m_notebook1->AddPage( m_panel2, _("Cyclones"), false );
-	m_panel41 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxFlexGridSizer* fgSizer61;
-	fgSizer61 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer61->AddGrowableCol( 1 );
-	fgSizer61->SetFlexibleDirection( wxBOTH );
-	fgSizer61->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	wxStaticBoxSizer* sbSizer9;
-	sbSizer9 = new wxStaticBoxSizer( new wxStaticBox( m_panel41, wxID_ANY, _("Wind Atlas") ), wxVERTICAL );
-	
-	wxFlexGridSizer* fgSizer17;
-	fgSizer17 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer17->SetFlexibleDirection( wxBOTH );
-	fgSizer17->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	m_cbWindAtlasEnable = new wxCheckBox( m_panel41, wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer17->Add( m_cbWindAtlasEnable, 0, wxALL, 5 );
-	
-	
-	fgSizer17->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	m_staticText12 = new wxStaticText( m_panel41, wxID_ANY, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText12->Wrap( -1 );
-	fgSizer17->Add( m_staticText12, 0, wxALL, 5 );
-	
-	m_sWindAtlasSize = new wxSpinCtrl( m_panel41, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 5, 500, 60 );
-	fgSizer17->Add( m_sWindAtlasSize, 0, wxALL, 5 );
-	
-	m_staticText13 = new wxStaticText( m_panel41, wxID_ANY, _("Spacing"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText13->Wrap( -1 );
-	fgSizer17->Add( m_staticText13, 0, wxALL, 5 );
-	
-	m_sWindAtlasSpacing = new wxSpinCtrl( m_panel41, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 10, 1000, 80 );
-	fgSizer17->Add( m_sWindAtlasSpacing, 0, wxALL, 5 );
-	
-	m_staticText14 = new wxStaticText( m_panel41, wxID_ANY, _("Opacity"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText14->Wrap( -1 );
-	fgSizer17->Add( m_staticText14, 0, wxALL, 5 );
-	
-	m_sWindAtlasOpacity = new wxSlider( m_panel41, wxID_ANY, 205, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-	fgSizer17->Add( m_sWindAtlasOpacity, 0, wxALL|wxEXPAND, 5 );
-	
-	
-	sbSizer9->Add( fgSizer17, 1, wxEXPAND, 5 );
-	
-	
-	fgSizer61->Add( sbSizer9, 1, wxEXPAND, 5 );
-	
-	
-	m_panel41->SetSizer( fgSizer61 );
-	m_panel41->Layout();
-	fgSizer61->Fit( m_panel41 );
-	m_notebook1->AddPage( m_panel41, _("Wind"), false );
 	m_panel5 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer12;
 	fgSizer12 = new wxFlexGridSizer( 0, 1, 0, 0 );
@@ -590,7 +412,212 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_panel5->SetSizer( fgSizer12 );
 	m_panel5->Layout();
 	fgSizer12->Fit( m_panel5 );
-	m_notebook1->AddPage( m_panel5, _("Standard Displays"), true );
+	m_notebook1->AddPage( m_panel5, _("Standard Displays"), false );
+	m_panel41 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxFlexGridSizer* fgSizer61;
+	fgSizer61 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer61->AddGrowableCol( 0 );
+	fgSizer61->SetFlexibleDirection( wxBOTH );
+	fgSizer61->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxStaticBoxSizer* sbSizer9;
+	sbSizer9 = new wxStaticBoxSizer( new wxStaticBox( m_panel41, wxID_ANY, _("Wind Atlas") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer24;
+	fgSizer24 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer24->AddGrowableCol( 1 );
+	fgSizer24->SetFlexibleDirection( wxBOTH );
+	fgSizer24->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxFlexGridSizer* fgSizer17;
+	fgSizer17 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer17->SetFlexibleDirection( wxBOTH );
+	fgSizer17->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_cbWindAtlasEnable = new wxCheckBox( m_panel41, wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer17->Add( m_cbWindAtlasEnable, 0, wxALL, 5 );
+	
+	
+	fgSizer17->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_staticText12 = new wxStaticText( m_panel41, wxID_ANY, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText12->Wrap( -1 );
+	fgSizer17->Add( m_staticText12, 0, wxALL, 5 );
+	
+	m_sWindAtlasSize = new wxSpinCtrl( m_panel41, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 5, 500, 60 );
+	fgSizer17->Add( m_sWindAtlasSize, 0, wxALL, 5 );
+	
+	m_staticText13 = new wxStaticText( m_panel41, wxID_ANY, _("Spacing"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText13->Wrap( -1 );
+	fgSizer17->Add( m_staticText13, 0, wxALL, 5 );
+	
+	m_sWindAtlasSpacing = new wxSpinCtrl( m_panel41, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 10, 1000, 80 );
+	fgSizer17->Add( m_sWindAtlasSpacing, 0, wxALL, 5 );
+	
+	m_staticText14 = new wxStaticText( m_panel41, wxID_ANY, _("Opacity"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText14->Wrap( -1 );
+	fgSizer17->Add( m_staticText14, 0, wxALL, 5 );
+	
+	m_sWindAtlasOpacity = new wxSlider( m_panel41, wxID_ANY, 205, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	fgSizer17->Add( m_sWindAtlasOpacity, 0, wxALL|wxEXPAND, 5 );
+	
+	
+	fgSizer24->Add( fgSizer17, 1, wxEXPAND, 5 );
+	
+	m_staticText19 = new wxStaticText( m_panel41, wxID_ANY, _("The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is 35% or more a number is shown.\n\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers in the circle, give percentage of calm (less than 3 knots) in blue or storm (above 47 knots) in red."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText19->Wrap( 240 );
+	fgSizer24->Add( m_staticText19, 0, wxALL|wxEXPAND, 5 );
+	
+	
+	sbSizer9->Add( fgSizer24, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer61->Add( sbSizer9, 1, wxEXPAND, 5 );
+	
+	
+	m_panel41->SetSizer( fgSizer61 );
+	m_panel41->Layout();
+	fgSizer61->Fit( m_panel41 );
+	m_notebook1->AddPage( m_panel41, _("Wind"), true );
+	m_panel2 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxFlexGridSizer* fgSizer5;
+	fgSizer5 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer5->SetFlexibleDirection( wxBOTH );
+	fgSizer5->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxStaticBoxSizer* sbSizer7;
+	sbSizer7 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Start Date") ), wxVERTICAL );
+	
+	m_dPStart = new wxDatePickerCtrl( m_panel2, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT|wxDP_SHOWCENTURY );
+	sbSizer7->Add( m_dPStart, 0, wxALL|wxEXPAND, 5 );
+	
+	
+	fgSizer5->Add( sbSizer7, 1, wxEXPAND, 5 );
+	
+	wxStaticBoxSizer* sbSizer8;
+	sbSizer8 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("End Date") ), wxVERTICAL );
+	
+	m_dPEnd = new wxDatePickerCtrl( m_panel2, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT );
+	sbSizer8->Add( m_dPEnd, 0, wxALL|wxEXPAND, 5 );
+	
+	
+	fgSizer5->Add( sbSizer8, 1, wxEXPAND, 5 );
+	
+	m_staticText4 = new wxStaticText( m_panel2, wxID_ANY, _("Min Windspeed"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText4->Wrap( -1 );
+	fgSizer5->Add( m_staticText4, 0, wxALL, 5 );
+	
+	m_sMinWindSpeed = new wxSpinCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 200, 60 );
+	fgSizer5->Add( m_sMinWindSpeed, 0, wxALL, 5 );
+	
+	m_staticText5 = new wxStaticText( m_panel2, wxID_ANY, _("Max Pressure"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText5->Wrap( -1 );
+	fgSizer5->Add( m_staticText5, 0, wxALL, 5 );
+	
+	m_sMaxPressure = new wxSpinCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1200, 1000 );
+	fgSizer5->Add( m_sMaxPressure, 0, wxALL, 5 );
+	
+	wxStaticBoxSizer* sbSizer3;
+	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Theatre") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer9;
+	fgSizer9 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer9->SetFlexibleDirection( wxBOTH );
+	fgSizer9->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_cbEastPacific = new wxCheckBox( m_panel2, wxID_ANY, _("East Pacific"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbEastPacific->SetValue(true); 
+	fgSizer9->Add( m_cbEastPacific, 0, wxALL, 5 );
+	
+	m_cbWestPacific = new wxCheckBox( m_panel2, wxID_ANY, _("West Pacific"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbWestPacific->SetValue(true); 
+	fgSizer9->Add( m_cbWestPacific, 0, wxALL, 5 );
+	
+	m_cbSouthPacific = new wxCheckBox( m_panel2, wxID_ANY, _("South Pacific"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbSouthPacific->SetValue(true); 
+	fgSizer9->Add( m_cbSouthPacific, 0, wxALL, 5 );
+	
+	m_cbAtlantic = new wxCheckBox( m_panel2, wxID_ANY, _("Atlantic"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbAtlantic->SetValue(true); 
+	fgSizer9->Add( m_cbAtlantic, 0, wxALL, 5 );
+	
+	m_cbNorthIndian = new wxCheckBox( m_panel2, wxID_ANY, _("North Indian"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbNorthIndian->SetValue(true); 
+	fgSizer9->Add( m_cbNorthIndian, 0, wxALL, 5 );
+	
+	m_cbSouthIndian = new wxCheckBox( m_panel2, wxID_ANY, _("South Indian"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbSouthIndian->SetValue(true); 
+	fgSizer9->Add( m_cbSouthIndian, 0, wxALL, 5 );
+	
+	
+	sbSizer3->Add( fgSizer9, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer5->Add( sbSizer3, 1, wxEXPAND, 5 );
+	
+	wxStaticBoxSizer* sbSizer4;
+	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("El Nino Period") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer10;
+	fgSizer10 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer10->SetFlexibleDirection( wxBOTH );
+	fgSizer10->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_cbElNino = new wxCheckBox( m_panel2, wxID_ANY, _("El Nino"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbElNino->SetValue(true); 
+	fgSizer10->Add( m_cbElNino, 0, wxALL, 5 );
+	
+	m_cbLaNina = new wxCheckBox( m_panel2, wxID_ANY, _("La Nina"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbLaNina->SetValue(true); 
+	fgSizer10->Add( m_cbLaNina, 0, wxALL, 5 );
+	
+	m_cbNeutral = new wxCheckBox( m_panel2, wxID_ANY, _("Neutral"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbNeutral->SetValue(true); 
+	fgSizer10->Add( m_cbNeutral, 0, wxALL, 5 );
+	
+	m_cbNotAvailable = new wxCheckBox( m_panel2, wxID_ANY, _("N/A"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer10->Add( m_cbNotAvailable, 0, wxALL, 5 );
+	
+	
+	sbSizer4->Add( fgSizer10, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer5->Add( sbSizer4, 1, wxEXPAND, 5 );
+	
+	wxStaticBoxSizer* sbSizer5;
+	sbSizer5 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Storm Types") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer11;
+	fgSizer11 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer11->SetFlexibleDirection( wxBOTH );
+	fgSizer11->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_cbTropical = new wxCheckBox( m_panel2, wxID_ANY, _("Tropical"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbTropical->SetValue(true); 
+	fgSizer11->Add( m_cbTropical, 0, wxALL, 5 );
+	
+	m_cbSubTropical = new wxCheckBox( m_panel2, wxID_ANY, _("Sub Tropical"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbSubTropical->SetValue(true); 
+	fgSizer11->Add( m_cbSubTropical, 0, wxALL, 5 );
+	
+	m_cbExtraTropical = new wxCheckBox( m_panel2, wxID_ANY, _("ExtraTropical"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbExtraTropical->SetValue(true); 
+	fgSizer11->Add( m_cbExtraTropical, 0, wxALL, 5 );
+	
+	m_cbRemanent = new wxCheckBox( m_panel2, wxID_ANY, _("Remanent"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer11->Add( m_cbRemanent, 0, wxALL, 5 );
+	
+	
+	sbSizer5->Add( fgSizer11, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer5->Add( sbSizer5, 1, wxEXPAND, 5 );
+	
+	
+	m_panel2->SetSizer( fgSizer5 );
+	m_panel2->Layout();
+	fgSizer5->Fit( m_panel2 );
+	m_notebook1->AddPage( m_panel2, _("Cyclones"), false );
 	m_panel4 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer171;
 	fgSizer171 = new wxFlexGridSizer( 0, 1, 0, 0 );
@@ -626,9 +653,6 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_htmlInformation = new wxHtmlWindow( m_panel4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO );
 	fgSizer171->Add( m_htmlInformation, 0, wxALL|wxEXPAND, 5 );
 	
-	m_bOnDonate = new wxButton( m_panel4, wxID_ANY, _("Donate"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer171->Add( m_bOnDonate, 0, wxALL, 5 );
-	
 	
 	m_panel4->SetSizer( fgSizer171 );
 	m_panel4->Layout();
@@ -637,12 +661,19 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	
 	fgSizer3->Add( m_notebook1, 1, wxEXPAND | wxALL, 5 );
 	
-	m_sdbSizer1 = new wxStdDialogButtonSizer();
-	m_sdbSizer1OK = new wxButton( this, wxID_OK );
-	m_sdbSizer1->AddButton( m_sdbSizer1OK );
-	m_sdbSizer1->Realize();
+	wxFlexGridSizer* fgSizer22;
+	fgSizer22 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer22->SetFlexibleDirection( wxBOTH );
+	fgSizer22->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	fgSizer3->Add( m_sdbSizer1, 1, wxEXPAND, 5 );
+	m_bOnDonate = new wxButton( this, wxID_ANY, _("Donate"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer22->Add( m_bOnDonate, 0, wxALL, 5 );
+	
+	m_bClose = new wxButton( this, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer22->Add( m_bClose, 0, wxALL, 5 );
+	
+	
+	fgSizer3->Add( fgSizer22, 1, wxEXPAND, 5 );
 	
 	
 	this->SetSizer( fgSizer3 );
@@ -652,36 +683,6 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	
 	// Connect Events
 	m_notebook1->Connect( wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler( ClimatologyConfigDialogBase::OnPageChanged ), NULL, this );
-	m_dPStart->Connect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_dPEnd->Connect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sMinWindSpeed->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sMaxPressure->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbEastPacific->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbWestPacific->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbSouthPacific->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbAtlantic->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbNorthIndian->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbSouthIndian->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbElNino->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbLaNina->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbNeutral->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbNotAvailable->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbTropical->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbSubTropical->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbExtraTropical->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbRemanent->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbWindAtlasEnable->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasSize->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasSpacing->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cDataType->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnDataTypeChoice ), NULL, this );
 	m_cDataUnits->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cbEnabled->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnEnabled ), NULL, this );
@@ -716,43 +717,44 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_sDirectionArrowsOpacity->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_sDirectionArrowsSize->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_sDirectionArrowsSpacing->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbWindAtlasEnable->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasSize->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasSpacing->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_dPStart->Connect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_dPEnd->Connect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sMinWindSpeed->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sMaxPressure->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbEastPacific->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbWestPacific->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbSouthPacific->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbAtlantic->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbNorthIndian->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbSouthIndian->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbElNino->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbLaNina->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbNeutral->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbNotAvailable->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbTropical->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbSubTropical->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbExtraTropical->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbRemanent->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_bOnDonate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnDonate ), NULL, this );
+	m_bClose->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnClose ), NULL, this );
 }
 
 ClimatologyConfigDialogBase::~ClimatologyConfigDialogBase()
 {
 	// Disconnect Events
 	m_notebook1->Disconnect( wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler( ClimatologyConfigDialogBase::OnPageChanged ), NULL, this );
-	m_dPStart->Disconnect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_dPEnd->Disconnect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sMinWindSpeed->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sMaxPressure->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbEastPacific->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbWestPacific->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbSouthPacific->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbAtlantic->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbNorthIndian->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbSouthIndian->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbElNino->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbLaNina->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbNeutral->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbNotAvailable->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbTropical->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbSubTropical->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbExtraTropical->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbRemanent->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_cbWindAtlasEnable->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasSize->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasSpacing->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
-	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cDataType->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnDataTypeChoice ), NULL, this );
 	m_cDataUnits->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_cbEnabled->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnEnabled ), NULL, this );
@@ -787,6 +789,37 @@ ClimatologyConfigDialogBase::~ClimatologyConfigDialogBase()
 	m_sDirectionArrowsOpacity->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_sDirectionArrowsSize->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_sDirectionArrowsSpacing->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbWindAtlasEnable->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasSize->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasSpacing->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_dPStart->Disconnect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_dPEnd->Disconnect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sMinWindSpeed->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_sMaxPressure->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbEastPacific->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbWestPacific->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbSouthPacific->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbAtlantic->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbNorthIndian->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbSouthIndian->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbElNino->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbLaNina->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbNeutral->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbNotAvailable->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbTropical->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbSubTropical->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbExtraTropical->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
+	m_cbRemanent->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdate ), NULL, this );
 	m_bOnDonate->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnDonate ), NULL, this );
+	m_bClose->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnClose ), NULL, this );
 	
 }
