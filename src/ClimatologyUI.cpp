@@ -412,7 +412,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_panel5->SetSizer( fgSizer12 );
 	m_panel5->Layout();
 	fgSizer12->Fit( m_panel5 );
-	m_notebook1->AddPage( m_panel5, _("Standard Displays"), false );
+	m_notebook1->AddPage( m_panel5, _("Standard Displays"), true );
 	m_panel41 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer61;
 	fgSizer61 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -464,7 +464,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	
 	fgSizer24->Add( fgSizer17, 1, wxEXPAND, 5 );
 	
-	m_staticText19 = new wxStaticText( m_panel41, wxID_ANY, _("The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is 35% or more a number is shown.\n\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers in the circle, give percentage of calm (less than 3 knots) in blue or storm (above 47 knots) in red."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText19 = new wxStaticText( m_panel41, wxID_ANY, _("The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is 35% or more a number is shown.\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers in the circle, give percentage of calm (less than 3 knots) in blue or storm (above 47 knots) in red."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText19->Wrap( 240 );
 	fgSizer24->Add( m_staticText19, 0, wxALL|wxEXPAND, 5 );
 	
@@ -478,7 +478,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_panel41->SetSizer( fgSizer61 );
 	m_panel41->Layout();
 	fgSizer61->Fit( m_panel41 );
-	m_notebook1->AddPage( m_panel41, _("Wind"), true );
+	m_notebook1->AddPage( m_panel41, _("Wind"), false );
 	m_panel2 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer5;
 	fgSizer5 = new wxFlexGridSizer( 0, 2, 0, 0 );

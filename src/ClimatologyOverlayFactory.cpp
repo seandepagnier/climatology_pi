@@ -1586,8 +1586,7 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::
             wxPoint p;
             CycloneState *ss = *it2;
 
-            if(!m_dlg.m_cbAll->GetValue() &&
-               m_dlg.m_sMonth->GetValue() != ss->datetime.GetMonth())
+            if(!m_dlg.m_cbAll->GetValue() && m_CurrentMonth != ss->datetime.GetMonth())
                 continue;
 
             if((ss->datetime < m_dlg.m_cfgdlg->m_dPStart->GetValue()) ||
