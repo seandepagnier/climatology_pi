@@ -35,9 +35,13 @@ MESSAGE (STATUS "")
 MESSAGE (STATUS "*** Staging to build ${PACKAGE_NAME} ***")
 
 #SET(CMAKE_BUILD_TYPE Debug)
-SET(PREFIX_PARENTDATA ${PREFIX_DATA}/${PARENT})
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/src)
+IF(UNIX AND NOT APPLE)
+  SET(PREFIX_PLUGINS /usr/lib/opencpn)
+  SET(PREFIX_DATA /usr/share)
+ENDIF(UNIX AND NOT APPLE)
+
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/wxJSON)
 
 # require proper c++
 #ADD_DEFINITIONS( "-Wall -ansi -pedantic -Wno-variadic-macros" )
@@ -60,11 +64,17 @@ IF(WIN32)
     ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_DEPRECATE)
 ENDIF(WIN32)
 
-INCLUDE(${wxWidgets_USE_FILE})
+IF(NOT DEFINED wxWidgets_USE_FILE)
+  SET(wxWidgets_USE_LIBS base core net xml html adv)
+  SET(BUILD_SHARED_LIBS TRUE)
+  FIND_PACKAGE(wxWidgets REQUIRED)
+ENDIF(NOT DEFINED wxWidgets_USE_FILE)
 
+FIND_PACKAGE(wxWidgets REQUIRED)
+  INCLUDE(${wxWidgets_USE_FILE})
 FIND_PACKAGE(Gettext REQUIRED)
 
-# For convenience we define the sources as a variable. You can add 
+# For convenience we define the sources as a variable. You can add
 # header files and cpp/c files and CMake will sort them out
 
 
@@ -86,20 +96,20 @@ SET(SRC_CLIMATOLOGY
             src/icons.cpp
             src/icons.h
 
-            ../../src/wxJSON/jsonval.cpp
-            ../../src/wxJSON/jsonreader.cpp
-            ../../src/wxJSON/jsonwriter.cpp
+            wxJSON/jsonval.cpp
+            wxJSON/jsonreader.cpp
+            wxJSON/jsonwriter.cpp
 )
 ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY})
 
 IF(NOT UNIX)
     SET(SRC_BZIP_CLIM
-            src/bzip2/bzlib.c 
-            src/bzip2/blocksort.c 
-            src/bzip2/compress.c 
-            src/bzip2/crctable.c 
-            src/bzip2/decompress.c 
-            src/bzip2/huffman.c 
+            src/bzip2/bzlib.c
+            src/bzip2/blocksort.c
+            src/bzip2/compress.c
+            src/bzip2/crctable.c
+            src/bzip2/decompress.c
+            src/bzip2/huffman.c
             src/bzip2/randtable.c
     )
     ADD_LIBRARY(LIB_BZIP_CLIM ${SRC_BZIP_CLIM})
@@ -132,12 +142,84 @@ ENDIF(UNIX AND NOT APPLE)
 IF(WIN32)
   INSTALL(TARGETS ${PACKAGE_NAME} RUNTIME DESTINATION "plugins")
 ENDIF(WIN32)
- 	  	 
+
 IF(WIN32)
   INSTALL(DIRECTORY data DESTINATION "plugins\\\\climatology")
 ELSE(WIN32)
-  INSTALL(DIRECTORY data DESTINATION ${PREFIX_PARENTDATA}/plugins/climatology)
+  INSTALL(DIRECTORY data DESTINATION ${PREFIX_DATA}/plugins/climatology)
 ENDIF(WIN32)
 
-INCLUDE("../PluginLocalization.cmake")
+FUNCTION(PLUGIN_LOCALIZATION)
+	FIND_PROGRAM(GETTEXT_XGETTEXT_EXECUTABLE xgettext)
+	string(REPLACE "_pi" "" I18N_NAME ${PACKAGE_NAME})
+	IF (GETTEXT_XGETTEXT_EXECUTABLE)
+	ADD_CUSTOM_COMMAND(
+	   OUTPUT po/${PACKAGE_NAME}.pot.dummy
+	   COMMAND ${GETTEXT_XGETTEXT_EXECUTABLE} --force-po --package-name=${PACKAGE_NAME} --package-version="${PACKAGE_VERSION}" --output=po/${PACKAGE_NAME}.pot  --keyword=_ --width=80 --files-from=${CMAKE_CURRENT_SOURCE_DIR}/po/POTFILES.in
+	   DEPENDS po/POTFILES.in po/${PACKAGE_NAME}.pot
+	   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	   COMMENT "${I18N_NAME}-pot-update [${PACKAGE_NAME}]: Generated pot file."
+	)
+	ADD_CUSTOM_TARGET(${I18N_NAME}-pot-update COMMENT "[${PACKAGE_NAME}]-pot-update: Done." DEPENDS po/${PACKAGE_NAME}.pot.dummy)
+
+	ENDIF(GETTEXT_XGETTEXT_EXECUTABLE )
+
+	MACRO(GETTEXT_UPDATE_PO _potFile)
+	   SET(_poFiles ${_potFile})
+	   GET_FILENAME_COMPONENT(_absPotFile ${_potFile} ABSOLUTE)
+
+	   FOREACH (_currentPoFile ${ARGN})
+	      GET_FILENAME_COMPONENT(_absFile ${_currentPoFile} ABSOLUTE)
+	      GET_FILENAME_COMPONENT(_poBasename ${_absFile} NAME_WE)
+
+	      ADD_CUSTOM_COMMAND(
+		 OUTPUT ${_absFile}.dummy
+		 COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --width=80 --strict --quiet --update --backup=none --no-location -s ${_absFile} ${_absPotFile}
+		 DEPENDS ${_absPotFile} ${_absFile}
+		 COMMENT "${I18N_NAME}-po-update [${_poBasename}]: Updated po file."
+	      )
+
+	      SET(_poFiles ${_poFiles} ${_absFile}.dummy)
+
+	   ENDFOREACH (_currentPoFile )
+
+	   ADD_CUSTOM_TARGET(${I18N_NAME}-po-update COMMENT "[${PACKAGE_NAME}]-po-update: Done." DEPENDS ${_poFiles})
+	ENDMACRO(GETTEXT_UPDATE_PO)
+
+	IF (GETTEXT_MSGMERGE_EXECUTABLE)
+	FILE(GLOB PACKAGE_PO_FILES po/*.po)
+	GETTEXT_UPDATE_PO(po/${PACKAGE_NAME}.pot ${PACKAGE_PO_FILES})
+	ENDIF(GETTEXT_MSGMERGE_EXECUTABLE)
+
+	SET(_gmoFiles)
+	MACRO(GETTEXT_BUILD_MO)
+	   FOREACH (_poFile ${ARGN})
+	      GET_FILENAME_COMPONENT(_absFile ${_poFile} ABSOLUTE)
+	      GET_FILENAME_COMPONENT(_poBasename ${_absFile} NAME_WE)
+	      SET(_gmoFile ${CMAKE_CURRENT_BINARY_DIR}/${_poBasename}.mo)
+
+	      ADD_CUSTOM_COMMAND(
+		 OUTPUT ${_gmoFile}
+		 COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} --check -o ${_gmoFile} ${_absFile}
+		 DEPENDS ${_absFile}
+		 COMMENT "${I18N_NAME}-i18n [${_poBasename}]: Created mo file."
+	      )
+
+	IF(APPLE)
+	      INSTALL(FILES ${_gmoFile} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/OpenCPN.app/Contents/Resources/${_poBasename}.lproj RENAME opencpn-${PACKAGE_NAME}.mo )
+	ELSE(APPLE)
+	      INSTALL(FILES ${_gmoFile} DESTINATION ${PREFIX_DATA}/locale/${_poBasename}/LC_MESSAGES RENAME opencpn-${PACKAGE_NAME}.mo )
+	ENDIF(APPLE)
+
+	      SET(_gmoFiles ${_gmoFiles} ${_gmoFile})
+	   ENDFOREACH (_poFile )
+	ENDMACRO(GETTEXT_BUILD_MO)
+
+	if(GETTEXT_MSGFMT_EXECUTABLE)
+	   FILE(GLOB PACKAGE_PO_FILES po/*.po)
+	   GETTEXT_BUILD_MO(${PACKAGE_PO_FILES})
+	   ADD_CUSTOM_TARGET(${I18N_NAME}-i18n COMMENT "${PACKAGE_NAME}-i18n: Done." DEPENDS ${_gmoFiles})
+	   ADD_DEPENDENCIES(${PACKAGE_NAME} ${I18N_NAME}-i18n)
+	ENDIF(GETTEXT_MSGFMT_EXECUTABLE)
+ENDFUNCTION()
 PLUGIN_LOCALIZATION()
