@@ -40,10 +40,10 @@
 #define     MY_API_VERSION_MAJOR    1
 #define     MY_API_VERSION_MINOR    9
 
-#include "../../../include/ocpn_plugin.h"
+#include <opencpn/ocpn_plugin.h>
 
-#include "../../../include/wx/jsonreader.h"
-#include "../../../include/wx/jsonwriter.h"
+#include <opencpn/wx/jsonreader.h>
+#include <opencpn/wx/jsonwriter.h>
 
 #include "defs.h"
 
