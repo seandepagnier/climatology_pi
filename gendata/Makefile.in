@@ -4,10 +4,10 @@ ALL_WIND  = $(DATA)/wind01.gz $(DATA)/wind02.gz $(DATA)/wind03.gz $(DATA)/wind04
 ALL_WIND += $(DATA)/wind05.gz $(DATA)/wind06.gz $(DATA)/wind07.gz $(DATA)/wind08.gz
 ALL_WIND += $(DATA)/wind09.gz $(DATA)/wind10.gz $(DATA)/wind11.gz $(DATA)/wind12.gz
 
-ALL_CURRENT  = $(DATA)/current01.gz $(DATA)/current02.gz $(DATA)/current03.gz
-ALL_CURRENT += $(DATA)/current04.gz $(DATA)/current05.gz $(DATA)/current06.gz
-ALL_CURRENT += $(DATA)/current07.gz $(DATA)/current08.gz $(DATA)/current09.gz
-ALL_CURRENT += $(DATA)/current10.gz $(DATA)/current11.gz $(DATA)/current12.gz
+ALL_CURRENT  = $(DATA)/current01 $(DATA)/current02 $(DATA)/current03
+ALL_CURRENT += $(DATA)/current04 $(DATA)/current05 $(DATA)/current06
+ALL_CURRENT += $(DATA)/current07 $(DATA)/current08 $(DATA)/current09
+ALL_CURRENT += $(DATA)/current10 $(DATA)/current11 $(DATA)/current12
 
 ALL_OTHER = $(DATA)/sealevelpressure.gz $(DATA)/seasurfacetemperature.gz $(DATA)/airtemperature.gz $(DATA)/cloud.gz $(DATA)/precipitation.gz $(DATA)/relativehumidity.gz $(DATA)/seadepth.gz
 ALL_CYCLONE = $(DATA)/cyclone-atl.gz $(DATA)/cyclone-nio.gz $(DATA)/cyclone-wpa.gz $(DATA)/cyclone-epa.gz $(DATA)/cyclone-she.gz $(DATA)/cyclone-spa.gz
@@ -18,50 +18,12 @@ clean:
 	rm -rf $(ALL)
 	rm -rf genatdata genrelativehumiditydata genseadepthdata genclddata gencurrentdata gencyclonedata gencyclonedata1 genslpdata gensstdata genastdata genprecipdata genwinddata
 
-CURRENT_01  = oscar_vel7047.nc oscar_vel7032.nc oscar_vel7057.nc
-CURRENT_01 += oscar_vel7042.nc oscar_vel7037.nc oscar_vel7027.nc
-CURRENT_01 += oscar_vel7052.nc
-
-CURRENT_02  = oscar_vel7072.nc oscar_vel7082.nc oscar_vel7077.nc
-CURRENT_02 += oscar_vel7088.nc oscar_vel7067.nc oscar_vel7062.nc
-
-CURRENT_03  = oscar_vel7118.nc oscar_vel7088.nc oscar_vel7113.nc
-CURRENT_03 += oscar_vel7108.nc oscar_vel7098.nc oscar_vel7093.nc
-CURRENT_03 += oscar_vel7103.nc
-
-CURRENT_04  = oscar_vel7143.nc oscar_vel7133.nc oscar_vel7118.nc
-CURRENT_04 += oscar_vel7128.nc oscar_vel7138.nc oscar_vel7123.nc
-
-CURRENT_05  = oscar_vel7154.nc oscar_vel7179.nc oscar_vel7169.nc
-CURRENT_05 += oscar_vel7174.nc oscar_vel7149.nc oscar_vel7159.nc
-CURRENT_05 += oscar_vel7164.nc
-
-CURRENT_06  = oscar_vel7179.nc oscar_vel7204.nc oscar_vel7199.nc
-CURRENT_06 += oscar_vel7189.nc oscar_vel7194.nc oscar_vel7184.nc
-
-CURRENT_07  = oscar_vel7240.nc oscar_vel7235.nc oscar_vel7220.nc
-CURRENT_07 += oscar_vel7225.nc oscar_vel7215.nc oscar_vel7210.nc
-CURRENT_07 += oscar_vel7230.nc
-
-CURRENT_08  = oscar_vel7240.nc oscar_vel7250.nc oscar_vel7265.nc
-CURRENT_08 += oscar_vel7271.nc oscar_vel7255.nc oscar_vel7245.nc
-CURRENT_08 += oscar_vel7260.nc
-
-CURRENT_09  = oscar_vel7301.nc oscar_vel7271.nc oscar_vel7276.nc
-CURRENT_09 += oscar_vel7286.nc oscar_vel7296.nc oscar_vel7291.nc
-CURRENT_09 += oscar_vel7281.nc
-
-CURRENT_10  = oscar_vel7301.nc oscar_vel7311.nc oscar_vel7306.nc
-CURRENT_10 += oscar_vel7316.nc oscar_vel7326.nc oscar_vel7321.nc
-CURRENT_10 += oscar_vel7332.nc
-
-CURRENT_11  = oscar_vel7362.nc oscar_vel7347.nc oscar_vel7337.nc
-CURRENT_11 += oscar_vel7342.nc oscar_vel7352.nc oscar_vel7357.nc
-CURRENT_11 += oscar_vel7332.nc
-
-CURRENT_12  = oscar_vel7372.nc oscar_vel7362.nc oscar_vel7393.nc
-CURRENT_12 += oscar_vel7382.nc oscar_vel7387.nc oscar_vel7367.nc
-CURRENT_12 += oscar_vel7377.nc
+CURRENT =  oscar_vel1992.nc oscar_vel1993.nc oscar_vel1994.nc oscar_vel1995.nc
+CURRENT += oscar_vel1996.nc oscar_vel1997.nc oscar_vel1998.nc oscar_vel1999.nc
+CURRENT += oscar_vel2000.nc oscar_vel2001.nc oscar_vel2002.nc oscar_vel2003.nc
+CURRENT += oscar_vel2004.nc oscar_vel2005.nc oscar_vel2006.nc oscar_vel2007.nc
+CURRENT += oscar_vel2008.nc oscar_vel2009.nc oscar_vel2010.nc oscar_vel2011.nc
+CURRENT += oscar_vel2012.nc
 
 genwinddata: genwinddata.cpp zuFile.cpp
 	g++ -o genwinddata genwinddata.cpp zuFile.cpp -lbz2 -lz -g -O2
@@ -160,3 +122,7 @@ gencyclonedata1: gencyclonedata1.cpp
 	g++ -o gencyclonedata1 gencyclonedata1.cpp -g
 
 CURRENT_DATA_DIR = currentdata
+
+$(ALL_CURRENT) : $(CURRENT_DATA_DIR)/$(CURRENT) gencurrentdata
+	./gencurrentdata $<
+

@@ -50,9 +50,15 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    float utotal[LATITUDES*OUTPUT_LONGITUDES], vtotal[LATITUDES*OUTPUT_LONGITUDES];
-    memset(utotal, 0, sizeof utotal);
-    memset(vtotal, 0, sizeof vtotal);
+    float *utotal, *vtotal, *count;
+    int size = 12 * LATITUDES*OUTPUT_LONGITUDES;
+    utotal = new float[size];
+    vtotal = new float[size];
+    count = new float[size];
+
+    memset(utotal, 0, size*sizeof *utotal);
+    memset(vtotal, 0, size*sizeof *vtotal);
+    memset(count, 0, size*sizeof *count);
 
     for(int i=1; i<argc; i++) {
         NcFile f(argv[i], NcFile::ReadOnly);
@@ -62,40 +68,70 @@ int main(int argc, char *argv[])
         }
         fprintf(stderr, "reading file: %s\n", argv[i]);
 
+        NcVar* year = f.get_var("year");
+        int numyears = year->num_vals();
+        double years[numyears];
+        year->get(years, numyears);
+
+        float *u_data, *v_data;
+        u_data = new float[numyears * LATITUDES*LONGITUDES];
+        v_data = new float[numyears * LATITUDES*LONGITUDES];
+
         NcVar* udata = f.get_var("u");
-        float u_data[LATITUDES*LONGITUDES];
-        udata->get(u_data, 1, 1, LATITUDES, LONGITUDES);
+        udata->get(u_data, numyears, 1, LATITUDES, LONGITUDES);
 
         NcVar* vdata = f.get_var("v");
-        float v_data[LATITUDES*LONGITUDES];
-        vdata->get(v_data, 1, 1, LATITUDES, LONGITUDES);
+        vdata->get(v_data, numyears, 1, LATITUDES, LONGITUDES);
 
-        for(int lat = 0; lat < LATITUDES; lat++)
-            for(int lon = 0; lon < OUTPUT_LONGITUDES; lon++) {
-                int inlon = lon-61;
-                if(inlon < 0)
-                    inlon += OUTPUT_LONGITUDES;
-                int ind = lat*LONGITUDES + inlon;
-                int indout = lat*OUTPUT_LONGITUDES + lon;
-                utotal[indout] += u_data[ind];
-                vtotal[indout] += v_data[ind];
-            }
-    }
-
-    fprintf(stderr, "processing\n");
-    uint16_t header[3] = {LATITUDES, OUTPUT_LONGITUDES, MULTIPLIER};
-    fwrite(header, sizeof header, 1, stdout);
-
-    int8_t uavg[LATITUDES*OUTPUT_LONGITUDES], vavg[LATITUDES*OUTPUT_LONGITUDES];
-    float count = argc - 1;
-    for(int lat = 0; lat < LATITUDES; lat++)
-        for(int lon = 0; lon < OUTPUT_LONGITUDES; lon++) {
-            int indout = lat*OUTPUT_LONGITUDES + lon;
-
-            uavg[indout] = encode_value(utotal[indout] / count);
-            vavg[indout] = encode_value(vtotal[indout] / count);
+        for(int y = 0; y < numyears; y++) {
+            double iptr;
+            int m = modf(years[y], &iptr)*12;
+            for(int lat = 0; lat < LATITUDES; lat++)
+                for(int lon = 0; lon < OUTPUT_LONGITUDES; lon++) {
+                    int inlon = lon-61;
+                    if(inlon < 0)
+                        inlon += OUTPUT_LONGITUDES;
+                    int ind = (y*LATITUDES+lat)*LONGITUDES + inlon;
+                    int indout = lat*OUTPUT_LONGITUDES + lon;
+                    if(!isnan(u_data[ind]) && !isnan(v_data[ind])) {
+                        utotal[12*indout+m] += u_data[ind];
+                        vtotal[12*indout+m] += v_data[ind];
+                        count[12*indout+m] ++;
+                    }
+                }
         }
 
-    fwrite(uavg, LATITUDES*OUTPUT_LONGITUDES, 1, stdout);
-    fwrite(vavg, LATITUDES*OUTPUT_LONGITUDES, 1, stdout);
+        delete [] u_data;
+        delete [] v_data;
+    }
+        
+    fprintf(stderr, "processing\n");
+    uint16_t header[3] = {LATITUDES, OUTPUT_LONGITUDES, MULTIPLIER};
+
+    FILE *file;
+    for(int m=0; m<12; m++) {
+        char filename[128];
+        snprintf(filename, sizeof filename, "current%02d", m+1);
+        file = fopen(filename, "wb");
+        if(!file) {
+            fprintf(stderr, "failed opening: %s", filename);
+            return 0;
+        }
+
+        fwrite(header, sizeof header, 1, file);
+
+        int8_t uavg[LATITUDES*OUTPUT_LONGITUDES], vavg[LATITUDES*OUTPUT_LONGITUDES];
+        for(int lat = 0; lat < LATITUDES; lat++)
+            for(int lon = 0; lon < OUTPUT_LONGITUDES; lon++) {
+                int indout = lat*OUTPUT_LONGITUDES + lon;
+                
+                uavg[indout] = encode_value(utotal[12*indout + m] / count[12*indout + m]);
+                vavg[indout] = encode_value(vtotal[12*indout + m] / count[12*indout + m]);
+            }
+        
+        fwrite(uavg, LATITUDES*OUTPUT_LONGITUDES, 1, file);
+        fwrite(vavg, LATITUDES*OUTPUT_LONGITUDES, 1, file);
+
+        fclose(file);
+    }
 }

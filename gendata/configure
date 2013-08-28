@@ -18,7 +18,9 @@ done
 
 # Current
 for i in `seq -f %02.0f 1 12`; do
-    echo 'CURRENT_DATA_'$i' = $(foreach file,$(CURRENT_'$i'),$(CURRENT_DATA_DIR)/$(file))' >> Makefile
-    echo '$(DATA)/current'$i'.gz: Makefile gencurrentdata $(CURRENT_DATA_'$i')' >> Makefile
-    echo "\t"'./gencurrentdata $(CURRENT_DATA_'$i') | gzip > $@'"\n" >> Makefile
+#    echo 'CURRENT_DATA_'$i' = $(foreach file,$(CURRENT_'$i'),$(CURRENT_DATA_DIR)/$(file))' >> Makefile
+#    echo '$(DATA)/current'$i'.gz: Makefile gencurrentdata $(CURRENT_DATA_'$i')' >> Makefile
+#    echo "\t"'./gencurrentdata $(CURRENT_DATA_'$i') | gzip > $@'"\n" >> Makefile
+    echo '$(DATA)/current'$i'.gz: $(DATA)/current'$i >> Makefile
+    echo "\t"'gzip $<'"\n" >> Makefile
 done
