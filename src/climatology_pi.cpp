@@ -166,15 +166,14 @@ wxString climatology_pi::GetShortDescription()
 wxString climatology_pi::GetLongDescription()
 {
       return _("Climatology PlugIn for OpenCPN\n\
-Provides overlay capabilities for history weather data.\n\n\
-Supported CLIMATOLOGY file types include:\n\
+Provides overlay capabilities for historic weather data.\n\n\
+Supported Climatology types include:\n\
 - Average wind directions and speed\n\
 - Percentage of gale and calm conditions\n\
 - Average swell and seastate (not yet implemented)\n\
-- ITCZ (doldrum) positions (not yet implemented)\n\
-- Monthly average Sea Level pressure and Sea Temperature\n\
-- Tropical Storm tracks.\
-- Additional data.\
+- Precipitation, Humidity, and Cloud Cover \n\
+- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n\
+- Tropical Cyclone tracks\
 ");
 
 }
