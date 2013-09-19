@@ -228,4 +228,5 @@ private:
     std::map<int, ElNinoYear> m_ElNinoYears;
 
     bool m_bFailedLoading;
+    wxString m_sFailedMessage;
 };

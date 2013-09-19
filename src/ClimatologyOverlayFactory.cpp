@@ -356,11 +356,12 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(m_bFailedLoading) {
         wxMessageDialog mdlg(&m_dlg, 
-                             _("Some Data Failed to load.  Would you like to try to download it?"),
+                             _("Some Data Failed to load:\n")
+                             + m_sFailedMessage +
+                             _("Would you like to try to download?"),
                              _("Climatology"), wxYES | wxNO | wxICON_WARNING);
         if(mdlg.ShowModal() == wxID_YES) {
             wxLaunchDefaultBrowser(
-//_T("http://www.tgp-architects.com/Ocpn/DATA/Climate-Data-5/CL-DATA-5.zip ")
                 _T("http://sourceforge.net/projects/opencpnplugins/files/climatology_pi/"));
             wxMessageDialog mdlg(&m_dlg, _("You must extract this data, and place in: ") + path +
                                  _("\nthen restart opencpn"),
@@ -1391,7 +1392,9 @@ ZUFILE *ClimatologyOverlayFactory::TryOpenFile(wxString filename)
         f = zu_open((filename+ext).mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f) {
         m_bFailedLoading = true;
-        wxLogMessage(climatology_pi + _("failed to read file: ") + filename);
+        wxString msg = _("failed to read file: ") + filename;
+        m_sFailedMessage += msg + _T("\n");
+        wxLogMessage(climatology_pi + msg);
     }
     return f;
 }
