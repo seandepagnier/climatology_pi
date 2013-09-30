@@ -62,6 +62,8 @@ class ClimatologyDialogBase : public wxDialog
 		virtual void OnMonth( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAll( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMonth( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnMonthDown( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnMonthUp( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfig( wxCommandEvent& event ) { event.Skip(); }
 		

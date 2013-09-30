@@ -400,8 +400,8 @@
                                 <event name="OnScroll">OnMonth</event>
                                 <event name="OnScrollBottom"></event>
                                 <event name="OnScrollChanged"></event>
-                                <event name="OnScrollLineDown"></event>
-                                <event name="OnScrollLineUp"></event>
+                                <event name="OnScrollLineDown">OnMonthDown</event>
+                                <event name="OnScrollLineUp">OnMonthUp</event>
                                 <event name="OnScrollPageDown"></event>
                                 <event name="OnScrollPageUp"></event>
                                 <event name="OnScrollThumbRelease"></event>

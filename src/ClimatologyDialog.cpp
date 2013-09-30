@@ -183,6 +183,18 @@ void ClimatologyDialog::OnMonth( wxScrollEvent& event )
     RefreshRedraw();
 }
 
+void ClimatologyDialog::OnMonthDown( wxScrollEvent& event )
+{
+    if(event.GetPosition() >= 15)
+        m_sMonth->SetValue(event.GetPosition() - 12);
+}
+
+void ClimatologyDialog::OnMonthUp( wxScrollEvent& event )
+{
+    if(event.GetPosition() <= 2)
+        m_sMonth->SetValue(event.GetPosition() + 12);
+}
+
 void ClimatologyDialog::OnAll( wxCommandEvent& event )
 {
     m_cMonth->Enable(!m_cbAll->GetValue());
