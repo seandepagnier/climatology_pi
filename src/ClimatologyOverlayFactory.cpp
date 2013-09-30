@@ -313,7 +313,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(32, _("cyclone (south pacific)")))
         return;
-    if(!ReadCycloneData(path + _T("cyclone-spa"), m_spa))
+    if(!ReadCycloneData(path + _T("cyclone-spa"), m_spa, true))
         m_dlg.m_cfgdlg->m_cbSouthPacific->Disable();
     else
         anycyclone = true;
@@ -824,9 +824,9 @@ ColorMap SeaDepthMap[] =
  {6000, _T("#404040"), 0}, {8000, _T("#202020"), 0}, {10000, _T("#000000"), 0}};
 
 ColorMap CycloneMap[] =
-{{0, _T("#0000d9"), 255}, {10, _T("#002ad9"), 0}, {20, _T("#006ed9"), 0}, {30, _T("#00b2d9"), 0},
- {40, _T("#00d4d4"), 0},  {50, _T("#00d9a6"), 0}, {60, _T("#00d900"), 0}, {70, _T("#75d900"), 0},
- {80, _T("#a9d900"), 0},  {90, _T("#a9ae00"), 0}, {100, _T("#d98000"), 0}, {110, _T("#d94000"), 0},
+{{0, _T("#0000d9"), 255}, {10, _T("#002ad9"), 200}, {20, _T("#006ed9"), 128}, {30, _T("#00b2d9"), 96},
+ {40, _T("#00d4d4"), 64},  {50, _T("#00d9a6"), 64}, {60, _T("#00d900"), 64}, {70, _T("#75d900"), 64},
+ {80, _T("#a9d900"), 32},  {90, _T("#a9ae00"), 32}, {100, _T("#d98000"), 32}, {110, _T("#d94000"), 32},
  {120, _T("#d90000"), 0}, {130, _T("#f00000"), 0}, {140, _T("#ff0000"), 0}, {150, _T("#ff0080"), 0},
  {160, _T("#ff00ff"), 0}, {160, _T("#ff80ff"), 0}, {200, _T("#ffffff"), 0}};
 
@@ -852,7 +852,7 @@ const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
 wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in, wxUint8 &transp)
 {
     if(isnan(val_in)) {
-        transp = 255; /* transparent */
+        transp = 0; /* transparent */
         return *wxBLACK;
     }
 
@@ -872,11 +872,11 @@ wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in, 
             c.Set((1-d)*b.Red()   + d*c.Red(),
                   (1-d)*b.Green() + d*c.Green(),
                   (1-d)*b.Blue()  + d*c.Blue());
-            transp = (1-d)*map[i-1].transp + d*map[i].transp;
+            transp = 255 - ((1-d)*map[i-1].transp + d*map[i].transp);
             return c;
         }
     }
-    return wxColour(0, 0, 0); /* unreachable */
+    return *wxBLACK; /* unreachable */
 }
 
 bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
@@ -930,7 +930,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
             r = c.Red();
             g = c.Green();
             b = c.Blue();
-            a = 255-t;
+            a = t;
 
             int doff = 4*(y*width + x);
             data[doff + 0] = 255-r;
@@ -1669,14 +1669,14 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::
                     wxUint8 t;
                     wxColour c = GetGraphicColor(CYCLONE_SETTING, ss->windknots, t);
                     
-                    DrawLine(lastp.x, lastp.y, p.x, p.y, c, 255, 3);
+                    DrawLine(lastp.x, lastp.y, p.x, p.y, c, t, 3);
 
                     /* direction arrow */
                     wxPoint a((lastp.x+p.x)/2, (lastp.y+p.y)/2);
-                    wxPoint d(p.x-lastp.x, p.y-lastp.y);
+                    wxPoint d(lastp.x-p.x, lastp.y-p.y);
 
-                    DrawLine(a.x, a.y, a.x + (-d.x-d.y)/5, a.y + (d.x-d.y)/5, /*c*/*wxRED, 255, 2);
-                    DrawLine(a.x, a.y, a.x + (d.y-d.x)/5, a.y + (-d.x-d.y)/5, /*c*/*wxGREEN, 255, 2);
+                    DrawLine(a.x, a.y, a.x + (d.x+d.y)/5, a.y + (d.y-d.x)/5, c, t, 2);
+                    DrawLine(a.x, a.y, a.x + (d.x-d.y)/5, a.y + (d.x+d.y)/5, c, t, 2);
                 }
             }
 

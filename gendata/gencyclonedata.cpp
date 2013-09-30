@@ -23,7 +23,17 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    int shemode = 0;
+    if(argc > 2) {
+        if(argv[2][0] == '1')
+            shemode = 1;
+        else
+        if(argv[2][0] == '2')
+            shemode = 2;
+    }
+
     char line[128];
+    bool needwriteyear = false;
     while(fgets(line, sizeof line, f)) {
         char *year  = line+12; line[16] = 0;
         char *days  = line+19; line[21] = 0;
@@ -34,8 +44,7 @@ int main(int argc, char *argv[])
         uint16_t lyear = strtol(year, 0, 10);
         uint16_t ldays = strtol(days, 0, 10);
 
-        if(lyear >= firstyear)
-            fwrite(&lyear, sizeof lyear, 1, stdout);
+        needwriteyear = true;
 
         /* daily */
         char state;
@@ -61,7 +70,21 @@ int main(int argc, char *argv[])
                 char press[5] = {s[13], s[14], s[15], s[15], 0};
 
                 int16_t ilat = strtol(lat, 0, 10), ilon = -strtol(lon, 0, 10);
+
                 if((ilat || ilon) && lyear >= firstyear) {
+                    if(ilon < -2160) {
+                        if(shemode == 1)
+                            goto skip;
+                    } else if(ilon > -2150) {
+                        if(shemode == 2)
+                            goto skip;
+                    }
+
+                    if(needwriteyear) {
+                        fwrite(&lyear, sizeof lyear, 1, stdout);
+                        needwriteyear = false;
+                    }
+
                     fwrite(&state, 1, 1, stdout);
 
                     if(lday == 0 || lday > 31) {
@@ -84,9 +107,10 @@ int main(int argc, char *argv[])
                 }
                 s += 17;
             }
+        skip:;
         }
         state = -128;
-        if(lyear >= firstyear)
+        if(!needwriteyear)
             fwrite(&state, sizeof state, 1, stdout);
 
         /* trailer */

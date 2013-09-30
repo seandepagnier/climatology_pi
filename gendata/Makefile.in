@@ -109,20 +109,19 @@ tracks.she:
 tracks.nio:
 	wget -c http://weather.unisys.com/hurricane/n_indian/tracks.nio
 
+$(DATA)/cyclone-she.gz: tracks.she gencyclonedata
+	./gencyclonedata $< 2 | gzip > $@
+
+$(DATA)/cyclone-spa.gz: tracks.she gencyclonedata
+	./gencyclonedata $< 1 | gzip > $@
+
 $(DATA)/cyclone-%.gz: tracks.% gencyclonedata
 	./gencyclonedata $< | gzip > $@
 
-$(DATA)/cyclone-%.gz: tracks.%.dat gencyclonedata1
-	./gencyclonedata1 $< | gzip > $@
-
 gencyclonedata: gencyclonedata.cpp
 	g++ -o gencyclonedata gencyclonedata.cpp -g
-
-gencyclonedata1: gencyclonedata1.cpp
-	g++ -o gencyclonedata1 gencyclonedata1.cpp -g
 
 CURRENT_DATA_DIR = currentdata
 
 $(ALL_CURRENT) : $(CURRENT_DATA_DIR)/$(CURRENT) gencurrentdata
 	./gencurrentdata $<
-
