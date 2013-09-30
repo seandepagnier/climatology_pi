@@ -817,14 +817,27 @@ ColorMap RelativeHumidityMap[] =
  {100, _T("#2080f0"), 0}};
 
 ColorMap SeaDepthMap[] =
-{{0, _T("#0000d9"), 255},  {20, _T("#002ad9"), 0},  {50, _T("#006ed9"), 0},  {100, _T("#00b2d9"), 0},
- {150, _T("#00d4d4"), 0}, {250, _T("#00d9a6"), 0}, {400, _T("#00d900"), 0}, {600, _T("#95d900"), 0},
- {800, _T("#d9d900"), 0}, {1000, _T("#d9ae00"), 0}, {1200, _T("#d9f000"), 0}, {1400, _T("#d9c040"), 0},
+{{0, _T("#0000d9"), 255},  {20, _T("#002ad9"), 0},   {50, _T("#006ed9"), 0},   {100, _T("#00b2d9"), 0},
+ {150, _T("#00d4d4"), 0},  {250, _T("#00d9a6"), 0},  {400, _T("#00d900"), 0},  {600, _T("#95d900"), 0},
+ {800, _T("#a9d900"), 0},  {1000, _T("#d9d900"), 0}, {1200, _T("#d9f000"), 0}, {1400, _T("#d9c040"), 0},
  {2000, _T("#a9c040"), 0}, {3000, _T("#a0a040"), 0}, {4000, _T("#808060"), 0}, {5000, _T("#606060"), 0},
  {6000, _T("#404040"), 0}, {8000, _T("#202020"), 0}, {10000, _T("#000000"), 0}};
 
+ColorMap CycloneMap[] =
+{{0, _T("#0000d9"), 255}, {10, _T("#002ad9"), 0}, {20, _T("#006ed9"), 0}, {30, _T("#00b2d9"), 0},
+ {40, _T("#00d4d4"), 0},  {50, _T("#00d9a6"), 0}, {60, _T("#00d900"), 0}, {70, _T("#75d900"), 0},
+ {80, _T("#a9d900"), 0},  {90, _T("#a9ae00"), 0}, {100, _T("#d98000"), 0}, {110, _T("#d94000"), 0},
+ {120, _T("#d90000"), 0}, {130, _T("#f00000"), 0}, {140, _T("#ff0000"), 0}, {150, _T("#ff0080"), 0},
+ {160, _T("#ff00ff"), 0}, {160, _T("#ff80ff"), 0}, {200, _T("#ffffff"), 0}};
+
+enum {WIND_SETTING, CURRENT_SETTING, PRESSURE_SETTING, SEATEMP_SETTING,
+      AIRTEMP_SETTING, CLOUD_SETTING, PRECIPITATION_SETTING, RELHUMIDIY_SETTING,
+      SEADEPTH_SETTING, CYCLONE_SETTING};
+
 ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap, AirTempMap,
-                         CloudMap, PrecipitationMap, RelativeHumidityMap, SeaDepthMap};
+                         CloudMap, PrecipitationMap, RelativeHumidityMap, SeaDepthMap,
+                         CycloneMap};
+
 const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
                              (sizeof CurrentMap) / (sizeof *CurrentMap),
                              (sizeof PressureMap) / (sizeof *PressureMap),
@@ -833,7 +846,8 @@ const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
                              (sizeof CloudMap) / (sizeof *CloudMap),
                              (sizeof PrecipitationMap) / (sizeof *PrecipitationMap),
                              (sizeof RelativeHumidityMap) / (sizeof *RelativeHumidityMap),
-                             (sizeof SeaDepthMap) / (sizeof *SeaDepthMap) };
+                             (sizeof SeaDepthMap) / (sizeof *SeaDepthMap),
+                             (sizeof CycloneMap) / (sizeof *CycloneMap)};
 
 wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in, wxUint8 &transp)
 {
@@ -865,9 +879,9 @@ wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in, 
     return wxColour(0, 0, 0); /* unreachable */
 }
 
-bool ClimatologyOverlayFactory::CreateGLTexture( ClimatologyOverlay &O,
-                                                 int setting, int month,
-                                                 PlugIn_ViewPort &vp)
+bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
+                                                int setting, int month,
+                                                PlugIn_ViewPort &vp)
 {
     double s;
     switch(setting) {
@@ -1643,7 +1657,7 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::
                 first = false;
             } else {
 
-#if 1 /* if you want to zoom in really really far and still see tracks */
+#if 1 /* if you want to zoom in really really far and still see tracks correctly */
                 if((lastlon+180 > vp.clon || lon+180 < vp.clon) &&
                    (lastlon+180 < vp.clon || lon+180 > vp.clon) &&
                    (lastlon-180 > vp.clon || lon-180 < vp.clon) &&
@@ -1652,19 +1666,17 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::
                 if(abs(lastp.x-p.x) < vp.pix_width)
 #endif
                 {
-
-                    int intense =  (ss->windknots * 2);
-
-                    if(intense > 255) intense = 255;
-                    wxColour color;
-                    switch(ss->state) {
-                    case CycloneState::TROPICAL:      color = wxColor(intense, 0, 0); break;
-                    case CycloneState::SUBTROPICAL:   color = wxColor(intense/2, intense/2, 0); break;
-                    case CycloneState::EXTRATROPICAL: color = wxColor(0, intense, 0); break;
-                    default:                          color = wxColor(0, 0, intense); break;
-                    }
+                    wxUint8 t;
+                    wxColour c = GetGraphicColor(CYCLONE_SETTING, ss->windknots, t);
                     
-                    DrawLine(lastp.x, lastp.y, p.x, p.y, color, 255, 1);
+                    DrawLine(lastp.x, lastp.y, p.x, p.y, c, 255, 3);
+
+                    /* direction arrow */
+                    wxPoint a((lastp.x+p.x)/2, (lastp.y+p.y)/2);
+                    wxPoint d(p.x-lastp.x, p.y-lastp.y);
+
+                    DrawLine(a.x, a.y, a.x + (-d.x-d.y)/5, a.y + (d.x-d.y)/5, /*c*/*wxRED, 255, 2);
+                    DrawLine(a.x, a.y, a.x + (d.y-d.x)/5, a.y + (-d.x-d.y)/5, /*c*/*wxGREEN, 255, 2);
                 }
             }
 
