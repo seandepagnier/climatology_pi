@@ -123,6 +123,8 @@ bool climatology_pi::DeInit(void)
     delete m_pOverlayFactory;
     m_pOverlayFactory = NULL;
 
+    RemovePlugInTool(m_leftclick_tool_id);
+
     return true;
 }
 
@@ -148,7 +150,7 @@ int climatology_pi::GetPlugInVersionMinor()
 
 wxBitmap *climatology_pi::GetPlugInBitmap()
 {
-      return _img_climatology;
+      return new wxBitmap(_img_climatology->ConvertToImage().Copy());
 }
 
 wxString climatology_pi::GetCommonName()

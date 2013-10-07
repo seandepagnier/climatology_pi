@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Project:  OpenCPN
- * Purpose:  Climatology Object
+ * Purpose:  Climatology Plugin
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
