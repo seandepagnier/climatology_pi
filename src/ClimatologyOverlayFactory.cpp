@@ -57,7 +57,8 @@ double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
 }
 
 ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
-    : m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonelist(0), m_bFailedLoading(false)
+    : m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonesDisplayList(0),
+      m_scale(1), m_scale_changed(false), m_bFailedLoading(false)
 {
     for(int month = 0; month<13; month++) {
         m_WindData[month] = NULL;
@@ -1590,8 +1591,13 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
         }
 }
 
-void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones)
+void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones,
+    wxCheckBox *cb)
 {
+    if(!cb->GetValue())
+        return;
+
+    wxDateTime start = wxDateTime::Now();
     for(std::list<Cyclone*>::iterator it = cyclones.begin(); it != cyclones.end(); it++) {
         Cyclone *s = *it;
 
@@ -1684,6 +1690,17 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::
             lastp = p;
         }
     }
+
+    wxDateTime end = wxDateTime::Now();
+
+    /* rendering is taking too long, and display lists not used */
+    if(m_pdc && (end - start).GetMilliseconds() >= 1200) {
+        cb->SetValue(false);
+
+        wxMessageDialog mdlg(&m_dlg, _("Computer too slow to render cyclones, diabling theater"),
+                             _("Climatology"), wxOK | wxICON_WARNING);
+        mdlg.ShowModal();
+    }
 }
 
 void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
@@ -1761,34 +1778,62 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
 
 void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 {
-#if 0
-    if(!m_cyclonelist)
-        m_cyclonelist = glGenLists(1);
+    if(m_pdc) /* display list optimization not possible */
+        m_bUpdateCyclones = true;
 
-    if(m_cyclonelistok) {
-        glCallList(m_cyclonelist);
+    double scale = vp.view_scale_ppm/m_scale;
+    
+    wxPoint point;
+    GetCanvasPixLL(&vp, &point, m_clat, m_clon);
+
+    if(scale == m_lastscale) {
+        if(point != m_lastpoint)
+            if(m_scale_changed) {
+                m_bUpdateCyclones = true;
+                m_scale_changed = false;
+            }
+    } else
+        m_scale_changed = true;
+    m_lastscale = scale;
+    m_lastpoint = point;
+
+#if 1
+    if(!m_cyclonesDisplayList)
+        m_cyclonesDisplayList = glGenLists(1);
+
+    if(!m_bUpdateCyclones) {
+        glPushMatrix();
+        glTranslated(point.x - m_point.x, point.y - m_point.y, 0);
+        glTranslated(vp.pix_width*(1-scale)/2, vp.pix_height*(1-scale)/2, 0);
+        glScaled(scale, scale, 1);
+        glCallList(m_cyclonesDisplayList);
+        glPopMatrix();
         return;
     }
 
-    glNewList(m_cyclonelist, GL_COMPILE_AND_EXECUTE);
+    if(!m_pdc) {
+        m_bUpdateCyclones = false;
+        m_clat = vp.clat, m_clon = vp.clon;
+        GetCanvasPixLL(&vp, &m_point, m_clat, m_clon);
+        m_scale = vp.view_scale_ppm;
+        
+        if(!m_cyclonesDisplayList)
+            m_cyclonesDisplayList = glGenLists(1);
+
+        glNewList(m_cyclonesDisplayList, GL_COMPILE_AND_EXECUTE);
+    }
 #endif
 
-    if(m_dlg.m_cfgdlg->m_cbEastPacific->GetValue())
-        RenderCyclonesTheatre(vp, m_epa);
-    if(m_dlg.m_cfgdlg->m_cbWestPacific->GetValue())
-        RenderCyclonesTheatre(vp, m_wpa);
-    if(m_dlg.m_cfgdlg->m_cbSouthPacific->GetValue())
-        RenderCyclonesTheatre(vp, m_spa);
-    if(m_dlg.m_cfgdlg->m_cbAtlantic->GetValue())
-        RenderCyclonesTheatre(vp, m_atl);
-    if(m_dlg.m_cfgdlg->m_cbNorthIndian->GetValue())
-        RenderCyclonesTheatre(vp, m_nio);
-    if(m_dlg.m_cfgdlg->m_cbSouthIndian->GetValue())
-        RenderCyclonesTheatre(vp, m_she);
+    RenderCyclonesTheatre(vp, m_epa, m_dlg.m_cfgdlg->m_cbEastPacific);
+    RenderCyclonesTheatre(vp, m_wpa, m_dlg.m_cfgdlg->m_cbWestPacific);
+    RenderCyclonesTheatre(vp, m_spa, m_dlg.m_cfgdlg->m_cbSouthPacific);
+    RenderCyclonesTheatre(vp, m_atl, m_dlg.m_cfgdlg->m_cbAtlantic);
+    RenderCyclonesTheatre(vp, m_nio, m_dlg.m_cfgdlg->m_cbNorthIndian);
+    RenderCyclonesTheatre(vp, m_she, m_dlg.m_cfgdlg->m_cbSouthIndian);
     
-#if 0
-    glEndList();
-    m_cyclonelistok = true;
+#if 1
+    if(!m_pdc)
+        glEndList();
 #endif
 }
 

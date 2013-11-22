@@ -154,7 +154,9 @@ class ClimatologyConfigDialogBase : public wxDialog
 		virtual void OnUpdate( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxColourPickerEvent& event ) { event.Skip(); }
-		virtual void OnUpdate( wxDateEvent& event ) { event.Skip(); }
+		virtual void OnUpdateCyclones( wxDateEvent& event ) { event.Skip(); }
+		virtual void OnUpdateCyclones( wxSpinEvent& event ) { event.Skip(); }
+		virtual void OnUpdateCyclones( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDonate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		

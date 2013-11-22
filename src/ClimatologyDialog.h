@@ -72,6 +72,7 @@ private:
     void OnMonthUp( wxScrollEvent& event );
     void OnAll( wxCommandEvent& event );
     void OnUpdate( wxCommandEvent& event );
+    void OnUpdateCyclones( wxDateEvent& event );
     void OnConfig( wxCommandEvent& event );
 
     void OnClose( wxCloseEvent& event );

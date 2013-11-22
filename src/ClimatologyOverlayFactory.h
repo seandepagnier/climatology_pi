@@ -178,6 +178,7 @@ public:
     bool RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp );
 
     int m_CurrentMonth;
+    bool m_bUpdateCyclones;
 
 private:
     ZUFILE *TryOpenFile(wxString filename);
@@ -189,7 +190,7 @@ private:
     void RenderDirectionArrows(int setting, PlugIn_ViewPort &vp);
 
     void RenderWindAtlas(PlugIn_ViewPort &vp);
-    void RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones);
+    void RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones, wxCheckBox *cb);
     void RenderCyclones(PlugIn_ViewPort &vp);
 
     wxColour GetGraphicColor(int setting, double val_in, wxUint8 &transp);
@@ -220,8 +221,12 @@ private:
     wxInt16 m_rhum[13][180][360];  /* 1 degree intervals */
     wxInt16 m_seadepth[180][360];  /* 1 degree intervals   */
 
-    unsigned int m_cyclonelist; /* for opengl display list */
-    bool m_cyclonelistok;
+    int m_cyclonesDisplayList;
+    double m_scale, m_clat, m_clon;
+    wxPoint m_point;
+    bool m_scale_changed;
+    double m_lastscale;
+    wxPoint m_lastpoint;
 
     std::list<Cyclone*> m_wpa, m_epa, m_spa, m_atl, m_she, m_nio;
 

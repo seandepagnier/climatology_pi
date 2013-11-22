@@ -144,7 +144,7 @@
                                         <property name="caption"></property>
                                         <property name="caption_visible">1</property>
                                         <property name="center_pane">0</property>
-                                        <property name="choices">&quot;January&quot; &quot;Febuary&quot; &quot;March&quot; &quot;April&quot; &quot;May&quot; &quot;June&quot; &quot;July&quot; &quot;August&quot; &quot;September&quot; &quot;October&quot; &quot;November&quot; &quot;December&quot; &quot;All&quot;</property>
+                                        <property name="choices">&quot;January&quot; &quot;Febuary&quot; &quot;March&quot; &quot;April&quot; &quot;May&quot; &quot;June&quot; &quot;July&quot; &quot;August&quot; &quot;September&quot; &quot;October&quot; &quot;November&quot; &quot;December&quot;</property>
                                         <property name="close_button">1</property>
                                         <property name="context_help"></property>
                                         <property name="context_menu">1</property>
@@ -6318,7 +6318,7 @@
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
                                                     <event name="OnChar"></event>
-                                                    <event name="OnDateChanged">OnUpdate</event>
+                                                    <event name="OnDateChanged">OnUpdateCyclones</event>
                                                     <event name="OnEnterWindow"></event>
                                                     <event name="OnEraseBackground"></event>
                                                     <event name="OnKeyDown"></event>
@@ -6418,7 +6418,7 @@
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
                                                     <event name="OnChar"></event>
-                                                    <event name="OnDateChanged">OnUpdate</event>
+                                                    <event name="OnDateChanged">OnUpdateCyclones</event>
                                                     <event name="OnEnterWindow"></event>
                                                     <event name="OnEraseBackground"></event>
                                                     <event name="OnKeyDown"></event>
@@ -6610,7 +6610,7 @@
                                             <event name="OnRightUp"></event>
                                             <event name="OnSetFocus"></event>
                                             <event name="OnSize"></event>
-                                            <event name="OnSpinCtrl">OnUpdate</event>
+                                            <event name="OnSpinCtrl">OnUpdateCyclones</event>
                                             <event name="OnSpinCtrlText"></event>
                                             <event name="OnUpdateUI"></event>
                                         </object>
@@ -6780,7 +6780,7 @@
                                             <event name="OnRightUp"></event>
                                             <event name="OnSetFocus"></event>
                                             <event name="OnSize"></event>
-                                            <event name="OnSpinCtrl">OnUpdate</event>
+                                            <event name="OnSpinCtrl">OnUpdateCyclones</event>
                                             <event name="OnSpinCtrlText"></event>
                                             <event name="OnUpdateUI"></event>
                                         </object>
@@ -6876,7 +6876,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -6964,7 +6964,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7052,7 +7052,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7140,7 +7140,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7228,7 +7228,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7316,7 +7316,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7436,7 +7436,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7524,7 +7524,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7612,7 +7612,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7700,7 +7700,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7820,7 +7820,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7908,7 +7908,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -7996,7 +7996,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -8084,7 +8084,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnCheckBox">OnUpdate</event>
+                                                            <event name="OnCheckBox">OnUpdateCyclones</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>

@@ -173,6 +173,7 @@ void ClimatologyDialog::OnMonth( wxCommandEvent& event )
 {
     m_sMonth->SetValue(event.GetSelection());
     UpdateTrackingControls();
+    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
     RefreshRedraw();
 }
 
@@ -180,6 +181,7 @@ void ClimatologyDialog::OnMonth( wxScrollEvent& event )
 {
     m_cMonth->SetSelection(event.GetPosition() % 12);
     UpdateTrackingControls();
+    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
     RefreshRedraw();
 }
 
@@ -200,6 +202,7 @@ void ClimatologyDialog::OnAll( wxCommandEvent& event )
     m_cMonth->Enable(!m_cbAll->GetValue());
     m_sMonth->Enable(!m_cbAll->GetValue());
     UpdateTrackingControls();
+    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
     RefreshRedraw();
 }
 
@@ -207,6 +210,17 @@ void ClimatologyDialog::OnUpdate( wxCommandEvent& event )
 {
     RefreshRedraw();
 }
+
+void ClimatologyDialog::OnUpdateCyclones( wxDateEvent& event )
+{
+    if(!pPlugIn->GetOverlayFactory())
+        return;
+
+    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
+
+    RefreshRedraw();
+}
+
 
 void ClimatologyDialog::OnConfig( wxCommandEvent& event )
 {
