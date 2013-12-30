@@ -59,6 +59,7 @@ public:
     void SetCursorLatLon(double lat, double lon);
 
     ClimatologyConfigDialog *m_cfgdlg;
+    climatology_pi *pPlugIn;
 
 private:
     void SetControlsVisible(ClimatologyOverlaySettings::SettingsType type,
@@ -72,14 +73,12 @@ private:
     void OnMonthUp( wxScrollEvent& event );
     void OnAll( wxCommandEvent& event );
     void OnUpdate( wxCommandEvent& event );
-    void OnUpdateCyclones( wxDateEvent& event );
     void OnConfig( wxCommandEvent& event );
 
     void OnClose( wxCloseEvent& event );
     void OnCBAny( wxCommandEvent& event );
 
     wxWindow *pParent;
-    climatology_pi *pPlugIn;
 
     double m_cursorlat, m_cursorlon;
 };

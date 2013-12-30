@@ -79,16 +79,27 @@ struct ElNinoYear
     double months[12];
 };
 
+/* because wxDateTime is too slow */
+class CycloneDateTime
+{
+public:
+    CycloneDateTime(int day1, int month1, int year1, int hour1)
+        : hour(hour1), day(day1), month(month1), year(year1) {}
+    int hour, day, month, year;
+
+    wxDateTime DateTime() { return wxDateTime(day, (wxDateTime::Month)month, year, hour); }
+};
+
 class CycloneState
 {
 public:
     enum State {TROPICAL, SUBTROPICAL, EXTRATROPICAL, WAVE, REMANENT, UNKNOWN};
-    CycloneState(State s, wxDateTime dt, double lat, double lon, double wk, double press)
+    CycloneState(State s, CycloneDateTime dt, double lat, double lon, double wk, double press)
     : state(s), datetime(dt), latitude(lat), longitude(lon), windknots(wk), pressure(press)
     {}
 
     State state;
-    wxDateTime datetime;
+    CycloneDateTime datetime;
     double latitude, longitude, windknots, pressure;
 };
 

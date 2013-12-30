@@ -211,17 +211,6 @@ void ClimatologyDialog::OnUpdate( wxCommandEvent& event )
     RefreshRedraw();
 }
 
-void ClimatologyDialog::OnUpdateCyclones( wxDateEvent& event )
-{
-    if(!pPlugIn->GetOverlayFactory())
-        return;
-
-    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
-
-    RefreshRedraw();
-}
-
-
 void ClimatologyDialog::OnConfig( wxCommandEvent& event )
 {
     m_cfgdlg->Show(!m_cfgdlg->IsShown());

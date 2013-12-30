@@ -373,6 +373,12 @@ void ClimatologyConfigDialog::OnUpdate()
     pParent->RefreshRedraw();
 }
 
+void ClimatologyConfigDialog::OnUpdateCyclones()
+{
+    pParent->pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
+    OnUpdate();
+}
+
 void ClimatologyConfigDialog::OnEnabled( wxCommandEvent& event )
 {
     OnUpdate();

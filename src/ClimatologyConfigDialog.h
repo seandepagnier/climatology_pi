@@ -108,6 +108,11 @@ private:
     void OnUpdate( wxScrollEvent& event ) { OnUpdate(); }
     void OnUpdate( wxDateEvent& event ) { OnUpdate(); }
 
+    void OnUpdateCyclones();
+    void OnUpdateCyclones( wxDateEvent& event ) { OnUpdateCyclones(); }
+    void OnUpdateCyclones( wxSpinEvent& event ) { OnUpdateCyclones(); }
+    void OnUpdateCyclones( wxCommandEvent& event ) { OnUpdateCyclones(); }
+
     void OnEnabled( wxCommandEvent& event );
     void OnDonate( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event ) { Hide(); }
