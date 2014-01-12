@@ -385,7 +385,9 @@ void ClimatologyConfigDialog::OnEnabled( wxCommandEvent& event )
     pParent->PopulateTrackingControls();
 }
 
-void ClimatologyConfigDialog::OnDonate( wxCommandEvent& event )
+void ClimatologyConfigDialog::OnAboutAuthor( wxCommandEvent& event )
 {
+/*
       wxLaunchDefaultBrowser(_T("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=sean%40depagnier%2ecom&lc=US&item_name=climatology&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest"));
+*/
 }

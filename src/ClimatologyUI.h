@@ -143,7 +143,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxStaticText* m_staticText16;
 		wxTextCtrl* m_tDataDirectory;
 		wxHtmlWindow* m_htmlInformation;
-		wxButton* m_bOnDonate;
+		wxButton* m_bAboutAuthor;
 		wxButton* m_bClose;
 		
 		// Virtual event handlers, overide them in your derived class
@@ -157,7 +157,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		virtual void OnUpdateCyclones( wxDateEvent& event ) { event.Skip(); }
 		virtual void OnUpdateCyclones( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnUpdateCyclones( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnDonate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAboutAuthor( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		
 	

@@ -667,14 +667,15 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	
 	wxFlexGridSizer* fgSizer22;
 	fgSizer22 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer22->AddGrowableCol( 1 );
 	fgSizer22->SetFlexibleDirection( wxBOTH );
 	fgSizer22->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_bOnDonate = new wxButton( this, wxID_ANY, _("Donate"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer22->Add( m_bOnDonate, 0, wxALL, 5 );
+	m_bAboutAuthor = new wxButton( this, wxID_ANY, _("About Author"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer22->Add( m_bAboutAuthor, 0, wxALL, 5 );
 	
 	m_bClose = new wxButton( this, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer22->Add( m_bClose, 0, wxALL, 5 );
+	fgSizer22->Add( m_bClose, 0, wxALIGN_RIGHT|wxALL, 5 );
 	
 	
 	fgSizer3->Add( fgSizer22, 1, wxEXPAND, 5 );
@@ -751,7 +752,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_cbSubTropical->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
 	m_cbExtraTropical->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
 	m_cbRemanent->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_bOnDonate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnDonate ), NULL, this );
+	m_bAboutAuthor->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnAboutAuthor ), NULL, this );
 	m_bClose->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnClose ), NULL, this );
 }
 
@@ -823,7 +824,7 @@ ClimatologyConfigDialogBase::~ClimatologyConfigDialogBase()
 	m_cbSubTropical->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
 	m_cbExtraTropical->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
 	m_cbRemanent->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_bOnDonate->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnDonate ), NULL, this );
+	m_bAboutAuthor->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnAboutAuthor ), NULL, this );
 	m_bClose->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnClose ), NULL, this );
 	
 }
