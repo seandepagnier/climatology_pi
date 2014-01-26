@@ -617,6 +617,65 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	
 	fgSizer5->Add( sbSizer5, 1, wxEXPAND, 5 );
 	
+	wxStaticBoxSizer* sbSizer10;
+	sbSizer10 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Sustained Wind Key") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer25;
+	fgSizer25 = new wxFlexGridSizer( 0, 3, 0, 0 );
+	fgSizer25->SetFlexibleDirection( wxBOTH );
+	fgSizer25->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_checkBox32 = new wxCheckBox( m_panel2, wxID_ANY, _("20"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox32->SetBackgroundColour( wxColour( 0, 110, 217 ) );
+	
+	fgSizer25->Add( m_checkBox32, 0, wxALL, 5 );
+	
+	m_checkBox33 = new wxCheckBox( m_panel2, wxID_ANY, _("40"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox33->SetBackgroundColour( wxColour( 0, 212, 212 ) );
+	
+	fgSizer25->Add( m_checkBox33, 0, wxALL, 5 );
+	
+	m_checkBox34 = new wxCheckBox( m_panel2, wxID_ANY, _("60"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox34->SetBackgroundColour( wxColour( 0, 217, 0 ) );
+	
+	fgSizer25->Add( m_checkBox34, 0, wxALL, 5 );
+	
+	m_checkBox35 = new wxCheckBox( m_panel2, wxID_ANY, _("80"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox35->SetBackgroundColour( wxColour( 169, 217, 0 ) );
+	
+	fgSizer25->Add( m_checkBox35, 0, wxALL, 5 );
+	
+	m_checkBox36 = new wxCheckBox( m_panel2, wxID_ANY, _("100"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox36->SetBackgroundColour( wxColour( 217, 128, 0 ) );
+	
+	fgSizer25->Add( m_checkBox36, 0, wxALL, 5 );
+	
+	m_checkBox37 = new wxCheckBox( m_panel2, wxID_ANY, _("120"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox37->SetBackgroundColour( wxColour( 217, 0, 0 ) );
+	
+	fgSizer25->Add( m_checkBox37, 0, wxALL, 5 );
+	
+	m_checkBox38 = new wxCheckBox( m_panel2, wxID_ANY, _("140"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox38->SetBackgroundColour( wxColour( 255, 0, 128 ) );
+	
+	fgSizer25->Add( m_checkBox38, 0, wxALL, 5 );
+	
+	m_checkBox39 = new wxCheckBox( m_panel2, wxID_ANY, _("160"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox39->SetBackgroundColour( wxColour( 255, 64, 255 ) );
+	
+	fgSizer25->Add( m_checkBox39, 0, wxALL, 5 );
+	
+	m_checkBox40 = new wxCheckBox( m_panel2, wxID_ANY, _("180"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox40->SetBackgroundColour( wxColour( 255, 128, 255 ) );
+	
+	fgSizer25->Add( m_checkBox40, 0, wxALL, 5 );
+	
+	
+	sbSizer10->Add( fgSizer25, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer5->Add( sbSizer10, 1, wxEXPAND, 5 );
+	
 	
 	m_panel2->SetSizer( fgSizer5 );
 	m_panel2->Layout();

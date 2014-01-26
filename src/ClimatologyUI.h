@@ -137,6 +137,15 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxPanel* m_panel2;
 		wxStaticText* m_staticText4;
 		wxStaticText* m_staticText5;
+		wxCheckBox* m_checkBox32;
+		wxCheckBox* m_checkBox33;
+		wxCheckBox* m_checkBox34;
+		wxCheckBox* m_checkBox35;
+		wxCheckBox* m_checkBox36;
+		wxCheckBox* m_checkBox37;
+		wxCheckBox* m_checkBox38;
+		wxCheckBox* m_checkBox39;
+		wxCheckBox* m_checkBox40;
 		wxPanel* m_panel4;
 		wxStaticText* m_staticText141;
 		wxStaticText* m_stVersion;

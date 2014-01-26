@@ -821,8 +821,8 @@ ColorMap CycloneMap[] =
 {{0, _T("#0000d9"), 255}, {10, _T("#002ad9"), 200}, {20, _T("#006ed9"), 128}, {30, _T("#00b2d9"), 96},
  {40, _T("#00d4d4"), 64},  {50, _T("#00d9a6"), 64}, {60, _T("#00d900"), 64}, {70, _T("#75d900"), 64},
  {80, _T("#a9d900"), 32},  {90, _T("#a9ae00"), 32}, {100, _T("#d98000"), 32}, {110, _T("#d94000"), 32},
- {120, _T("#d90000"), 0}, {130, _T("#f00000"), 0}, {140, _T("#ff0000"), 0}, {150, _T("#ff0080"), 0},
- {160, _T("#ff00ff"), 0}, {160, _T("#ff80ff"), 0}, {200, _T("#ffffff"), 0}};
+ {120, _T("#d90000"), 0}, {130, _T("#ff0000"), 0}, {140, _T("#ff0080"), 0}, {150, _T("#ff00ff"), 0},
+ {160, _T("#ff40ff"), 0}, {180, _T("#ff80ff"), 0}, {200, _T("#ffffff"), 0}};
 
 enum {WIND_SETTING, CURRENT_SETTING, PRESSURE_SETTING, SEATEMP_SETTING,
       AIRTEMP_SETTING, CLOUD_SETTING, PRECIPITATION_SETTING, RELHUMIDIY_SETTING,
