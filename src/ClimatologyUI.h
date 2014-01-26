@@ -146,6 +146,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxCheckBox* m_checkBox38;
 		wxCheckBox* m_checkBox39;
 		wxCheckBox* m_checkBox40;
+		wxStaticText* m_staticText20;
 		wxPanel* m_panel4;
 		wxStaticText* m_staticText141;
 		wxStaticText* m_stVersion;
@@ -194,7 +195,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxCheckBox* m_cbExtraTropical;
 		wxCheckBox* m_cbRemanent;
 		
-		ClimatologyConfigDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Configuration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,480 ), long style = wxDEFAULT_DIALOG_STYLE ); 
+		ClimatologyConfigDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Configuration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE ); 
 		~ClimatologyConfigDialogBase();
 	
 };

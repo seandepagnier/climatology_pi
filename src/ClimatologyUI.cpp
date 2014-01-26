@@ -484,6 +484,11 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer61->Fit( m_panel41 );
 	m_notebook1->AddPage( m_panel41, _("Wind"), false );
 	m_panel2 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxFlexGridSizer* fgSizer26;
+	fgSizer26 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer26->SetFlexibleDirection( wxBOTH );
+	fgSizer26->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
 	wxFlexGridSizer* fgSizer5;
 	fgSizer5 = new wxFlexGridSizer( 0, 2, 0, 0 );
 	fgSizer5->SetFlexibleDirection( wxBOTH );
@@ -507,19 +512,35 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	
 	fgSizer5->Add( sbSizer8, 1, wxEXPAND, 5 );
 	
+	wxFlexGridSizer* fgSizer28;
+	fgSizer28 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer28->SetFlexibleDirection( wxBOTH );
+	fgSizer28->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
 	m_staticText4 = new wxStaticText( m_panel2, wxID_ANY, _("Min Windspeed"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText4->Wrap( -1 );
-	fgSizer5->Add( m_staticText4, 0, wxALL, 5 );
+	fgSizer28->Add( m_staticText4, 0, wxALL, 5 );
 	
 	m_sMinWindSpeed = new wxSpinCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 200, 60 );
-	fgSizer5->Add( m_sMinWindSpeed, 0, wxALL, 5 );
+	fgSizer28->Add( m_sMinWindSpeed, 0, wxALL, 5 );
+	
+	
+	fgSizer5->Add( fgSizer28, 1, wxEXPAND, 5 );
+	
+	wxFlexGridSizer* fgSizer29;
+	fgSizer29 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer29->SetFlexibleDirection( wxBOTH );
+	fgSizer29->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	m_staticText5 = new wxStaticText( m_panel2, wxID_ANY, _("Max Pressure"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText5->Wrap( -1 );
-	fgSizer5->Add( m_staticText5, 0, wxALL, 5 );
+	fgSizer29->Add( m_staticText5, 0, wxALL, 5 );
 	
 	m_sMaxPressure = new wxSpinCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1200, 1000 );
-	fgSizer5->Add( m_sMaxPressure, 0, wxALL, 5 );
+	fgSizer29->Add( m_sMaxPressure, 0, wxALL, 5 );
+	
+	
+	fgSizer5->Add( fgSizer29, 1, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer3;
 	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Theatre") ), wxVERTICAL );
@@ -618,7 +639,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer5->Add( sbSizer5, 1, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer10;
-	sbSizer10 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Sustained Wind Key") ), wxVERTICAL );
+	sbSizer10 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Sustained Wind Key (knots)") ), wxVERTICAL );
 	
 	wxFlexGridSizer* fgSizer25;
 	fgSizer25 = new wxFlexGridSizer( 0, 3, 0, 0 );
@@ -677,9 +698,16 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer5->Add( sbSizer10, 1, wxEXPAND, 5 );
 	
 	
-	m_panel2->SetSizer( fgSizer5 );
+	fgSizer26->Add( fgSizer5, 1, wxEXPAND, 5 );
+	
+	m_staticText20 = new wxStaticText( m_panel2, wxID_ANY, _("Direction arrows are spaced every 6 hours on storm track"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText20->Wrap( -1 );
+	fgSizer26->Add( m_staticText20, 0, wxALL, 5 );
+	
+	
+	m_panel2->SetSizer( fgSizer26 );
 	m_panel2->Layout();
-	fgSizer5->Fit( m_panel2 );
+	fgSizer26->Fit( m_panel2 );
 	m_notebook1->AddPage( m_panel2, _("Cyclones"), false );
 	m_panel4 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer171;
@@ -742,6 +770,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	
 	this->SetSizer( fgSizer3 );
 	this->Layout();
+	fgSizer3->Fit( this );
 	
 	this->Centre( wxBOTH );
 	

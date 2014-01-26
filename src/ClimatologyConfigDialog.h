@@ -45,8 +45,8 @@ struct ClimatologyOverlaySettings
         return CalibrationFactor(setting)*(v + CalibrationOffset(setting));
     }
 
-    void Read();
-    void Write();
+    void Load();
+    void Save();
 
     enum SettingsType {WIND, CURRENT, SLP, SST, AT, CLOUD, PRECIPITATION,
                        RELATIVE_HUMIDITY, SEADEPTH, SETTINGS_COUNT};
@@ -93,6 +93,8 @@ public:
     ClimatologyOverlaySettings m_Settings;
 
 private:
+    void LoadSettings();
+    void SaveSettings();
 
     void SetDataTypeSettings(int settings);
     void ReadDataTypeSettings(int settings);

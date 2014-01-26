@@ -100,13 +100,10 @@ double ClimatologyOverlaySettings::CalibrationFactor(int setting)
     return 1;
 }
 
-void ClimatologyOverlaySettings::Read()
+void ClimatologyOverlaySettings::Load()
 {
     /* read settings here */
     wxFileConfig *pConf = GetOCPNConfigObject();
-
-    if(!pConf)
-        return;
 
     pConf->SetPath ( _T( "/PlugIns/Climatology" ) );
 
@@ -160,13 +157,10 @@ void ClimatologyOverlaySettings::Read()
     }
 }
 
-void ClimatologyOverlaySettings::Write()
+void ClimatologyOverlaySettings::Save()
 {
     /* save settings here */
     wxFileConfig *pConf = GetOCPNConfigObject();
-
-    if(!pConf)
-        return;
 
     pConf->SetPath ( _T( "/PlugIns/Climatology" ) );
 
@@ -204,30 +198,8 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
 {
     pParent = parent;
 
-    m_Settings.Read();
-
-    wxFileConfig *pConf = GetOCPNConfigObject();;
-    if(!pConf)
-        return;
-
-    pConf->SetPath ( _T ( "/Settings/Climatology" ) );
-    pConf->Read ( _T ( "lastdatatype" ), &m_lastdatatype, 0);
-
-    bool bWindAtlas;
-    pConf->Read ( _T ( "WindAtlas" ), &bWindAtlas, 1);
-    m_cbWindAtlasEnable->SetValue(bWindAtlas);
-
-    int iWindAtlasSize;
-    pConf->Read ( _T ( "WindAtlasSize" ), &iWindAtlasSize, 100);
-    m_sWindAtlasSize->SetValue(iWindAtlasSize);
-
-    int iWindAtlasSpacing;
-    pConf->Read ( _T ( "WindAtlasSpacing" ), &iWindAtlasSpacing, 100);
-    m_sWindAtlasSpacing->SetValue(iWindAtlasSpacing);
-
-    int iWindAtlasOpacity;
-    pConf->Read ( _T ( "WindAtlasOpacity" ), &iWindAtlasOpacity, 205);
-    m_sWindAtlasOpacity->SetValue(iWindAtlasOpacity);
+    m_Settings.Load();
+    LoadSettings();
  
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++)
         m_cDataType->Append(SettingName(i));
@@ -235,14 +207,6 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     m_cDataType->SetSelection(m_lastdatatype);
     PopulateUnits(m_lastdatatype);
     ReadDataTypeSettings(m_lastdatatype);
-
-    wxDateTime dt = wxDateTime::Now();
-#ifdef __MSVC__
-    dt.SetYear(1972);
-#else
-    dt.SetYear(1945);
-#endif
-    m_dPStart->SetValue(dt);
 
     m_stVersion->SetLabel(wxString::Format(_T("%d.%d"),
                                            PLUGIN_VERSION_MAJOR, PLUGIN_VERSION_MINOR));
@@ -253,21 +217,8 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
 
 ClimatologyConfigDialog::~ClimatologyConfigDialog()
 {
-    wxFileConfig *pConf = GetOCPNConfigObject();
-
-    if(!pConf)
-        return;
-
-    pConf->SetPath ( _T ( "/Settings/Climatology" ) );
-
-    pConf->Write ( _T ( "lastdatatype" ), m_lastdatatype);
-
-    pConf->Write ( _T ( "WindAtlas" ), m_cbWindAtlasEnable->GetValue());
-    pConf->Write ( _T ( "WindAtlasSize" ), m_sWindAtlasSize->GetValue());
-    pConf->Write ( _T ( "WindAtlasSpacing" ), m_sWindAtlasSpacing->GetValue());
-    pConf->Write ( _T ( "WindAtlasOpacity" ), m_sWindAtlasOpacity->GetValue());
-
-    m_Settings.Write();
+    m_Settings.Save();
+    SaveSettings();
 }
 
 wxString ClimatologyConfigDialog::SettingName(int setting)
@@ -281,6 +232,77 @@ void ClimatologyConfigDialog::DisableIsoBars(int setting)
     
     if(setting == m_cDataType->GetSelection())
         m_cbIsoBars->SetValue(false);
+}
+
+void ClimatologyConfigDialog::LoadSettings()
+{
+    wxFileConfig *pConf = GetOCPNConfigObject();
+    pConf->SetPath ( _T ( "/Settings/Climatology" ) );
+
+    pConf->Read ( _T ( "lastdatatype" ), &m_lastdatatype, 0);
+
+    /* wind atlas settings */
+    pConf->SetPath ( _T( "/PlugIns/Climatology/WindAtlas" ) );
+
+    m_cbWindAtlasEnable->SetValue(pConf->Read ( _T ( "Enabled" ), 1L));
+    m_sWindAtlasSize->SetValue(pConf->Read ( _T ( "Size" ), 100L));
+    m_sWindAtlasSpacing->SetValue(pConf->Read ( _T ( "Spacing" ), 100L));
+    m_sWindAtlasOpacity->SetValue(pConf->Read ( _T ( "Opacity" ), 205L));
+
+    /* cyclone settings */
+    pConf->SetPath ( _T( "/PlugIns/Climatology/Cyclones" ) );
+
+    wxDateTime StartDate = wxDateTime::Now();
+#ifdef __MSVC__
+    StartDate.SetYear(1972);
+#else
+    StartDate.SetYear(1945);
+#endif
+    wxString StartDateString = StartDate.FormatDate();
+    pConf->Read( _T ( "StartDate" ), &StartDateString, StartDateString);
+    StartDate.ParseDate(StartDateString);
+    m_dPStart->SetValue(StartDate);
+
+    wxDateTime now = wxDateTime::Now();
+    wxString EndDateString = now.FormatDate();
+    pConf->Read( _T ( "EndDate" ), &EndDateString, EndDateString);
+    wxDateTime EndDate;
+    EndDate.ParseDate(EndDateString);
+    if(EndDate.GetYear() > now.GetYear())
+        EndDate = now;
+    m_dPEnd->SetValue(EndDate);
+
+    m_sMinWindSpeed->SetValue(pConf->Read ( _T ( "MinWindSpeed" ), 35L ));
+    m_sMaxPressure->SetValue(pConf->Read ( _T ( "MaxPressure" ), 1080L ));
+
+    /* implement check boxes too? */
+}
+
+void ClimatologyConfigDialog::SaveSettings()
+{
+    wxFileConfig *pConf = GetOCPNConfigObject();
+    pConf->SetPath ( _T ( "/Settings/Climatology" ) );
+
+    pConf->Write ( _T ( "lastdatatype" ), m_lastdatatype);
+
+    pConf->SetPath ( _T( "/PlugIns/Climatology/WindAtlas" ) );
+
+    /* wind atlas settings */
+    pConf->Write ( _T ( "WindAtlas" ), m_cbWindAtlasEnable->GetValue());
+    pConf->Write ( _T ( "WindAtlasSize" ), m_sWindAtlasSize->GetValue());
+    pConf->Write ( _T ( "WindAtlasSpacing" ), m_sWindAtlasSpacing->GetValue());
+    pConf->Write ( _T ( "WindAtlasOpacity" ), m_sWindAtlasOpacity->GetValue());
+
+    /* cyclone settings */
+    pConf->SetPath ( _T( "/PlugIns/Climatology/Cyclones" ) );
+
+    pConf->Write( _T ( "StartDate" ), m_dPStart->GetValue().FormatDate());
+    pConf->Write( _T ( "EndDate" ), m_dPEnd->GetValue().FormatDate());
+
+    pConf->Write ( _T ( "MinWindSpeed" ), m_sMinWindSpeed->GetValue() );
+    pConf->Write ( _T ( "MaxPressure" ), m_sMaxPressure->GetValue() );
+
+    /* implement check boxes too? */
 }
 
 void ClimatologyConfigDialog::SetDataTypeSettings(int settings)

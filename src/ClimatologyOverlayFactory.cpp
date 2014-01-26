@@ -352,10 +352,6 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
         m_dlg.m_cfgdlg->m_cbNeutral->Disable();
     }
 
-    wxDateTime datetime = wxDateTime::Now();
-    datetime.SetYear(1985);
-    m_dlg.m_cfgdlg->m_dPStart->SetValue(datetime);
-
     if(m_bFailedLoading) {
         wxMessageDialog mdlg(&m_dlg, 
                              _("Some Data Failed to load:\n")
