@@ -66,6 +66,8 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
         m_CurrentData[month] = NULL;
     }
 
+    m_CurrentMonth = wxDateTime::Now().GetMonth();
+
     wxProgressDialog progressdialog( _("Climatology"), wxString(), 37, &m_dlg,
                                      wxPD_CAN_ABORT | wxPD_ELAPSED_TIME);
 
@@ -74,7 +76,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     /* load wind */
     for(int month = 0; month < 12; month++) {
-        wxString filename = wxString::Format(_("wind")+fmt, month+1);
+        wxString filename = wxString::Format(_T("wind")+fmt, month+1);
         if(!progressdialog.Update(month, filename))
             return;
         ReadWindData(month, path+filename);
@@ -86,7 +88,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     /* load current */
     for(int month = 0; month < 12; month++) {
-        wxString filename = wxString::Format(_("current")+fmt, month+1);
+        wxString filename = wxString::Format(_T("current")+fmt, month+1);
         if(!progressdialog.Update(month+13, filename))
             return;
         ReadCurrentData(month, path+filename);
