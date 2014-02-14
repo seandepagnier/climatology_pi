@@ -289,8 +289,12 @@ void AddLineSeg(std::list<PlotLineSeg*> &region, double lat1, double lon1, doubl
 
 */
 void IsoBarMap::PlotRegion(std::list<PlotLineSeg*> &region,
-                                 double lat1, double lon1, double lat2, double lon2)
+                           double lat1, double lon1, double lat2, double lon2,
+                           int maxdepth)
 {
+    if(maxdepth == 0)
+        return;
+
     double p1 = CachedParameter(lat1, lon1);
     double p2 = CachedParameter(lat1, lon2);
     double p3 = CachedParameter(lat2, lon1);
@@ -306,8 +310,8 @@ void IsoBarMap::PlotRegion(std::list<PlotLineSeg*> &region,
     if(!Interpolate(lon1, lon2, p1, p2, false, lat1, lon3, ry1) ||
        !Interpolate(lon1, lon2, p3, p4, false, lat2, lon4, ry2)) {
         lon3 = (lon1+lon2)/2;
-        PlotRegion(region, lat1, lon1, lat2, lon3);
-        PlotRegion(region, lat1, lon3, lat2, lon2);
+        PlotRegion(region, lat1, lon1, lat2, lon3, maxdepth-1);
+        PlotRegion(region, lat1, lon3, lat2, lon2, maxdepth-1);
         return;
     }
     
@@ -315,8 +319,8 @@ void IsoBarMap::PlotRegion(std::list<PlotLineSeg*> &region,
     if(!Interpolate(lat1, lat2, p1, p3, true, lon1, lat3, ry3) ||
        !Interpolate(lat1, lat2, p2, p4, true, lon2, lat4, ry4)) {
         lat3 = (lat1+lat2)/2;
-        PlotRegion(region, lat1, lon1, lat3, lon2);
-        PlotRegion(region, lat3, lon1, lat2, lon2);
+        PlotRegion(region, lat1, lon1, lat3, lon2, maxdepth-1);
+        PlotRegion(region, lat3, lon1, lat2, lon2, maxdepth-1);
         return;
     }
 
@@ -328,10 +332,10 @@ void IsoBarMap::PlotRegion(std::list<PlotLineSeg*> &region,
     case 0: /* all 4 sides? need to recurse to get better resolution */
         lon3 = (lon1+lon2)/2;
         lat3 = (lat1+lat2)/2;
-        PlotRegion(region, lat1, lon1, lat3, lon3);
-        PlotRegion(region, lat1, lon3, lat3, lon2);
-        PlotRegion(region, lat3, lon1, lat2, lon3);
-        PlotRegion(region, lat3, lon3, lat2, lon2);
+        PlotRegion(region, lat1, lon1, lat3, lon3, maxdepth-1);
+        PlotRegion(region, lat1, lon3, lat3, lon2, maxdepth-1);
+        PlotRegion(region, lat3, lon1, lat2, lon3, maxdepth-1);
+        PlotRegion(region, lat3, lon3, lat2, lon2, maxdepth-1);
         break;
     case 1: case 2: case 4: case 8: case 7: case 11: case 13: case 14: break; /* impossible! */
     case 3: /* horizontal */ AddLineSeg(region, lat3, lon1, lat4, lon2, ry3, ry4); break;
@@ -418,7 +422,7 @@ bool IsoBarMap::Recompute(wxWindow *parent)
       for(double lon = -180; lon+m_Step <= 180; lon += m_Step) {
           int lonind = floor((lon+180)/ZONE_SIZE);
 
-          PlotRegion(m_map[latind][lonind], lat, lon, lat+m_Step, lon+m_Step);
+          PlotRegion(m_map[latind][lonind], lat, lon, lat+m_Step, lon+m_Step, 12);
       }
   }
 

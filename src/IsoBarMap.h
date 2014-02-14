@@ -92,7 +92,8 @@ private:
     double Parameter(double lat, double lon);
 
     void PlotRegion(std::list<PlotLineSeg*> &region,
-                    double lat1, double lon1, double lat2, double lon2);
+                    double lat1, double lon1, double lat2, double lon2,
+                    int maxdepth);
     void BuildParamCache(ParamCache &cache, double lat);
     double CachedParameter(double lat, double lon);
     bool Interpolate(double x1, double x2, double y1, double y2, bool lat,
