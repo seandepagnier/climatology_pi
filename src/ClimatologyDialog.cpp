@@ -73,7 +73,11 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 
     PopulateTrackingControls();
 
-    m_sMonth->SetValue(wxDateTime::Now().GetMonth());
+    int current_month = wxDateTime::Now().GetMonth();
+    m_cMonth->SetSelection(current_month);
+    if(current_month <= 2)
+        current_month += 12;
+    m_sMonth->SetValue(current_month);
 
     DimeWindow( this );
 }
