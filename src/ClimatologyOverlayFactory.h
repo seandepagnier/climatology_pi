@@ -233,11 +233,6 @@ private:
     wxInt16 m_seadepth[180][360];  /* 1 degree intervals   */
 
     int m_cyclonesDisplayList;
-    double m_scale, m_clat, m_clon;
-    wxPoint m_point;
-    bool m_scale_changed;
-    double m_lastscale;
-    wxPoint m_lastpoint;
 
     std::list<Cyclone*> m_wpa, m_epa, m_spa, m_atl, m_she, m_nio;
 

@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2013 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2014 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -25,12 +25,8 @@
  *
  */
 
-#include "wx/wxprec.h"
-
-#ifndef  WX_PRECOMP
-  #include "wx/wx.h"
-  #include <wx/glcanvas.h>
-#endif //precompiled headers
+#include "wx/wx.h"
+#include <wx/glcanvas.h>
 
 #include <wx/progdlg.h>
 
@@ -59,7 +55,7 @@ double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
 ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     : m_bUpdateCyclones(true),
       m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonesDisplayList(0),
-      m_scale(1), m_scale_changed(false),  m_bFailedLoading(false)
+      m_bFailedLoading(false)
 {
     for(int month = 0; month<13; month++) {
         m_WindData[month] = NULL;
@@ -1593,8 +1589,9 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
         }
 }
 
-void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones,
-    wxCheckBox *cb)
+void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
+                                                      std::list<Cyclone*> &cyclones,
+                                                      wxCheckBox *cb)
 {
     if(!cb->GetValue())
         return;
@@ -1666,15 +1663,11 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::
             if(first) {
                 first = false;
             } else {
-
-#if 1 /* if you want to zoom in really really far and still see tracks correctly */
+                /* prevent wrong crossover */
                 if((lastlon+180 > vp.clon || lon+180 < vp.clon) &&
                    (lastlon+180 < vp.clon || lon+180 > vp.clon) &&
                    (lastlon-180 > vp.clon || lon-180 < vp.clon) &&
                    (lastlon-180 < vp.clon || lon-180 > vp.clon))
-#else
-                if(abs(lastp.x-p.x) < vp.pix_width)
-#endif
                 {
                     wxUint8 t;
                     wxColour c = GetGraphicColor(CYCLONE_SETTING, ss->windknots, t);
@@ -1785,60 +1778,75 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
     if(m_pdc) /* display list optimization not possible */
         m_bUpdateCyclones = true;
 
-    double scale = vp.view_scale_ppm/m_scale;
-    
-    wxPoint point;
-    GetCanvasPixLL(&vp, &point, m_clat, m_clon);
+    /* no cyclones ever existed between 10 and 20 longitude
+       so use 15 east as the meridian to split the world on.. */
+    double cclon = 15 - 180;
 
-    if(scale == m_lastscale) {
-        if(point != m_lastpoint)
-            if(m_scale_changed) {
-                m_bUpdateCyclones = true;
-                m_scale_changed = false;
-            }
-    } else
-        m_scale_changed = true;
-    m_lastscale = scale;
-    m_lastpoint = point;
+    PlugIn_ViewPort nvp = vp;
 
 #if 1
-    bool use_dl = true;
-    if ( fabs(vp.rotation) > .01 || m_pdc)
-        use_dl = false;
-    else {
-        if(!m_cyclonesDisplayList)
-            m_cyclonesDisplayList = glGenLists(1);
+    if(!m_cyclonesDisplayList)
+        m_cyclonesDisplayList = glGenLists(1);
 
-        if(!m_bUpdateCyclones) {
+    if(!m_pdc) {
+        glPushMatrix();
+
+        wxPoint point;
+        GetCanvasPixLL(&vp, &point, 0, cclon);
+        glTranslatef(point.x, point.y, 0);
+        glScalef(vp.view_scale_ppm, vp.view_scale_ppm, 1);
+        glRotated(vp.rotation*180/M_PI, 0, 0, 1);
+    }
+    
+    if(!m_bUpdateCyclones)
+        glCallList(m_cyclonesDisplayList);
+    else {
+        if(!m_pdc) {
+            m_bUpdateCyclones = false;
+        
+            nvp.clat = 0;
+            nvp.clon = cclon;
+            nvp.view_scale_ppm = 1;
+            nvp.rotation = nvp.skew = 0;
+    
+            if(!m_cyclonesDisplayList)
+                m_cyclonesDisplayList = glGenLists(1);
+            glNewList(m_cyclonesDisplayList, GL_COMPILE_AND_EXECUTE);
+        }
+#endif
+
+        RenderCyclonesTheatre(nvp, m_epa, m_dlg.m_cfgdlg->m_cbEastPacific);
+        RenderCyclonesTheatre(nvp, m_wpa, m_dlg.m_cfgdlg->m_cbWestPacific);
+        RenderCyclonesTheatre(nvp, m_spa, m_dlg.m_cfgdlg->m_cbSouthPacific);
+        RenderCyclonesTheatre(nvp, m_atl, m_dlg.m_cfgdlg->m_cbAtlantic);
+        RenderCyclonesTheatre(nvp, m_nio, m_dlg.m_cfgdlg->m_cbNorthIndian);
+        RenderCyclonesTheatre(nvp, m_she, m_dlg.m_cfgdlg->m_cbSouthIndian);
+    
+#if 1
+        if(!m_pdc)
+            glEndList();
+    }
+
+    if(!m_pdc) {
+#if 1   //  Does current vp cross cclon ?
+        // if so, call the display list again translated
+        // to the other side of it..
+
+        if( vp.lon_min < cclon || vp.lon_max > cclon ) {
+#define NORM_FACTOR 1.0
+            double ts = 40058986*NORM_FACTOR; /* 360 degrees in normalized viewport */
+
             glPushMatrix();
-            glTranslated(point.x - m_point.x, point.y - m_point.y, 0);
-            glTranslated(vp.pix_width*(1-scale)/2, vp.pix_height*(1-scale)/2, 0);
-            glScaled(scale, scale, 1);
+            if( vp.lon_min < cclon )
+                glTranslated(-ts, 0, 0);
+            else
+                glTranslated(ts, 0, 0);
             glCallList(m_cyclonesDisplayList);
             glPopMatrix();
-            return;
         }
-
-        m_bUpdateCyclones = false;
-        m_clat = vp.clat, m_clon = vp.clon;
-        GetCanvasPixLL(&vp, &m_point, m_clat, m_clon);
-        m_scale = vp.view_scale_ppm;
-        
-        if(!m_cyclonesDisplayList)
-            m_cyclonesDisplayList = glGenLists(1);
-        glNewList(m_cyclonesDisplayList, GL_COMPILE_AND_EXECUTE);
-    }
 #endif
-    RenderCyclonesTheatre(vp, m_epa, m_dlg.m_cfgdlg->m_cbEastPacific);
-    RenderCyclonesTheatre(vp, m_wpa, m_dlg.m_cfgdlg->m_cbWestPacific);
-    RenderCyclonesTheatre(vp, m_spa, m_dlg.m_cfgdlg->m_cbSouthPacific);
-    RenderCyclonesTheatre(vp, m_atl, m_dlg.m_cfgdlg->m_cbAtlantic);
-    RenderCyclonesTheatre(vp, m_nio, m_dlg.m_cfgdlg->m_cbNorthIndian);
-    RenderCyclonesTheatre(vp, m_she, m_dlg.m_cfgdlg->m_cbSouthIndian);
-    
-#if 1
-    if(use_dl)
-        glEndList();
+        glPopMatrix();
+    }
 #endif
 }
 
