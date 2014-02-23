@@ -27,12 +27,8 @@
 #ifndef _CLIMATOLOGYPI_H_
 #define _CLIMATOLOGYPI_H_
 
-#include "wx/wxprec.h"
-
-#ifndef  WX_PRECOMP
-  #include "wx/wx.h"
-  #include <wx/glcanvas.h>
-#endif //precompiled headers
+#include <wx/wx.h>
+#include <wx/glcanvas.h>
 
 #define     PLUGIN_VERSION_MAJOR    0
 #define     PLUGIN_VERSION_MINOR    5
@@ -42,10 +38,10 @@
 
 #define ABOUT_AUTHOR_URL "http://seandepagnier.users.sourceforge.net"
 
-#include "../../../include/ocpn_plugin.h"
+#include "ocpn_plugin.h"
 
-#include "../../../include/wx/jsonreader.h"
-#include "../../../include/wx/jsonwriter.h"
+#include "wxJSON/jsonreader.h"
+#include "wxJSON/jsonwriter.h"
 
 #include "defs.h"
 

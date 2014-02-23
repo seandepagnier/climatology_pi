@@ -24,15 +24,10 @@
  ***************************************************************************
  */
 
-#include "wx/wxprec.h"
-
-#ifndef  WX_PRECOMP
-  #include "wx/wx.h"
-#endif //precompiled headers
-
+#include <wx/wx.h>
 #include <wx/progdlg.h>
 
-#include "../../../include/ocpn_plugin.h"
+#include "ocpn_plugin.h"
 
 #include "IsoBarMap.h"
 #include "defs.h"
