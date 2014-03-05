@@ -122,6 +122,7 @@ void ClimatologyDialog::UpdateTrackingControls()
     m_tCloudCover->SetValue(GetValue(ClimatologyOverlaySettings::CLOUD));
     m_tPrecipitation->SetValue(GetValue(ClimatologyOverlaySettings::PRECIPITATION));
     m_tRelativeHumidity->SetValue(GetValue(ClimatologyOverlaySettings::RELATIVE_HUMIDITY));
+    m_tLightning->SetValue(GetValue(ClimatologyOverlaySettings::LIGHTNING));
     m_tSeaDepth->SetValue(GetValue(ClimatologyOverlaySettings::SEADEPTH));
 }
 
@@ -135,6 +136,7 @@ void ClimatologyDialog::PopulateTrackingControls()
     SetControlsVisible(ClimatologyOverlaySettings::CLOUD, m_cbCloudCover, m_tCloudCover);
     SetControlsVisible(ClimatologyOverlaySettings::PRECIPITATION, m_cbPrecipitation, m_tPrecipitation);
     SetControlsVisible(ClimatologyOverlaySettings::RELATIVE_HUMIDITY, m_cbRelativeHumidity, m_tRelativeHumidity);
+    SetControlsVisible(ClimatologyOverlaySettings::LIGHTNING, m_cbLightning, m_tLightning);
     SetControlsVisible(ClimatologyOverlaySettings::SEADEPTH, m_cbSeaDepth, m_tSeaDepth);
 
     Fit();

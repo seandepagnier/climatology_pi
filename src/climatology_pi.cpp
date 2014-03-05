@@ -56,7 +56,7 @@ wxString ClimatologyDataDirectory()
 {
     wxString s =wxFileName::GetPathSeparator();
     return *GetpSharedDataLocation() + _T("plugins")
-        + s + _T("climatology_pi") + s + _T("data") + _T("/");
+        + s + _T("climatology_pi") + s + _T("data") + s;
 }
 
 climatology_pi::climatology_pi(void *ppimgr)

@@ -9,7 +9,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 
 PROJECT(climatology_pi)
 SET(PACKAGE_NAME climatology_pi)
-SET(PLUGIN_SOURCE_DIR .)
+SET(CPACK_PACKAGE_CONTACT "Sean D'Epagnier ")
 MESSAGE (STATUS "")
 MESSAGE (STATUS "*** Staging to build ${PACKAGE_NAME} ***")
 

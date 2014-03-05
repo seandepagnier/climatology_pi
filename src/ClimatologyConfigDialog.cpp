@@ -51,14 +51,14 @@ static const wxString name_from_index[] = {_T("Wind"), _T("Current"),
                                            _T("SeaLevelPressure"), _T("SeaSurfaceTemperature"),
                                            _T("AirTemperature"),
                                            _T("CloudCover"), _T("Precipitation"),
-                                           _T("RelativeHumidity"), _T("Depth")};
+                                           _T("RelativeHumidity"), _T("Lightning"), _T("Depth")};
 static const wxString tname_from_index[] = {_("Wind"), _("Current"),
                                             _("Sea Level Pressure"), _("Sea Surface Temperature"),
-                                            _T("Air Temperature"),
+                                            _("Air Temperature"),
                                             _("Cloud Cover"), _("Precipitation"),
-                                            _("Relative Humidity"), _("Sea Depth")};
+                                            _("Relative Humidity"), _("Lightning"), _("Sea Depth")};
 
-static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 3, 4, 2, 4, 2};
+static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 3, 4, 2, 4, 5, 2};
 
 double ClimatologyOverlaySettings::CalibrationOffset(int setting)
 {
@@ -118,7 +118,7 @@ void ClimatologyOverlaySettings::Load()
                       i == WIND || i == CURRENT );
         pConf->Read ( Name + _T ( "OverlayMap" ), &Settings[i].m_bOverlayMap,
                       i == SST || i == AT || i==CLOUD || i == PRECIPITATION
-                      || i == RELATIVE_HUMIDITY || i == SEADEPTH);
+                      || i == RELATIVE_HUMIDITY || i == LIGHTNING || i == SEADEPTH);
         pConf->Read ( Name + _T ( "OverlayTransparency" ), &Settings[i].m_iOverlayTransparency,
                       0 );
 

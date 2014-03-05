@@ -224,13 +224,14 @@ private:
     CurrentData *m_CurrentData[13];
 
     /* 12 months + year total and average */
-    wxInt16 m_slp[13][90][180];    /* 2 degree intervals   */
-    wxInt16 m_sst[13][180][360];   /* 1 degree intervals   */
-    wxInt16 m_at[13][90][180];     /* 2 degree intervals   */
-    wxInt16 m_cld[13][90][180];    /* 2 degree intervals   */
-    wxInt16 m_precip[13][72][144]; /* 2.5 degree intervals */
-    wxInt16 m_rhum[13][180][360];  /* 1 degree intervals */
-    wxInt16 m_seadepth[180][360];  /* 1 degree intervals   */
+    wxInt16 m_slp[13][90][180];     /* 2 degree intervals   */
+    wxInt16 m_sst[13][180][360];    /* 1 degree intervals   */
+    wxInt16 m_at[13][90][180];      /* 2 degree intervals   */
+    wxInt16 m_cld[13][90][180];     /* 2 degree intervals   */
+    wxInt16 m_precip[13][72][144];  /* 2.5 degree intervals */
+    wxInt16 m_rhum[13][180][360];   /* 1 degree intervals */
+    wxInt16 m_lightn[13][180][360]; /* 1 degree intervals */
+    wxInt16 m_seadepth[180][360];   /* 1 degree intervals   */
 
     int m_cyclonesDisplayList;
 

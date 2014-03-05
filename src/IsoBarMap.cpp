@@ -493,7 +493,7 @@ void IsoBarMap::ClearMap()
 ContourBitmap IsoBarMap::ContourCacheData(double value)
 {
     wxString msg;
-    msg.Printf(_("%.0f"), value);
+    msg.Printf(_T("%.0f"), value);
 
     wxBitmap bm( 120, 25 );
     wxMemoryDC mdc( bm );

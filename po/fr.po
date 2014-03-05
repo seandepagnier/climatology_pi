@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AIS Radar, Plugin for OpenCPN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-12 12:50+0800\n"
+"POT-Creation-Date: 2014-02-24 10:04+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Gilletarom <contact@gilletarom.fr>\n"
 "Language-Team: Gilletarom <contact@gilletarom.fr>\n"
@@ -17,8 +17,31 @@ msgid ""
 "then restart opencpn"
 msgstr ""
 #
-#, c-format
-msgid "%.0f"
+msgid "100"
+msgstr ""
+#
+msgid "120"
+msgstr ""
+#
+msgid "140"
+msgstr ""
+#
+msgid "160"
+msgstr ""
+#
+msgid "180"
+msgstr ""
+#
+msgid "20"
+msgstr ""
+#
+msgid "40"
+msgstr ""
+#
+msgid "60"
+msgstr ""
+#
+msgid "80"
 msgstr ""
 #
 msgid "About"
@@ -146,6 +169,9 @@ msgstr ""
 #
 msgid "Direction Arrows"
 msgstr "Flèches de directions"
+#
+msgid "Direction arrows are spaced every 6 hours on storm track"
+msgstr ""
 #
 msgid "East Pacific"
 msgstr "Pacifique est"
@@ -332,6 +358,9 @@ msgstr "Types d'orage"
 msgid "Sub Tropical"
 msgstr "Sub-tropical"
 #
+msgid "Sustained Wind Key (knots)"
+msgstr ""
+#
 #, c-format
 msgid ""
 "The wind atlas display shows the percentage of time wind is in each of eight "
@@ -403,9 +432,6 @@ msgstr "Fichier cld tronqué"
 msgid "cloud cover"
 msgstr "Couverture nuageuse"
 #
-msgid "current"
-msgstr "Coutant"
-#
 msgid "cyclone (atlantic)"
 msgstr "cyclone (Atlantique)"
 #
@@ -473,26 +499,45 @@ msgstr "Fichier slp tronqué"
 msgid "sst file truncated"
 msgstr "Fichier sst tronqué"
 #
-msgid "wind"
-msgstr "vent"
-#
 msgid "wind data file corrupt: "
 msgstr ""
+#
+#
 #
 #~ msgid "CLIMATOLOGY Preferences"
 #~ msgstr "Préférences"
 #
+#
+#
 #~ msgid "Days "
 #~ msgstr "Jours"
+#
+#
 #
 #~ msgid "Millimeters"
 #~ msgstr "Millimètres"
 #
+#
+#
 #~ msgid "Minutes "
 #~ msgstr "Minutes"
+#
+#
 #
 #~ msgid "Oktas"
 #~ msgstr "Oktas"
 #
+#
+#
 #~ msgid "Seconds"
 #~ msgstr "Secondes"
+#
+#
+#
+#~ msgid "current"
+#~ msgstr "Coutant"
+#
+#
+#
+#~ msgid "wind"
+#~ msgstr "vent"

@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: climatology_pi 3.3.13034\n"
+"Project-Id-Version: climatology_pi 0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-11 18:49+0800\n"
+"POT-Creation-Date: 2014-02-24 10:04+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,156 +102,156 @@ msgstr ""
 msgid "Sea Depth"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:71 src/ClimatologyOverlayFactory.cpp:362
-#: src/ClimatologyOverlayFactory.cpp:368 src/ClimatologyOverlayFactory.cpp:906
-#: src/ClimatologyOverlayFactory.cpp:1705 src/climatology_pi.cpp:100
+#: src/ClimatologyOverlayFactory.cpp:67 src/ClimatologyOverlayFactory.cpp:358
+#: src/ClimatologyOverlayFactory.cpp:364 src/ClimatologyOverlayFactory.cpp:902
+#: src/ClimatologyOverlayFactory.cpp:1698 src/climatology_pi.cpp:100
 #: src/climatology_pi.cpp:158
 msgid "Climatology"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:85
+#: src/ClimatologyOverlayFactory.cpp:81
 msgid "averaging wind"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:97
+#: src/ClimatologyOverlayFactory.cpp:93
 msgid "averaging current"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:103
+#: src/ClimatologyOverlayFactory.cpp:99
 msgid "sea level presure"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:109
+#: src/ClimatologyOverlayFactory.cpp:105
 msgid "slp file truncated"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:131
+#: src/ClimatologyOverlayFactory.cpp:127
 msgid "sea surface tempertature"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:137
+#: src/ClimatologyOverlayFactory.cpp:133
 msgid "sst file truncated"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:161
+#: src/ClimatologyOverlayFactory.cpp:157
 msgid "air tempertature"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:167
+#: src/ClimatologyOverlayFactory.cpp:163
 msgid "at file truncated"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:191
+#: src/ClimatologyOverlayFactory.cpp:187
 msgid "cloud cover"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:197
+#: src/ClimatologyOverlayFactory.cpp:193
 msgid "cld file truncated"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:221
+#: src/ClimatologyOverlayFactory.cpp:217
 msgid "precipitation"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:227
+#: src/ClimatologyOverlayFactory.cpp:223
 msgid "precip file truncated"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:251
+#: src/ClimatologyOverlayFactory.cpp:247
 msgid "relative humidity"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:257
+#: src/ClimatologyOverlayFactory.cpp:253
 msgid "relative humidity file truncated"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:282
+#: src/ClimatologyOverlayFactory.cpp:278
 msgid "sea depth"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:288
+#: src/ClimatologyOverlayFactory.cpp:284
 msgid "seadepth file truncated"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:304
+#: src/ClimatologyOverlayFactory.cpp:300
 msgid "cyclone (east pacific)"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:311
+#: src/ClimatologyOverlayFactory.cpp:307
 msgid "cyclone (west pacific)"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:318
+#: src/ClimatologyOverlayFactory.cpp:314
 msgid "cyclone (south pacific)"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:325
+#: src/ClimatologyOverlayFactory.cpp:321
 msgid "cyclone (atlantic)"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:332
+#: src/ClimatologyOverlayFactory.cpp:328
 msgid "cyclone (north indian)"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:339
+#: src/ClimatologyOverlayFactory.cpp:335
 msgid "cyclone (south indian)"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:349
+#: src/ClimatologyOverlayFactory.cpp:345
 msgid "el nino years"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:359
+#: src/ClimatologyOverlayFactory.cpp:355
 msgid "Some Data Failed to load:\n"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:361
+#: src/ClimatologyOverlayFactory.cpp:357
 msgid "Would you like to try to download?"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:366
+#: src/ClimatologyOverlayFactory.cpp:362
 msgid "You must extract this data, and place in: "
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:367
+#: src/ClimatologyOverlayFactory.cpp:363
 msgid ""
 "\n"
 "then restart opencpn"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:423
+#: src/ClimatologyOverlayFactory.cpp:419
 msgid "wind data file corrupt: "
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:579
+#: src/ClimatologyOverlayFactory.cpp:575
 msgid "Average Current includes only"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:580
+#: src/ClimatologyOverlayFactory.cpp:576
 msgid "months"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:672
+#: src/ClimatologyOverlayFactory.cpp:668
 msgid "failed to open file: "
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:906
+#: src/ClimatologyOverlayFactory.cpp:902
 msgid "Building Overlay map"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:1045 src/ClimatologyUI.cpp:603
+#: src/ClimatologyOverlayFactory.cpp:1041 src/ClimatologyUI.cpp:603
 msgid "N/A"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:1373
+#: src/ClimatologyOverlayFactory.cpp:1369
 msgid "Climatology overlay map unsupported unless OpenGL is enabled"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:1411
+#: src/ClimatologyOverlayFactory.cpp:1407
 msgid "failed to read file: "
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:1704
+#: src/ClimatologyOverlayFactory.cpp:1697
 msgid "Computer too slow to render cyclones, diabling theater"
 msgstr ""
 
@@ -597,24 +597,19 @@ msgstr ""
 msgid "Climatology Configuration"
 msgstr ""
 
-#: src/IsoBarMap.cpp:407
+#: src/IsoBarMap.cpp:406
 msgid "Building Isobar Map"
 msgstr ""
 
-#: src/IsoBarMap.cpp:497
-#, c-format
-msgid "%.0f"
-msgstr ""
-
-#: src/IsoBarMap.h:136
+#: src/IsoBarMap.h:137
 msgid "Declination"
 msgstr ""
 
-#: src/IsoBarMap.h:140
+#: src/IsoBarMap.h:141
 msgid "Inclination"
 msgstr ""
 
-#: src/IsoBarMap.h:143
+#: src/IsoBarMap.h:144
 msgid "Field Strength"
 msgstr ""
 

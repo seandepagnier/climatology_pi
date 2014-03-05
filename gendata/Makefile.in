@@ -79,11 +79,20 @@ genprecipdata: genprecipdata.cpp
 $(DATA)/relativehumidity.gz: rhum.mean.nc genrelativehumiditydata
 	./genrelativehumiditydata | gzip > $@
 
+$(DATA)/lightning.gz: LISOTD_HRMC_V2.3.2013.hdf genlightning
+	tar xf 14-03-1002-1-01.tar 
+	h5fromh4 LISOTD_HRMC_V2.3.2013.hdf 
+	h5totxt LISOTD_HRMC_V2.3.2013.h5 > lightning.txt
+	./genlightning | gzip > $@
+
 rhum.mean.nc:
 	wget -c ftp://ftp.cdc.noaa.gov/Datasets/icoads/1degree/global/enh/rhum.mean.nc
 
 genrelativehumiditydata: genrelativehumiditydata.cpp
 	g++ -o genrelativehumiditydata genrelativehumiditydata.cpp -lnetcdf -lnetcdf_c++ -g
+
+genlightning: genlightning.cpp
+	g++ -o genlightning genlightning.cpp -g
 
 $(DATA)/seadepth.gz: landseadepth.nc genseadepthdata
 	./genseadepthdata | gzip > $@

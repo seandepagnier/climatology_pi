@@ -274,7 +274,31 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     }
     zu_close(f);
 
-    /* load sea level pressure and sea surface temperature */
+    /* load lightning */
+    if(!progressdialog.Update(30, _("lightning")))
+        return;
+    wxString lightn_path = path + _T("lightning");
+    if((f = TryOpenFile(lightn_path))) {
+        wxUint8 lightn[12][180][360];
+        if(zu_read(f, lightn, sizeof lightn) != sizeof lightn)
+            wxLogMessage(climatology_pi + _("lightning file truncated"));
+        else {
+            for(int j=0; j<180; j++)
+                for(int k=0; k<360; k++) {
+                    long total = 0, totalcount = 0;
+                    for(int i=0; i<12; i++) {
+                        m_lightn[i][j][k] = lightn[i][j][k];
+                        total += m_lightn[i][j][k];
+                        totalcount++;
+                    }
+                    m_lightn[12][j][k] = total / totalcount;
+                }
+            m_dlg.m_cbLightning->Enable();
+        }
+    }
+    zu_close(f);
+
+    /* load sea depth */
     if(!progressdialog.Update(30, _("sea depth")))
         return;
     wxString seadepth_path = path + _T("seadepth");
@@ -804,6 +828,10 @@ ColorMap RelativeHumidityMap[] =
  {80, _T("#a0f0a0"), 0}, {85, _T("#60f0f0"), 0}, {95, _T("#40a0f0"), 0},
  {100, _T("#2080f0"), 0}};
 
+ColorMap LightningMap[] =
+{{0, _T("#490000"), 255},  {64, _T("#890000"), 128}, {128, _T("#a98900"), 64},
+ {192, _T("#ffd900"), 0}, {255, _T("#ffff00"), 0}};
+
 ColorMap SeaDepthMap[] =
 {{0, _T("#0000d9"), 255},  {20, _T("#002ad9"), 0},   {50, _T("#006ed9"), 0},   {100, _T("#00b2d9"), 0},
  {150, _T("#00d4d4"), 0},  {250, _T("#00d9a6"), 0},  {400, _T("#00d900"), 0},  {600, _T("#95d900"), 0},
@@ -820,11 +848,11 @@ ColorMap CycloneMap[] =
 
 enum {WIND_SETTING, CURRENT_SETTING, PRESSURE_SETTING, SEATEMP_SETTING,
       AIRTEMP_SETTING, CLOUD_SETTING, PRECIPITATION_SETTING, RELHUMIDIY_SETTING,
-      SEADEPTH_SETTING, CYCLONE_SETTING};
+      LIGHTNING_SETTING, SEADEPTH_SETTING, CYCLONE_SETTING};
 
 ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap, AirTempMap,
-                         CloudMap, PrecipitationMap, RelativeHumidityMap, SeaDepthMap,
-                         CycloneMap};
+                         CloudMap, PrecipitationMap, RelativeHumidityMap, LightningMap,
+                         SeaDepthMap, CycloneMap};
 
 const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
                              (sizeof CurrentMap) / (sizeof *CurrentMap),
@@ -834,6 +862,7 @@ const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
                              (sizeof CloudMap) / (sizeof *CloudMap),
                              (sizeof PrecipitationMap) / (sizeof *PrecipitationMap),
                              (sizeof RelativeHumidityMap) / (sizeof *RelativeHumidityMap),
+                             (sizeof LightningMap) / (sizeof *LightningMap),
                              (sizeof SeaDepthMap) / (sizeof *SeaDepthMap),
                              (sizeof CycloneMap) / (sizeof *CycloneMap)};
 
@@ -954,8 +983,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     return true;
 }
 
-void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_ViewPort &vp,
-    double transparency)
+void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_ViewPort &vp, double transparency)
 { 
     if( !O.m_iTexture )
         return;
@@ -996,8 +1024,9 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_Vie
     
 
     glPushMatrix();
-    double u = (x+w)/2, v = (y+h)/2;
-    u = v = 0;
+//    double u = (x+w)/2, v = (y+h)/2;
+    double u = vp.pix_width/2, v = vp.pix_height/2;
+    glTranslated(u, v, 0);
     glRotatef(tr*180/M_PI, 0, 0, 1);
     glTranslated(-u, -v, 0);
 
@@ -1022,6 +1051,8 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_Vie
     glTexCoord2d(lon1, y2), glVertex2i(x, h);
     glEnd();
     
+    glPopMatrix();
+
     glDisable(GL_BLEND);
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
 }
@@ -1070,8 +1101,6 @@ wxImage &ClimatologyOverlayFactory::getLabel(double value)
           
     int xd = 0;
     int yd = 0;
-//    mdc.DrawRoundedRectangle(xd, yd, w+(label_offset * 2), h+2, -.25);
-//    mdc.DrawRectangle(xd, yd, w+(label_offset * 2), h+2);
     mdc.DrawText(labels, label_offset + xd, yd+1);
           
     mdc.SelectObject(wxNullBitmap);
@@ -1276,6 +1305,9 @@ double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
     case ClimatologyOverlaySettings::RELATIVE_HUMIDITY:
         return InterpArray((-lat+90), positive_degrees(lon-.5),
                            m_rhum[month][0], 360)/2.0;
+    case ClimatologyOverlaySettings::LIGHTNING:
+        return InterpArray((-lat+90), positive_degrees(lon-.5),
+                           m_lightn[month][0], 360);
     case ClimatologyOverlaySettings::SEADEPTH:
     {
         double ind = InterpArray((-lat+90), positive_degrees(lon-.5),
@@ -1312,6 +1344,7 @@ double ClimatologyOverlayFactory::GetMin(int setting)
     case ClimatologyOverlaySettings::CLOUD: return 0;
     case ClimatologyOverlaySettings::PRECIPITATION:  return 0;
     case ClimatologyOverlaySettings::RELATIVE_HUMIDITY:  return 0;
+    case ClimatologyOverlaySettings::LIGHTNING:  return 0;
     case ClimatologyOverlaySettings::SEADEPTH:  return 0;
     default: return 0;
     }
@@ -1328,6 +1361,7 @@ double ClimatologyOverlayFactory::GetMax(int setting)
     case ClimatologyOverlaySettings::CLOUD: return 8;
     case ClimatologyOverlaySettings::PRECIPITATION:  return 1000;
     case ClimatologyOverlaySettings::RELATIVE_HUMIDITY:  return 100;
+    case ClimatologyOverlaySettings::LIGHTNING:  return 100; // ???
     case ClimatologyOverlaySettings::SEADEPTH:  return 40;
     default: return NAN;
     }
@@ -1781,6 +1815,7 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
     /* no cyclones ever existed between 10 and 20 longitude
        so use 15 east as the meridian to split the world on.. */
     double cclon = 15 - 180;
+    static const double NORM_FACTOR = 16;
 
     PlugIn_ViewPort nvp = vp;
 
@@ -1794,7 +1829,7 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
         wxPoint point;
         GetCanvasPixLL(&vp, &point, 0, cclon);
         glTranslatef(point.x, point.y, 0);
-        glScalef(vp.view_scale_ppm, vp.view_scale_ppm, 1);
+        glScalef(vp.view_scale_ppm/NORM_FACTOR, vp.view_scale_ppm/NORM_FACTOR, 1);
         glRotated(vp.rotation*180/M_PI, 0, 0, 1);
     }
     
@@ -1806,7 +1841,7 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
         
             nvp.clat = 0;
             nvp.clon = cclon;
-            nvp.view_scale_ppm = 1;
+            nvp.view_scale_ppm = NORM_FACTOR;
             nvp.rotation = nvp.skew = 0;
     
             if(!m_cyclonesDisplayList)
@@ -1864,6 +1899,7 @@ bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
            (i == ClimatologyOverlaySettings::CLOUD          && !m_dlg.m_cbCloudCover->GetValue()) ||
            (i == ClimatologyOverlaySettings::PRECIPITATION  && !m_dlg.m_cbPrecipitation->GetValue()) ||
            (i == ClimatologyOverlaySettings::RELATIVE_HUMIDITY  && !m_dlg.m_cbRelativeHumidity->GetValue()) ||
+           (i == ClimatologyOverlaySettings::LIGHTNING      && !m_dlg.m_cbLightning->GetValue()) ||
            (i == ClimatologyOverlaySettings::SEADEPTH       && !m_dlg.m_cbSeaDepth->GetValue()))
             continue;
 
@@ -1887,4 +1923,3 @@ bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
 
     return true;
 }
-

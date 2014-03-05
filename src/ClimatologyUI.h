@@ -82,6 +82,8 @@ class ClimatologyDialogBase : public wxDialog
 		wxTextCtrl* m_tPrecipitation;
 		wxCheckBox* m_cbRelativeHumidity;
 		wxTextCtrl* m_tRelativeHumidity;
+		wxCheckBox* m_cbLightning;
+		wxTextCtrl* m_tLightning;
 		wxCheckBox* m_cbSeaDepth;
 		wxTextCtrl* m_tSeaDepth;
 		wxCheckBox* m_cbCyclones;

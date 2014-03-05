@@ -1,4 +1,4 @@
 *.nc
 tracks.*
-gen*
+gen*$
 Makefile

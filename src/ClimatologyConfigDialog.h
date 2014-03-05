@@ -49,7 +49,7 @@ struct ClimatologyOverlaySettings
     void Save();
 
     enum SettingsType {WIND, CURRENT, SLP, SST, AT, CLOUD, PRECIPITATION,
-                       RELATIVE_HUMIDITY, SEADEPTH, SETTINGS_COUNT};
+                       RELATIVE_HUMIDITY, LIGHTNING, SEADEPTH, SETTINGS_COUNT};
     enum Units0 {KNOTS, M_S, MPH, KPH};
     enum Units1 {MILLIBARS, MMHG};
     enum Units2 {METERS, FEET, INCHES};
