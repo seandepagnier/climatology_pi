@@ -61,7 +61,7 @@ class ClimatologyDialogBase : public wxDialog
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnMonth( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAll( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnMonth( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnMonthScroll( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnMonthDown( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnMonthUp( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
@@ -163,11 +163,11 @@ class ClimatologyConfigDialogBase : public wxDialog
 		virtual void OnDataTypeChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnEnabled( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnUpdate( wxScrollEvent& event ) { event.Skip(); }
-		virtual void OnUpdate( wxSpinEvent& event ) { event.Skip(); }
-		virtual void OnUpdate( wxColourPickerEvent& event ) { event.Skip(); }
-		virtual void OnUpdateCyclones( wxDateEvent& event ) { event.Skip(); }
-		virtual void OnUpdateCyclones( wxSpinEvent& event ) { event.Skip(); }
+		virtual void OnUpdateScroll( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnUpdateSpin( wxSpinEvent& event ) { event.Skip(); }
+		virtual void OnUpdateColor( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void OnUpdateCyclonesDate( wxDateEvent& event ) { event.Skip(); }
+		virtual void OnUpdateCyclonesSpin( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnUpdateCyclones( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutAuthor( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }

@@ -216,7 +216,6 @@ private:
     ClimatologyOverlay m_pOverlay[13][ClimatologyOverlaySettings::SETTINGS_COUNT];
 
     wxDC *m_pdc;
-    wxGraphicsContext *m_gdc;
 
     std::map < double , wxImage > m_labelCache;
 

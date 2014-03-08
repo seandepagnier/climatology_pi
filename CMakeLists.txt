@@ -7,6 +7,8 @@
 # define minimum cmake version
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 
+SET(CMAKE_VERBOSE_MAKEFILE ON)
+
 PROJECT(climatology_pi)
 SET(PACKAGE_NAME climatology_pi)
 SET(CPACK_PACKAGE_CONTACT "Sean D'Epagnier ")
@@ -35,7 +37,7 @@ SET(SRC_CLIMATOLOGY
 ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY})
 
 IF(NOT UNIX)
-    SET(SRC_BZIP_CLIM
+    SET(SRC_BZIP
             src/bzip2/bzlib.c 
             src/bzip2/blocksort.c 
             src/bzip2/compress.c 
@@ -44,7 +46,8 @@ IF(NOT UNIX)
             src/bzip2/huffman.c 
             src/bzip2/randtable.c
     )
-    ADD_LIBRARY(LIB_BZIP_CLIM ${SRC_BZIP_CLIM})
+    ADD_LIBRARY(LIB_BZIP STATIC ${SRC_BZIP})
+    TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} LIB_BZIP )
 
     INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/zlib-1.2.3)
     INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/bzip2)

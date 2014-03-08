@@ -68,11 +68,12 @@ private:
     wxString GetValue(int index, Coord coord=MAG);
 
     void OnMonth( wxCommandEvent& event );
-    void OnMonth( wxScrollEvent& event );
+    void OnMonthScroll( wxScrollEvent& event );
     void OnMonthDown( wxScrollEvent& event );
     void OnMonthUp( wxScrollEvent& event );
     void OnAll( wxCommandEvent& event );
     void OnUpdate( wxCommandEvent& event );
+    void OnUpdate2( wxCommandEvent& event ) { OnUpdate(event); }
     void OnConfig( wxCommandEvent& event );
 
     void OnClose( wxCloseEvent& event );

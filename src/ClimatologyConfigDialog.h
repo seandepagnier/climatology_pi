@@ -105,14 +105,13 @@ private:
 
     void OnUpdate();
     void OnUpdate( wxCommandEvent& event ) { OnUpdate(); }
-    void OnUpdate( wxSpinEvent& event ) { OnUpdate(); }
-    void OnUpdate( wxColourPickerEvent& event ) { OnUpdate(); }
-    void OnUpdate( wxScrollEvent& event ) { OnUpdate(); }
-    void OnUpdate( wxDateEvent& event ) { OnUpdate(); }
+    void OnUpdateSpin( wxSpinEvent& event ) { OnUpdate(); }
+    void OnUpdateColor( wxColourPickerEvent& event ) { OnUpdate(); }
+    void OnUpdateScrole( wxScrollEvent& event ) { OnUpdate(); }
 
     void OnUpdateCyclones();
-    void OnUpdateCyclones( wxDateEvent& event ) { OnUpdateCyclones(); }
-    void OnUpdateCyclones( wxSpinEvent& event ) { OnUpdateCyclones(); }
+    void OnUpdateCyclonesDate( wxDateEvent& event ) { OnUpdateCyclones(); }
+    void OnUpdateCyclonesSpin( wxSpinEvent& event ) { OnUpdateCyclones(); }
     void OnUpdateCyclones( wxCommandEvent& event ) { OnUpdateCyclones(); }
 
     void OnEnabled( wxCommandEvent& event );

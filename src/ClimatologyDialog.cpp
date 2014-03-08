@@ -185,7 +185,7 @@ void ClimatologyDialog::OnMonth( wxCommandEvent& event )
     RefreshRedraw();
 }
 
-void ClimatologyDialog::OnMonth( wxScrollEvent& event )
+void ClimatologyDialog::OnMonthScroll( wxScrollEvent& event )
 {
     m_cMonth->SetSelection(event.GetPosition() % 12);
     UpdateTrackingControls();

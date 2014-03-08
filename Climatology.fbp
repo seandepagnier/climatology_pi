@@ -24,7 +24,7 @@
         <property name="skip_python_events">1</property>
         <property name="use_enum">0</property>
         <property name="use_microsoft_bom">0</property>
-        <object class="Dialog" expanded="1">
+        <object class="Dialog" expanded="0">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -86,7 +86,7 @@
             <event name="OnSetFocus"></event>
             <event name="OnSize"></event>
             <event name="OnUpdateUI"></event>
-            <object class="wxFlexGridSizer" expanded="1">
+            <object class="wxFlexGridSizer" expanded="0">
                 <property name="cols">1</property>
                 <property name="flexible_direction">wxVERTICAL</property>
                 <property name="growablecols"></property>
@@ -98,11 +98,11 @@
                 <property name="permission">none</property>
                 <property name="rows">4</property>
                 <property name="vgap">0</property>
-                <object class="sizeritem" expanded="1">
+                <object class="sizeritem" expanded="0">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
                     <property name="proportion">1</property>
-                    <object class="wxStaticBoxSizer" expanded="1">
+                    <object class="wxStaticBoxSizer" expanded="0">
                         <property name="id">wxID_ANY</property>
                         <property name="label">Month</property>
                         <property name="minimum_size"></property>
@@ -110,11 +110,11 @@
                         <property name="orient">wxVERTICAL</property>
                         <property name="permission">none</property>
                         <event name="OnUpdateUI"></event>
-                        <object class="sizeritem" expanded="1">
+                        <object class="sizeritem" expanded="0">
                             <property name="border">5</property>
                             <property name="flag">wxEXPAND</property>
                             <property name="proportion">1</property>
-                            <object class="wxFlexGridSizer" expanded="1">
+                            <object class="wxFlexGridSizer" expanded="0">
                                 <property name="cols">2</property>
                                 <property name="flexible_direction">wxBOTH</property>
                                 <property name="growablecols">0</property>
@@ -214,11 +214,11 @@
                                         <event name="OnUpdateUI"></event>
                                     </object>
                                 </object>
-                                <object class="sizeritem" expanded="1">
+                                <object class="sizeritem" expanded="0">
                                     <property name="border">5</property>
                                     <property name="flag">wxALL</property>
                                     <property name="proportion">0</property>
-                                    <object class="wxCheckBox" expanded="1">
+                                    <object class="wxCheckBox" expanded="0">
                                         <property name="BottomDockable">1</property>
                                         <property name="LeftDockable">1</property>
                                         <property name="RightDockable">1</property>
@@ -397,7 +397,7 @@
                                 <event name="OnRightDClick"></event>
                                 <event name="OnRightDown"></event>
                                 <event name="OnRightUp"></event>
-                                <event name="OnScroll">OnMonth</event>
+                                <event name="OnScroll">OnMonthScroll</event>
                                 <event name="OnScrollBottom"></event>
                                 <event name="OnScrollChanged"></event>
                                 <event name="OnScrollLineDown">OnMonthDown</event>
@@ -414,11 +414,11 @@
                         </object>
                     </object>
                 </object>
-                <object class="sizeritem" expanded="1">
+                <object class="sizeritem" expanded="0">
                     <property name="border">5</property>
                     <property name="flag">wxFIXED_MINSIZE</property>
                     <property name="proportion">1</property>
-                    <object class="wxStaticBoxSizer" expanded="1">
+                    <object class="wxStaticBoxSizer" expanded="0">
                         <property name="id">wxID_ANY</property>
                         <property name="label">Climatology Data</property>
                         <property name="minimum_size"></property>
@@ -426,11 +426,11 @@
                         <property name="orient">wxVERTICAL</property>
                         <property name="permission">none</property>
                         <event name="OnUpdateUI"></event>
-                        <object class="sizeritem" expanded="1">
+                        <object class="sizeritem" expanded="0">
                             <property name="border">5</property>
                             <property name="flag">wxEXPAND</property>
                             <property name="proportion">1</property>
-                            <object class="wxFlexGridSizer" expanded="1">
+                            <object class="wxFlexGridSizer" expanded="0">
                                 <property name="cols">1</property>
                                 <property name="flexible_direction">wxBOTH</property>
                                 <property name="growablecols"></property>
@@ -1000,11 +1000,11 @@
                                         </object>
                                     </object>
                                 </object>
-                                <object class="sizeritem" expanded="1">
+                                <object class="sizeritem" expanded="0">
                                     <property name="border">5</property>
                                     <property name="flag">wxEXPAND</property>
                                     <property name="proportion">1</property>
-                                    <object class="wxFlexGridSizer" expanded="1">
+                                    <object class="wxFlexGridSizer" expanded="0">
                                         <property name="cols">2</property>
                                         <property name="flexible_direction">wxBOTH</property>
                                         <property name="growablecols"></property>
@@ -2090,11 +2090,11 @@
                                                 <event name="OnUpdateUI"></event>
                                             </object>
                                         </object>
-                                        <object class="sizeritem" expanded="1">
+                                        <object class="sizeritem" expanded="0">
                                             <property name="border">5</property>
                                             <property name="flag">wxALL</property>
                                             <property name="proportion">0</property>
-                                            <object class="wxCheckBox" expanded="1">
+                                            <object class="wxCheckBox" expanded="0">
                                                 <property name="BottomDockable">1</property>
                                                 <property name="LeftDockable">1</property>
                                                 <property name="RightDockable">1</property>
@@ -2178,11 +2178,11 @@
                                                 <event name="OnUpdateUI"></event>
                                             </object>
                                         </object>
-                                        <object class="sizeritem" expanded="1">
+                                        <object class="sizeritem" expanded="0">
                                             <property name="border">5</property>
                                             <property name="flag">wxALL</property>
                                             <property name="proportion">0</property>
-                                            <object class="wxTextCtrl" expanded="1">
+                                            <object class="wxTextCtrl" expanded="0">
                                                 <property name="BottomDockable">1</property>
                                                 <property name="LeftDockable">1</property>
                                                 <property name="RightDockable">1</property>
@@ -2788,11 +2788,11 @@
                         <event name="OnSetFocus"></event>
                         <event name="OnSize"></event>
                         <event name="OnUpdateUI"></event>
-                        <object class="notebookpage" expanded="0">
+                        <object class="notebookpage" expanded="1">
                             <property name="bitmap"></property>
                             <property name="label">Standard Displays</property>
                             <property name="select">1</property>
-                            <object class="wxPanel" expanded="0">
+                            <object class="wxPanel" expanded="1">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -2866,7 +2866,7 @@
                                 <event name="OnSetFocus"></event>
                                 <event name="OnSize"></event>
                                 <event name="OnUpdateUI"></event>
-                                <object class="wxFlexGridSizer" expanded="0">
+                                <object class="wxFlexGridSizer" expanded="1">
                                     <property name="cols">1</property>
                                     <property name="flexible_direction">wxBOTH</property>
                                     <property name="growablecols"></property>
@@ -2878,11 +2878,11 @@
                                     <property name="permission">none</property>
                                     <property name="rows">0</property>
                                     <property name="vgap">0</property>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxFlexGridSizer" expanded="0">
+                                        <object class="wxFlexGridSizer" expanded="1">
                                             <property name="cols">1</property>
                                             <property name="flexible_direction">wxBOTH</property>
                                             <property name="growablecols"></property>
@@ -3259,11 +3259,11 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxEXPAND</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxFlexGridSizer" expanded="0">
+                                                <object class="wxFlexGridSizer" expanded="1">
                                                     <property name="cols">0</property>
                                                     <property name="flexible_direction">wxBOTH</property>
                                                     <property name="growablecols">2</property>
@@ -3539,7 +3539,7 @@
                                                             <event name="OnRightDClick"></event>
                                                             <event name="OnRightDown"></event>
                                                             <event name="OnRightUp"></event>
-                                                            <event name="OnScroll">OnUpdate</event>
+                                                            <event name="OnScroll">OnUpdateScroll</event>
                                                             <event name="OnScrollBottom"></event>
                                                             <event name="OnScrollChanged"></event>
                                                             <event name="OnScrollLineDown"></event>
@@ -3556,11 +3556,11 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxEXPAND</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxFlexGridSizer" expanded="0">
+                                                <object class="wxFlexGridSizer" expanded="1">
                                                     <property name="cols">0</property>
                                                     <property name="flexible_direction">wxBOTH</property>
                                                     <property name="growablecols"></property>
@@ -3825,7 +3825,7 @@
                                                             <event name="OnRightUp"></event>
                                                             <event name="OnSetFocus"></event>
                                                             <event name="OnSize"></event>
-                                                            <event name="OnSpinCtrl">OnUpdate</event>
+                                                            <event name="OnSpinCtrl">OnUpdateSpin</event>
                                                             <event name="OnSpinCtrlText"></event>
                                                             <event name="OnUpdateUI"></event>
                                                         </object>
@@ -4272,7 +4272,7 @@
                                                             <event name="OnRightUp"></event>
                                                             <event name="OnSetFocus"></event>
                                                             <event name="OnSize"></event>
-                                                            <event name="OnSpinCtrl">OnUpdate</event>
+                                                            <event name="OnSpinCtrl">OnUpdateSpin</event>
                                                             <event name="OnSpinCtrlText"></event>
                                                             <event name="OnUpdateUI"></event>
                                                         </object>
@@ -4764,7 +4764,7 @@
                                                                     <event name="OnRightUp"></event>
                                                                     <event name="OnSetFocus"></event>
                                                                     <event name="OnSize"></event>
-                                                                    <event name="OnSpinCtrl">OnUpdate</event>
+                                                                    <event name="OnSpinCtrl">OnUpdateSpin</event>
                                                                     <event name="OnSpinCtrlText"></event>
                                                                     <event name="OnUpdateUI"></event>
                                                                 </object>
@@ -4914,7 +4914,7 @@
                                                                     <property name="window_name"></property>
                                                                     <property name="window_style"></property>
                                                                     <event name="OnChar"></event>
-                                                                    <event name="OnColourChanged">OnUpdate</event>
+                                                                    <event name="OnColourChanged">OnUpdateColor</event>
                                                                     <event name="OnEnterWindow"></event>
                                                                     <event name="OnEraseBackground"></event>
                                                                     <event name="OnKeyDown"></event>
@@ -5115,7 +5115,7 @@
                                                                     <event name="OnRightDClick"></event>
                                                                     <event name="OnRightDown"></event>
                                                                     <event name="OnRightUp"></event>
-                                                                    <event name="OnScroll">OnUpdate</event>
+                                                                    <event name="OnScroll">OnUpdateScroll</event>
                                                                     <event name="OnScrollBottom"></event>
                                                                     <event name="OnScrollChanged"></event>
                                                                     <event name="OnScrollLineDown"></event>
@@ -5295,7 +5295,7 @@
                                                                     <event name="OnRightUp"></event>
                                                                     <event name="OnSetFocus"></event>
                                                                     <event name="OnSize"></event>
-                                                                    <event name="OnSpinCtrl">OnUpdate</event>
+                                                                    <event name="OnSpinCtrl">OnUpdateSpin</event>
                                                                     <event name="OnSpinCtrlText"></event>
                                                                     <event name="OnUpdateUI"></event>
                                                                 </object>
@@ -5465,7 +5465,7 @@
                                                                     <event name="OnRightUp"></event>
                                                                     <event name="OnSetFocus"></event>
                                                                     <event name="OnSize"></event>
-                                                                    <event name="OnSpinCtrl">OnUpdate</event>
+                                                                    <event name="OnSpinCtrl">OnUpdateSpin</event>
                                                                     <event name="OnSpinCtrlText"></event>
                                                                     <event name="OnUpdateUI"></event>
                                                                 </object>
@@ -5876,7 +5876,7 @@
                                                                     <event name="OnRightUp"></event>
                                                                     <event name="OnSetFocus"></event>
                                                                     <event name="OnSize"></event>
-                                                                    <event name="OnSpinCtrl">OnUpdate</event>
+                                                                    <event name="OnSpinCtrl">OnUpdateSpin</event>
                                                                     <event name="OnSpinCtrlText"></event>
                                                                     <event name="OnUpdateUI"></event>
                                                                 </object>
@@ -6046,7 +6046,7 @@
                                                                     <event name="OnRightUp"></event>
                                                                     <event name="OnSetFocus"></event>
                                                                     <event name="OnSize"></event>
-                                                                    <event name="OnSpinCtrl">OnUpdate</event>
+                                                                    <event name="OnSpinCtrl">OnUpdateSpin</event>
                                                                     <event name="OnSpinCtrlText"></event>
                                                                     <event name="OnUpdateUI"></event>
                                                                 </object>
@@ -6227,7 +6227,7 @@
                                                                     <event name="OnRightDClick"></event>
                                                                     <event name="OnRightDown"></event>
                                                                     <event name="OnRightUp"></event>
-                                                                    <event name="OnScroll">OnUpdate</event>
+                                                                    <event name="OnScroll">OnUpdateScroll</event>
                                                                     <event name="OnScrollBottom"></event>
                                                                     <event name="OnScrollChanged"></event>
                                                                     <event name="OnScrollLineDown"></event>
@@ -6334,11 +6334,11 @@
                                 </object>
                             </object>
                         </object>
-                        <object class="notebookpage" expanded="0">
+                        <object class="notebookpage" expanded="1">
                             <property name="bitmap"></property>
                             <property name="label">Cyclones</property>
                             <property name="select">0</property>
-                            <object class="wxPanel" expanded="0">
+                            <object class="wxPanel" expanded="1">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -6428,7 +6428,7 @@
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxFlexGridSizer" expanded="0">
+                                        <object class="wxFlexGridSizer" expanded="1">
                                             <property name="cols">2</property>
                                             <property name="flexible_direction">wxBOTH</property>
                                             <property name="growablecols"></property>
@@ -6440,11 +6440,11 @@
                                             <property name="permission">none</property>
                                             <property name="rows">0</property>
                                             <property name="vgap">0</property>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxEXPAND</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxStaticBoxSizer" expanded="0">
+                                                <object class="wxStaticBoxSizer" expanded="1">
                                                     <property name="id">wxID_ANY</property>
                                                     <property name="label">Start Date</property>
                                                     <property name="minimum_size"></property>
@@ -6513,7 +6513,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnDateChanged">OnUpdateCyclones</event>
+                                                            <event name="OnDateChanged">OnUpdateCyclonesDate</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -6540,11 +6540,11 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxEXPAND</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxStaticBoxSizer" expanded="0">
+                                                <object class="wxStaticBoxSizer" expanded="1">
                                                     <property name="id">wxID_ANY</property>
                                                     <property name="label">End Date</property>
                                                     <property name="minimum_size"></property>
@@ -6613,7 +6613,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnDateChanged">OnUpdateCyclones</event>
+                                                            <event name="OnDateChanged">OnUpdateCyclonesDate</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>
@@ -6821,7 +6821,7 @@
                                                             <event name="OnRightUp"></event>
                                                             <event name="OnSetFocus"></event>
                                                             <event name="OnSize"></event>
-                                                            <event name="OnSpinCtrl">OnUpdateCyclones</event>
+                                                            <event name="OnSpinCtrl">OnUpdateCyclonesSpin</event>
                                                             <event name="OnSpinCtrlText"></event>
                                                             <event name="OnUpdateUI"></event>
                                                         </object>
@@ -7009,7 +7009,7 @@
                                                             <event name="OnRightUp"></event>
                                                             <event name="OnSetFocus"></event>
                                                             <event name="OnSize"></event>
-                                                            <event name="OnSpinCtrl">OnUpdateCyclones</event>
+                                                            <event name="OnSpinCtrl">OnUpdateCyclonesSpin</event>
                                                             <event name="OnSpinCtrlText"></event>
                                                             <event name="OnUpdateUI"></event>
                                                         </object>

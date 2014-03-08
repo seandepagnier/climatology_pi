@@ -25,12 +25,15 @@
  *
  */
 
-#include "wx/wx.h"
+#include <wx/wx.h>
 #include <wx/glcanvas.h>
-
 #include <wx/progdlg.h>
 
 #include "climatology_pi.h"
+
+#if defined(__MINGW32__) && !defined(GL_TEXTURE_RECTANGLE_ARB)
+#define GL_TEXTURE_RECTANGLE_ARB          0x84F5
+#endif
 
 double deg2rad(double degrees)
 {
@@ -678,11 +681,12 @@ static double strtod_nan(const char *str)
 {
     if(!str)
         return NAN;
-    char *endptr;
-    double ret = strtod(str, &endptr);
-    if(endptr == str)
-        return NAN;
-    return ret;
+
+    double ret;
+    if(wxString::FromUTF8(str).ToDouble(&ret))
+        return ret;
+
+    return NAN;
 }
 
 bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
@@ -700,10 +704,10 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
             header--;
         else {
             char *saveptr;
-            int year = strtol(strtok_r(line, " ", &saveptr), 0, 10);
+            int year = strtol(strtok(line, " "), 0, 10);
             ElNinoYear elninoyear;
             for(int i=0; i<12; i++)
-                elninoyear.months[i] = strtod_nan(strtok_r(0, " ", &saveptr));
+                elninoyear.months[i] = strtod_nan(strtok(0, " "));
             m_ElNinoYears[year] = elninoyear;
         }
     }
@@ -993,8 +997,6 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_Vie
 
     glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-    glDisable( GL_MULTISAMPLE );
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
