@@ -65,7 +65,7 @@ IF(UNIX AND NOT APPLE)
 #        RPMTools_ADD_RPM_TARGETS(packagename ${CMAKE_SOURCE_DIR}/package.spec)
 #    ENDIF(RPMTools_FOUND)
 
-# need apt-get install rpm, or remove rpm
+# need apt-get install rpm, for rpmbuild
     SET(CPACK_GENERATOR "DEB;RPM;TBZ2")
 
     SET(PACKAGE_DEPS "opencpn, bzip2, gzip")
