@@ -1,3 +1,9 @@
+##---------------------------------------------------------------------------
+## Author:      Sean D'Epagnier
+## Copyright:   
+## License:     GPLv3+
+##---------------------------------------------------------------------------
+
 IF(NOT APPLE)
   TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} ${wxWidgets_LIBRARIES} ${EXTRA_LIBS} )
 ENDIF(NOT APPLE)
@@ -15,7 +21,7 @@ IF(WIN32)
   IF(MINGW)
 # assuming wxwidgets is compiled with unicode, this is needed for mingw headers
     ADD_DEFINITIONS( " -DUNICODE" )
-    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} ${OPENGL_LIBRARIES} "-lz" )
+    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} ${OPENGL_LIBRARIES} "-lz")
     SET(OPENCPN_IMPORT_LIB "${PARENT}.dll")
   ENDIF(MINGW)
 
