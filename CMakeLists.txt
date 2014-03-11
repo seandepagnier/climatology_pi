@@ -7,13 +7,9 @@
 # define minimum cmake version
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 
-SET(CMAKE_VERBOSE_MAKEFILE ON)
-
 PROJECT(climatology_pi)
 SET(PACKAGE_NAME climatology_pi)
 SET(CPACK_PACKAGE_CONTACT "Sean D'Epagnier ")
-MESSAGE (STATUS "")
-MESSAGE (STATUS "*** Staging to build ${PACKAGE_NAME} ***")
 
 SET(VERSION_MAJOR "0")
 SET(VERSION_MINOR "6")
