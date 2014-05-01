@@ -703,7 +703,7 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
         if(header)
             header--;
         else {
-            char *saveptr;
+            //char *saveptr;
             int year = strtol(strtok(line, " "), 0, 10);
             ElNinoYear elninoyear;
             for(int i=0; i<12; i++)
@@ -1367,6 +1367,85 @@ double ClimatologyOverlayFactory::GetMax(int setting)
     case ClimatologyOverlaySettings::SEADEPTH:  return 40;
     default: return NAN;
     }
+}
+
+#define EPS 2e-10
+#define EPS2 2e-5
+
+inline int TestIntersectionXY(double x1, double y1, double x2, double y2,
+                              double x3, double y3, double x4, double y4)
+{
+    double ax = x2 - x1, ay = y2 - y1;
+    double bx = x3 - x4, by = y3 - y4;
+    double cx = x1 - x3, cy = y1 - y3;
+
+    double denom = ay * bx - ax * by;
+
+    if(fabs(denom) < EPS) { /* parallel or really close to parallel */
+        if(fabs((y1*ax - ay*x1)*bx - (y3*bx - by*x3)*ax) > EPS2)
+            return 0; /* different intercepts, no intersection */
+        return 1;
+    }
+
+    double recip = 1 / denom;
+    double na = (by * cx - bx * cy) * recip;
+    if(na < -EPS2 || na > 1 + EPS2)
+        return 0;
+
+    double nb = (ax * cy - ay * cx) * recip;
+    if(nb < -EPS2 || nb > 1 + EPS2)
+        return 0;
+
+    return 1;
+}
+
+int ClimatologyOverlayFactory::CycloneTrackCrossingsTheatre(
+    double lat1, double lon1, double lat2, double lon2,
+    const wxDateTime &date, int dayrange, int min_windspeed,
+    const wxDateTime &cyclonedata_startdate, 
+    std::list<Cyclone*> &cyclones)
+{
+    int crossings = 0;
+    for(std::list<Cyclone*>::iterator it = cyclones.begin(); it != cyclones.end(); it++) {
+        Cyclone *s = *it;
+
+        double lastlat = NAN, lastlon = NAN;
+        for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
+            wxPoint p;
+            CycloneState *ss = *it2;
+
+            double lat = ss->latitude, lon = ss->longitude;
+            if(ss->windknots >= min_windspeed &&
+               abs((ss->datetime.DateTime() - date).GetDays()) <= dayrange) {
+                if(!isnan(lastlat)) {
+                    if(TestIntersectionXY(lat1, lon1, lat2, lon2,
+                                          lastlat, lastlon, lat, lon))
+                        crossings++;
+                }
+            }
+
+            lastlat = lat;
+            lastlon = lon;
+            
+        }
+    }
+    return crossings;
+}
+
+int ClimatologyOverlayFactory::CycloneTrackCrossings(
+    double lat1, double lon1, double lat2, double lon2,
+    const wxDateTime &date, int dayrange, int min_windspeed,
+    const wxDateTime &cyclonedata_startdate)
+{
+    std::list<Cyclone*> *cyclones[6] = {&m_epa, &m_wpa, &m_spa, &m_atl, &m_nio, &m_she};
+
+    int crossings = 0;
+    for(int i=0; i < 6; i++) {
+        // a quick test with bounds checking could greatly speed this up
+        crossings += CycloneTrackCrossingsTheatre(lat1, lon1, lat2, lon2, date, dayrange, min_windspeed,
+                                                  cyclonedata_startdate, *cyclones[i]);
+    }
+    return crossings;
 }
 
 void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &vp)

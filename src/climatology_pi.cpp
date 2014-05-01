@@ -217,6 +217,18 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
     return true;
 }
 
+static int ClimatologyCycloneTrackCrossings(double lat1, double lon1, double lat2, double lon2,
+                                            const wxDateTime &date, int dayrange, int min_windspeed,
+                                            const wxDateTime &cyclonedata_startdate)
+{
+    if(!s_pOverlayFactory)
+        return -1;
+
+    return s_pOverlayFactory->CycloneTrackCrossings(lat1, lon1, lat2, lon2,
+                                                    date, dayrange, min_windspeed,
+                                                    cyclonedata_startdate);
+}
+
 void climatology_pi::OnToolbarToolCallback(int id)
 {
     if(!m_pClimatologyDialog)
@@ -284,11 +296,14 @@ void climatology_pi::SendClimatology(bool (*ClimatologyData)(int, wxDateTime &, 
     char ptr[64];
     snprintf(ptr, sizeof ptr, "%p", ClimatologyData);
     v[_T("ClimatologyDataPtr")] = wxString::From8BitData(ptr);
+
+    snprintf(ptr, sizeof ptr, "%p", ClimatologyCycloneTrackCrossings);
+    v[_T("ClimatologyCycloneTrackCrossingsPtr")] = wxString::From8BitData(ptr);
     
     wxJSONWriter w;
     wxString out;
     w.Write(v, out);
-    SendPluginMessage(wxString(_T("CLIMATOLOGY")), out);
+    SendPluginMessage(wxT("CLIMATOLOGY"), out);
 }
 
 void climatology_pi::SetPluginMessage(wxString &message_id, wxString &message_body)

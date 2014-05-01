@@ -186,6 +186,17 @@ public:
     { return getValue(coord, setting, lat, lon, 0); }
     double getCurCalibratedValue(enum Coord coord, int setting, double lat, double lon);
 
+    int CycloneTrackCrossingsTheatre(
+        double lat1, double lon1, double lat2, double lon2,
+        const wxDateTime &date, int dayrange, int min_windspeed,
+        const wxDateTime &cyclonedata_startdate, 
+        std::list<Cyclone*> &cyclones);
+
+    int CycloneTrackCrossings(
+        double lat1, double lon1, double lat2, double lon2,
+        const wxDateTime &date, int dayrange, int min_windspeed,
+        const wxDateTime &cyclonedata_startdate);
+
     bool RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp );
 
     int m_CurrentMonth;
