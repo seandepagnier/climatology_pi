@@ -31,7 +31,7 @@
 
 #include "climatology_pi.h"
 
-#if defined(__MINGW32__) && !defined(GL_TEXTURE_RECTANGLE_ARB)
+#if !defined(GL_TEXTURE_RECTANGLE_ARB)
 #define GL_TEXTURE_RECTANGLE_ARB          0x84F5
 #endif
 
@@ -714,20 +714,6 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
     return true;
 }
 
-void DrawGLLine(double x1, double y1, double x2, double y2)
-{
-    //      Enable anti-aliased lines, at best quality
-    glEnable( GL_LINE_SMOOTH );
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-        
-    glBegin( GL_LINES );
-    glVertex2d( x1, y1 );
-    glVertex2d( x2, y2 );
-    glEnd();
-}
-
 void ClimatologyOverlayFactory::DrawLine( double x1, double y1, double x2, double y2,
                                           const wxColour &color, int opacity, double width )
 {
@@ -736,24 +722,17 @@ void ClimatologyOverlayFactory::DrawLine( double x1, double y1, double x2, doubl
         m_pdc->SetBrush( *wxTRANSPARENT_BRUSH);
         m_pdc->DrawLine(x1, y1, x2, y2);
     } else {
+        glEnable( GL_LINE_SMOOTH );
+        glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+
         glColor4ub(color.Red(), color.Green(), color.Blue(), opacity);
         glLineWidth( width );
-        DrawGLLine(x1, y1, x2, y2);
-    }
-}
 
-static void DrawGLCircle( double x, double y, double r )
-{
-    //      Enable anti-aliased lines, at best quality
-    glEnable( GL_LINE_SMOOTH );
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-    
-    glBegin( GL_LINE_LOOP );
-    for(double t=0; t<2*M_PI; t+=M_PI/30)
-        glVertex2d(x+r*cos(t), y+r*sin(t));
-    glEnd();
+        glBegin( GL_LINES );
+        glVertex2d( x1, y1 );
+        glVertex2d( x2, y2 );
+        glEnd();
+    }
 }
 
 void ClimatologyOverlayFactory::DrawCircle( double x, double y, double r,
@@ -766,7 +745,11 @@ void ClimatologyOverlayFactory::DrawCircle( double x, double y, double r,
     } else {
         glColor4ub(color.Red(), color.Green(), color.Blue(), opacity);
         glLineWidth( width );
-        DrawGLCircle(x, y, r);
+
+        glBegin( GL_LINE_LOOP );
+        for(double t=0; t<2*M_PI; t+=M_PI/24)
+            glVertex2d(x+r*cos(t), y+r*sin(t));
+        glEnd();
     }
 }
 
@@ -997,9 +980,6 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_Vie
 
     glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glColor4f(1, 1, 1, 1 - transparency);
     glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
@@ -1712,7 +1692,7 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
         return;
 
     int statemask=0;
-    statemask |= m_dlg.m_cfgdlg->m_cbTropical->GetValue();
+    statemask |= 1*m_dlg.m_cfgdlg->m_cbTropical->GetValue();
     statemask |= 2*m_dlg.m_cfgdlg->m_cbSubTropical->GetValue();
     statemask |= 4*m_dlg.m_cfgdlg->m_cbExtraTropical->GetValue();
     statemask |= 8*m_dlg.m_cfgdlg->m_cbRemanent->GetValue();
@@ -1787,7 +1767,7 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
                     wxUint8 t;
                     wxColour c = GetGraphicColor(CYCLONE_SETTING, ss->windknots, t);
                     
-                    DrawLine(lastp.x, lastp.y, p.x, p.y, c, t, 3);
+                    DrawLine(lastp.x, lastp.y, p.x, p.y, c, t, 2);
 
                     /* direction arrow */
                     wxPoint a((lastp.x+p.x)/2, (lastp.y+p.y)/2);
@@ -1895,12 +1875,11 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 
     /* no cyclones ever existed between 10 and 20 longitude
        so use 15 east as the meridian to split the world on.. */
-    double cclon = 15 - 180;
+    PlugIn_ViewPort nvp = vp;
+#if 1
+    double cclon = 15;
     static const double NORM_FACTOR = 16;
 
-    PlugIn_ViewPort nvp = vp;
-
-#if 1
     if(!m_cyclonesDisplayList)
         m_cyclonesDisplayList = glGenLists(1);
 
@@ -1908,7 +1887,7 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
         glPushMatrix();
 
         wxPoint point;
-        GetCanvasPixLL(&vp, &point, 0, cclon);
+        GetCanvasPixLL(&vp, &point, 0, cclon - 180);
         glTranslatef(point.x, point.y, 0);
         glScalef(vp.view_scale_ppm/NORM_FACTOR, vp.view_scale_ppm/NORM_FACTOR, 1);
         glRotated(vp.rotation*180/M_PI, 0, 0, 1);
@@ -1921,7 +1900,7 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
             m_bUpdateCyclones = false;
         
             nvp.clat = 0;
-            nvp.clon = cclon;
+            nvp.clon = cclon - 180;
             nvp.view_scale_ppm = NORM_FACTOR;
             nvp.rotation = nvp.skew = 0;
     
@@ -1942,25 +1921,22 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
         if(!m_pdc)
             glEndList();
     }
-
     if(!m_pdc) {
-#if 1   //  Does current vp cross cclon ?
+        //  Does current vp cross cclon ?
         // if so, call the display list again translated
         // to the other side of it..
 
-        if( vp.lon_min < cclon || vp.lon_max > cclon ) {
-#define NORM_FACTOR 1.0
+        if( vp.lon_min < cclon && vp.lon_max > cclon ) {
             double ts = 40058986*NORM_FACTOR; /* 360 degrees in normalized viewport */
 
             glPushMatrix();
-            if( vp.lon_min < cclon )
+            if( vp.clon > cclon )
                 glTranslated(-ts, 0, 0);
             else
                 glTranslated(ts, 0, 0);
             glCallList(m_cyclonesDisplayList);
             glPopMatrix();
         }
-#endif
         glPopMatrix();
     }
 #endif
@@ -1969,6 +1945,17 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
 {
     m_pdc = dc;
+
+    if(!dc) {
+        glPushAttrib( GL_LINE_BIT | GL_ENABLE_BIT | GL_HINT_BIT ); //Save state
+
+        //      Enable anti-aliased lines, at best quality
+        glEnable( GL_LINE_SMOOTH );
+        glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+
+        glEnable( GL_BLEND );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    }
 
     for(int overlay = 1; overlay >= 0; overlay--)
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
@@ -2001,6 +1988,9 @@ bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
 
     if(m_dlg.m_cbCyclones->GetValue())
         RenderCyclones(vp);
+
+    if(!dc)
+        glPopAttrib();
 
     return true;
 }
