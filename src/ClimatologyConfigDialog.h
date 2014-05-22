@@ -114,6 +114,8 @@ private:
     void OnUpdateCyclonesSpin( wxSpinEvent& event ) { OnUpdateCyclones(); }
     void OnUpdateCyclones( wxCommandEvent& event ) { OnUpdateCyclones(); }
 
+    void OnPaintKey( wxPaintEvent& event );
+
     void OnEnabled( wxCommandEvent& event );
     void OnAboutAuthor( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event ) { Hide(); }

@@ -159,6 +159,10 @@ private:
     int m_setting, m_units;
 };
 
+enum {WIND_SETTING, CURRENT_SETTING, PRESSURE_SETTING, SEATEMP_SETTING,
+      AIRTEMP_SETTING, CLOUD_SETTING, PRECIPITATION_SETTING, RELHUMIDIY_SETTING,
+      LIGHTNING_SETTING, SEADEPTH_SETTING, CYCLONE_SETTING};
+
 class ClimatologyOverlayFactory {
 public:
     ClimatologyOverlayFactory( ClimatologyDialog &dlg );
@@ -199,6 +203,8 @@ public:
 
     bool RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp );
 
+    static wxColour GetGraphicColor(int setting, double val_in, wxUint8 &transp);
+
     int m_CurrentMonth;
     bool m_bUpdateCyclones;
 
@@ -215,7 +221,6 @@ private:
     void RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones, wxCheckBox *cb);
     void RenderCyclones(PlugIn_ViewPort &vp);
 
-    wxColour GetGraphicColor(int setting, double val_in, wxUint8 &transp);
     bool CreateGLTexture(ClimatologyOverlay &O, int setting, int month, PlugIn_ViewPort &vp);
     void DrawGLTexture(ClimatologyOverlay &O, PlugIn_ViewPort &vp, double transparency);
 

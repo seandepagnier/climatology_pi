@@ -371,6 +371,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     if(!progressdialog.Update(36, _("el nino years")))
         return;
+
     if(!ReadElNinoYears(path + _T("elnino_years.txt"))) {
         m_dlg.m_cfgdlg->m_cbElNino->Disable();
         m_dlg.m_cfgdlg->m_cbLaNina->Disable();
@@ -833,10 +834,6 @@ ColorMap CycloneMap[] =
  {120, _T("#d90000"), 0}, {130, _T("#ff0000"), 0}, {140, _T("#ff0080"), 0}, {150, _T("#ff00ff"), 0},
  {160, _T("#ff40ff"), 0}, {180, _T("#ff80ff"), 0}, {200, _T("#ffffff"), 0}};
 
-enum {WIND_SETTING, CURRENT_SETTING, PRESSURE_SETTING, SEATEMP_SETTING,
-      AIRTEMP_SETTING, CLOUD_SETTING, PRECIPITATION_SETTING, RELHUMIDIY_SETTING,
-      LIGHTNING_SETTING, SEADEPTH_SETTING, CYCLONE_SETTING};
-
 ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap, AirTempMap,
                          CloudMap, PrecipitationMap, RelativeHumidityMap, LightningMap,
                          SeaDepthMap, CycloneMap};
@@ -852,6 +849,7 @@ const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
                              (sizeof LightningMap) / (sizeof *LightningMap),
                              (sizeof SeaDepthMap) / (sizeof *SeaDepthMap),
                              (sizeof CycloneMap) / (sizeof *CycloneMap)};
+
 
 wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in, wxUint8 &transp)
 {

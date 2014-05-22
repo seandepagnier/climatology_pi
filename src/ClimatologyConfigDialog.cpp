@@ -401,6 +401,24 @@ void ClimatologyConfigDialog::OnUpdateCyclones()
     OnUpdate();
 }
 
+void ClimatologyConfigDialog::OnPaintKey( wxPaintEvent& event )
+{
+    wxWindow *window = dynamic_cast<wxWindow*>(event.GetEventObject());
+
+    wxPaintDC dc( window );
+
+    double knots;
+    wxUint8 t;
+    wxString name = window->GetName();
+
+    window->GetName().ToDouble(&knots);
+
+    wxColour c = ClimatologyOverlayFactory::GetGraphicColor(CYCLONE_SETTING, knots, t);
+
+    dc.SetBackground(c);
+    dc.Clear();
+}
+
 void ClimatologyConfigDialog::OnEnabled( wxCommandEvent& event )
 {
     OnUpdate();

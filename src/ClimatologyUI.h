@@ -139,15 +139,24 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxPanel* m_panel2;
 		wxStaticText* m_staticText4;
 		wxStaticText* m_staticText5;
-		wxCheckBox* m_checkBox32;
-		wxCheckBox* m_checkBox33;
-		wxCheckBox* m_checkBox34;
-		wxCheckBox* m_checkBox35;
-		wxCheckBox* m_checkBox36;
-		wxCheckBox* m_checkBox37;
-		wxCheckBox* m_checkBox38;
-		wxCheckBox* m_checkBox39;
-		wxCheckBox* m_checkBox40;
+		wxPanel* m_panel51;
+		wxStaticText* m_staticText21;
+		wxPanel* m_panel511;
+		wxStaticText* m_staticText22;
+		wxPanel* m_panel5111;
+		wxStaticText* m_staticText221;
+		wxPanel* m_panel51111;
+		wxStaticText* m_staticText2211;
+		wxPanel* m_panel511111;
+		wxStaticText* m_staticText22111;
+		wxPanel* m_panel5111111;
+		wxStaticText* m_staticText221111;
+		wxPanel* m_panel51111111;
+		wxStaticText* m_staticText2211111;
+		wxPanel* m_panel511111111;
+		wxStaticText* m_staticText22111111;
+		wxPanel* m_panel5111111111;
+		wxStaticText* m_staticText221111111;
 		wxStaticText* m_staticText20;
 		wxPanel* m_panel4;
 		wxStaticText* m_staticText141;
@@ -169,6 +178,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		virtual void OnUpdateCyclonesDate( wxDateEvent& event ) { event.Skip(); }
 		virtual void OnUpdateCyclonesSpin( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnUpdateCyclones( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPaintKey( wxPaintEvent& event ) { event.Skip(); }
 		virtual void OnAboutAuthor( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		

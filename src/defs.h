@@ -24,7 +24,7 @@
  ***************************************************************************
  */
 
-#ifdef __MSVC__
+#ifdef __WIN32__
 
 #include <float.h>
 #include <iostream>
@@ -42,7 +42,10 @@
 # define INFINITY std::numeric_limits<double>::infinity ()
 # endif
 
+#undef isnan
 #define isnan _isnan
+
+#undef isinf
 #define isinf(x) (!_finite(x) && !_isnan(x))
 
 inline double trunc(double d){ return (d>0) ? floor(d) : ceil(d) ; }
