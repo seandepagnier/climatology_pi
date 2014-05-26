@@ -707,8 +707,10 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
             //char *saveptr;
             int year = strtol(strtok(line, " "), 0, 10);
             ElNinoYear elninoyear;
-            for(int i=0; i<12; i++)
-                elninoyear.months[i] = strtod_nan(strtok(0, " "));
+            for(int i=0; i<12; i++) {
+                elninoyear.months[i] = strtod_nan(strtok(0, " \n"));
+                printf("%d %d = %f\n", year, i, elninoyear.months[i]);
+            }
             m_ElNinoYears[year] = elninoyear;
         }
     }
@@ -1706,21 +1708,22 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
         for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
             wxPoint p;
             CycloneState *ss = *it2;
+            double lat = ss->latitude, lon = ss->longitude;
+            int year = ss->datetime.year;
+            wxDateTime dt = ss->datetime.DateTime();
+            std::map<int, ElNinoYear>::iterator it;
 
             if(!m_dlg.m_cbAll->GetValue() && m_CurrentMonth != ss->datetime.month)
-                continue;
+                goto skip;
 
-            wxDateTime dt = ss->datetime.DateTime();
             if((dt < m_dlg.m_cfgdlg->m_dPStart->GetValue()) ||
                (dt > m_dlg.m_cfgdlg->m_dPEnd->GetValue()))
-                continue;
+                goto skip;
 
-            int year = ss->datetime.year;
-            std::map<int, ElNinoYear>::iterator it;
             it = m_ElNinoYears.find(year);
             if (it == m_ElNinoYears.end()) {
                 if(!m_dlg.m_cfgdlg->m_cbNotAvailable->GetValue())
-                    continue;
+                    goto skip;
             } else {
                 ElNinoYear elninoyear = m_ElNinoYears[year];
                 int month = ss->datetime.month;
@@ -1728,29 +1731,28 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
 
                 if(isnan(value)) {
                     if(!m_dlg.m_cfgdlg->m_cbNotAvailable->GetValue())
-                        continue;
+                        goto skip;
                 } else {
-                    if(value >= 1) {
+                    if(value >= .75) {
                         if(!m_dlg.m_cfgdlg->m_cbElNino->GetValue())
-                            continue;
-                    } else if(value <= -1) {
+                            goto skip;
+                    } else if(value <= -.75) {
                         if(!m_dlg.m_cfgdlg->m_cbLaNina->GetValue())
-                            continue;
+                            goto skip;
                     } else if(!m_dlg.m_cfgdlg->m_cbNeutral->GetValue())
-                        continue;
+                        goto skip;
                 }
             }
 
             if(!((1<<ss->state) & statemask))
-                continue;
+                goto skip;
 
             if(ss->windknots < m_dlg.m_cfgdlg->m_sMinWindSpeed->GetValue())
-                continue;
+                goto skip;
 
             if(ss->pressure > m_dlg.m_cfgdlg->m_sMaxPressure->GetValue())
-                continue;
+                goto skip;
 
-            double lat = ss->latitude, lon = ss->longitude;
             GetCanvasPixLL( &vp, &p, lat, lon );
 
             if(first) {
@@ -1778,6 +1780,10 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
 
             lastlon = lon;
             lastp = p;
+            continue;
+
+        skip:
+            first = true;
         }
     }
 

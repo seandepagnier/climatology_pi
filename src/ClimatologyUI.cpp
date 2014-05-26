@@ -712,10 +712,10 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_staticText22111111->Wrap( -1 );
 	fgSizer25->Add( m_staticText22111111, 0, wxALL, 5 );
 	
-	m_panel5111111111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("180") );
+	m_panel5111111111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("200") );
 	fgSizer25->Add( m_panel5111111111, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticText221111111 = new wxStaticText( m_panel2, wxID_ANY, _("180"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText221111111 = new wxStaticText( m_panel2, wxID_ANY, _("200"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText221111111->Wrap( -1 );
 	fgSizer25->Add( m_staticText221111111, 0, wxALL, 5 );
 	
