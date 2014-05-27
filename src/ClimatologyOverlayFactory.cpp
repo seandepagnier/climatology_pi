@@ -489,8 +489,10 @@ havedata:
                 if(!m_WindData[month])
                     continue;
                 WindData::WindPolar *polar = m_WindData[month]->GetPolar(lat, lon);
-                if(!polar || polar->storm == 255)
-                    continue;
+                if(!polar) {
+                    mcount = 0; /* average invalid if missing any month */
+                    break;
+                }
 
                 int mdir_cnt = m_WindData[month]->dir_cnt;
                 storm += polar->storm;
@@ -511,7 +513,7 @@ havedata:
             wp.storm = storm / mcount;
             wp.calm = calm / mcount;
 
-            /* fit  back to 256 */
+            /* fit back to 256 */
             while(max_value(directions, dir_cnt) >= 256 || max_value(speeds, dir_cnt) >= 256) {
                 if(max_value(directions, dir_cnt) == 0) { /* corrupted data */
                     wp.storm = 255;
@@ -707,10 +709,9 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
             //char *saveptr;
             int year = strtol(strtok(line, " "), 0, 10);
             ElNinoYear elninoyear;
-            for(int i=0; i<12; i++) {
+            for(int i=0; i<12; i++)
                 elninoyear.months[i] = strtod_nan(strtok(0, " \n"));
-                printf("%d %d = %f\n", year, i, elninoyear.months[i]);
-            }
+
             m_ElNinoYears[year] = elninoyear;
         }
     }
@@ -1817,7 +1818,7 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
     for(double lat = round(vp.lat_min/step)*step-1; lat <= vp.lat_max+1; lat+=step)
         for(double lon = round(vp.lon_min/step)*step-1; lon <= vp.lon_max+1; lon+=step) {
             WindData::WindPolar *polar = m_WindData[m_CurrentMonth]->GetPolar(lat, positive_degrees(lon));
-            if(!polar || polar->storm == 255)
+            if(!polar)
                 continue;
 
             wxPoint p;

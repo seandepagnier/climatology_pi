@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2013 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2014 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -113,7 +113,7 @@ int climatology_pi::Init(void)
 
 bool climatology_pi::DeInit(void)
 {
-    SendClimatology(NULL);
+    SendClimatology(false);
     if(m_pClimatologyDialog) {
         m_pClimatologyDialog->Close();
         delete m_pClimatologyDialog;
@@ -217,6 +217,56 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
     return true;
 }
 
+static double interpquad(double v1, double v2, double v3, double v4, double d1, double d2)
+{
+        double w1 = d1*v3 + (1-d1)*v1;
+        double w2 = d1*v4 + (1-d1)*v2;
+        return      d2*w2 + (1-d2)*w1;
+}
+
+static bool ClimatologyWindAtlasData(wxDateTime &date, double lat, double lon,
+                                     int &count, double *directions, double *speeds,
+                                     double &storm, double &calm)
+{
+    if(!s_pOverlayFactory)
+        return false;
+
+    double latf = floor(lat), latc = ceil(lat), lonf = floor(lon), lonc = ceil(lon);
+    double latd = lat - latf, lond = lon - lonf;
+
+    WindData::WindPolar *p1, *p2, *p3, *p4;
+
+    if(!(p1 = s_pOverlayFactory->GetWindPolar(date, latf, lonf)) ||
+       !(p2 = s_pOverlayFactory->GetWindPolar(date, latf, lonc)) ||
+       !(p3 = s_pOverlayFactory->GetWindPolar(date, latc, lonf)) ||
+       !(p4 = s_pOverlayFactory->GetWindPolar(date, latc, lonc)))
+        return false;
+
+    int dir_cnt = 8;//s_pOverlayFactory->m_WindData[month];
+    if(dir_cnt > count)
+        return false;
+
+    double t1 = 0, t2 = 0, t3 = 0, t4 = 0;
+    for(int i=0; i<dir_cnt; i++) {
+        t1 += p1->directions[i];
+        t2 += p2->directions[i];
+        t3 += p3->directions[i];
+        t4 += p4->directions[i];
+    }
+
+    for(int i=0; i<dir_cnt; i++) {
+        directions[i] = interpquad(p1->directions[i]/t1, p2->directions[i]/t2,
+                                   p3->directions[i]/t3, p4->directions[i]/t4, latd, lond);
+        speeds[i] = interpquad(p1->directions[i]/t1, p2->directions[i]/t2,
+                               p3->directions[i]/t3, p4->directions[i]/t4, latd, lond);
+    }
+
+    storm = interpquad(p1->storm, p2->storm, p3->storm, p4->storm, latd, lond) / 100.0;
+    calm = interpquad(p1->calm, p2->calm, p3->calm, p4->calm, latd, lond) / 100.0;
+
+    return true;
+}
+
 static int ClimatologyCycloneTrackCrossings(double lat1, double lon1, double lat2, double lon2,
                                             const wxDateTime &date, int dayrange, int min_windspeed,
                                             const wxDateTime &cyclonedata_startdate)
@@ -240,7 +290,7 @@ void climatology_pi::OnToolbarToolCallback(int id)
         m_pOverlayFactory = new ClimatologyOverlayFactory( *m_pClimatologyDialog );
 
         s_pOverlayFactory = m_pOverlayFactory;
-        SendClimatology(ClimatologyData);
+        SendClimatology(true);
 
         RequestRefresh(m_parent_window); // refresh main window
     }
@@ -286,18 +336,20 @@ void climatology_pi::SetCursorLatLon(double lat, double lon)
         m_pClimatologyDialog->SetCursorLatLon(lat, lon);
 }
 
-void climatology_pi::SendClimatology(bool (*ClimatologyData)(int, wxDateTime &, double, double,
-                                                             double &, double &))
+void climatology_pi::SendClimatology(bool valid)
 {
     wxJSONValue v;
     v[_T("ClimatologyVersionMajor")] = GetPlugInVersionMajor();
     v[_T("ClimatologyVersionMinor")] = GetPlugInVersionMinor();
 
     char ptr[64];
-    snprintf(ptr, sizeof ptr, "%p", ClimatologyData);
+    snprintf(ptr, sizeof ptr, "%p", valid ? ClimatologyData : NULL);
     v[_T("ClimatologyDataPtr")] = wxString::From8BitData(ptr);
 
-    snprintf(ptr, sizeof ptr, "%p", ClimatologyCycloneTrackCrossings);
+    snprintf(ptr, sizeof ptr, "%p", valid ? ClimatologyWindAtlasData : NULL);
+    v[_T("ClimatologyWindAtlasDataPtr")] = wxString::From8BitData(ptr);
+
+    snprintf(ptr, sizeof ptr, "%p", valid ? ClimatologyCycloneTrackCrossings : NULL);
     v[_T("ClimatologyCycloneTrackCrossingsPtr")] = wxString::From8BitData(ptr);
     
     wxJSONWriter w;
@@ -309,7 +361,7 @@ void climatology_pi::SendClimatology(bool (*ClimatologyData)(int, wxDateTime &, 
 void climatology_pi::SetPluginMessage(wxString &message_id, wxString &message_body)
 {
     if(message_id == _T("CLIMATOLOGY_REQUEST")) {
-        SendClimatology(ClimatologyData);
+        SendClimatology(true);
     }
 }
 

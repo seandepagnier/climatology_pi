@@ -77,8 +77,7 @@ public:
 //    The override PlugIn Methods
       bool RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp);
       void SetCursorLatLon(double lat, double lon);
-      void SendClimatology(bool (*ClimatologyData)(int, wxDateTime &, double, double,
-                                                   double &, double &));
+      void SendClimatology(bool valid);
       void SetPluginMessage(wxString &message_id, wxString &message_body);
       bool RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp);
       void SetDefaults(void);

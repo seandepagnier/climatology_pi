@@ -55,7 +55,12 @@ struct WindData
         int loni = round(longitudes*lon/360.0);
         if(lati < 0 || lati >= latitudes || loni < 0 || loni >= longitudes)
             return NULL;
-        return &data[lati*longitudes + loni];
+
+        WindPolar *polar = &data[lati*longitudes + loni];
+        if(polar->storm == 255)
+            return NULL;
+
+        return polar;
     }
 
     int latitudes, longitudes, dir_cnt;
@@ -170,6 +175,9 @@ public:
 
     void ReadWindData(int month, wxString filename);
     void AverageWindData();
+    WindData::WindPolar *GetWindPolar(wxDateTime &date, double lat, double lon)
+    { return m_WindData[date.GetMonth()]->GetPolar(lat, lon); }
+
     void ReadCurrentData(int month, wxString filename);
     void AverageCurrentData();
     bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
