@@ -213,7 +213,9 @@ public:
 
     static wxColour GetGraphicColor(int setting, double val_in, wxUint8 &transp);
 
-    int m_CurrentMonth;
+    wxDateTime m_CurrentTimeline;
+    bool m_bAllTimes;
+
     bool m_bUpdateCyclones;
 
 private:

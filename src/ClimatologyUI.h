@@ -17,6 +17,7 @@
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
+#include <wx/spinctrl.h>
 #include <wx/checkbox.h>
 #include <wx/sizer.h>
 #include <wx/slider.h>
@@ -25,7 +26,6 @@
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/stattext.h>
-#include <wx/spinctrl.h>
 #include <wx/radiobut.h>
 #include <wx/clrpicker.h>
 #include <wx/panel.h>
@@ -48,6 +48,7 @@ class ClimatologyDialogBase : public wxDialog
 	private:
 	
 	protected:
+		wxSpinCtrl* m_sDay;
 		wxTextCtrl* m_tWind;
 		wxTextCtrl* m_tWindDir;
 		wxTextCtrl* m_tCurrent;
@@ -60,10 +61,11 @@ class ClimatologyDialogBase : public wxDialog
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnMonth( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDay( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnAll( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnMonthScroll( wxScrollEvent& event ) { event.Skip(); }
-		virtual void OnMonthDown( wxScrollEvent& event ) { event.Skip(); }
-		virtual void OnMonthUp( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnTimeline( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnTimelineDown( wxScrollEvent& event ) { event.Skip(); }
+		virtual void OnTimelineUp( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfig( wxCommandEvent& event ) { event.Skip(); }
 		
@@ -71,7 +73,7 @@ class ClimatologyDialogBase : public wxDialog
 	public:
 		wxChoice* m_cMonth;
 		wxCheckBox* m_cbAll;
-		wxSlider* m_sMonth;
+		wxSlider* m_sTimeline;
 		wxCheckBox* m_cbWind;
 		wxCheckBox* m_cbCurrent;
 		wxCheckBox* m_cbPressure;
@@ -137,6 +139,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxStaticText* m_staticText14;
 		wxStaticText* m_staticText19;
 		wxPanel* m_panel2;
+		wxStaticText* m_staticText30;
 		wxStaticText* m_staticText4;
 		wxStaticText* m_staticText5;
 		wxPanel* m_panel51;
@@ -190,6 +193,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxSlider* m_sWindAtlasOpacity;
 		wxDatePickerCtrl* m_dPStart;
 		wxDatePickerCtrl* m_dPEnd;
+		wxSpinCtrl* m_sCycloneDaySpan;
 		wxSpinCtrl* m_sMinWindSpeed;
 		wxSpinCtrl* m_sMaxPressure;
 		wxCheckBox* m_cbEastPacific;

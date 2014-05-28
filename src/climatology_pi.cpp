@@ -292,6 +292,7 @@ void climatology_pi::OnToolbarToolCallback(int id)
         s_pOverlayFactory = m_pOverlayFactory;
         SendClimatology(true);
 
+        m_pClimatologyDialog->UpdateTrackingControls();
         RequestRefresh(m_parent_window); // refresh main window
     }
 

@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2013 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2014 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -73,11 +73,15 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 
     PopulateTrackingControls();
 
-    int current_month = wxDateTime::Now().GetMonth();
-    m_cMonth->SetSelection(current_month);
-    if(current_month <= 2)
-        current_month += 12;
-    m_sMonth->SetValue(current_month);
+    wxDateTime now = wxDateTime::Now();
+
+    m_cMonth->SetSelection(now.GetMonth());
+    m_sDay->SetValue(now.GetDay());
+
+    int timeline = now.GetDayOfYear();
+    if(timeline <= 67)
+        timeline += 356;
+    m_sTimeline->SetValue(timeline);
 
     DimeWindow( this );
 }
@@ -109,8 +113,6 @@ void ClimatologyDialog::UpdateTrackingControls()
 {
     if(!pPlugIn->GetOverlayFactory())
         return;
-
-    pPlugIn->GetOverlayFactory()->m_CurrentMonth = m_cbAll->GetValue() ? 12 : (m_sMonth->GetValue() % 12);
 
     m_tWind->SetValue(GetValue(ClimatologyOverlaySettings::WIND));
     m_tWindDir->SetValue(GetValue(ClimatologyOverlaySettings::WIND, MDIRECTION));
@@ -177,38 +179,61 @@ wxString ClimatologyDialog::GetValue(int index, Coord coord)
                             (coord, index, m_cursorlat, m_cursorlon));
 }
 
-void ClimatologyDialog::OnMonth( wxCommandEvent& event )
+void ClimatologyDialog::DayMonthUpdate()
 {
-    m_sMonth->SetValue(event.GetSelection());
+    wxDateTime &timeline =     pPlugIn->GetOverlayFactory()->m_CurrentTimeline;
+    m_sDay->SetRange(1, wxDateTime::GetNumberOfDays((wxDateTime::Month)m_cMonth->GetSelection(),
+                                                    1999)); // not a leap year
+
+    timeline.SetMonth((wxDateTime::Month)m_cMonth->GetSelection());
+    timeline.SetDay(m_sDay->GetValue());
+
+    int yearday = pPlugIn->GetOverlayFactory()->m_CurrentTimeline.GetDayOfYear();
+    if(yearday < 67)
+        yearday += 365;
+    m_sTimeline->SetValue(yearday);
+
+    UpdateTrackingControls();
+
+    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
+    RefreshRedraw();
+}
+
+void ClimatologyDialog::OnTimeline( wxScrollEvent& event )
+{
+    wxDateTime &timeline = pPlugIn->GetOverlayFactory()->m_CurrentTimeline;
+    timeline.SetToYearDay((event.GetPosition() - 1) % 365 + 1);
+    m_cMonth->SetSelection(timeline.GetMonth());
+
+    m_sDay->SetRange(1, wxDateTime::GetNumberOfDays(timeline.GetMonth(),
+                                                    1999)); // not a leap year
+    m_sDay->SetValue(timeline.GetDay());
+
     UpdateTrackingControls();
     pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
     RefreshRedraw();
 }
 
-void ClimatologyDialog::OnMonthScroll( wxScrollEvent& event )
+void ClimatologyDialog::OnTimelineDown( wxScrollEvent& event )
 {
-    m_cMonth->SetSelection(event.GetPosition() % 12);
-    UpdateTrackingControls();
-    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
-    RefreshRedraw();
+    if(event.GetPosition() >= 432)
+        m_sTimeline->SetValue(event.GetPosition() - 365);
 }
 
-void ClimatologyDialog::OnMonthDown( wxScrollEvent& event )
+void ClimatologyDialog::OnTimelineUp( wxScrollEvent& event )
 {
-    if(event.GetPosition() >= 15)
-        m_sMonth->SetValue(event.GetPosition() - 12);
-}
-
-void ClimatologyDialog::OnMonthUp( wxScrollEvent& event )
-{
-    if(event.GetPosition() <= 2)
-        m_sMonth->SetValue(event.GetPosition() + 12);
+    if(event.GetPosition() <= 67)
+        m_sTimeline->SetValue(event.GetPosition() + 365);
 }
 
 void ClimatologyDialog::OnAll( wxCommandEvent& event )
 {
     m_cMonth->Enable(!m_cbAll->GetValue());
-    m_sMonth->Enable(!m_cbAll->GetValue());
+    m_sDay->Enable(!m_cbAll->GetValue());
+    m_sTimeline->Enable(!m_cbAll->GetValue());
+
+    pPlugIn->GetOverlayFactory()->m_bAllTimes = event.IsChecked();
+
     UpdateTrackingControls();
     pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
     RefreshRedraw();

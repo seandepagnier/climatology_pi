@@ -22,7 +22,7 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	sbSizer21 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Month") ), wxVERTICAL );
 	
 	wxFlexGridSizer* fgSizer23;
-	fgSizer23 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer23 = new wxFlexGridSizer( 0, 3, 0, 0 );
 	fgSizer23->AddGrowableCol( 0 );
 	fgSizer23->SetFlexibleDirection( wxBOTH );
 	fgSizer23->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -33,14 +33,17 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	m_cMonth->SetSelection( 0 );
 	fgSizer23->Add( m_cMonth, 0, wxALL|wxEXPAND, 5 );
 	
+	m_sDay = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 40,-1 ), wxSP_ARROW_KEYS, 1, 31, 1 );
+	fgSizer23->Add( m_sDay, 0, wxALL, 5 );
+	
 	m_cbAll = new wxCheckBox( this, wxID_ANY, _("All"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer23->Add( m_cbAll, 0, wxALL, 5 );
 	
 	
 	sbSizer21->Add( fgSizer23, 1, wxEXPAND, 5 );
 	
-	m_sMonth = new wxSlider( this, wxID_ANY, 0, 0, 17, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-	sbSizer21->Add( m_sMonth, 0, wxEXPAND, 5 );
+	m_sTimeline = new wxSlider( this, wxID_ANY, 0, 0, 500, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	sbSizer21->Add( m_sTimeline, 0, wxEXPAND, 5 );
 	
 	
 	fgSizer1->Add( sbSizer21, 1, wxEXPAND, 5 );
@@ -178,18 +181,19 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	// Connect Events
 	m_cMonth->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
+	m_sDay->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyDialogBase::OnDay ), NULL, this );
 	m_cbAll->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnAll ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnMonthDown ), NULL, this );
-	m_sMonth->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnMonthUp ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnTimelineDown ), NULL, this );
+	m_sTimeline->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnTimelineUp ), NULL, this );
 	m_cbWind->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_cbCurrent->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_cbPressure->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
@@ -208,18 +212,19 @@ ClimatologyDialogBase::~ClimatologyDialogBase()
 {
 	// Disconnect Events
 	m_cMonth->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
+	m_sDay->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyDialogBase::OnDay ), NULL, this );
 	m_cbAll->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnAll ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyDialogBase::OnMonthScroll ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnMonthDown ), NULL, this );
-	m_sMonth->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnMonthUp ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_PAGEUP, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_THUMBRELEASE, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler( ClimatologyDialogBase::OnTimelineDown ), NULL, this );
+	m_sTimeline->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnTimelineUp ), NULL, this );
 	m_cbWind->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_cbCurrent->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
 	m_cbPressure->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnUpdate ), NULL, this );
@@ -522,6 +527,32 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	
 	fgSizer5->Add( sbSizer8, 1, wxEXPAND, 5 );
 	
+	wxFlexGridSizer* fgSizer30;
+	fgSizer30 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer30->SetFlexibleDirection( wxBOTH );
+	fgSizer30->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxStaticBoxSizer* sbSizer11;
+	sbSizer11 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Display Spanning") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer291;
+	fgSizer291 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer291->SetFlexibleDirection( wxBOTH );
+	fgSizer291->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_sCycloneDaySpan = new wxSpinCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 365, 30 );
+	fgSizer291->Add( m_sCycloneDaySpan, 0, wxALL, 5 );
+	
+	m_staticText30 = new wxStaticText( m_panel2, wxID_ANY, _("days"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText30->Wrap( -1 );
+	fgSizer291->Add( m_staticText30, 0, wxALL, 5 );
+	
+	
+	sbSizer11->Add( fgSizer291, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer30->Add( sbSizer11, 1, wxEXPAND, 5 );
+	
 	wxFlexGridSizer* fgSizer28;
 	fgSizer28 = new wxFlexGridSizer( 0, 2, 0, 0 );
 	fgSizer28->SetFlexibleDirection( wxBOTH );
@@ -535,7 +566,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer28->Add( m_sMinWindSpeed, 0, wxALL, 5 );
 	
 	
-	fgSizer5->Add( fgSizer28, 1, wxEXPAND, 5 );
+	fgSizer30->Add( fgSizer28, 1, wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer29;
 	fgSizer29 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -550,7 +581,10 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer29->Add( m_sMaxPressure, 0, wxALL, 5 );
 	
 	
-	fgSizer5->Add( fgSizer29, 1, wxEXPAND, 5 );
+	fgSizer30->Add( fgSizer29, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer5->Add( fgSizer30, 1, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer3;
 	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Theatre") ), wxVERTICAL );
@@ -852,6 +886,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdateScroll ), NULL, this );
 	m_dPStart->Connect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesDate ), NULL, this );
 	m_dPEnd->Connect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesDate ), NULL, this );
+	m_sCycloneDaySpan->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
 	m_sMinWindSpeed->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
 	m_sMaxPressure->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
 	m_cbEastPacific->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
@@ -933,6 +968,7 @@ ClimatologyConfigDialogBase::~ClimatologyConfigDialogBase()
 	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdateScroll ), NULL, this );
 	m_dPStart->Disconnect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesDate ), NULL, this );
 	m_dPEnd->Disconnect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesDate ), NULL, this );
+	m_sCycloneDaySpan->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
 	m_sMinWindSpeed->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
 	m_sMaxPressure->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
 	m_cbEastPacific->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );

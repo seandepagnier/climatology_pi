@@ -65,7 +65,8 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
         m_CurrentData[month] = NULL;
     }
 
-    m_CurrentMonth = wxDateTime::Now().GetMonth();
+    m_CurrentTimeline = wxDateTime::Now();
+    m_CurrentTimeline.SetYear(1999); /* without leap year */
 
     wxProgressDialog progressdialog( _("Climatology"), wxString(), 37, &m_dlg,
                                      wxPD_CAN_ABORT | wxPD_ELAPSED_TIME);
@@ -1260,7 +1261,7 @@ double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
         return NAN;
 
     /* todo: interpolate values between months to date */
-    int month = date ? date->GetMonth() : m_CurrentMonth;
+    int month = date ? date->GetMonth() : m_bAllTimes ? 12 : m_CurrentTimeline.GetMonth();
     switch(setting) {
     case ClimatologyOverlaySettings::WIND:
         if(m_WindData[month])
@@ -1434,7 +1435,7 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
     if(!m_Settings.Settings[setting].m_bOverlayMap)
         return;
 
-    int month = m_CurrentMonth;
+    int month = m_bAllTimes ? 12 : m_CurrentTimeline.GetMonth();
     if(setting == ClimatologyOverlaySettings::SEADEPTH)
         month = 0;
 
@@ -1544,7 +1545,7 @@ recompute:
     if(!m_Settings.Settings[setting].m_bIsoBars)
         return;
 
-    int month = m_CurrentMonth;
+    int month = m_bAllTimes ? 12 : m_CurrentTimeline.GetMonth();
     if(setting == ClimatologyOverlaySettings::SEADEPTH)
         month = 0;
 
@@ -1607,17 +1608,19 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
     if(!m_Settings.Settings[setting].m_bDirectionArrows)
         return;
 
+    int month = m_bAllTimes ? 12 : m_CurrentTimeline.GetMonth();
+
     double step;
     switch(setting) {
     case ClimatologyOverlaySettings::WIND:
-        if(!m_WindData[m_CurrentMonth])
+        if(!m_WindData[month])
             return;
-        step = 360.0 / m_WindData[m_CurrentMonth]->longitudes;
+        step = 360.0 / m_WindData[month]->longitudes;
         break;
     case ClimatologyOverlaySettings::CURRENT:
-        if(!m_CurrentData[m_CurrentMonth])
+        if(!m_CurrentData[month])
             return;
-        step = 360.0 / m_CurrentData[m_CurrentMonth]->longitudes;
+        step = 360.0 / m_CurrentData[month]->longitudes;
         break;
     default: return;
     }
@@ -1692,11 +1695,13 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
     if(!cb->GetValue())
         return;
 
-    int statemask=0;
+    int statemask = 0;
     statemask |= 1*m_dlg.m_cfgdlg->m_cbTropical->GetValue();
     statemask |= 2*m_dlg.m_cfgdlg->m_cbSubTropical->GetValue();
     statemask |= 4*m_dlg.m_cfgdlg->m_cbExtraTropical->GetValue();
     statemask |= 8*m_dlg.m_cfgdlg->m_cbRemanent->GetValue();
+
+    int dayspan = m_dlg.m_cfgdlg->m_sCycloneDaySpan->GetValue();
 
     wxDateTime start = wxDateTime::Now();
     for(std::list<Cyclone*>::iterator it = cyclones.begin(); it != cyclones.end(); it++) {
@@ -1711,10 +1716,12 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
             CycloneState *ss = *it2;
             double lat = ss->latitude, lon = ss->longitude;
             int year = ss->datetime.year;
-            wxDateTime dt = ss->datetime.DateTime();
+            wxDateTime dt = ss->datetime.DateTime(), dt2 = dt;
+            dt2.SetMonth(m_CurrentTimeline.GetMonth());
+            dt2.SetDay(m_CurrentTimeline.GetDay());
             std::map<int, ElNinoYear>::iterator it;
 
-            if(!m_dlg.m_cbAll->GetValue() && m_CurrentMonth != ss->datetime.month)
+            if(!m_dlg.m_cbAll->GetValue() && abs((dt2 - dt).GetDays()) > dayspan/2)
                 goto skip;
 
             if((dt < m_dlg.m_cfgdlg->m_dPStart->GetValue()) ||
@@ -1802,10 +1809,11 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
 
 void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
 {
-    if(!m_dlg.m_cfgdlg->m_cbWindAtlasEnable->GetValue() || !m_WindData[m_CurrentMonth])
+    int month = m_bAllTimes ? 12 : m_CurrentTimeline.GetMonth();
+    if(!m_dlg.m_cfgdlg->m_cbWindAtlasEnable->GetValue() || !m_WindData[month])
         return;
 
-    double step = 360.0 / (m_WindData[m_CurrentMonth]->longitudes);
+    double step = 360.0 / (m_WindData[month]->longitudes);
     const double r = 12;
     double size = m_dlg.m_cfgdlg->m_sWindAtlasSize->GetValue();
     double spacing = m_dlg.m_cfgdlg->m_sWindAtlasSpacing->GetValue();
@@ -1814,10 +1822,10 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
           (vp.lon_max - vp.lon_min) / step > w / spacing)
         step *= 2;
 
-    int dir_cnt = m_WindData[m_CurrentMonth]->dir_cnt;
+    int dir_cnt = m_WindData[month]->dir_cnt;
     for(double lat = round(vp.lat_min/step)*step-1; lat <= vp.lat_max+1; lat+=step)
         for(double lon = round(vp.lon_min/step)*step-1; lon <= vp.lon_max+1; lon+=step) {
-            WindData::WindPolar *polar = m_WindData[m_CurrentMonth]->GetPolar(lat, positive_degrees(lon));
+            WindData::WindPolar *polar = m_WindData[month]->GetPolar(lat, positive_degrees(lon));
             if(!polar)
                 continue;
 

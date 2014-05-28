@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2013 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2014 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -67,10 +67,12 @@ private:
 
     wxString GetValue(int index, Coord coord=MAG);
 
-    void OnMonth( wxCommandEvent& event );
-    void OnMonthScroll( wxScrollEvent& event );
-    void OnMonthDown( wxScrollEvent& event );
-    void OnMonthUp( wxScrollEvent& event );
+    void DayMonthUpdate();
+    void OnMonth( wxCommandEvent& event ) { DayMonthUpdate(); }
+    void OnDay( wxSpinEvent& event ) { DayMonthUpdate(); }
+    void OnTimeline( wxScrollEvent& event );
+    void OnTimelineDown( wxScrollEvent& event );
+    void OnTimelineUp( wxScrollEvent& event );
     void OnAll( wxCommandEvent& event );
     void OnUpdate( wxCommandEvent& event );
     void OnUpdate2( wxCommandEvent& event ) { OnUpdate(event); }
