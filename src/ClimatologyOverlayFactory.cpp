@@ -35,6 +35,8 @@
 #define GL_TEXTURE_RECTANGLE_ARB          0x84F5
 #endif
 
+static bool multitexturing = false;
+
 double deg2rad(double degrees)
 {
   return M_PI * degrees / 180.0;
@@ -60,6 +62,14 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
       m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonesDisplayList(0),
       m_bFailedLoading(false)
 {
+
+    const char *version = (const char *)glGetString(GL_VERSION);
+    int major, minor;
+    sscanf(version, "%d.%d", &major, &minor);
+
+    if(major > 1 || minor >= 3)
+        multitexturing = true;
+
     for(int month = 0; month<13; month++) {
         m_WindData[month] = NULL;
         m_CurrentData[month] = NULL;
@@ -970,8 +980,6 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     return true;
 }
 
-static bool multitexturing = true;
-
 static inline void glTexCoord2d_2(double x, double y)
 {
     glMultiTexCoord2d(GL_TEXTURE0_ARB, x, y);
@@ -1503,26 +1511,34 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
     if(!m_Settings.Settings[setting].m_bOverlayMap)
         return;
 
-    int month = m_bAllTimes ? 12 : m_CurrentTimeline.GetMonth();
-    if(setting == ClimatologyOverlaySettings::SEADEPTH)
-        month = 0;
+    int month, nmonth;
+    double dpos;
 
-    int day = m_CurrentTimeline.GetDay();
-    int daysinmonth = wxDateTime::GetNumberOfDays(m_CurrentTimeline.GetMonth());
-    double dpos = (day-.5) / daysinmonth;
-    int nmonth;
-    if(dpos > .5) {
-        nmonth = month + 1;
-        if(nmonth == 12)
-            nmonth = 0;
-        dpos = 1.5 - dpos;
+    if(setting == ClimatologyOverlaySettings::SEADEPTH) {
+        month = nmonth = 0;
+        dpos = 1;
+    } else if(m_bAllTimes) {
+        month = nmonth = 12;
+        dpos = 1;
     } else {
-        nmonth = month - 1;
-        if(nmonth == -1)
-            nmonth = 11;
-        dpos = .5 + dpos;
-    }
+        month = m_CurrentTimeline.GetMonth();
+        int day = m_CurrentTimeline.GetDay();
+        int daysinmonth = wxDateTime::GetNumberOfDays(m_CurrentTimeline.GetMonth());
+        dpos = (day-.5) / daysinmonth;
 
+        if(dpos > .5) {
+            nmonth = month + 1;
+            if(nmonth == 12)
+                nmonth = 0;
+            dpos = 1.5 - dpos;
+        } else {
+            nmonth = month - 1;
+            if(nmonth == -1)
+                nmonth = 11;
+            dpos = .5 + dpos;
+        }
+    }
+        
     ClimatologyOverlay &O1 = m_pOverlay[month][setting];
     ClimatologyOverlay &O2 = m_pOverlay[nmonth][setting];
 
