@@ -233,7 +233,8 @@ private:
     void RenderCyclones(PlugIn_ViewPort &vp);
 
     bool CreateGLTexture(ClimatologyOverlay &O, int setting, int month, PlugIn_ViewPort &vp);
-    void DrawGLTexture(ClimatologyOverlay &O, PlugIn_ViewPort &vp, double transparency);
+    void DrawGLTexture( ClimatologyOverlay &O1, ClimatologyOverlay &O2,
+                        double dpos, PlugIn_ViewPort &vp, double transparency);
 
     void RenderOverlayMap( int setting, PlugIn_ViewPort &vp);
 

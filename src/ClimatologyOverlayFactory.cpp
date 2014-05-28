@@ -929,20 +929,15 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
             lat = 2*rad2deg(atan(exp(lat))) - 90;
             double lon = x/s;
 
-            double v = getCurValue(MAG, setting, lat, lon);
-            unsigned char r, g, b, a;
+            double v = getValueMonth(MAG, setting, lat, lon, month);
             wxUint8 t;
             wxColour c = GetGraphicColor(setting, v, t);
-            r = c.Red();
-            g = c.Green();
-            b = c.Blue();
-            a = t;
 
             int doff = 4*(y*width + x);
-            data[doff + 0] = 255-r;
-            data[doff + 1] = 255-g;
-            data[doff + 2] = 255-b;
-            data[doff + 3] = a;
+            data[doff + 0] = c.Red();
+            data[doff + 1] = c.Green();
+            data[doff + 2] = c.Blue();
+            data[doff + 3] = t;
         }
     }
     delete progressdialog;
@@ -950,6 +945,9 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     GLuint texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture);
+
+    glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
 
@@ -972,19 +970,55 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     return true;
 }
 
-void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_ViewPort &vp, double transparency)
+static bool multitexturing = true;
+
+static inline void glTexCoord2d_2(double x, double y)
+{
+    glMultiTexCoord2d(GL_TEXTURE0_ARB, x, y);
+    if(multitexturing)
+        glMultiTexCoord2d(GL_TEXTURE1_ARB, x, y);
+}
+
+void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, ClimatologyOverlay &O2,
+                                               double dpos, PlugIn_ViewPort &vp, double transparency)
 { 
-    if( !O.m_iTexture )
+    if( !O1.m_iTexture || !O2.m_iTexture )
         return;
 
-    glEnable(GL_TEXTURE_RECTANGLE_ARB);
-    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O.m_iTexture);
+    if(multitexturing) {
+        glActiveTextureARB (GL_TEXTURE0_ARB);
+        glEnable(GL_TEXTURE_RECTANGLE_ARB);
+        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O2.m_iTexture);
 
-    glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+        glActiveTextureARB (GL_TEXTURE1_ARB);
+    }
+
+    glEnable(GL_TEXTURE_RECTANGLE_ARB);
+    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O1.m_iTexture);
+
+    if(multitexturing) {
+        float fpos = dpos;
+        GLfloat constColor[4] = {fpos, fpos, fpos, fpos};
+        glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_INTERPOLATE);
+        glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_INTERPOLATE);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
+        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
+        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
+        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PREVIOUS);
+        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+    }
 
     glColor4f(1, 1, 1, 1 - transparency);
-    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
     
     int x = vp.rv_rect.x, y = vp.rv_rect.y;
     int w = vp.rv_rect.width, h = vp.rv_rect.height;
@@ -997,11 +1031,11 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_Vie
     vp.rotation = tr;
 
     lon1 = positive_degrees(lon1), lon2 = positive_degrees(lon2);
-    lon2 *= O.m_width/360.0, lon1 *= O.m_width/360.0;
+    lon2 *= O1.m_width/360.0, lon1 *= O1.m_width/360.0;
 
     double s1 = sin(deg2rad(lat1)), s2 = sin(deg2rad(lat2));
     double y1 = .5 * log((1 + s1) / (1 - s1)), y2 = .5 * log((1 + s2) / (1 - s2));
-    y1 = O.m_height*(1 + y1/M_PI)/2, y2 = O.m_height*(1 + y2/M_PI)/2;
+    y1 = O1.m_height*(1 + y1/M_PI)/2, y2 = O1.m_height*(1 + y2/M_PI)/2;
 
     lon2+=1;
     y2+=1;
@@ -1021,23 +1055,25 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O, PlugIn_Vie
         GetCanvasPixLL( &vp, &p, 0, 0 );
         x = p.x;
 
-        glTexCoord2d(lon1,        y1), glVertex2i(x0, y);
-        glTexCoord2d(O.m_width+1, y1), glVertex2i(x, y);
-        glTexCoord2d(O.m_width+1, y2), glVertex2i(x, h);
-        glTexCoord2d(lon1,        y2), glVertex2i(x0, h);
-
+        glTexCoord2d_2(lon1,        y1),  glVertex2i(x0, y);
+        glTexCoord2d_2(O1.m_width+1, y1), glVertex2i(x, y);
+        glTexCoord2d_2(O1.m_width+1, y2), glVertex2i(x, h);
+        glTexCoord2d_2(lon1,        y2),  glVertex2i(x0, h);
         lon1 = 0;
     }
 
-    glTexCoord2d(lon1, y1), glVertex2i(x, y);
-    glTexCoord2d(lon2, y1), glVertex2i(w, y);
-    glTexCoord2d(lon2, y2), glVertex2i(w, h);
-    glTexCoord2d(lon1, y2), glVertex2i(x, h);
+    glTexCoord2d_2(lon1, y1), glVertex2i(x, y);
+    glTexCoord2d_2(lon2, y1), glVertex2i(w, y);
+    glTexCoord2d_2(lon2, y2), glVertex2i(w, h);
+    glTexCoord2d_2(lon1, y2), glVertex2i(x, h);
     glEnd();
-    
+
     glPopMatrix();
 
-    glDisable(GL_BLEND);
+    if(multitexturing) {
+        glDisable(GL_TEXTURE_RECTANGLE_ARB);
+        glActiveTextureARB (GL_TEXTURE0_ARB);
+    }
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
 }
 
@@ -1260,6 +1296,9 @@ double ClimatologyOverlayFactory::getValueMonth(enum Coord coord, int setting,
        setting != ClimatologyOverlaySettings::CURRENT)
         return NAN;
 
+    if(isnan(lat) || isnan(lon))
+        return NAN;
+
     switch(setting) {
     case ClimatologyOverlaySettings::WIND:
         if(m_WindData[month])
@@ -1465,17 +1504,37 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
         return;
 
     int month = m_bAllTimes ? 12 : m_CurrentTimeline.GetMonth();
-// todo: multitexturing   int day = m_CurrentTimeline.GetDay();
     if(setting == ClimatologyOverlaySettings::SEADEPTH)
         month = 0;
 
-    ClimatologyOverlay &O = m_pOverlay[month][setting];
+    int day = m_CurrentTimeline.GetDay();
+    int daysinmonth = wxDateTime::GetNumberOfDays(m_CurrentTimeline.GetMonth());
+    double dpos = (day-.5) / daysinmonth;
+    int nmonth;
+    if(dpos > .5) {
+        nmonth = month + 1;
+        if(nmonth == 12)
+            nmonth = 0;
+        dpos = 1.5 - dpos;
+    } else {
+        nmonth = month - 1;
+        if(nmonth == -1)
+            nmonth = 11;
+        dpos = .5 + dpos;
+    }
+
+    ClimatologyOverlay &O1 = m_pOverlay[month][setting];
+    ClimatologyOverlay &O2 = m_pOverlay[nmonth][setting];
+
     if( !m_pdc )
     {
-        if( !O.m_iTexture )
-            CreateGLTexture( O, setting, month, vp);
+        if( !O1.m_iTexture )
+            CreateGLTexture( O1, setting, month, vp);
 
-        DrawGLTexture( O, vp, m_Settings.Settings[setting].m_iOverlayTransparency/100.0 );
+        if( !O2.m_iTexture )
+            CreateGLTexture( O2, setting, nmonth, vp);
+
+        DrawGLTexture( O1, O2, dpos, vp, m_Settings.Settings[setting].m_iOverlayTransparency/100.0 );
     }
     else
     {
