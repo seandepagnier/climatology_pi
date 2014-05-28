@@ -35,7 +35,9 @@
 #define GL_TEXTURE_RECTANGLE_ARB          0x84F5
 #endif
 
+#ifdef GL_VERSION_1_3
 static bool multitexturing = false;
+#endif
 
 double deg2rad(double degrees)
 {
@@ -62,13 +64,14 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
       m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonesDisplayList(0),
       m_bFailedLoading(false)
 {
-
+#ifdef GL_VERSION_1_3
     const char *version = (const char *)glGetString(GL_VERSION);
     int major, minor;
     sscanf(version, "%d.%d", &major, &minor);
 
     if(major > 1 || minor >= 3)
         multitexturing = true;
+#endif
 
     for(int month = 0; month<13; month++) {
         m_WindData[month] = NULL;
@@ -982,9 +985,13 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
 
 static inline void glTexCoord2d_2(double x, double y)
 {
-    glMultiTexCoord2d(GL_TEXTURE0_ARB, x, y);
-    if(multitexturing)
+#ifdef GL_VERSION_1_3
+    if(multitexturing) {
+        glMultiTexCoord2d(GL_TEXTURE0_ARB, x, y);
         glMultiTexCoord2d(GL_TEXTURE1_ARB, x, y);
+    } else
+#endif
+        glTexCoord2d(x, y);
 }
 
 void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, ClimatologyOverlay &O2,
@@ -993,6 +1000,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     if( !O1.m_iTexture || !O2.m_iTexture )
         return;
 
+#ifdef GL_VERSION_1_3
     if(multitexturing) {
         glActiveTextureARB (GL_TEXTURE0_ARB);
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
@@ -1002,10 +1010,12 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 
         glActiveTextureARB (GL_TEXTURE1_ARB);
     }
+#endif
 
     glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O1.m_iTexture);
 
+#ifdef GL_VERSION_1_3
     if(multitexturing) {
         float fpos = dpos;
         GLfloat constColor[4] = {fpos, fpos, fpos, fpos};
@@ -1025,7 +1035,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
         glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
     }
-
+#endif
     glColor4f(1, 1, 1, 1 - transparency);
     
     int x = vp.rv_rect.x, y = vp.rv_rect.y;
@@ -1078,10 +1088,12 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 
     glPopMatrix();
 
+#ifdef GL_VERSION_1_3
     if(multitexturing) {
         glDisable(GL_TEXTURE_RECTANGLE_ARB);
         glActiveTextureARB (GL_TEXTURE0_ARB);
     }
+#endif
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
 }
 
