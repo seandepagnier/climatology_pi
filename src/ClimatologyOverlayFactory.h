@@ -149,19 +149,19 @@ class ClimatologyIsoBarMap : public IsoBarMap
 {
 public:
  ClimatologyIsoBarMap(wxString name, double spacing, double step,
-                      ClimatologyOverlayFactory &factory, int setting, int units)
+                      ClimatologyOverlayFactory &factory, int setting, int units, int day)
      : IsoBarMap(name, spacing, step),
-        m_factory(factory), m_setting(setting), m_units(units) {}
+        m_factory(factory), m_setting(setting), m_units(units), m_day(day) {}
 
     double CalcParameter(double lat, double lon);
-    bool SameSettings(double spacing, double step, int units)
+    bool SameSettings(double spacing, double step, int units, int day)
     {
-        return spacing == m_Spacing && step == m_Step && units == m_units;
+        return spacing == m_Spacing && step == m_Step && units == m_units && day == m_day;
     }
 
 private:
     ClimatologyOverlayFactory &m_factory;
-    int m_setting, m_units;
+    int m_setting, m_units, m_day;
 };
 
 enum {WIND_SETTING, CURRENT_SETTING, PRESSURE_SETTING, SEATEMP_SETTING,
@@ -193,6 +193,7 @@ public:
     double GetMin(int setting);
     double GetMax(int setting);
 
+    double getValueMonth(enum Coord coord, int setting, double lat, double lon, int month);
     double getValue(enum Coord coord, int setting, double lat, double lon, wxDateTime *date);
     double getCurValue(enum Coord coord, int setting, double lat, double lon)
     { return getValue(coord, setting, lat, lon, 0); }

@@ -107,7 +107,7 @@ private:
     void OnUpdate( wxCommandEvent& event ) { OnUpdate(); }
     void OnUpdateSpin( wxSpinEvent& event ) { OnUpdate(); }
     void OnUpdateColor( wxColourPickerEvent& event ) { OnUpdate(); }
-    void OnUpdateScrole( wxScrollEvent& event ) { OnUpdate(); }
+    void OnUpdateScroll( wxScrollEvent& event ) { OnUpdate(); }
 
     void OnUpdateCyclones();
     void OnUpdateCyclonesDate( wxDateEvent& event ) { OnUpdateCyclones(); }
