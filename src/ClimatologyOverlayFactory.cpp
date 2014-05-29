@@ -39,6 +39,8 @@
 #define GL_ARB_multitexture 1
 #define GL_TEXTURE0_ARB                   0x84C0
 #define GL_TEXTURE1_ARB                   0x84C1
+#define GL_TEXTURE2_ARB                   0x84C2
+#define GL_MAX_TEXTURE_UNITS_ARB          0x84E2
 #endif
 
 #ifndef GL_ARB_texture_env_combine
@@ -146,7 +148,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
         if(multitexturing) {
             GLint MaxTextureUnits;
-            glGetIntegerv(GL_MAX_TEXTURE_UNITS, &MaxTextureUnits);
+            glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &MaxTextureUnits);
             if(MaxTextureUnits > 2)
                 multitexturing = 2; /* with blending */
         }
@@ -1067,7 +1069,6 @@ static inline void glTexCoord2d_2(double x, double y)
     if(multitexturing) {
         s_glMultiTexCoord2dARB(GL_TEXTURE0_ARB, x, y);
         s_glMultiTexCoord2dARB(GL_TEXTURE1_ARB, x, y);
-        s_glMultiTexCoord2dARB(GL_TEXTURE2_ARB, x, y);
     } else
         glTexCoord2d(x, y);
 }
@@ -1124,8 +1125,8 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
             glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, GL_REPLACE);
             glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, GL_MODULATE);
 
-            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB, GL_PREVIOUS);
-            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_ARB, GL_PREVIOUS);
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB, GL_PREVIOUS_ARB);
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_ARB, GL_PREVIOUS_ARB);
             glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB, GL_SRC_COLOR);
             glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA_ARB, GL_SRC_ALPHA);
 
