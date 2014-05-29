@@ -67,7 +67,7 @@
 #define GL_PREVIOUS_ARB                   0x8578
 #endif /* GL_ARB_texture_env_combine */
 
-static bool multitexturing = false;
+static int multitexturing = 0;
 static void (*s_glActiveTextureARB)( GLenum texture ) = 0;
 static void (*s_glMultiTexCoord2dARB)( GLenum target, GLdouble s, GLdouble t ) = 0;
 
@@ -143,6 +143,13 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
         s_glMultiTexCoord2dARB = (void (*)( GLenum, GLdouble, GLdouble ))
             systemGetProcAddress("glMultiTexCoord2dARB");
         multitexturing = s_glActiveTextureARB && s_glMultiTexCoord2dARB;
+
+        if(multitexturing) {
+            GLint MaxTextureUnits;
+            glGetIntegerv(GL_MAX_TEXTURE_UNITS, &MaxTextureUnits);
+            if(MaxTextureUnits > 2)
+                multitexturing = 2; /* with blending */
+        }
     }
     
     for(int month = 0; month<13; month++) {
@@ -1060,6 +1067,7 @@ static inline void glTexCoord2d_2(double x, double y)
     if(multitexturing) {
         s_glMultiTexCoord2dARB(GL_TEXTURE0_ARB, x, y);
         s_glMultiTexCoord2dARB(GL_TEXTURE1_ARB, x, y);
+        s_glMultiTexCoord2dARB(GL_TEXTURE2_ARB, x, y);
     } else
         glTexCoord2d(x, y);
 }
@@ -1074,7 +1082,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O2.m_iTexture);
-
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         s_glActiveTextureARB (GL_TEXTURE1_ARB);
     } else
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -1084,11 +1092,13 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 
     if(multitexturing) {
         float fpos = dpos;
-        GLfloat constColor[4] = {fpos, fpos, fpos, fpos};
+        GLfloat constColor[4] = {0, 0, 0, fpos};
+
         glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
 
         glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, GL_INTERPOLATE_ARB);
         glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, GL_INTERPOLATE_ARB);
+
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
 
         glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB, GL_TEXTURE);
@@ -1100,9 +1110,32 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_ARB, GL_PREVIOUS_ARB);
         glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB, GL_SRC_COLOR);
         glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA_ARB, GL_SRC_ALPHA);
+
+        if(multitexturing > 1) {
+            s_glActiveTextureARB (GL_TEXTURE2_ARB);
+
+            glEnable(GL_TEXTURE_RECTANGLE_ARB);
+            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O2.m_iTexture);
+
+            constColor[3] = 1 - transparency;
+            glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
+        
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, GL_REPLACE);
+            glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, GL_MODULATE);
+
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB, GL_PREVIOUS);
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_ARB, GL_PREVIOUS);
+            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB, GL_SRC_COLOR);
+            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA_ARB, GL_SRC_ALPHA);
+
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB, GL_CONSTANT_ARB);
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_ARB, GL_CONSTANT_ARB);
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB, GL_PRIMARY_COLOR_ARB);
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_ARB, GL_PRIMARY_COLOR_ARB);
+        }
     }
 
-    /* we need to use a shader to get transparency with multitexturing */
     glColor4f(1, 1, 1, 1 - transparency);
     
     int x = vp.rv_rect.x, y = vp.rv_rect.y;
@@ -1157,6 +1190,10 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 
 
     if(multitexturing) {
+        if(multitexturing > 1) {
+            glDisable(GL_TEXTURE_RECTANGLE_ARB);
+            s_glActiveTextureARB (GL_TEXTURE1_ARB);
+        }
         glDisable(GL_TEXTURE_RECTANGLE_ARB);
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
     }
