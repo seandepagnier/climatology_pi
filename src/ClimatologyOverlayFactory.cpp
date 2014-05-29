@@ -35,8 +35,80 @@
 #define GL_TEXTURE_RECTANGLE_ARB          0x84F5
 #endif
 
-#ifdef GL_VERSION_1_3
+#ifndef GL_ARB_multitexture
+#define GL_ARB_multitexture 1
+#define GL_TEXTURE0_ARB                   0x84C0
+#define GL_TEXTURE1_ARB                   0x84C1
+#endif
+
+#ifndef GL_ARB_texture_env_combine
+#define GL_ARB_texture_env_combine 1
+#define GL_COMBINE_ARB                    0x8570
+#define GL_COMBINE_RGB_ARB                0x8571
+#define GL_COMBINE_ALPHA_ARB              0x8572
+#define GL_SOURCE0_RGB_ARB                0x8580
+#define GL_SOURCE1_RGB_ARB                0x8581
+#define GL_SOURCE2_RGB_ARB                0x8582
+#define GL_SOURCE0_ALPHA_ARB              0x8588
+#define GL_SOURCE1_ALPHA_ARB              0x8589
+#define GL_SOURCE2_ALPHA_ARB              0x858A
+#define GL_OPERAND0_RGB_ARB               0x8590
+#define GL_OPERAND1_RGB_ARB               0x8591
+#define GL_OPERAND2_RGB_ARB               0x8592
+#define GL_OPERAND0_ALPHA_ARB             0x8598
+#define GL_OPERAND1_ALPHA_ARB             0x8599
+#define GL_OPERAND2_ALPHA_ARB             0x859A
+#define GL_RGB_SCALE_ARB                  0x8573
+#define GL_ADD_SIGNED_ARB                 0x8574
+#define GL_INTERPOLATE_ARB                0x8575
+#define GL_SUBTRACT_ARB                   0x84E7
+#define GL_CONSTANT_ARB                   0x8576
+#define GL_PRIMARY_COLOR_ARB              0x8577
+#define GL_PREVIOUS_ARB                   0x8578
+#endif /* GL_ARB_texture_env_combine */
+
 static bool multitexturing = false;
+static void (*s_glActiveTextureARB)( GLenum texture ) = 0;
+static void (*s_glMultiTexCoord2dARB)( GLenum target, GLdouble s, GLdouble t ) = 0;
+
+static GLboolean QueryExtension( const char *extName )
+{
+    /*
+     ** Search for extName in the extensions string. Use of strstr()
+     ** is not sufficient because extension names can be prefixes of
+     ** other extension names. Could use strtok() but the constant
+     ** string returned by glGetString might be in read-only memory.
+     */
+    char *p;
+    char *end;
+    int extNameLen;
+
+    extNameLen = strlen( extName );
+
+    p = (char *) glGetString( GL_EXTENSIONS );
+    if( NULL == p ) {
+        return GL_FALSE;
+    }
+
+    end = p + strlen( p );
+
+    while( p < end ) {
+        int n = strcspn( p, " " );
+        if( ( extNameLen == n ) && ( strncmp( extName, p, n ) == 0 ) ) {
+            return GL_TRUE;
+        }
+        p += ( n + 1 );
+    }
+    return GL_FALSE;
+}
+
+#if defined(__WXMSW__)
+#define systemGetProcAddress(ADDR) wglGetProcAddress(ADDR)
+#elif defined(__WXOSX__)
+#include <dlfcn.h>
+#define systemGetProcAddress(ADDR) dlsym( RTLD_DEFAULT, ADDR)
+#else
+#define systemGetProcAddress(ADDR) glXGetProcAddress((const GLubyte*)ADDR)
 #endif
 
 double deg2rad(double degrees)
@@ -64,15 +136,15 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
       m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonesDisplayList(0),
       m_bFailedLoading(false)
 {
-#ifdef GL_VERSION_1_3
-    const char *version = (const char *)glGetString(GL_VERSION);
-    int major, minor;
-    sscanf(version, "%d.%d", &major, &minor);
-
-    if(major > 1 || minor >= 3)
-        multitexturing = true;
-#endif
-
+    // assume we have GL_ARB_multitexture if this passes
+    if(QueryExtension( "GL_ARB_texture_env_combine" )) {
+        s_glActiveTextureARB = (void (*)( GLenum ))
+            systemGetProcAddress("glActiveTextureARB");
+        s_glMultiTexCoord2dARB = (void (*)( GLenum, GLdouble, GLdouble ))
+            systemGetProcAddress("glMultiTexCoord2dARB");
+        multitexturing = s_glActiveTextureARB && s_glMultiTexCoord2dARB;
+    }
+    
     for(int month = 0; month<13; month++) {
         m_WindData[month] = NULL;
         m_CurrentData[month] = NULL;
@@ -985,12 +1057,10 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
 
 static inline void glTexCoord2d_2(double x, double y)
 {
-#ifdef GL_VERSION_1_3
     if(multitexturing) {
-        glMultiTexCoord2d(GL_TEXTURE0_ARB, x, y);
-        glMultiTexCoord2d(GL_TEXTURE1_ARB, x, y);
+        s_glMultiTexCoord2dARB(GL_TEXTURE0_ARB, x, y);
+        s_glMultiTexCoord2dARB(GL_TEXTURE1_ARB, x, y);
     } else
-#endif
         glTexCoord2d(x, y);
 }
 
@@ -1000,42 +1070,39 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     if( !O1.m_iTexture || !O2.m_iTexture )
         return;
 
-#ifdef GL_VERSION_1_3
     if(multitexturing) {
-        glActiveTextureARB (GL_TEXTURE0_ARB);
+        s_glActiveTextureARB (GL_TEXTURE0_ARB);
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O2.m_iTexture);
 
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-        glActiveTextureARB (GL_TEXTURE1_ARB);
+        s_glActiveTextureARB (GL_TEXTURE1_ARB);
     }
-#endif
 
     glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O1.m_iTexture);
 
-#ifdef GL_VERSION_1_3
     if(multitexturing) {
         float fpos = dpos;
         GLfloat constColor[4] = {fpos, fpos, fpos, fpos};
         glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
 
-        glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_INTERPOLATE);
-        glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_INTERPOLATE);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+        glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, GL_INTERPOLATE_ARB);
+        glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, GL_INTERPOLATE_ARB);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
 
-        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
-        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
-        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB, GL_TEXTURE);
+        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_ARB, GL_TEXTURE);
+        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB, GL_SRC_COLOR);
+        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA_ARB, GL_SRC_ALPHA);
 
-        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
-        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PREVIOUS);
-        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB, GL_PREVIOUS_ARB);
+        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_ARB, GL_PREVIOUS_ARB);
+        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB, GL_SRC_COLOR);
+        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA_ARB, GL_SRC_ALPHA);
     }
-#endif
+
     glColor4f(1, 1, 1, 1 - transparency);
     
     int x = vp.rv_rect.x, y = vp.rv_rect.y;
@@ -1088,12 +1155,12 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 
     glPopMatrix();
 
-#ifdef GL_VERSION_1_3
+
     if(multitexturing) {
         glDisable(GL_TEXTURE_RECTANGLE_ARB);
-        glActiveTextureARB (GL_TEXTURE0_ARB);
+        s_glActiveTextureARB (GL_TEXTURE0_ARB);
     }
-#endif
+
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
 }
 
