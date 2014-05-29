@@ -431,7 +431,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_panel5->SetSizer( fgSizer12 );
 	m_panel5->Layout();
 	fgSizer12->Fit( m_panel5 );
-	m_notebook1->AddPage( m_panel5, _("Standard Displays"), false );
+	m_notebook1->AddPage( m_panel5, _("Standard Displays"), true );
 	m_panel41 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer61;
 	fgSizer61 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -497,7 +497,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_panel41->SetSizer( fgSizer61 );
 	m_panel41->Layout();
 	fgSizer61->Fit( m_panel41 );
-	m_notebook1->AddPage( m_panel41, _("Wind"), true );
+	m_notebook1->AddPage( m_panel41, _("Wind"), false );
 	m_panel2 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer26;
 	fgSizer26 = new wxFlexGridSizer( 0, 1, 0, 0 );

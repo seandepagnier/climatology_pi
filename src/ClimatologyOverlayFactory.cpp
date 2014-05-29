@@ -1075,10 +1075,9 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O2.m_iTexture);
 
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
         s_glActiveTextureARB (GL_TEXTURE1_ARB);
-    }
+    } else
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     glEnable(GL_TEXTURE_RECTANGLE_ARB);
     glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O1.m_iTexture);
@@ -1103,6 +1102,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA_ARB, GL_SRC_ALPHA);
     }
 
+    /* we need to use a shader to get transparency with multitexturing */
     glColor4f(1, 1, 1, 1 - transparency);
     
     int x = vp.rv_rect.x, y = vp.rv_rect.y;
