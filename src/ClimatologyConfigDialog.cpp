@@ -272,6 +272,7 @@ void ClimatologyConfigDialog::LoadSettings()
         EndDate = now;
     m_dPEnd->SetValue(EndDate);
 
+    m_sCycloneDaySpan->SetValue(pConf->Read ( _T ( "CycloneDaySpan" ), 30L ));
     m_sMinWindSpeed->SetValue(pConf->Read ( _T ( "MinWindSpeed" ), 35L ));
     m_sMaxPressure->SetValue(pConf->Read ( _T ( "MaxPressure" ), 1080L ));
 
@@ -299,6 +300,7 @@ void ClimatologyConfigDialog::SaveSettings()
     pConf->Write( _T ( "StartDate" ), m_dPStart->GetValue().FormatDate());
     pConf->Write( _T ( "EndDate" ), m_dPEnd->GetValue().FormatDate());
 
+    pConf->Write ( _T ( "CycloneDaySpan" ), m_sCycloneDaySpan->GetValue() );
     pConf->Write ( _T ( "MinWindSpeed" ), m_sMinWindSpeed->GetValue() );
     pConf->Write ( _T ( "MaxPressure" ), m_sMaxPressure->GetValue() );
 
