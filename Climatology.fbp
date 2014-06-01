@@ -2878,7 +2878,7 @@
                         <object class="notebookpage" expanded="1">
                             <property name="bitmap"></property>
                             <property name="label">Standard Displays</property>
-                            <property name="select">0</property>
+                            <property name="select">1</property>
                             <object class="wxPanel" expanded="1">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
@@ -6424,7 +6424,7 @@
                         <object class="notebookpage" expanded="1">
                             <property name="bitmap"></property>
                             <property name="label">Cyclones</property>
-                            <property name="select">1</property>
+                            <property name="select">0</property>
                             <object class="wxPanel" expanded="1">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
@@ -8667,15 +8667,11 @@
                                                         <property name="border">5</property>
                                                         <property name="flag">wxEXPAND</property>
                                                         <property name="proportion">1</property>
-                                                        <object class="wxFlexGridSizer" expanded="1">
+                                                        <object class="wxGridSizer" expanded="1">
                                                             <property name="cols">6</property>
-                                                            <property name="flexible_direction">wxBOTH</property>
-                                                            <property name="growablecols"></property>
-                                                            <property name="growablerows"></property>
                                                             <property name="hgap">0</property>
                                                             <property name="minimum_size"></property>
-                                                            <property name="name">fgSizer25</property>
-                                                            <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_SPECIFIED</property>
+                                                            <property name="name">gSizer1</property>
                                                             <property name="permission">none</property>
                                                             <property name="rows">0</property>
                                                             <property name="vgap">0</property>

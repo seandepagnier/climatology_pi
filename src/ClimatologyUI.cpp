@@ -685,76 +685,74 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	wxStaticBoxSizer* sbSizer10;
 	sbSizer10 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Sustained Wind Key (knots)") ), wxVERTICAL );
 	
-	wxFlexGridSizer* fgSizer25;
-	fgSizer25 = new wxFlexGridSizer( 0, 6, 0, 0 );
-	fgSizer25->SetFlexibleDirection( wxBOTH );
-	fgSizer25->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	wxGridSizer* gSizer1;
+	gSizer1 = new wxGridSizer( 0, 6, 0, 0 );
 	
 	m_panel51 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("20") );
-	fgSizer25->Add( m_panel51, 1, wxEXPAND | wxALL, 5 );
+	gSizer1->Add( m_panel51, 1, wxEXPAND | wxALL, 5 );
 	
 	m_staticText21 = new wxStaticText( m_panel2, wxID_ANY, _("20"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText21->Wrap( -1 );
-	fgSizer25->Add( m_staticText21, 0, wxALL, 5 );
+	gSizer1->Add( m_staticText21, 0, wxALL, 5 );
 	
 	m_panel511 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("40") );
-	fgSizer25->Add( m_panel511, 1, wxEXPAND | wxALL, 5 );
+	gSizer1->Add( m_panel511, 1, wxEXPAND | wxALL, 5 );
 	
 	m_staticText22 = new wxStaticText( m_panel2, wxID_ANY, _("40"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText22->Wrap( -1 );
-	fgSizer25->Add( m_staticText22, 0, wxALL, 5 );
+	gSizer1->Add( m_staticText22, 0, wxALL, 5 );
 	
 	m_panel5111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("60") );
-	fgSizer25->Add( m_panel5111, 1, wxEXPAND | wxALL, 5 );
+	gSizer1->Add( m_panel5111, 1, wxEXPAND | wxALL, 5 );
 	
 	m_staticText221 = new wxStaticText( m_panel2, wxID_ANY, _("60"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText221->Wrap( -1 );
-	fgSizer25->Add( m_staticText221, 0, wxALL, 5 );
+	gSizer1->Add( m_staticText221, 0, wxALL, 5 );
 	
 	m_panel51111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("80") );
-	fgSizer25->Add( m_panel51111, 1, wxEXPAND | wxALL, 5 );
+	gSizer1->Add( m_panel51111, 1, wxEXPAND | wxALL, 5 );
 	
 	m_staticText2211 = new wxStaticText( m_panel2, wxID_ANY, _("80"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2211->Wrap( -1 );
-	fgSizer25->Add( m_staticText2211, 0, wxALL, 5 );
+	gSizer1->Add( m_staticText2211, 0, wxALL, 5 );
 	
 	m_panel511111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("100") );
-	fgSizer25->Add( m_panel511111, 1, wxEXPAND | wxALL, 5 );
+	gSizer1->Add( m_panel511111, 1, wxEXPAND | wxALL, 5 );
 	
 	m_staticText22111 = new wxStaticText( m_panel2, wxID_ANY, _("100"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText22111->Wrap( -1 );
-	fgSizer25->Add( m_staticText22111, 0, wxALL, 5 );
+	gSizer1->Add( m_staticText22111, 0, wxALL, 5 );
 	
 	m_panel5111111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("120") );
-	fgSizer25->Add( m_panel5111111, 1, wxEXPAND | wxALL, 5 );
+	gSizer1->Add( m_panel5111111, 1, wxEXPAND | wxALL, 5 );
 	
 	m_staticText221111 = new wxStaticText( m_panel2, wxID_ANY, _("120"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText221111->Wrap( -1 );
-	fgSizer25->Add( m_staticText221111, 0, wxALL, 5 );
+	gSizer1->Add( m_staticText221111, 0, wxALL, 5 );
 	
 	m_panel51111111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("140") );
-	fgSizer25->Add( m_panel51111111, 1, wxEXPAND | wxALL, 5 );
+	gSizer1->Add( m_panel51111111, 1, wxEXPAND | wxALL, 5 );
 	
 	m_staticText2211111 = new wxStaticText( m_panel2, wxID_ANY, _("140"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2211111->Wrap( -1 );
-	fgSizer25->Add( m_staticText2211111, 0, wxALL, 5 );
+	gSizer1->Add( m_staticText2211111, 0, wxALL, 5 );
 	
 	m_panel511111111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("160") );
-	fgSizer25->Add( m_panel511111111, 1, wxEXPAND | wxALL, 5 );
+	gSizer1->Add( m_panel511111111, 1, wxEXPAND | wxALL, 5 );
 	
 	m_staticText22111111 = new wxStaticText( m_panel2, wxID_ANY, _("160"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText22111111->Wrap( -1 );
-	fgSizer25->Add( m_staticText22111111, 0, wxALL, 5 );
+	gSizer1->Add( m_staticText22111111, 0, wxALL, 5 );
 	
 	m_panel5111111111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("200") );
-	fgSizer25->Add( m_panel5111111111, 1, wxEXPAND | wxALL, 5 );
+	gSizer1->Add( m_panel5111111111, 1, wxEXPAND | wxALL, 5 );
 	
 	m_staticText221111111 = new wxStaticText( m_panel2, wxID_ANY, _("200"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText221111111->Wrap( -1 );
-	fgSizer25->Add( m_staticText221111111, 0, wxALL, 5 );
+	gSizer1->Add( m_staticText221111111, 0, wxALL, 5 );
 	
 	
-	sbSizer10->Add( fgSizer25, 1, wxEXPAND, 5 );
+	sbSizer10->Add( gSizer1, 1, wxEXPAND, 5 );
 	
 	
 	fgSizer5->Add( sbSizer10, 1, wxEXPAND, 5 );
