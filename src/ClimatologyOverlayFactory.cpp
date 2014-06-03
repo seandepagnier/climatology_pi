@@ -127,7 +127,6 @@ ClimatologyOverlay::~ClimatologyOverlay()
 
 static const wxString climatology_pi = _T("climatology_pi: ");
 
-
 double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
 {
     return m_factory.getCurCalibratedValue(MAG, m_setting, lat, lon);
@@ -498,6 +497,119 @@ ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
         for(int m=0; m<13; m++)
             delete m_Settings.Settings[i].m_pIsobars[m];
 #endif
+}
+
+void ClimatologyOverlayFactory::GetDateInterpolation(const wxDateTime *cdate,
+                                                     int &month, int &nmonth, double &dpos)
+{
+    if(!cdate) {
+        if(m_bAllTimes) {
+            month = nmonth = 12;
+            dpos = 1;
+            return;
+        }
+        cdate = &m_CurrentTimeline;
+    }
+    
+    month = cdate->GetMonth();
+    int day = cdate->GetDay();
+    int daysinmonth = wxDateTime::GetNumberOfDays(cdate->GetMonth());
+    dpos = (day-.5) / daysinmonth;
+    
+    if(dpos > .5) {
+        nmonth = month + 1;
+        if(nmonth == 12)
+            nmonth = 0;
+        dpos = 1.5 - dpos;
+    } else {
+        nmonth = month - 1;
+        if(nmonth == -1)
+            nmonth = 11;
+        dpos = .5 + dpos;
+    }
+}
+
+bool ClimatologyOverlayFactory::InterpolateWindAtlasTime(int month, int nmonth, double dpos,
+                                                         double lat, double lon,
+                                                         double *directions, double *speeds,
+                                                         double &storm, double &calm)
+{
+    WindData::WindPolar *polar1 = m_WindData[month]->GetPolar(lat, positive_degrees(lon));
+    WindData::WindPolar *polar2 = m_WindData[nmonth]->GetPolar(lat, positive_degrees(lon));
+    if(!polar1 || !polar2)
+        return false;
+
+    storm = (dpos*polar1->storm + (1-dpos)*polar2->storm) / 100.0;
+    calm = (dpos*polar1->calm + (1-dpos)*polar2->calm) / 100.0;
+
+    int dir_cnt = m_WindData[month]->dir_cnt;
+
+    double totald1 = 0, totald2 = 0;
+    for(int i=0; i<dir_cnt; i++) {
+        totald1 += polar1->directions[i];
+        totald2 += polar2->directions[i];
+    }
+
+    for(int i=0; i<dir_cnt; i++) {
+        double direction1 = polar1->directions[i]/totald1;
+        double direction2 = polar2->directions[i]/totald2;
+        directions[i] = dpos*direction1 + (1-dpos)*direction2;
+
+        double speed1 = (double)polar1->speeds[i] / polar1->directions[i];
+        double speed2 = (double)polar2->speeds[i] / polar2->directions[i];
+
+        if(!direction1)
+            speeds[i] = speed2;
+        else if(!direction2)
+            speeds[i] = speed1;
+        else
+            speeds[i] = dpos*speed1 + (1-dpos)*speed2;
+    }
+
+    return true;
+}
+
+static double interpquad(double v1, double v2, double v3, double v4, double d1, double d2)
+{
+        double w1 = d1*v3 + (1-d1)*v1;
+        double w2 = d1*v4 + (1-d1)*v2;
+        return      d2*w2 + (1-d2)*w1;
+}
+
+bool ClimatologyOverlayFactory::InterpolateWindAtlas(wxDateTime &date,
+                                                     double lat, double lon,
+                                                     double *directions, double *speeds,
+                                                     double &storm, double &calm)
+{
+    int month, nmonth;
+    double dpos;
+    GetDateInterpolation(&date, month, nmonth, dpos);
+
+    double idirections[4][64], ispeeds[4][64], istorm[4], icalm[4];
+
+    double lats[2] = {floor(lat), ceil(lat)}, lons[2] = {floor(lon), ceil(lon)};
+    double latd = lat - lats[0], lond = lon - lons[0];
+
+    for(int lati = 0; lati<2; lati++)
+        for(int loni = 0; loni<2; loni++) {
+            int i = 2*lati + loni;
+            if(!InterpolateWindAtlasTime(month, nmonth, dpos, lats[lati], lons[loni],
+                                     idirections[i], ispeeds[i], istorm[i], icalm[i]))
+                return false;
+        }
+
+    int dir_cnt = m_WindData[month]->dir_cnt;
+    for(int i=0; i<dir_cnt; i++) {
+        directions[i] = interpquad(idirections[0][i], idirections[1][i],
+                                   idirections[2][i], idirections[3][i], latd, lond);
+        speeds[i] = interpquad(ispeeds[0][i], ispeeds[1][i],
+                               ispeeds[2][i], ispeeds[3][i], latd, lond);
+    }
+
+    storm = interpquad(istorm[0], istorm[1], istorm[2], istorm[3], latd, lond);
+    calm = interpquad(icalm[0], icalm[1], icalm[2], icalm[3], latd, lond);
+
+    return true;
 }
 
 void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
@@ -1473,27 +1585,9 @@ double ClimatologyOverlayFactory::getValueMonth(enum Coord coord, int setting,
 double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
                                            double lat, double lon, wxDateTime *date)
 {
-    if(!date && m_bAllTimes) /* yearly average */
-        return getValueMonth(coord, setting, lat, lon, 12);
-
-    wxDateTime cdate = date ? *date : m_CurrentTimeline;
-    int month = cdate.GetMonth();
-    int day = cdate.GetDay();
-    int daysinmonth = wxDateTime::GetNumberOfDays(cdate.GetMonth());
-    double dpos = (day-.5) / daysinmonth;
-
-    int nmonth;
-    if(dpos > .5) {
-        nmonth = month + 1;
-        if(nmonth == 12)
-            nmonth = 0;
-        dpos = 1.5 - dpos;
-    } else {
-        nmonth = month - 1;
-        if(nmonth == -1)
-            nmonth = 11;
-        dpos = .5 + dpos;
-    }
+    int month, nmonth;
+    double dpos;
+    GetDateInterpolation(date, month, nmonth, dpos);
 
     double v1 = getValueMonth(coord, setting, lat, lon, month);
     double v2 = getValueMonth(coord, setting, lat, lon, nmonth);
@@ -1634,28 +1728,9 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
     if(setting == ClimatologyOverlaySettings::SEADEPTH) {
         month = nmonth = 0;
         dpos = 1;
-    } else if(m_bAllTimes) {
-        month = nmonth = 12;
-        dpos = 1;
-    } else {
-        month = m_CurrentTimeline.GetMonth();
-        int day = m_CurrentTimeline.GetDay();
-        int daysinmonth = wxDateTime::GetNumberOfDays(m_CurrentTimeline.GetMonth());
-        dpos = (day-.5) / daysinmonth;
+    } else
+        GetDateInterpolation(NULL, month, nmonth, dpos);
 
-        if(dpos > .5) {
-            nmonth = month + 1;
-            if(nmonth == 12)
-                nmonth = 0;
-            dpos = 1.5 - dpos;
-        } else {
-            nmonth = month - 1;
-            if(nmonth == -1)
-                nmonth = 11;
-            dpos = .5 + dpos;
-        }
-    }
-        
     ClimatologyOverlay &O1 = m_pOverlay[month][setting];
     ClimatologyOverlay &O2 = m_pOverlay[nmonth][setting];
 
@@ -2038,27 +2113,7 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
     int month, nmonth;
     double dpos;
 
-    if(m_bAllTimes) {
-        month = nmonth = 12;
-        dpos = 1;
-    } else {
-        month = m_CurrentTimeline.GetMonth();
-        int day = m_CurrentTimeline.GetDay();
-        int daysinmonth = wxDateTime::GetNumberOfDays(m_CurrentTimeline.GetMonth());
-        dpos = (day-.5) / daysinmonth;
-
-        if(dpos > .5) {
-            nmonth = month + 1;
-            if(nmonth == 12)
-                nmonth = 0;
-            dpos = 1.5 - dpos;
-        } else {
-            nmonth = month - 1;
-            if(nmonth == -1)
-            nmonth = 11;
-            dpos = .5 + dpos;
-        }
-    }
+    GetDateInterpolation(NULL, month, nmonth, dpos);
 
     if(!m_WindData[month] || !m_WindData[nmonth])
         return;
@@ -2075,64 +2130,52 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
     int dir_cnt = m_WindData[month]->dir_cnt;
     for(double lat = round(vp.lat_min/step)*step-1; lat <= vp.lat_max+1; lat+=step)
         for(double lon = round(vp.lon_min/step)*step-1; lon <= vp.lon_max+1; lon+=step) {
-            WindData::WindPolar *polar1 = m_WindData[month]->GetPolar(lat, positive_degrees(lon));
-            WindData::WindPolar *polar2 = m_WindData[nmonth]->GetPolar(lat, positive_degrees(lon));
-            if(!polar1 || !polar2)
+            double directions[64], speeds[64], storm, calm;
+            if(!InterpolateWindAtlasTime(month, nmonth, dpos, lat, lon, directions, speeds, storm, calm))
                 continue;
 
             wxPoint p;
             GetCanvasPixLL(&vp, &p, lat, lon);
 
-            int storm = dpos*polar1->storm + (1-dpos)*polar2->storm;
-            int calm = dpos*polar1->calm + (1-dpos)*polar2->calm;
             if(storm*2 > calm)
-                RenderNumber(p, *wxRED, storm);
+                RenderNumber(p, *wxRED, 100.0*storm);
             else if(calm > 0)
-                RenderNumber(p, wxColour(0, 0, 180), calm);
+                RenderNumber(p, wxColour(0, 0, 180), 100.0*calm);
             
             int opacity = m_dlg.m_cfgdlg->m_sWindAtlasOpacity->GetValue();
             DrawCircle(p.x, p.y, r, *wxBLACK, opacity, 2);
-
-            double totald = 0;
-            double directions[64]; /* dir_cnt must always be less than 64 */
-            for(int i=0; i<dir_cnt; i++) {
-                directions[i] = dpos*polar1->directions[i] + (1-dpos)*polar2->directions[i];
-                totald += directions[i];
-            }
 
             for(int d = 0; d<dir_cnt; d++) {
                 double theta = 2*M_PI*d/dir_cnt - vp.rotation; 
                 double x1 = p.x-r*cos(theta), y1 = p.y+r*sin(theta);
                 
-                double per = directions[d]/totald;
-
-                if(per == 0)
+                if(directions[d] == 0)
                     continue;
 
-                const double maxper = .35;
-                bool split = per >= maxper;
-                double u = r + size*(split ? maxper : per);
+                const double maxdirection = .35;
+                bool split = directions[d] >= maxdirection;
+                double u = r + size*(split ? maxdirection : directions[d]);
                 double x2 = p.x-u*cos(theta), y2 = p.y+u*sin(theta);
 
                 if(split) {
                     wxPoint q((x1 + x2)/2, (y1 + y2)/2);
-                    RenderNumber(q, *wxBLACK, 100*per);
+                    RenderNumber(q, *wxBLACK, 100*directions[d]);
 
                     DrawLine(x1, y1, (3*x1+x2)/4, (3*y1+y2)/4, *wxBLACK, opacity, 2);
                     DrawLine((x1+3*x2)/4, (y1+3*y2)/4, x2, y2, *wxBLACK, opacity, 2);
                 } else
                     DrawLine(x1, y1, x2, y2, *wxBLACK, opacity, 2);
 
-                double speeds = dpos*polar1->speeds[d] + (1-dpos)*polar2->speeds[d];
-                double avg_speed = speeds / directions[d];
+                /* draw wind barbs */
+                double cur_speed = speeds[d];
                 double dir = 1;
                 const double a = 10, b = M_PI*2/3;
-                while(avg_speed > 2) {
+                while(cur_speed > 2) {
                     DrawLine(x2, y2, x2+a*cos(theta+dir*b), y2-a*sin(theta+dir*b), *wxBLACK, opacity, 2);
                     dir = -dir;
                     if(dir > 0)
                         x2 += 3*cos(theta), y2 -= 3*sin(theta);
-                    avg_speed -= 5;
+                    cur_speed -= 5;
                 }
             }
         }

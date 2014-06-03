@@ -99,7 +99,6 @@ int climatology_pi::Init(void)
       m_leftclick_tool_id  = InsertPlugInTool(_T(""), _img_climatology, _img_climatology, wxITEM_NORMAL,
                                               _("Climatology"), _T(""), NULL,
                                               CLIMATOLOGY_TOOL_POSITION, 0, this);
-
       return (WANTS_OVERLAY_CALLBACK |
            WANTS_OPENGL_OVERLAY_CALLBACK |
            WANTS_CURSOR_LATLON       |
@@ -217,13 +216,6 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
     return true;
 }
 
-static double interpquad(double v1, double v2, double v3, double v4, double d1, double d2)
-{
-        double w1 = d1*v3 + (1-d1)*v1;
-        double w2 = d1*v4 + (1-d1)*v2;
-        return      d2*w2 + (1-d2)*w1;
-}
-
 static bool ClimatologyWindAtlasData(wxDateTime &date, double lat, double lon,
                                      int &count, double *directions, double *speeds,
                                      double &storm, double &calm)
@@ -231,40 +223,11 @@ static bool ClimatologyWindAtlasData(wxDateTime &date, double lat, double lon,
     if(!s_pOverlayFactory)
         return false;
 
-    double latf = floor(lat), latc = ceil(lat), lonf = floor(lon), lonc = ceil(lon);
-    double latd = lat - latf, lond = lon - lonf;
-
-    WindData::WindPolar *p1, *p2, *p3, *p4;
-
-    if(!(p1 = s_pOverlayFactory->GetWindPolar(date, latf, lonf)) ||
-       !(p2 = s_pOverlayFactory->GetWindPolar(date, latf, lonc)) ||
-       !(p3 = s_pOverlayFactory->GetWindPolar(date, latc, lonf)) ||
-       !(p4 = s_pOverlayFactory->GetWindPolar(date, latc, lonc)))
+    if(count != 8)
         return false;
-
-    int dir_cnt = 8;//s_pOverlayFactory->m_WindData[month];
-    if(dir_cnt > count)
-        return false;
-
-    double t1 = 0, t2 = 0, t3 = 0, t4 = 0;
-    for(int i=0; i<dir_cnt; i++) {
-        t1 += p1->directions[i];
-        t2 += p2->directions[i];
-        t3 += p3->directions[i];
-        t4 += p4->directions[i];
-    }
-
-    for(int i=0; i<dir_cnt; i++) {
-        directions[i] = interpquad(p1->directions[i]/t1, p2->directions[i]/t2,
-                                   p3->directions[i]/t3, p4->directions[i]/t4, latd, lond);
-        speeds[i] = interpquad(p1->directions[i]/t1, p2->directions[i]/t2,
-                               p3->directions[i]/t3, p4->directions[i]/t4, latd, lond);
-    }
-
-    storm = interpquad(p1->storm, p2->storm, p3->storm, p4->storm, latd, lond) / 100.0;
-    calm = interpquad(p1->calm, p2->calm, p3->calm, p4->calm, latd, lond) / 100.0;
-
-    return true;
+    
+    return s_pOverlayFactory->InterpolateWindAtlas
+        (date, lat, lon, directions, speeds, storm, calm);
 }
 
 static int ClimatologyCycloneTrackCrossings(double lat1, double lon1, double lat2, double lon2,

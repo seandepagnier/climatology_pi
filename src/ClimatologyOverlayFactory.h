@@ -173,10 +173,21 @@ public:
     ClimatologyOverlayFactory( ClimatologyDialog &dlg );
     ~ClimatologyOverlayFactory();
 
+    void GetDateInterpolation(const wxDateTime *cdate,
+                              int &month, int &nmonth, double &dpos);
+
+    bool InterpolateWindAtlasTime(int month, int nmonth, double dpos,
+                                  double lat, double lon,
+                                  double *directions, double *speeds,
+                                  double &storm, double &calm);
+
+    bool InterpolateWindAtlas(wxDateTime &date,
+                              double lat, double lon,
+                              double *directions, double *speeds,
+                              double &storm, double &calm);
+
     void ReadWindData(int month, wxString filename);
     void AverageWindData();
-    WindData::WindPolar *GetWindPolar(wxDateTime &date, double lat, double lon)
-    { return m_WindData[date.GetMonth()]->GetPolar(lat, lon); }
 
     void ReadCurrentData(int month, wxString filename);
     void AverageCurrentData();

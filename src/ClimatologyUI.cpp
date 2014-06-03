@@ -42,7 +42,7 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	sbSizer21->Add( fgSizer23, 1, wxEXPAND, 5 );
 	
-	m_sTimeline = new wxSlider( this, wxID_ANY, 0, 0, 500, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	m_sTimeline = new wxSlider( this, wxID_ANY, 0, 1, 500, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
 	sbSizer21->Add( m_sTimeline, 0, wxEXPAND, 5 );
 	
 	
