@@ -558,12 +558,15 @@ bool ClimatologyOverlayFactory::InterpolateWindAtlasTime(int month, int nmonth, 
         double speed1 = (double)polar1->speeds[i] / polar1->directions[i];
         double speed2 = (double)polar2->speeds[i] / polar2->directions[i];
 
-        if(!direction1)
+        if(direction1) {
+            if(direction2)
+                speeds[i] = dpos*speed1 + (1-dpos)*speed2;
+            else
+                speeds[i] = speed1;
+        } else if(direction2)
             speeds[i] = speed2;
-        else if(!direction2)
-            speeds[i] = speed1;
         else
-            speeds[i] = dpos*speed1 + (1-dpos)*speed2;
+            speeds[i] = 0;
     }
 
     return true;
@@ -636,12 +639,23 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
             if(wp.storm != 255) {
                 if(zu_read(f, &wp.calm, 1) != 1)
                     goto corrupt;
+
+                wxUint8 directions[8], speeds[8];
+                if(zu_read(f, directions, dirs) != dirs)
+                    goto corrupt;
+                if(zu_read(f, speeds, dirs) != dirs)
+                    goto corrupt;
+
+                // note Wind Polar has 0 indice at west, going counter clockwise, we return data 0 north clockwise
+                // this will be corrected in future revisions of climatology when the data is rebuilt
+
                 wp.directions = new wxUint8[dirs];
-                if(zu_read(f, wp.directions, dirs) != dirs)
-                    goto corrupt;
                 wp.speeds = new wxUint8[dirs];
-                if(zu_read(f, wp.speeds, dirs) != dirs)
-                    goto corrupt;
+                int mapping[8] = {6, 5, 4, 3, 2, 1, 0, 7};
+                for(int i=0; i<8; i++) {
+                    wp.directions[i] = directions[mapping[i]];
+                    wp.speeds[i] = speeds[mapping[i]];
+                }
             }
         }
     }
@@ -1424,27 +1438,16 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
     if(storm == 255)
         return NAN;
 
-    if(coord == DIRECTION)
-        return positive_degrees(rad2deg(atan2(Value(U, dir_cnt),
-                                              Value(V, dir_cnt))));
-    if(coord == MDIRECTION) {
-        if(U == 0 && V == 0)
-            return NAN;
-        else
-            return positive_degrees(rad2deg(atan2(-Value(U, dir_cnt),
-                                                  -Value(V, dir_cnt))));
-    }
-
     int totald = 0, totals = 0;
     for(int i=0; i<dir_cnt; i++) {
         totald += directions[i];
 
         double mul = 0;
         switch(coord) {
-        case U: mul = cos(i*2*M_PI/dir_cnt); break;
-        case V: mul = sin(i*2*M_PI/dir_cnt); break;
+        case U: mul = sin(i*2*M_PI/dir_cnt); break;
+        case V: mul = cos(i*2*M_PI/dir_cnt); break;
         case MAG: mul = 1; break;
-        default: mul = NAN;
+        default: printf("error, invalid coord: %d\n", coord);
         }
 
         totals += mul*speeds[i];
@@ -1462,8 +1465,7 @@ double CurrentData::Value(enum Coord coord, int xi, int yi)
     case U: return u;
     case V: return v;
     case MAG: return hypot(u, v);
-    case DIRECTION: return positive_degrees(rad2deg(atan2(u, v)));
-    default: break;
+    default: printf("error, invalid coord: %d\n", coord);
     }
     return NAN;
 }
@@ -1585,6 +1587,19 @@ double ClimatologyOverlayFactory::getValueMonth(enum Coord coord, int setting,
 double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
                                            double lat, double lon, wxDateTime *date)
 {
+    /* perform interpolation here as vector to avoid issues interpolating angles
+     TODO: fix this to interpolate lower down, and determine the significant differences
+     for weather routing purposes */
+    if(coord == DIRECTION) {
+        double u = getValue(U, setting, lat, lon, date);
+        double v = getValue(V, setting, lat, lon, date);
+
+        if(u == 0 && v == 0)
+            return NAN;
+
+        return positive_degrees(rad2deg(atan2(u, v)));
+    }
+
     int month, nmonth;
     double dpos;
     GetDateInterpolation(date, month, nmonth, dpos);
@@ -1598,7 +1613,7 @@ double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
 double ClimatologyOverlayFactory::getCurCalibratedValue(enum Coord coord, int setting, double lat, double lon)
 {
     double v = getCurValue(coord, setting, lat, lon);
-    if(coord == DIRECTION || coord == MDIRECTION)
+    if(coord == DIRECTION)
         return v;
 
     return m_dlg.m_cfgdlg->m_Settings.CalibrateValue(setting, v);
@@ -1938,6 +1953,11 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
     for(double lat = round(vp.lat_min/step)*step-1; lat <= vp.lat_max+1; lat+=step)
         for(double lon = round(vp.lon_min/step)*step-1; lon <= vp.lon_max+1; lon+=step) {
             double u = getCurValue(U, setting, lat, lon), v = getCurValue(V, setting, lat, lon);
+
+            // for wind, flip direction to render where the wind is blowing
+            if(setting == ClimatologyOverlaySettings::WIND)
+               u = -u, v = -v;
+
             double mag = hypot(u, v);
 
             double cstep, minv;
@@ -2147,7 +2167,7 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
 
             for(int d = 0; d<dir_cnt; d++) {
                 double theta = 2*M_PI*d/dir_cnt - vp.rotation; 
-                double x1 = p.x-r*cos(theta), y1 = p.y+r*sin(theta);
+                double x1 = p.x+r*sin(theta), y1 = p.y-r*cos(theta);
                 
                 if(directions[d] == 0)
                     continue;
@@ -2155,7 +2175,7 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
                 const double maxdirection = .35;
                 bool split = directions[d] >= maxdirection;
                 double u = r + size*(split ? maxdirection : directions[d]);
-                double x2 = p.x-u*cos(theta), y2 = p.y+u*sin(theta);
+                double x2 = p.x+u*sin(theta), y2 = p.y-u*cos(theta);
 
                 if(split) {
                     wxPoint q((x1 + x2)/2, (y1 + y2)/2);
@@ -2171,10 +2191,10 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
                 double dir = 1;
                 const double a = 10, b = M_PI*2/3;
                 while(cur_speed > 2) {
-                    DrawLine(x2, y2, x2+a*cos(theta+dir*b), y2-a*sin(theta+dir*b), *wxBLACK, opacity, 2);
+                    DrawLine(x2, y2, x2-a*sin(theta+dir*b), y2+a*cos(theta+dir*b), *wxBLACK, opacity, 2);
                     dir = -dir;
                     if(dir > 0)
-                        x2 += 3*cos(theta), y2 -= 3*sin(theta);
+                        x2 -= 3*sin(theta), y2 += 3*cos(theta);
                     cur_speed -= 5;
                 }
             }

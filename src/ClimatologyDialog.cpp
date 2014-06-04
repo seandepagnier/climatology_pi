@@ -115,7 +115,7 @@ void ClimatologyDialog::UpdateTrackingControls()
         return;
 
     m_tWind->SetValue(GetValue(ClimatologyOverlaySettings::WIND));
-    m_tWindDir->SetValue(GetValue(ClimatologyOverlaySettings::WIND, MDIRECTION));
+    m_tWindDir->SetValue(GetValue(ClimatologyOverlaySettings::WIND, DIRECTION));
     m_tCurrent->SetValue(GetValue(ClimatologyOverlaySettings::CURRENT));
     m_tCurrentDir->SetValue(GetValue(ClimatologyOverlaySettings::CURRENT, DIRECTION));
     m_tPressure->SetValue(GetValue(ClimatologyOverlaySettings::SLP));
