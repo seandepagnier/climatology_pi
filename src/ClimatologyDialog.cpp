@@ -83,6 +83,8 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
         timeline += 356;
     m_sTimeline->SetValue(timeline);
 
+    m_cursorlat = m_cursorlon = 0;
+
     DimeWindow( this );
 }
 

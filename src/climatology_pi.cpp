@@ -51,6 +51,7 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
     delete p;
 }
 
+static climatology_pi *s_climatology_pi;
 
 wxString ClimatologyDataDirectory()
 {
@@ -64,7 +65,7 @@ climatology_pi::climatology_pi(void *ppimgr)
 {
       // Create the PlugIn icons
       initialize_images();
-
+      s_climatology_pi = this;
 }
 
 climatology_pi::~climatology_pi(void)
@@ -205,7 +206,7 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
                             double &dir, double &speed)
 {
     if(!s_pOverlayFactory)
-        return false;
+        s_climatology_pi->OnToolbarToolCallback(0);
 
     if(isnan(speed = s_pOverlayFactory->getValue(MAG, setting, lat, lon, &date)))
         return false;
