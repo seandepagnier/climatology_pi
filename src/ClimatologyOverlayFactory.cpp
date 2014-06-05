@@ -2034,9 +2034,8 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
             CycloneState *ss = *it2;
             double lat = ss->latitude, lon = ss->longitude;
             int year = ss->datetime.year;
-            wxDateTime dt = ss->datetime.DateTime(), dt2 = dt;
-            dt2.SetMonth(m_CurrentTimeline.GetMonth());
-            dt2.SetDay(m_CurrentTimeline.GetDay());
+            wxDateTime dt = ss->datetime.DateTime();
+            wxDateTIme dt2(m_CurrentTimeline.GetDay(), m_CurrentTimeline.GetMonth(), dt.GetYear());
             std::map<int, ElNinoYear>::iterator it;
 
             if(!m_dlg.m_cbAll->GetValue() && abs((dt2 - dt).GetDays()) > dayspan/2)
