@@ -574,9 +574,9 @@ bool ClimatologyOverlayFactory::InterpolateWindAtlasTime(int month, int nmonth, 
 
 static double interpquad(double v1, double v2, double v3, double v4, double d1, double d2)
 {
-        double w1 = d1*v3 + (1-d1)*v1;
-        double w2 = d1*v4 + (1-d1)*v2;
-        return      d2*w2 + (1-d2)*w1;
+    double w1 = d1*v3 + (1-d1)*v1;
+    double w2 = d1*v4 + (1-d1)*v2;
+    return      d2*w2 + (1-d2)*w1;
 }
 
 bool ClimatologyOverlayFactory::InterpolateWindAtlas(wxDateTime &date,
@@ -588,17 +588,35 @@ bool ClimatologyOverlayFactory::InterpolateWindAtlas(wxDateTime &date,
     double dpos;
     GetDateInterpolation(&date, month, nmonth, dpos);
 
-    double idirections[4][64], ispeeds[4][64], istorm[4], icalm[4];
+    double idirections[4][8], ispeeds[4][8], istorm[4], icalm[4];
 
     double lats[2] = {floor(lat), ceil(lat)}, lons[2] = {floor(lon), ceil(lon)};
     double latd = lat - lats[0], lond = lon - lons[0];
+    bool havedata[4];
 
     for(int lati = 0; lati<2; lati++)
         for(int loni = 0; loni<2; loni++) {
             int i = 2*lati + loni;
-            if(!InterpolateWindAtlasTime(month, nmonth, dpos, lats[lati], lons[loni],
-                                     idirections[i], ispeeds[i], istorm[i], icalm[i]))
-                return false;
+            havedata[i] = InterpolateWindAtlasTime(month, nmonth, dpos, lats[lati], lons[loni],
+                                                   idirections[i], ispeeds[i], istorm[i], icalm[i]);
+        }
+
+    /* fill in missing data */
+    int searchdata[4][3] = {{1, 2, 3}, {0, 3, 2}, {3, 0, 1}, {2, 1, 0}};
+    for(int i = 0; i<4; i++)
+        if(!havedata[i]) {
+            for(int j = 0; j < 3; j++) {
+                int k = searchdata[i][j];
+                if(havedata[k]) {
+                    memcpy(idirections[i], idirections[k], sizeof *idirections);
+                    memcpy(ispeeds[i], ispeeds[k], sizeof *ispeeds);
+                    istorm[i] = istorm[k];
+                    icalm[i] = icalm[k];
+                    goto outer_continue;
+                }
+            }
+            return false;
+        outer_continue:;
         }
 
     int dir_cnt = m_WindData[month]->dir_cnt;
@@ -2035,7 +2053,7 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
             double lat = ss->latitude, lon = ss->longitude;
             int year = ss->datetime.year;
             wxDateTime dt = ss->datetime.DateTime();
-            wxDateTIme dt2(m_CurrentTimeline.GetDay(), m_CurrentTimeline.GetMonth(), dt.GetYear());
+            wxDateTime dt2(m_CurrentTimeline.GetDay(), m_CurrentTimeline.GetMonth(), dt.GetYear());
             std::map<int, ElNinoYear>::iterator it;
 
             if(!m_dlg.m_cbAll->GetValue() && abs((dt2 - dt).GetDays()) > dayspan/2)
