@@ -12,7 +12,7 @@ SET(PACKAGE_NAME climatology_pi)
 SET(CPACK_PACKAGE_CONTACT "Sean D'Epagnier ")
 
 SET(VERSION_MAJOR "0")
-SET(VERSION_MINOR "8")
+SET(VERSION_MINOR "9")
 
 INCLUDE("cmake/PluginConfigure.cmake")
 
