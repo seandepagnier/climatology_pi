@@ -1,58 +1,61 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: AIS Radar, Plugin for OpenCPN\n"
+"Project-Id-Version: OpenCPN-Plugin Climatology\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-24 10:04+0800\n"
+"POT-Creation-Date: 2014-06-12 19:20+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Gilletarom <contact@gilletarom.fr>\n"
 "Language-Team: Gilletarom <contact@gilletarom.fr>\n"
-"Language: French\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.6.4\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 #
 msgid ""
 "\n"
 "then restart opencpn"
 msgstr ""
+"\n"
+"puis redémarrer OpenCPN"
 #
 msgid "100"
-msgstr ""
+msgstr "100"
 #
 msgid "120"
-msgstr ""
+msgstr "120"
 #
 msgid "140"
-msgstr ""
+msgstr "140"
 #
 msgid "160"
-msgstr ""
-#
-msgid "180"
-msgstr ""
+msgstr "160"
 #
 msgid "20"
-msgstr ""
-#
-msgid "40"
-msgstr ""
-#
-msgid "60"
-msgstr ""
-#
-msgid "80"
-msgstr ""
-#
-msgid "About"
-msgstr ""
-#
-msgid "About Author"
-msgstr ""
+msgstr "20"
 #
 #, fuzzy
+msgid "200"
+msgstr "20"
+#
+msgid "40"
+msgstr "40"
+#
+msgid "60"
+msgstr "60"
+#
+msgid "80"
+msgstr "80"
+#
+msgid "About"
+msgstr "Au sujet de"
+#
+msgid "About Author"
+msgstr "Au sujet de l'auteur"
+#
 msgid "Air Temperature"
-msgstr "Température de la mer"
+msgstr "Température de l'air"
 #
 msgid "All"
 msgstr "Tout"
@@ -67,20 +70,19 @@ msgid "August"
 msgstr "Août"
 #
 msgid "Average Current includes only"
-msgstr ""
+msgstr "Courant moyen inclus seulement"
 #
 msgid "Barbs"
 msgstr "Barbules"
 #
-#, fuzzy
 msgid "Building Isobar Map"
-msgstr "Construction de la carte des isobares"
+msgstr "Construction de la carte des isobarres"
 #
 msgid "Building Overlay map"
 msgstr "Construction de la carte superposée"
 #
 msgid "Celcius"
-msgstr "Celsius"
+msgstr "Celcius"
 #
 msgid "Climatology"
 msgstr "Climatology"
@@ -91,9 +93,8 @@ msgstr "Configuration de Climatology"
 msgid "Climatology Data"
 msgstr "Données climatologiques"
 #
-#, fuzzy
 msgid "Climatology Data Directory"
-msgstr "Données climatologiques"
+msgstr "Dossier des données du complément climatology"
 #
 msgid "Climatology Display Control"
 msgstr "Options d'affichage de Climatology"
@@ -101,7 +102,6 @@ msgstr "Options d'affichage de Climatology"
 msgid "Climatology PlugIn for OpenCPN"
 msgstr "Complément \"Climatology\" pour OpenCPN."
 #
-#, fuzzy
 msgid ""
 "Climatology PlugIn for OpenCPN\n"
 "Provides overlay capabilities for historic weather data.\n"
@@ -114,30 +114,32 @@ msgid ""
 "- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n"
 "- Tropical Cyclone tracks"
 msgstr ""
-"Complément Climatology pour openCPN\n"
-"Fournit une superposition de données historiques du temps.\n"
+"Complément Climatology pour OpenCPN\n"
+"Il fournit des possibilités de superposition concernant l'historique des "
+"données météorologiques.\n"
 "\n"
-"Types de fichier supportés par Climatology :\n"
-"- Direction et vitesse moyennes du vent\n"
-"- Pourcentage de coups de vent et de temps calmes\n"
-"- Pourcentage de houle et d'état de la mer (Non implémenté)\n"
-"- Positions  ITCZ (doldrum) (Non implémenté)\n"
-"- Moyenne mensuelle de la pression et de la température de surface\n"
-"- Traces des tempêtes tropicales."
+"Types inclus supportés par Climatology :\n"
+"- Directions et vitesse du vent moyen\n"
+"- Pourcentage de coup de vent et de calme\n"
+"- Houle moyenne et état de la mer (Pas encore implémenté)\n"
+"- Précipitation, Humidité, et couverture nuageuse \n"
+"- Moyenne mensuelle de la pression au niveau de la mer,  température de l'eau "
+"et température de l'air\n"
+"- Routes des cyclones tropicaux"
 #
-#, fuzzy
 msgid "Climatology Plugin Version"
-msgstr "Complément \"Climatology\" pour OpenCPN."
+msgstr "Version du complément Climatology"
 #
-#, fuzzy
 msgid "Climatology Preferences"
-msgstr "Climatology"
+msgstr "Préférences du complément Climatology"
 #
 msgid "Climatology overlay map unsupported unless OpenGL is enabled"
 msgstr ""
+"La superposition de la carte de climatologie n'est pas possible si OpenGL "
+"n'est pas activé"
 #
 msgid "Close"
-msgstr ""
+msgstr "Fermer"
 #
 msgid "Cloud Cover"
 msgstr "Couverture nuageuse"
@@ -145,15 +147,18 @@ msgstr "Couverture nuageuse"
 msgid "Color"
 msgstr "Couleur"
 #
+# ??????
 msgid "Computer too slow to render cyclones, diabling theater"
 msgstr ""
+"Ordinateur trop lent pour l'affichage des cyclones, mouvement trop rapide"
 #
 msgid "Config"
 msgstr "Configuration"
 #
+# Grossier (Voir précedent)
 #, fuzzy
 msgid "Course"
-msgstr "Heures"
+msgstr "Cap"
 #
 msgid "Current"
 msgstr "Courant"
@@ -165,29 +170,33 @@ msgid "December"
 msgstr "Décembre"
 #
 msgid "Declination"
-msgstr ""
+msgstr "Déclinaison"
 #
 msgid "Direction Arrows"
 msgstr "Flèches de directions"
 #
 msgid "Direction arrows are spaced every 6 hours on storm track"
 msgstr ""
+"Les flèches de direction sont espacées de 6 heures sur la trajectoire de la "
+"tempête"
+#
+msgid "Display Spanning"
+msgstr ""
 #
 msgid "East Pacific"
 msgstr "Pacifique est"
 #
 msgid "El Nino"
-msgstr "El Ninio"
+msgstr "El Niño"
 #
 msgid "El Nino Period"
-msgstr "Période de El ninio"
+msgstr "Période d'El Niño"
 #
 msgid "Enable"
 msgstr "Autoriser"
 #
-#, fuzzy
 msgid "Enabled"
-msgstr "Autoriser"
+msgstr "Activé"
 #
 msgid "End Date"
 msgstr "Date finale"
@@ -195,7 +204,6 @@ msgstr "Date finale"
 msgid "ExtraTropical"
 msgstr "Extra-tropical"
 #
-#, fuzzy
 msgid "Fahrenheit"
 msgstr "Farenheight"
 #
@@ -206,16 +214,17 @@ msgid "Feet"
 msgstr "Pieds"
 #
 msgid "Field Strength"
-msgstr ""
+msgstr "Force du champ"
 #
+# Précis ?
 msgid "Fine"
-msgstr ""
+msgstr "Fin"
 #
 msgid "Inches"
 msgstr "Pouces"
 #
 msgid "Inclination"
-msgstr ""
+msgstr "Inclinaison"
 #
 msgid "Iso Bars"
 msgstr "Isobares"
@@ -230,10 +239,10 @@ msgid "June"
 msgstr "Juin"
 #
 msgid "KPH"
-msgstr "K/H"
+msgstr "km/h"
 #
 msgid "Knots"
-msgstr "Noeud"
+msgstr "Noeuds"
 #
 msgid "La Nina"
 msgstr "La Ninia"
@@ -241,11 +250,14 @@ msgstr "La Ninia"
 msgid "Length"
 msgstr "Longueur"
 #
+msgid "Lightning"
+msgstr ""
+#
 msgid "M/S"
-msgstr "M/S"
+msgstr "m/s"
 #
 msgid "MPH"
-msgstr "MPH"
+msgstr "mph"
 #
 msgid "March"
 msgstr "Mars"
@@ -260,7 +272,7 @@ msgid "Meters"
 msgstr "Mètres"
 #
 msgid "MilliBars"
-msgstr "Milli-bars"
+msgstr "hPa"
 #
 msgid "Min Windspeed"
 msgstr "Vitesse minimale du vent"
@@ -275,10 +287,10 @@ msgid "Neutral"
 msgstr "Neutre"
 #
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 #
 msgid "North Indian"
-msgstr "Indien nord"
+msgstr "O. Indien nord"
 #
 msgid "November"
 msgstr "Novembre"
@@ -293,28 +305,28 @@ msgid "Opacity"
 msgstr "Opacité"
 #
 msgid "OverlayMap"
-msgstr "Charte superposée"
+msgstr "Carte superposée"
 #
 msgid "Percent"
-msgstr ""
+msgstr "Pourcent"
 #
 msgid "Precipitation"
-msgstr ""
+msgstr "Précipitation"
 #
 msgid "Pressure"
 msgstr "Pression"
 #
 msgid "Rel Humidity"
-msgstr ""
+msgstr "Humidité rel"
 #
 msgid "Relative Humidity"
-msgstr ""
+msgstr "Humidité relative"
 #
 msgid "Remanent"
 msgstr "Rémanent"
 #
 msgid "Sea Depth"
-msgstr ""
+msgstr "Profondeur de la mer"
 #
 msgid "Sea Level Pressure"
 msgstr "Pression surface mer"
@@ -332,10 +344,10 @@ msgid "Size"
 msgstr "Taille"
 #
 msgid "Some Data Failed to load:\n"
-msgstr ""
+msgstr "Certaines données n'ont pas pu été chargées :\n"
 #
 msgid "South Indian"
-msgstr "Océan Indien"
+msgstr "O. Indien sud"
 #
 msgid "South Pacific"
 msgstr "Pacifique sud"
@@ -350,17 +362,18 @@ msgid "Start Date"
 msgstr "Date de départ"
 #
 msgid "Step"
-msgstr ""
+msgstr "Pas"
 #
 msgid "Storm Types"
-msgstr "Types d'orage"
+msgstr "Types de tempêtes"
 #
 msgid "Sub Tropical"
 msgstr "Sub-tropical"
 #
 msgid "Sustained Wind Key (knots)"
-msgstr ""
+msgstr "Clé vent durable (noeuds)"
 #
+# ?????????
 #, c-format
 msgid ""
 "The wind atlas display shows the percentage of time wind is in each of eight "
@@ -372,12 +385,20 @@ msgid ""
 "The numbers in the circle, give percentage of calm (less than 3 knots) in "
 "blue or storm (above 47 knots) in red."
 msgstr ""
+"Dans l'atlas affiché, la longueur des flèches dans chacune des huit "
+"directions montre le pourcentage de vent durant la période. Un nombre est "
+"affiché si un des pourcentage est supérieur à 35% ou plus.\n"
+"\n"
+"Les barbules montrent la vitesse du vent. Chaque barbule vaut 5 noeuds.\n"
+"\n"
+"Le nombre, dans le cercle, donne le pourcentage de calme (moins de 3 noeuds) "
+"en bleu ou un orage (plus de 47 noeuds) en rouge."
 #
 msgid "Theatre"
 msgstr "Théâtre"
 #
 msgid "Transparency"
-msgstr ""
+msgstr "Transparence"
 #
 msgid "Tropical"
 msgstr "Tropical"
@@ -386,13 +407,17 @@ msgid "Units"
 msgstr "Unités"
 #
 msgid "Unknown"
-msgstr ""
+msgstr "Inconnu"
 #
+# Ah ça alors ....
+# Pytheas54 pense qu'il s'agit de very coarse : très grossier
+#, fuzzy
 msgid "Very Course"
-msgstr ""
+msgstr "Cap vrai"
 #
+# Très fin ?
 msgid "Very Fine"
-msgstr ""
+msgstr "Très précis"
 #
 msgid "West Pacific"
 msgstr "Pacifique ouest"
@@ -407,27 +432,27 @@ msgid "Wind Atlas"
 msgstr "Atlas du vent"
 #
 msgid "Would you like to try to download?"
-msgstr ""
+msgstr "Voulez vous essayer de télécharger ?"
 #
 msgid "You must extract this data, and place in: "
-msgstr ""
+msgstr "Vous devez extraire les données, et les placer dans : "
 #
-#, fuzzy
 msgid "air tempertature"
-msgstr "Température de la mer"
+msgstr "température de l'air"
 #
-#, fuzzy
+# AT = air temperature
 msgid "at file truncated"
-msgstr "Fichier sst tronqué"
+msgstr "fichier AT tronqué "
 #
 msgid "averaging current"
-msgstr ""
+msgstr "courant moyen"
 #
 msgid "averaging wind"
-msgstr ""
+msgstr "Vent moyen"
 #
+# CLD = cloud
 msgid "cld file truncated"
-msgstr "Fichier cld tronqué"
+msgstr "Fichier CLD tronqué"
 #
 msgid "cloud cover"
 msgstr "Couverture nuageuse"
@@ -439,105 +464,105 @@ msgid "cyclone (east pacific)"
 msgstr "cyclone (Pacifique est)"
 #
 msgid "cyclone (north indian)"
-msgstr "cyclone (Indien nord)"
+msgstr "cyclone (O. Indien nord)"
 #
 msgid "cyclone (south indian)"
-msgstr "cyclone (Indien sud)"
+msgstr "cyclone (O. Indien sud)"
 #
 msgid "cyclone (south pacific)"
-msgstr "cyclone (pacifique sud)"
+msgstr "cyclone (Pacifique sud)"
 #
 msgid "cyclone (west pacific)"
 msgstr "cyclone (Pacifique ouest)"
 #
+msgid "days"
+msgstr ""
+#
 msgid "el nino years"
-msgstr "Année El Ninio"
+msgstr "année El Niño"
 #
 msgid "failed to open file: "
-msgstr "Echec d'ouverture du fichier : "
+msgstr "échec d'ouverture du fichier : "
 #
 msgid "failed to read file: "
 msgstr "Echec de lecture du fichier"
 #
+msgid "lightning"
+msgstr ""
+#
+# AT = air temperature
+#, fuzzy
+msgid "lightning file truncated"
+msgstr "fichier AT tronqué "
+#
 msgid "mmHG"
 msgstr "mmHG"
 #
-#, fuzzy
 msgid "months"
-msgstr "Mois"
+msgstr "mois"
 #
-#, fuzzy
+# ???????
 msgid "precip file truncated"
-msgstr "Fichier slp tronqué"
+msgstr "Fichier précipitation tronqué"
 #
 msgid "precipitation"
-msgstr ""
+msgstr "précipitation"
 #
 msgid "relative humidity"
-msgstr ""
+msgstr "humidité relative"
 #
-#, fuzzy
 msgid "relative humidity file truncated"
-msgstr "Fichier cld tronqué"
+msgstr "fichier humidité relative tronqué"
 #
 msgid "sea depth"
-msgstr ""
+msgstr "Profondeur de la mer"
 #
 msgid "sea level presure"
-msgstr "Prssion au niveau de la mer"
+msgstr "pression au niveau de la mer"
 #
 msgid "sea surface tempertature"
 msgstr "Température de surface de l'eau"
 #
-#, fuzzy
 msgid "seadepth file truncated"
-msgstr "Fichier slp tronqué"
+msgstr "fichier de profondeur d'eau tronqué"
 #
+# slp = sea level pressure
 msgid "slp file truncated"
-msgstr "Fichier slp tronqué"
+msgstr "fichier SLP tronqué"
 #
+# sst = sea surface temperature
 msgid "sst file truncated"
-msgstr "Fichier sst tronqué"
+msgstr "fichier SST tronqué"
 #
 msgid "wind data file corrupt: "
-msgstr ""
+msgstr "fichier des données du vent corrompu"
 #
+#~ msgid "%.0f"
+#~ msgstr "%.0f"
 #
+#~ msgid "180"
+#~ msgstr "180"
 #
 #~ msgid "CLIMATOLOGY Preferences"
 #~ msgstr "Préférences"
 #
-#
-#
 #~ msgid "Days "
 #~ msgstr "Jours"
-#
-#
 #
 #~ msgid "Millimeters"
 #~ msgstr "Millimètres"
 #
-#
-#
 #~ msgid "Minutes "
 #~ msgstr "Minutes"
-#
-#
 #
 #~ msgid "Oktas"
 #~ msgstr "Oktas"
 #
-#
-#
 #~ msgid "Seconds"
 #~ msgstr "Secondes"
 #
-#
-#
 #~ msgid "current"
-#~ msgstr "Coutant"
-#
-#
+#~ msgstr "current"
 #
 #~ msgid "wind"
-#~ msgstr "vent"
+#~ msgstr "wind"

@@ -52,11 +52,24 @@ static const wxString name_from_index[] = {_T("Wind"), _T("Current"),
                                            _T("AirTemperature"),
                                            _T("CloudCover"), _T("Precipitation"),
                                            _T("RelativeHumidity"), _T("Lightning"), _T("Depth")};
-static const wxString tname_from_index[] = {_("Wind"), _("Current"),
-                                            _("Sea Level Pressure"), _("Sea Surface Temperature"),
-                                            _("Air Temperature"),
-                                            _("Cloud Cover"), _("Precipitation"),
-                                            _("Relative Humidity"), _("Lightning"), _("Sea Depth")};
+
+/* somehow translations don't work in arrays */
+wxString ClimatologyConfigDialog::SettingName(int setting)
+{
+    switch(setting) {
+    case ClimatologyOverlaySettings::WIND:                return _("Wind");
+    case ClimatologyOverlaySettings::CURRENT:             return _("Current");
+    case ClimatologyOverlaySettings::SLP:                 return _("Sea Level Pressure");
+    case ClimatologyOverlaySettings::SST:                 return _("Sea Surface Temperature");
+    case ClimatologyOverlaySettings::AT:                  return _("Air Temperature");
+    case ClimatologyOverlaySettings::CLOUD:               return _("Cloud Cover");
+    case ClimatologyOverlaySettings::PRECIPITATION:       return _("Precipitation");
+    case ClimatologyOverlaySettings::RELATIVE_HUMIDITY:   return _("Relative Humidity");
+    case ClimatologyOverlaySettings::LIGHTNING:           return _("Lightning");
+    case ClimatologyOverlaySettings::SEADEPTH:            return _("Sea Depth");
+    }
+    return _T("");
+}
 
 static const int unittype[ClimatologyOverlaySettings::SETTINGS_COUNT] = {0, 0, 1, 3, 3, 4, 2, 4, 5, 2};
 
@@ -221,11 +234,6 @@ ClimatologyConfigDialog::~ClimatologyConfigDialog()
     SaveSettings();
 }
 
-wxString ClimatologyConfigDialog::SettingName(int setting)
-{
-    return tname_from_index[setting];
-}
-
 void ClimatologyConfigDialog::DisableIsoBars(int setting)
 {
     m_Settings.Settings[setting].m_bIsoBars = false;
@@ -379,7 +387,7 @@ void ClimatologyConfigDialog::OnPageChanged( wxNotebookEvent& event )
 {
     /* delay loading html until last moment because it can take a few seconds */
     if(event.GetSelection() == 3)
-        m_htmlInformation->LoadFile(ClimatologyDataDirectory() + _T("ClimatologyInformation.html"));
+        m_htmlInformation->LoadFile(ClimatologyDataDirectory() + _("ClimatologyInformation.html"));
     event.Skip();
 }
 
