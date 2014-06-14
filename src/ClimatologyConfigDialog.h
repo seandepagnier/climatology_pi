@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2013 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2014 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -74,7 +74,6 @@ struct ClimatologyOverlaySettings
         bool m_bDirectionArrows;
         int m_iDirectionArrowsLengthType, m_iDirectionArrowsWidth;
         wxColour m_cDirectionArrowsColor;
-        int m_iDirectionArrowsOpacity;
         int m_iDirectionArrowsSize, m_iDirectionArrowsSpacing;
     } Settings[SETTINGS_COUNT];
 };

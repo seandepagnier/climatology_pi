@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2013 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2014 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -158,7 +158,12 @@ void ClimatologyOverlaySettings::Load()
         pConf->Read(Name + _T("DirectionArrowsColor"), &DirectionArrowsColorStr, defarrowcolor[i]);
         Settings[i].m_cDirectionArrowsColor = wxColour(DirectionArrowsColorStr);
 
-        pConf->Read ( Name + _T ( "DirectionArrowsOpacity" ), &Settings[i].m_iDirectionArrowsOpacity, 205);
+        int opacity;
+        pConf->Read ( Name + _T ( "DirectionArrowsOpacity" ), &opacity, 205);
+        Settings[i].m_cDirectionArrowsColor.Set(Settings[i].m_cDirectionArrowsColor.Red(),
+                                                Settings[i].m_cDirectionArrowsColor.Green(),
+                                                Settings[i].m_cDirectionArrowsColor.Blue(),
+                                                opacity);
 
         double defarrowsize[CURRENT+1] = {10, 7};
         pConf->Read ( Name + _T ( "DirectionArrowsSize" ), &Settings[i].m_iDirectionArrowsSize,
@@ -199,8 +204,8 @@ void ClimatologyOverlaySettings::Save()
 
         wxString DirectionArrowsColorStr = Settings[i].m_cDirectionArrowsColor.GetAsString();
         pConf->Write( Name + _T("DirectionArrowsColor"), DirectionArrowsColorStr);
-
-        pConf->Write ( Name + _T ( "DirectionArrowsOpacity" ), Settings[i].m_iDirectionArrowsOpacity);
+        pConf->Write ( Name + _T ( "DirectionArrowsOpacity" ),
+                       Settings[i].m_cDirectionArrowsColor.Alpha());
         pConf->Write ( Name + _T ( "DirectionArrowsSize" ), Settings[i].m_iDirectionArrowsSize);
         pConf->Write ( Name + _T ( "DirectionArrowsSpacing" ), Settings[i].m_iDirectionArrowsSpacing);
     }
@@ -297,10 +302,10 @@ void ClimatologyConfigDialog::SaveSettings()
     pConf->SetPath ( _T( "/PlugIns/Climatology/WindAtlas" ) );
 
     /* wind atlas settings */
-    pConf->Write ( _T ( "WindAtlas" ), m_cbWindAtlasEnable->GetValue());
-    pConf->Write ( _T ( "WindAtlasSize" ), m_sWindAtlasSize->GetValue());
-    pConf->Write ( _T ( "WindAtlasSpacing" ), m_sWindAtlasSpacing->GetValue());
-    pConf->Write ( _T ( "WindAtlasOpacity" ), m_sWindAtlasOpacity->GetValue());
+    pConf->Write ( _T ( "Enabled" ), m_cbWindAtlasEnable->GetValue());
+    pConf->Write ( _T ( "Size" ), m_sWindAtlasSize->GetValue());
+    pConf->Write ( _T ( "Spacing" ), m_sWindAtlasSpacing->GetValue());
+    pConf->Write ( _T ( "Opacity" ), m_sWindAtlasOpacity->GetValue());
 
     /* cyclone settings */
     pConf->SetPath ( _T( "/PlugIns/Climatology/Cyclones" ) );
@@ -334,8 +339,9 @@ void ClimatologyConfigDialog::SetDataTypeSettings(int settings)
     odc.m_bDirectionArrows = m_cbDirectionArrowsEnable->GetValue();
     odc.m_iDirectionArrowsLengthType = m_rbDirectionArrowsLength->GetValue();
     odc.m_iDirectionArrowsWidth = m_sDirectionArrowsWidth->GetValue();
-    odc.m_cDirectionArrowsColor = m_cpDirectionArrows->GetColour();
-    odc.m_iDirectionArrowsOpacity = m_sDirectionArrowsOpacity->GetValue();
+    wxColour c = m_cpDirectionArrows->GetColour();
+    odc.m_cDirectionArrowsColor.Set(c.Red(), c.Green(), c.Blue(),
+                                    m_sDirectionArrowsOpacity->GetValue());
     odc.m_iDirectionArrowsSize = m_sDirectionArrowsSize->GetValue();
     odc.m_iDirectionArrowsSpacing = m_sDirectionArrowsSpacing->GetValue();
 }
@@ -371,7 +377,7 @@ void ClimatologyConfigDialog::ReadDataTypeSettings(int settings)
     m_rbDirectionArrowsLength->SetValue(odc.m_iDirectionArrowsLengthType==1);
     m_sDirectionArrowsWidth->SetValue(odc.m_iDirectionArrowsWidth);
     m_cpDirectionArrows->SetColour(odc.m_cDirectionArrowsColor);
-    m_sDirectionArrowsOpacity->SetValue(odc.m_iDirectionArrowsOpacity);
+    m_sDirectionArrowsOpacity->SetValue(odc.m_cDirectionArrowsColor.Alpha());
     m_sDirectionArrowsSize->SetValue(odc.m_iDirectionArrowsSize);
     m_sDirectionArrowsSpacing->SetValue(odc.m_iDirectionArrowsSpacing);
 }
@@ -418,12 +424,11 @@ void ClimatologyConfigDialog::OnPaintKey( wxPaintEvent& event )
     wxPaintDC dc( window );
 
     double knots;
-    wxUint8 t;
     wxString name = window->GetName();
 
     window->GetName().ToDouble(&knots);
 
-    wxColour c = ClimatologyOverlayFactory::GetGraphicColor(CYCLONE_SETTING, knots, t);
+    wxColour c = ClimatologyOverlayFactory::GetGraphicColor(CYCLONE_SETTING, knots);
 
     dc.SetBackground(c);
     dc.Clear();

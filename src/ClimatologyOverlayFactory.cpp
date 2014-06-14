@@ -958,7 +958,7 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
 }
 
 void ClimatologyOverlayFactory::DrawLine( double x1, double y1, double x2, double y2,
-                                          const wxColour &color, int opacity, double width )
+                                          const wxColour &color, double width )
 {
     if( m_pdc ) {
         m_pdc->SetPen( wxPen(color, width ) );
@@ -968,7 +968,7 @@ void ClimatologyOverlayFactory::DrawLine( double x1, double y1, double x2, doubl
         glEnable( GL_LINE_SMOOTH );
         glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 
-        glColor4ub(color.Red(), color.Green(), color.Blue(), opacity);
+        glColor4ub(color.Red(), color.Green(), color.Blue(), color.Alpha());
         glLineWidth( width );
 
         glBegin( GL_LINES );
@@ -979,14 +979,14 @@ void ClimatologyOverlayFactory::DrawLine( double x1, double y1, double x2, doubl
 }
 
 void ClimatologyOverlayFactory::DrawCircle( double x, double y, double r,
-                                            const wxColour &color, int opacity, double width )
+                                            const wxColour &color, double width )
 {
     if( m_pdc ) {
         m_pdc->SetPen( wxPen(color, width ) );
         m_pdc->SetBrush( *wxTRANSPARENT_BRUSH);
         m_pdc->DrawCircle(x, y, r);
     } else {
-        glColor4ub(color.Red(), color.Green(), color.Blue(), opacity);
+        glColor4ub(color.Red(), color.Green(), color.Blue(), color.Alpha());
         glLineWidth( width );
 
         glBegin( GL_LINE_LOOP );
@@ -1093,12 +1093,10 @@ const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
                              (sizeof CycloneMap) / (sizeof *CycloneMap)};
 
 
-wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in, wxUint8 &transp)
+wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in)
 {
-    if(isnan(val_in)) {
-        transp = 0; /* transparent */
-        return *wxBLACK;
-    }
+    if(isnan(val_in))
+        return wxColour(0, 0, 0, 0); /* transparent */
 
     int colormap_index = setting;
     ColorMap *map = ColorMaps[colormap_index];
@@ -1115,8 +1113,8 @@ wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in, 
             double d = (val_in-nmapvala)/(nmapvalb-nmapvala);
             c.Set((1-d)*b.Red()   + d*c.Red(),
                   (1-d)*b.Green() + d*c.Green(),
-                  (1-d)*b.Blue()  + d*c.Blue());
-            transp = 255 - ((1-d)*map[i-1].transp + d*map[i].transp);
+                  (1-d)*b.Blue()  + d*c.Blue(),
+                  255 - ((1-d)*map[i-1].transp + d*map[i].transp));
             return c;
         }
     }
@@ -1168,14 +1166,13 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
             double lon = x/s;
 
             double v = getValueMonth(MAG, setting, lat, lon, month);
-            wxUint8 t;
-            wxColour c = GetGraphicColor(setting, v, t);
+            wxColour c = GetGraphicColor(setting, v);
 
             int doff = 4*(y*width + x);
             data[doff + 0] = c.Red();
             data[doff + 1] = c.Green();
             data[doff + 2] = c.Blue();
-            data[doff + 3] = t;
+            data[doff + 3] = c.Alpha();
         }
     }
     delete progressdialog;
@@ -1838,7 +1835,7 @@ ZUFILE *ClimatologyOverlayFactory::TryOpenFile(wxString filename)
     return f;
 }
 
-void ClimatologyOverlayFactory::RenderNumber(wxPoint p, const wxColour &color, double v)
+void ClimatologyOverlayFactory::RenderNumber(wxPoint p, double v, const wxColour &color)
 {
     wxImage &label = getLabel(v);
     int w = label.GetWidth(), h = label.GetHeight();
@@ -1856,7 +1853,7 @@ void ClimatologyOverlayFactory::RenderNumber(wxPoint p, const wxColour &color, d
         glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, w, h,
                         GL_ALPHA, GL_UNSIGNED_BYTE, label.GetAlpha());
         
-        glColor3ub(color.Red(), color.Green(), color.Blue());
+        glColor4ub(color.Red(), color.Green(), color.Blue(), color.Alpha());
 
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glBegin(GL_QUADS);
@@ -1930,7 +1927,7 @@ void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)
         for(p.x = space/2; p.x <= vp.rv_rect.width-space/2; p.x+=space) {
             double lat, lon;
             GetCanvasLLPix( &vp, p, &lat, &lon);
-            RenderNumber(p, *wxBLACK, getCurCalibratedValue(MAG, setting, lat, lon));
+            RenderNumber(p, getCurCalibratedValue(MAG, setting, lat, lon), *wxBLACK);
         }
 }
 
@@ -1959,7 +1956,6 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
     double lengthtype = m_Settings.Settings[setting].m_iDirectionArrowsLengthType;
     int width = m_Settings.Settings[setting].m_iDirectionArrowsWidth;
     wxColour color = m_Settings.Settings[setting].m_cDirectionArrowsColor;
-    int opacity = m_Settings.Settings[setting].m_iDirectionArrowsOpacity;
     double size = m_Settings.Settings[setting].m_iDirectionArrowsSize;
     double spacing = m_Settings.Settings[setting].m_iDirectionArrowsSpacing;
 
@@ -2001,13 +1997,13 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
             double x = -size*(u*cos(t) + v*sin(t)), y = size*(v*cos(t) - u*sin(t));
             wxPoint p;
             GetCanvasPixLL( &vp, &p, lat, lon );
-            DrawLine(p.x+x, p.y+y, p.x-x, p.y-y, color, opacity, width);
+            DrawLine(p.x+x, p.y+y, p.x-x, p.y-y, color, width);
 
             if(!lengthtype) {
                 double ix = x, iy = y, dir = 1;
                 while(mag > cstep) {
                     DrawLine(p.x+ix, p.y+iy, p.x+ix+x/3+dir*y/2, p.y+iy+y/3-dir*x/2,
-                             color, opacity, width);
+                             color, width);
                     dir = -dir;
                     if(dir > 0) {
                         ix = ix*2/3;
@@ -2018,9 +2014,9 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
             }
 
             DrawLine(p.x-x, p.y-y, p.x-x/3+y*2/3, p.y-y/3-x*2/3,
-                     color, opacity, width);
+                     color, width);
             DrawLine(p.x-x, p.y-y, p.x-x/3-y*2/3, p.y-y/3+x*2/3,
-                     color, opacity, width);
+                     color, width);
         }
 }
 
@@ -2107,17 +2103,16 @@ void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
                    (lastlon-180 > vp.clon || lon-180 < vp.clon) &&
                    (lastlon-180 < vp.clon || lon-180 > vp.clon))
                 {
-                    wxUint8 t;
-                    wxColour c = GetGraphicColor(CYCLONE_SETTING, ss->windknots, t);
+                    wxColour c = GetGraphicColor(CYCLONE_SETTING, ss->windknots);
                     
-                    DrawLine(lastp.x, lastp.y, p.x, p.y, c, t, 2);
+                    DrawLine(lastp.x, lastp.y, p.x, p.y, c, 2);
 
                     /* direction arrow */
                     wxPoint a((lastp.x+p.x)/2, (lastp.y+p.y)/2);
                     wxPoint d(lastp.x-p.x, lastp.y-p.y);
 
-                    DrawLine(a.x, a.y, a.x + (d.x+d.y)/5, a.y + (d.y-d.x)/5, c, t, 2);
-                    DrawLine(a.x, a.y, a.x + (d.x-d.y)/5, a.y + (d.x+d.y)/5, c, t, 2);
+                    DrawLine(a.x, a.y, a.x + (d.x+d.y)/5, a.y + (d.y-d.x)/5, c, 2);
+                    DrawLine(a.x, a.y, a.x + (d.x-d.y)/5, a.y + (d.x+d.y)/5, c, 2);
                 }
             }
 
@@ -2174,13 +2169,15 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
             wxPoint p;
             GetCanvasPixLL(&vp, &p, lat, lon);
 
-            if(storm*2 > calm)
-                RenderNumber(p, *wxRED, 100.0*storm);
-            else if(calm > 0)
-                RenderNumber(p, wxColour(0, 0, 180), 100.0*calm);
-            
             int opacity = m_dlg.m_cfgdlg->m_sWindAtlasOpacity->GetValue();
-            DrawCircle(p.x, p.y, r, *wxBLACK, opacity, 2);
+
+            if(storm*2 > calm)
+                RenderNumber(p, 100.0*storm, wxColour(255, 0, 0, opacity));
+            else if(calm > 0)
+                RenderNumber(p, 100.0*calm, wxColour(0, 0, 180, opacity));
+            
+            wxColour c(0, 0, 0, opacity);
+            DrawCircle(p.x, p.y, r, c, 2);
 
             for(int d = 0; d<dir_cnt; d++) {
                 double theta = 2*M_PI*d/dir_cnt - vp.rotation; 
@@ -2196,19 +2193,19 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
 
                 if(split) {
                     wxPoint q((x1 + x2)/2, (y1 + y2)/2);
-                    RenderNumber(q, *wxBLACK, 100*directions[d]);
+                    RenderNumber(q, 100*directions[d], c);
 
-                    DrawLine(x1, y1, (3*x1+x2)/4, (3*y1+y2)/4, *wxBLACK, opacity, 2);
-                    DrawLine((x1+3*x2)/4, (y1+3*y2)/4, x2, y2, *wxBLACK, opacity, 2);
+                    DrawLine(x1, y1, (3*x1+x2)/4, (3*y1+y2)/4, c, 2);
+                    DrawLine((x1+3*x2)/4, (y1+3*y2)/4, x2, y2, c, 2);
                 } else
-                    DrawLine(x1, y1, x2, y2, *wxBLACK, opacity, 2);
+                    DrawLine(x1, y1, x2, y2, c, 2);
 
                 /* draw wind barbs */
                 double cur_speed = speeds[d];
                 double dir = 1;
                 const double a = 10, b = M_PI*2/3;
                 while(cur_speed > 2) {
-                    DrawLine(x2, y2, x2-a*sin(theta+dir*b), y2+a*cos(theta+dir*b), *wxBLACK, opacity, 2);
+                    DrawLine(x2, y2, x2-a*sin(theta+dir*b), y2+a*cos(theta+dir*b), c, 2);
                     dir = -dir;
                     if(dir > 0)
                         x2 -= 3*sin(theta), y2 += 3*cos(theta);

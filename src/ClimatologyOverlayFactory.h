@@ -195,9 +195,8 @@ public:
     bool ReadElNinoYears(wxString filename);
 
     void DrawLine( double x1, double y1, double x2, double y2,
-                   const wxColour &color, int opacity, double width );
-    void DrawCircle( double x, double y, double r,
-                     const wxColour &color, int opacity, double width );
+                   const wxColour &color, double width );
+    void DrawCircle( double x, double y, double r, const wxColour &color, double width );
 
     wxImage &getLabel(double value);
 
@@ -223,7 +222,7 @@ public:
 
     bool RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp );
 
-    static wxColour GetGraphicColor(int setting, double val_in, wxUint8 &transp);
+    static wxColour GetGraphicColor(int setting, double val_in);
 
     wxDateTime m_CurrentTimeline;
     bool m_bAllTimes;
@@ -233,7 +232,7 @@ public:
 private:
     ZUFILE *TryOpenFile(wxString filename);
 
-    void RenderNumber(wxPoint p, const wxColour &color, double v);
+    void RenderNumber(wxPoint p, double v, const wxColour &color);
 
     void RenderIsoBars(int setting, PlugIn_ViewPort &vp);
     void RenderNumbers(int setting, PlugIn_ViewPort &vp);
