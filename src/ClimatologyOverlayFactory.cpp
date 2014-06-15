@@ -1415,13 +1415,19 @@ wxImage &ClimatologyOverlayFactory::getLabel(double value)
 }
 
 /* give value for y at a given x location on a segment */
-double interp_value(double x, double x1, double x2, double y1, double y2)
+static double interp_value(double v0, double v1, double d)
 {
-    if(x == x1)
-        return y1;
-    if(x == x2)
-        return y2;
-    return (y2 - y1)*(x - x1)/(x2 - x1) + y1;
+    return (1-d)*v0 + d*v1;
+}
+
+// interpolate two angles in range +- PI, with resulting angle in the same range
+static double interp_angle(double a0, double a1, double d)
+{
+    if(a0 - a1 > M_PI) a0 -= 2*M_PI;
+    else if(a1 - a0 > M_PI) a1 -= 2*M_PI;
+    double a = (1-d)*a0 + d*a1;
+    if(a < -M_PI) a += 2*M_PI;
+    return a;
 }
 
 double ArrayValue(wxInt16 *a, int index)
@@ -1443,15 +1449,18 @@ double InterpArray(double x, double y, wxInt16 *a, int h)
     double v00 = ArrayValue(a, x0*h + y0), v01 = ArrayValue(a, x0*h + y1v);
     double v10 = ArrayValue(a, x1*h + y0), v11 = ArrayValue(a, x1*h + y1v);
 
-    double v0 = interp_value(y, y0, y1, v00, v01);
-    double v1 = interp_value(y, y0, y1, v10, v11);
-    return      interp_value(x, x0, x1, v0,  v1 );
+    double v0 = interp_value(v00, v01, y-y0);
+    double v1 = interp_value(v10, v11, y-y0);
+    return      interp_value(v0,   v1, x-x0);
 }
 
 double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
 {
     if(storm == 255)
         return NAN;
+
+    if(coord == DIRECTION) // maybe should do most likely here rather than vector average?
+        return atan2(Value(U, dir_cnt), Value(V, dir_cnt));
 
     int totald = 0, totals = 0;
     for(int i=0; i<dir_cnt; i++) {
@@ -1480,6 +1489,7 @@ double CurrentData::Value(enum Coord coord, int xi, int yi)
     case U: return u;
     case V: return v;
     case MAG: return hypot(u, v);
+    case DIRECTION: return atan2(u, v);
     default: printf("error, invalid coord: %d\n", coord);
     }
     return NAN;
@@ -1504,9 +1514,15 @@ double WindData::InterpWind(enum Coord coord, double x, double y)
     double v00 = data[x0*h + y0].Value(coord, d), v01 = data[x0*h + y1v].Value(coord, d);
     double v10 = data[x1*h + y0].Value(coord, d), v11 = data[x1*h + y1v].Value(coord, d);
 
-    double v0 = interp_value(yi, y0, y1, v00, v01);
-    double v1 = interp_value(yi, y0, y1, v10, v11);
-    return      interp_value(xi, x0, x1, v0,  v1 );
+    if(coord == DIRECTION) {
+        double a0 = interp_angle(v00, v01, yi-y0);
+        double a1 = interp_angle(v10, v11, yi-y0);
+        return      interp_angle(a0,  a1,  xi-x0 );
+    }
+
+    double v0 = interp_value(v00, v01, yi-y0);
+    double v1 = interp_value(v10, v11, yi-y0);
+    return      interp_value(v0,  v1,  xi-x0 );
 }
 
 double CurrentData::InterpCurrent(enum Coord coord, double x, double y)
@@ -1526,20 +1542,35 @@ double CurrentData::InterpCurrent(enum Coord coord, double x, double y)
     double v00 = Value(coord, x0, y0), v01 = Value(coord, x0, y1);
     double v10 = Value(coord, x1, y0), v11 = Value(coord, x1, y1);
 
-    double v0 = interp_value(yi, y0, y1, v00, v01);
-    double v1 = interp_value(yi, y0, y1, v10, v11);
-    return      interp_value(xi, x0, x1, v0,  v1 );
+    if(coord == DIRECTION) {
+        double a0 = interp_angle(v00, v01, yi-y0);
+        double a1 = interp_angle(v10, v11, yi-y0);
+        return      interp_angle(a0,  a1,  xi-x0 ) * 180/M_PI;
+    }
+
+    double v0 = interp_value(v00, v01, yi-y0);
+    double v1 = interp_value(v10, v11, yi-y0);
+    return      interp_value(v0,  v1,  xi-x0 );
 }
 
-double InterpTable(double ind, const double table[], int tablesize)
+static double interp_table_value(double x, double x1, double x2, double y1, double y2)
+{
+    if(x == x1)
+        return y1;
+    if(x == x2)
+        return y2;
+    return (y2 - y1)*(x - x1)/(x2 - x1) + y1;
+}
+
+static double InterpTable(double ind, const double table[], int tablesize)
 {
     int ind1 = floor(ind), ind2 = ceil(ind);
     if(ind1 < 0)
         return table[0];
-    if(ind2 >= tablesize)
+   if(ind2 >= tablesize)
         return table[tablesize - 1];
 
-    return interp_value(ind, ind1, ind2, table[ind1], table[ind2]);
+    return interp_table_value(ind, ind1, ind2, table[ind1], table[ind2]);
 }
  
 double ClimatologyOverlayFactory::getValueMonth(enum Coord coord, int setting,
@@ -1602,25 +1633,18 @@ double ClimatologyOverlayFactory::getValueMonth(enum Coord coord, int setting,
 double ClimatologyOverlayFactory::getValue(enum Coord coord, int setting,
                                            double lat, double lon, wxDateTime *date)
 {
-    /* perform interpolation here as vector to avoid issues interpolating angles
-     TODO: fix this to interpolate lower down, and determine the significant differences
-     for weather routing purposes */
-    if(coord == DIRECTION) {
-        double u = getValue(U, setting, lat, lon, date);
-        double v = getValue(V, setting, lat, lon, date);
-
-        if(u == 0 && v == 0)
-            return NAN;
-
-        return positive_degrees(rad2deg(atan2(u, v)));
-    }
-
     int month, nmonth;
     double dpos;
     GetDateInterpolation(date, month, nmonth, dpos);
 
     double v1 = getValueMonth(coord, setting, lat, lon, month);
     double v2 = getValueMonth(coord, setting, lat, lon, nmonth);
+
+    if(coord == DIRECTION) {
+        if(v1 - v2 > 180) v1 -= 360;
+        if(v2 - v1 > 180) v2 -= 360;
+        return positive_degrees(dpos * v1 + (1-dpos) * v2);
+    }
 
     return dpos * v1 + (1-dpos) * v2;
 }
@@ -1681,9 +1705,10 @@ inline int TestIntersectionXY(double x1, double y1, double x2, double y2,
     double denom = ay * bx - ax * by;
 
     if(fabs(denom) < EPS) { /* parallel or really close to parallel */
-        if(fabs((y1*ax - ay*x1)*bx - (y3*bx - by*x3)*ax) > EPS2)
-            return 0; /* different intercepts, no intersection */
-        return 1;
+//        if(fabs((y1*ax - ay*x1)*bx - (y3*bx - by*x3)*ax) > EPS2)
+//            return 0; /* different intercepts, no intersection */
+        //      return 1;
+        return 0;
     }
 
     double recip = 1 / denom;
@@ -1704,6 +1729,12 @@ int ClimatologyOverlayFactory::CycloneTrackCrossingsTheatre(
     const wxDateTime &cyclonedata_startdate, 
     std::list<Cyclone*> &cyclones)
 {
+    // if dayrange is zero, we are just probing, so other parameters are likely invalid
+    if(!dayrange)
+        return 0;
+
+    int day = date.GetMonth()*365/12 + date.GetDay();
+
     int crossings = 0;
     for(std::list<Cyclone*>::iterator it = cyclones.begin(); it != cyclones.end(); it++) {
         Cyclone *s = *it;
@@ -1714,18 +1745,24 @@ int ClimatologyOverlayFactory::CycloneTrackCrossingsTheatre(
             CycloneState *ss = *it2;
 
             double lat = ss->latitude, lon = ss->longitude;
-            if(ss->windknots >= min_windspeed &&
-               abs((ss->datetime.DateTime() - date).GetDays()) <= dayrange) {
+            int cday = ss->datetime.month*365/12 + ss->datetime.day;
+
+            int days = abs(day - cday);
+            if(days > 182) days = 365 - days;
+            if(ss->windknots >= min_windspeed && days <= dayrange/2) {
                 if(!isnan(lastlat)) {
-                    if(TestIntersectionXY(lat1, lon1, lat2, lon2,
-                                          lastlat, lastlon, lat, lon))
+                    /* we should split all cyclones at 15 degrees longitude... until then... */
+                    while(lon1 - lastlon > 180) lon1 -= 360, lon2 -= 360;
+                    while(lon1 - lastlon < -180) lon1 += 360, lon2 += 360;
+
+                    if(abs(TestIntersectionXY(lat1, lon1, lat2, lon2,
+                                              lastlat, lastlon, lat, lon)) == 1)
                         crossings++;
                 }
             }
 
             lastlat = lat;
             lastlon = lon;
-            
         }
     }
     return crossings;
@@ -1740,6 +1777,8 @@ int ClimatologyOverlayFactory::CycloneTrackCrossings(
 
     int crossings = 0;
     for(int i=0; i < 6; i++) {
+        if(cyclones[i]->empty())
+            return -1;
         // a quick test with bounds checking could greatly speed this up
         crossings += CycloneTrackCrossingsTheatre(lat1, lon1, lat2, lon2, date, dayrange, min_windspeed,
                                                   cyclonedata_startdate, *cyclones[i]);
@@ -2180,7 +2219,7 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
             DrawCircle(p.x, p.y, r, c, 2);
 
             for(int d = 0; d<dir_cnt; d++) {
-                double theta = 2*M_PI*d/dir_cnt - vp.rotation; 
+                double theta = 2*M_PI*d/dir_cnt + vp.rotation; 
                 double x1 = p.x+r*sin(theta), y1 = p.y-r*cos(theta);
                 
                 if(directions[d] == 0)
