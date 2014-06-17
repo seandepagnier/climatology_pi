@@ -1723,67 +1723,100 @@ inline int TestIntersectionXY(double x1, double y1, double x2, double y2,
     return 1;
 }
 
-int ClimatologyOverlayFactory::CycloneTrackCrossingsTheatre(
-    double lat1, double lon1, double lat2, double lon2,
-    const wxDateTime &date, int dayrange, int min_windspeed,
-    const wxDateTime &cyclonedata_startdate, 
-    std::list<Cyclone*> &cyclones)
-{
-    // if dayrange is zero, we are just probing, so other parameters are likely invalid
-    if(!dayrange)
-        return 0;
-
-    int day = date.GetMonth()*365/12 + date.GetDay();
-
-    int crossings = 0;
-    for(std::list<Cyclone*>::iterator it = cyclones.begin(); it != cyclones.end(); it++) {
-        Cyclone *s = *it;
-
-        double lastlat = NAN, lastlon = NAN;
-        for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
-            wxPoint p;
-            CycloneState *ss = *it2;
-
-            double lat = ss->latitude, lon = ss->longitude;
-            int cday = ss->datetime.month*365/12 + ss->datetime.day;
-
-            int days = abs(day - cday);
-            if(days > 182) days = 365 - days;
-            if(ss->windknots >= min_windspeed && days <= dayrange/2) {
-                if(!isnan(lastlat)) {
-                    /* we should split all cyclones at 15 degrees longitude... until then... */
-                    while(lon1 - lastlon > 180) lon1 -= 360, lon2 -= 360;
-                    while(lon1 - lastlon < -180) lon1 += 360, lon2 += 360;
-
-                    if(abs(TestIntersectionXY(lat1, lon1, lat2, lon2,
-                                              lastlat, lastlon, lat, lon)) == 1)
-                        crossings++;
-                }
-            }
-
-            lastlat = lat;
-            lastlon = lon;
-        }
-    }
-    return crossings;
-}
-
 int ClimatologyOverlayFactory::CycloneTrackCrossings(
     double lat1, double lon1, double lat2, double lon2,
     const wxDateTime &date, int dayrange, int min_windspeed,
     const wxDateTime &cyclonedata_startdate)
 {
-    std::list<Cyclone*> *cyclones[6] = {&m_epa, &m_wpa, &m_spa, &m_atl, &m_nio, &m_she};
+    /* build hash table cache to speed up cyclone crossing calculation */
+    if(m_cyclone_cache.empty()) {
+        std::list<Cyclone*> *cyclones[6] = {&m_epa, &m_wpa, &m_spa, &m_atl, &m_nio, &m_she};
 
-    int crossings = 0;
-    for(int i=0; i < 6; i++) {
-        if(cyclones[i]->empty())
-            return -1;
-        // a quick test with bounds checking could greatly speed this up
-        crossings += CycloneTrackCrossingsTheatre(lat1, lon1, lat2, lon2, date, dayrange, min_windspeed,
-                                                  cyclonedata_startdate, *cyclones[i]);
+        for(int i=0; i < 6; i++)
+            if(cyclones[i]->empty())
+                return -1;
+
+        // if dayrange is zero, we are just probing, so other parameters are likely invalid
+        if(!dayrange)
+            return 0;
+
+        for(int i=0; i < 6; i++)
+            for(std::list<Cyclone*>::iterator it = cyclones[i]->begin(); it != cyclones[i]->end(); it++) {
+                Cyclone *s = *it;
+
+                for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
+                    int lon = (*it2)->longitude < 15 ? (*it2)->longitude : (*it2)->longitude - 360;
+                    int hash = (floor(lon) * 180 + floor((*it2)->latitude))*12 + (*it2)->datetime.month;
+                    std::list<Cyclone*> &cyclones = m_cyclone_cache[hash];
+                    for(std::list<Cyclone*>::iterator it2 = cyclones.begin(); it2 != cyclones.end(); it2++)
+                        if(*it == *it2)
+                            goto already;
+
+                    cyclones.push_back(*it);
+                already:;
+                }
+            }
     }
-    return crossings;
+        
+    int lon_min = wxMin(lon1, lon2), lon_max = wxMax(lon1, lon2);
+
+    if(lon_min > 15 || lon_max > 15)
+        lon_min -= 360, lon_max -= 360;
+
+    int lat_min = wxMin(lat1, lat2), lat_max = wxMax(lat1, lat2);
+
+    int day = date.GetMonth()*365/12 + date.GetDay()-1;
+    int day1 = day - dayrange/2, day2 = day + dayrange/2;
+    if(day1 < 0) day1 += 365;
+    if(day2 >= 365) day2 -= 365;
+    int day_min = wxMin(day1, day2), day_max = wxMax(day1, day2);
+
+    int month_min = day_min * 12 / 365, month_max = day_max * 12 / 365;
+
+    for(int loni = lon_min; loni <= lon_max; loni++)
+        for(int lati = lat_min; lati <= lat_max; lati++) {
+            int monthi = month_min;
+            do {
+                if(monthi==12) monthi = 0;
+
+                int hash = (floor(loni) * 180 + floor(lati))*12 + monthi;
+
+                std::list<Cyclone*> &cyclones = m_cyclone_cache[hash];
+                for(std::list<Cyclone*>::iterator it = cyclones.begin(); it != cyclones.end(); it++) {
+                    Cyclone *s = *it;
+
+                    double lastlat = NAN, lastlon = NAN;
+                    for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
+
+                        wxPoint p;
+                        CycloneState *ss = *it2;
+
+                        double lat = ss->latitude, lon = ss->longitude;
+                        int cday = ss->datetime.month*365/12 + ss->datetime.day - 1;
+                        int daydiff = cday - day;
+                        if(daydiff > 365/2)
+                            daydiff = 365 - daydiff;
+
+                        if(ss->windknots >= min_windspeed && daydiff > dayrange/2) {
+                            if(!isnan(lastlat)) {
+                                /* we should split all cyclones at 15 degrees longitude... until then... */
+                                while(lon1 - lastlon > 180) lon1 -= 360, lon2 -= 360;
+                                while(lon1 - lastlon < -180) lon1 += 360, lon2 += 360;
+                                
+                                if(TestIntersectionXY(lat1, lon1, lat2, lon2,
+                                                      lastlat, lastlon, lat, lon))
+                                    return 1;
+                            }
+                        }
+
+                        lastlat = lat;
+                        lastlon = lon;
+                    }
+                }
+            } while(++monthi <= month_max);
+        }
+
+    return 0;
 }
 
 void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &vp)
