@@ -260,9 +260,10 @@ void climatology_pi::OnToolbarToolCallback(int id)
         RequestRefresh(m_parent_window); // refresh main window
     }
 
-    m_pClimatologyDialog->Show(!m_pClimatologyDialog->IsShown());
+    if(m_pClimatologyDialog->IsShown() && m_pClimatologyDialog->m_cfgdlg)
+        m_pClimatologyDialog->m_cfgdlg->Hide();
 
-//    SetToolbarItemState( m_leftclick_tool_id, m_pClimatologyDialog->IsShown() );
+    m_pClimatologyDialog->Show(!m_pClimatologyDialog->IsShown());
 }
 
 void climatology_pi::OnClimatologyDialogClose()
