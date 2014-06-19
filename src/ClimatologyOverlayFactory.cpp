@@ -132,9 +132,12 @@ double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
     return m_factory.getCurCalibratedValue(MAG, m_setting, lat, lon);
 }
 
+#define CYCLONE_CACHE_SEMAPHORE_COUNT 4
 ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
-    : m_bUpdateCyclones(true),
-      m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings), m_cyclonesDisplayList(0),
+    : //m_bUpdateCyclones(true),
+    m_cyclone_cache_semaphore(CYCLONE_CACHE_SEMAPHORE_COUNT),
+      m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings),
+      m_cyclonesDisplayList(0), m_cyclone_drawn_counter(0),
       m_bFailedLoading(false)
 {
     // assume we have GL_ARB_multitexture if this passes
@@ -161,7 +164,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     m_CurrentTimeline = wxDateTime::Now();
     m_CurrentTimeline.SetYear(1999); /* without leap year */
 
-    wxProgressDialog progressdialog( _("Climatology"), wxString(), 37, &m_dlg,
+    wxProgressDialog progressdialog( _("Climatology"), wxString(), 38, &m_dlg,
                                      wxPD_CAN_ABORT | wxPD_ELAPSED_TIME);
 
     wxString path = ClimatologyDataDirectory();
@@ -417,50 +420,38 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     zu_close(f), free(f);
 
     /* load cyclone tracks */
-    bool anycyclone = false;
+    bool allcyclone = true;
     if(!progressdialog.Update(30, _("cyclone (east pacific)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-epa"), m_epa))
-        m_dlg.m_cfgdlg->m_cbEastPacific->Disable();
-    else
-        anycyclone = true;
+        allcyclone = false;
 
     if(!progressdialog.Update(31, _("cyclone (west pacific)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-wpa"), m_wpa))
-        m_dlg.m_cfgdlg->m_cbWestPacific->Disable();
-    else
-        anycyclone = true;
+        allcyclone = false;
 
     if(!progressdialog.Update(32, _("cyclone (south pacific)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-spa"), m_spa, true))
-        m_dlg.m_cfgdlg->m_cbSouthPacific->Disable();
-    else
-        anycyclone = true;
+        allcyclone = false;
 
     if(!progressdialog.Update(33, _("cyclone (atlantic)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-atl"), m_atl))
-        m_dlg.m_cfgdlg->m_cbAtlantic->Disable();
-    else
-        anycyclone = true;
+        allcyclone = false;
 
     if(!progressdialog.Update(34, _("cyclone (north indian)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-nio"), m_nio))
-        m_dlg.m_cfgdlg->m_cbNorthIndian->Disable();
-    else
-        anycyclone = true;
+        allcyclone = false;
 
     if(!progressdialog.Update(35, _("cyclone (south indian)")))
         return;
     if(!ReadCycloneData(path + _T("cyclone-she"), m_she, true))
-        m_dlg.m_cfgdlg->m_cbSouthIndian->Disable();
-    else
-        anycyclone = true;
+        allcyclone = false;
 
-    if(anycyclone)
+    if(allcyclone)
         m_dlg.m_cbCyclones->Enable();
 
     if(!progressdialog.Update(36, _("el nino years")))
@@ -471,6 +462,11 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
         m_dlg.m_cfgdlg->m_cbLaNina->Disable();
         m_dlg.m_cfgdlg->m_cbNeutral->Disable();
     }
+
+    if(!progressdialog.Update(37, _("cyclone cache")))
+        return;
+
+    BuildCycloneCache();
 
     if(m_bFailedLoading) {
         wxMessageDialog mdlg(&m_dlg, 
@@ -866,6 +862,12 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
 #endif
         Cyclone *cyclone = new Cyclone;
         llastmonth = 0;
+
+        wxUint8 wk;
+        wxUint16 press;
+        CycloneState::State lastcyclonestate;
+        CycloneDateTime lastdatetime;
+        wxInt16 lastlat=-10000, lastlon;
         for(;;) {
             char state;
             if(zu_read(f, &state, sizeof state) != sizeof state || state == -128)
@@ -877,6 +879,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
             case 'S': cyclonestate = CycloneState::SUBTROPICAL; break;
             case 'E': cyclonestate = CycloneState::EXTRATROPICAL; break;
             case 'W': cyclonestate = CycloneState::WAVE; break;
+
             case 'L': cyclonestate = CycloneState::REMANENT; break;
             default: cyclonestate = CycloneState::UNKNOWN; break;
             }
@@ -892,31 +895,122 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
 
             wxDateTime::Month month = (wxDateTime::Month)(lmonth-1);
             int day = lday/4, hour = (lday%4)*6;
-            if(lmonth >= 1 && lmonth <= 12 &&
-               day >= 1 && day <= wxDateTime::GetNumberOfDays(month, lyear) &&
-               hour >= 0 && hour < 24) {
+            if(lmonth < 1 || lmonth > 12 ||
+               day < 1 || day > wxDateTime::GetNumberOfDays(month, lyear) ||
+               hour < 0 || hour >= 24)
+                continue;
 
-                wxInt16 lat, lon;
-                if(zu_read(f, &lat, sizeof lat) != sizeof lat ||
-                   zu_read(f, &lon, sizeof lon) != sizeof lon)
-                    break;
-                
-                wxUint8 wk;
-                wxUint16 press;
-                if(zu_read(f, &wk, sizeof wk) != sizeof wk ||
-                   zu_read(f, &press, sizeof press) != sizeof press)
-                    break;
-                
+            wxInt16 lat, lon;
+            if(zu_read(f, &lat, sizeof lat) != sizeof lat ||
+               zu_read(f, &lon, sizeof lon) != sizeof lon)
+                break;
+
+            if(lastlat != -10000) {
                 cyclone->states.push_back
-                    (new CycloneState(cyclonestate, CycloneDateTime(day, month, lyear, hour),
-                                      (south ? -1 : 1) * (double)lat/10, (double)lon/10, wk, press));
+                    (new CycloneState(lastcyclonestate, lastdatetime,
+                                      (south ? -1 : 1) * (double)lastlat/10, (double)lastlon/10,
+                                      (south ? -1 : 1) * (double)lat/10, (double)lon/10,
+                                      wk, press));
             }
+
+            lastcyclonestate = cyclonestate;
+            lastdatetime = CycloneDateTime(day, month, lyear, hour);
+            lastlat = lat, lastlon = lon;
+                
+            if(zu_read(f, &wk, sizeof wk) != sizeof wk ||
+               zu_read(f, &press, sizeof press) != sizeof press)
+                break;
         }
         cyclones.push_back(cyclone);
     }
 
-    zu_close(f), free(f);
+    zu_close(f);
+    free(f);
     return true;
+}
+
+void ClimatologyOverlayFactory::BuildCycloneCache()
+{
+    std::list<Cyclone*> *cyclones[6] = {&m_epa, &m_wpa, &m_spa, &m_atl, &m_nio, &m_she};
+
+    /* make sure we have all the cyclone theatres */
+    for(int i=0; i < 6; i++)
+        if(cyclones[i]->empty())
+            return;
+
+    int statemask = 0;
+    statemask |= 1*m_dlg.m_cfgdlg->m_cbTropical->GetValue();
+    statemask |= 2*m_dlg.m_cfgdlg->m_cbSubTropical->GetValue();
+    statemask |= 4*m_dlg.m_cfgdlg->m_cbExtraTropical->GetValue();
+    statemask |= 8*m_dlg.m_cfgdlg->m_cbRemanent->GetValue();
+
+    for(int i=0; i<CYCLONE_CACHE_SEMAPHORE_COUNT; i++)
+        m_cyclone_cache_semaphore.Wait();
+
+    m_cyclone_cache.clear();
+    for(int i=0; i < 6; i++) {
+        for(std::list<Cyclone*>::iterator it = cyclones[i]->begin(); it != cyclones[i]->end(); it++) {
+            Cyclone *s = *it;
+
+            for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
+                if((*it2)->windknots < m_dlg.m_cfgdlg->m_sMinWindSpeed->GetValue())
+                    continue;
+
+                if((*it2)->pressure > m_dlg.m_cfgdlg->m_sMaxPressure->GetValue())
+                    continue;
+
+                /* rebuild cache for these? */
+                wxDateTime dt = (*it2)->datetime.DateTime();
+                if((dt < m_dlg.m_cfgdlg->m_dPStart->GetValue()) ||
+                   (dt > m_dlg.m_cfgdlg->m_dPEnd->GetValue()))
+                    continue;
+
+                /* el nino test */
+                int year = (*it2)->datetime.year;
+                std::map<int, ElNinoYear>::iterator ipt = m_ElNinoYears.find(year);
+                if (ipt == m_ElNinoYears.end()) {
+                    if(!m_dlg.m_cfgdlg->m_cbNotAvailable->GetValue() && m_ElNinoYears.size())
+                        continue;
+                } else {
+                    ElNinoYear elninoyear = m_ElNinoYears[year];
+                    int month = (*it2)->datetime.month;
+                    double value = elninoyear.months[month];
+        
+                    if(isnan(value)) {
+                        if(!m_dlg.m_cfgdlg->m_cbNotAvailable->GetValue())
+                            continue;
+                    } else {
+                        if(value >= .75) {
+                            if(!m_dlg.m_cfgdlg->m_cbElNino->GetValue())
+                                continue;
+                        } else if(value <= -.75) {
+                            if(!m_dlg.m_cfgdlg->m_cbLaNina->GetValue())
+                                continue;
+                        } else if(!m_dlg.m_cfgdlg->m_cbNeutral->GetValue())
+                            continue;
+                    }
+                }
+
+                if(!((1<<(*it2)->state) & statemask))
+                    continue;
+
+                int lon[2], lat[2];
+                for(int j = 0; j<2; j++) {
+                    lon[j] = (*it2)->lon[0] < 15 ? (*it2)->lon[j] : (*it2)->lon[j] - 360;
+                    lat[j] = (*it2)->lat[j];
+                }
+
+                for(int loni = wxMin(lon[0], lon[1]); loni <= wxMax(lon[0], lon[1]); loni++)
+                    for(int lati = wxMin(lat[0], lat[1]); lati <= wxMax(lat[0], lat[1]); lati++) {
+                        int hash = (loni * 180 + lati)*12 + (*it2)->datetime.month;
+                        m_cyclone_cache[hash].push_back(*it2);
+                    }
+            }
+        }
+    }
+
+    for(int i=0; i<CYCLONE_CACHE_SEMAPHORE_COUNT; i++)
+        m_cyclone_cache_semaphore.Post();
 }
 
 static double strtod_nan(const char *str)
@@ -1692,8 +1786,8 @@ double ClimatologyOverlayFactory::GetMax(int setting)
     }
 }
 
-#define EPS 2e-10
-#define EPS2 2e-5
+#define EPS 2e-14
+#define EPS2 2e-7
 
 inline int TestIntersectionXY(double x1, double y1, double x2, double y2,
                               double x3, double y3, double x4, double y4)
@@ -1707,8 +1801,8 @@ inline int TestIntersectionXY(double x1, double y1, double x2, double y2,
     if(fabs(denom) < EPS) { /* parallel or really close to parallel */
 //        if(fabs((y1*ax - ay*x1)*bx - (y3*bx - by*x3)*ax) > EPS2)
 //            return 0; /* different intercepts, no intersection */
-        //      return 1;
-        return 0;
+      return 1;
+//        return 0;
     }
 
     double recip = 1 / denom;
@@ -1723,39 +1817,18 @@ inline int TestIntersectionXY(double x1, double y1, double x2, double y2,
     return 1;
 }
 
-int ClimatologyOverlayFactory::CycloneTrackCrossings(
-    double lat1, double lon1, double lat2, double lon2,
-    const wxDateTime &date, int dayrange, int min_windspeed,
-    const wxDateTime &cyclonedata_startdate)
+int ClimatologyOverlayFactory::CycloneTrackCrossings(double lat1, double lon1, double lat2, double lon2,
+                                                     const wxDateTime &date, int dayrange)
 {
+    // if dayrange is zero, we are just probing, so other parameters are likely invalid
+    if(!dayrange)
+        return 0;
+
+    m_cyclone_cache_semaphore.Wait();
     /* build hash table cache to speed up cyclone crossing calculation */
     if(m_cyclone_cache.empty()) {
-        std::list<Cyclone*> *cyclones[6] = {&m_epa, &m_wpa, &m_spa, &m_atl, &m_nio, &m_she};
-
-        for(int i=0; i < 6; i++)
-            if(cyclones[i]->empty())
-                return -1;
-
-        // if dayrange is zero, we are just probing, so other parameters are likely invalid
-        if(!dayrange)
-            return 0;
-
-        for(int i=0; i < 6; i++)
-            for(std::list<Cyclone*>::iterator it = cyclones[i]->begin(); it != cyclones[i]->end(); it++) {
-                Cyclone *s = *it;
-
-                for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
-                    int lon = (*it2)->longitude < 15 ? (*it2)->longitude : (*it2)->longitude - 360;
-                    int hash = (floor(lon) * 180 + floor((*it2)->latitude))*12 + (*it2)->datetime.month;
-                    std::list<Cyclone*> &cyclones = m_cyclone_cache[hash];
-                    for(std::list<Cyclone*>::iterator it2 = cyclones.begin(); it2 != cyclones.end(); it2++)
-                        if(*it == *it2)
-                            goto already;
-
-                    cyclones.push_back(*it);
-                already:;
-                }
-            }
+        m_cyclone_cache_semaphore.Post();
+        return -1;
     }
         
     int lon_min = wxMin(lon1, lon2), lon_max = wxMax(lon1, lon2);
@@ -1781,41 +1854,34 @@ int ClimatologyOverlayFactory::CycloneTrackCrossings(
 
                 int hash = (floor(loni) * 180 + floor(lati))*12 + monthi;
 
-                std::list<Cyclone*> &cyclones = m_cyclone_cache[hash];
-                for(std::list<Cyclone*>::iterator it = cyclones.begin(); it != cyclones.end(); it++) {
-                    Cyclone *s = *it;
+                std::list<CycloneState*> &cyclonestates = m_cyclone_cache[hash];
+                for(std::list<CycloneState*>::iterator it = cyclonestates.begin();
+                    it != cyclonestates.end(); it++) {
+                    wxPoint p;
+                    CycloneState *ss = *it;
+                        
+                    int cday = ss->datetime.month*365/12 + ss->datetime.day - 1;
+                    int daydiff = cday - day;
+                    if(daydiff > 183)
+                        daydiff = 365 - daydiff;
 
-                    double lastlat = NAN, lastlon = NAN;
-                    for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
-
-                        wxPoint p;
-                        CycloneState *ss = *it2;
-
-                        double lat = ss->latitude, lon = ss->longitude;
-                        int cday = ss->datetime.month*365/12 + ss->datetime.day - 1;
-                        int daydiff = cday - day;
-                        if(daydiff > 365/2)
-                            daydiff = 365 - daydiff;
-
-                        if(ss->windknots >= min_windspeed && daydiff > dayrange/2) {
-                            if(!isnan(lastlat)) {
-                                /* we should split all cyclones at 15 degrees longitude... until then... */
-                                while(lon1 - lastlon > 180) lon1 -= 360, lon2 -= 360;
-                                while(lon1 - lastlon < -180) lon1 += 360, lon2 += 360;
+                    if(daydiff < dayrange/2) {
+                        /* we should split all cyclones at 15 degrees longitude... until then... */
+                        while(lon1 - ss->lon[0] > 180) lon1 -= 360, lon2 -= 360;
+                        while(lon1 - ss->lon[0] < -180) lon1 += 360, lon2 += 360;
                                 
-                                if(TestIntersectionXY(lat1, lon1, lat2, lon2,
-                                                      lastlat, lastlon, lat, lon))
-                                    return 1;
-                            }
+                        if(TestIntersectionXY(lat1, lon1, lat2, lon2,
+                                              ss->lat[0], ss->lon[0],
+                                              ss->lat[1], ss->lon[1])) {
+                            m_cyclone_cache_semaphore.Post();
+                            return 1;
                         }
-
-                        lastlat = lat;
-                        lastlon = lon;
                     }
                 }
             } while(++monthi <= month_max);
         }
 
+    m_cyclone_cache_semaphore.Post();
     return 0;
 }
 
@@ -2092,123 +2158,6 @@ void ClimatologyOverlayFactory::RenderDirectionArrows(int setting, PlugIn_ViewPo
         }
 }
 
-void ClimatologyOverlayFactory::RenderCyclonesTheatre(PlugIn_ViewPort &vp,
-                                                      std::list<Cyclone*> &cyclones,
-                                                      wxCheckBox *cb)
-{
-    if(!cb->GetValue())
-        return;
-
-    int statemask = 0;
-    statemask |= 1*m_dlg.m_cfgdlg->m_cbTropical->GetValue();
-    statemask |= 2*m_dlg.m_cfgdlg->m_cbSubTropical->GetValue();
-    statemask |= 4*m_dlg.m_cfgdlg->m_cbExtraTropical->GetValue();
-    statemask |= 8*m_dlg.m_cfgdlg->m_cbRemanent->GetValue();
-
-    int dayspan = m_dlg.m_cfgdlg->m_sCycloneDaySpan->GetValue();
-
-    wxDateTime start = wxDateTime::Now();
-    for(std::list<Cyclone*>::iterator it = cyclones.begin(); it != cyclones.end(); it++) {
-        Cyclone *s = *it;
-
-        bool first = true;
-        double lastlon = 0;
-        wxPoint lastp;
-
-        for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
-            wxPoint p;
-            CycloneState *ss = *it2;
-            double lat = ss->latitude, lon = ss->longitude;
-            int year = ss->datetime.year;
-            wxDateTime dt = ss->datetime.DateTime();
-            wxDateTime dt2(m_CurrentTimeline.GetDay(), m_CurrentTimeline.GetMonth(), dt.GetYear());
-            std::map<int, ElNinoYear>::iterator it;
-
-            if(!m_dlg.m_cbAll->GetValue() && abs((dt2 - dt).GetDays()) > dayspan/2)
-                goto skip;
-
-            if((dt < m_dlg.m_cfgdlg->m_dPStart->GetValue()) ||
-               (dt > m_dlg.m_cfgdlg->m_dPEnd->GetValue()))
-                goto skip;
-
-            it = m_ElNinoYears.find(year);
-            if (it == m_ElNinoYears.end()) {
-                if(!m_dlg.m_cfgdlg->m_cbNotAvailable->GetValue())
-                    goto skip;
-            } else {
-                ElNinoYear elninoyear = m_ElNinoYears[year];
-                int month = ss->datetime.month;
-                double value = elninoyear.months[month];
-
-                if(isnan(value)) {
-                    if(!m_dlg.m_cfgdlg->m_cbNotAvailable->GetValue())
-                        goto skip;
-                } else {
-                    if(value >= .75) {
-                        if(!m_dlg.m_cfgdlg->m_cbElNino->GetValue())
-                            goto skip;
-                    } else if(value <= -.75) {
-                        if(!m_dlg.m_cfgdlg->m_cbLaNina->GetValue())
-                            goto skip;
-                    } else if(!m_dlg.m_cfgdlg->m_cbNeutral->GetValue())
-                        goto skip;
-                }
-            }
-
-            if(!((1<<ss->state) & statemask))
-                goto skip;
-
-            if(ss->windknots < m_dlg.m_cfgdlg->m_sMinWindSpeed->GetValue())
-                goto skip;
-
-            if(ss->pressure > m_dlg.m_cfgdlg->m_sMaxPressure->GetValue())
-                goto skip;
-
-            GetCanvasPixLL( &vp, &p, lat, lon );
-
-            if(first) {
-                first = false;
-            } else {
-                /* prevent wrong crossover */
-                if((lastlon+180 > vp.clon || lon+180 < vp.clon) &&
-                   (lastlon+180 < vp.clon || lon+180 > vp.clon) &&
-                   (lastlon-180 > vp.clon || lon-180 < vp.clon) &&
-                   (lastlon-180 < vp.clon || lon-180 > vp.clon))
-                {
-                    wxColour c = GetGraphicColor(CYCLONE_SETTING, ss->windknots);
-                    
-                    DrawLine(lastp.x, lastp.y, p.x, p.y, c, 2);
-
-                    /* direction arrow */
-                    wxPoint a((lastp.x+p.x)/2, (lastp.y+p.y)/2);
-                    wxPoint d(lastp.x-p.x, lastp.y-p.y);
-
-                    DrawLine(a.x, a.y, a.x + (d.x+d.y)/5, a.y + (d.y-d.x)/5, c, 2);
-                    DrawLine(a.x, a.y, a.x + (d.x-d.y)/5, a.y + (d.x+d.y)/5, c, 2);
-                }
-            }
-
-            lastlon = lon;
-            lastp = p;
-            continue;
-
-        skip:
-            first = true;
-        }
-    }
-
-    wxDateTime end = wxDateTime::Now();
-
-    /* rendering is taking too long, and display lists not used */
-    if(m_pdc && (end - start).GetMilliseconds() >= 1200) {
-        cb->SetValue(false);
-
-        wxMessageDialog mdlg(&m_dlg, _("Computer too slow to render cyclones, diabling theater"),
-                             _("Climatology"), wxOK | wxICON_WARNING);
-        mdlg.ShowModal();
-    }
-}
-
 void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
 {
     if(!m_dlg.m_cfgdlg->m_cbWindAtlasEnable->GetValue())
@@ -2287,16 +2236,59 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
         }
 }
 
+void ClimatologyOverlayFactory::RenderCycloneSegment(CycloneState &ss, PlugIn_ViewPort &vp,
+                                                     int dayspan)
+{
+    if(ss.drawn_counter == m_cyclone_drawn_counter)
+        return;
+
+    ss.drawn_counter = m_cyclone_drawn_counter;
+                    
+    if(!m_dlg.m_cbAll->GetValue()) {
+        int daydiff = abs(ss.datetime.day - m_CurrentTimeline.GetDay()
+                          + 30.42*(ss.datetime.month - m_CurrentTimeline.GetMonth()));
+        if(daydiff > 183)
+            daydiff = 365 - daydiff;
+        if(daydiff > dayspan/2)
+            return;
+    }
+
+    double *lat = ss.lat, *lon = ss.lon;
+#if 0
+    /* prevent wrong crossover */
+    if((lastlon+180 > vp.clon || lon+180 < vp.clon) &&
+       (lastlon+180 < vp.clon || lon+180 > vp.clon) &&
+       (lastlon-180 > vp.clon || lon-180 < vp.clon) &&
+       (lastlon-180 < vp.clon || lon-180 > vp.clon))
+#endif
+    {
+        wxPoint p[2];
+        GetCanvasPixLL( &vp, &p[0], lat[0], lon[0] );
+        GetCanvasPixLL( &vp, &p[1], lat[1], lon[1] );
+
+        wxColour c = GetGraphicColor(CYCLONE_SETTING, ss.windknots);
+                            
+        DrawLine(p[0].x, p[0].y, p[1].x, p[1].y, c, 2);
+                            
+        /* direction arrow */
+        wxPoint a((p[0].x+p[1].x)/2, (p[0].y+p[1].y)/2);
+        wxPoint d(p[0].x-p[1].x, p[0].y-p[1].y);
+                            
+        DrawLine(a.x, a.y, a.x + (d.x+d.y)/5, a.y + (d.y-d.x)/5, c, 2);
+        DrawLine(a.x, a.y, a.x + (d.x-d.y)/5, a.y + (d.x+d.y)/5, c, 2);
+    }
+}
+
 void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 {
-    if(m_pdc) /* display list optimization not possible */
-        m_bUpdateCyclones = true;
+//    if(m_pdc) /* display list optimization not possible */
+//        m_bUpdateCyclones = true;
 
     /* no cyclones ever existed between 10 and 20 longitude
        so use 15 east as the meridian to split the world on.. */
-    PlugIn_ViewPort nvp = vp;
-#define USE_DL
+//#define USE_DL
 #ifdef USE_DL
+    PlugIn_ViewPort nvp = vp;
     double cclon = 15;
     static const double NORM_FACTOR = 16;
 
@@ -2330,17 +2322,56 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
         }
 #endif
 
-        RenderCyclonesTheatre(nvp, m_epa, m_dlg.m_cfgdlg->m_cbEastPacific);
-        RenderCyclonesTheatre(nvp, m_wpa, m_dlg.m_cfgdlg->m_cbWestPacific);
-        RenderCyclonesTheatre(nvp, m_spa, m_dlg.m_cfgdlg->m_cbSouthPacific);
-        RenderCyclonesTheatre(nvp, m_atl, m_dlg.m_cfgdlg->m_cbAtlantic);
-        RenderCyclonesTheatre(nvp, m_nio, m_dlg.m_cfgdlg->m_cbNorthIndian);
-        RenderCyclonesTheatre(nvp, m_she, m_dlg.m_cfgdlg->m_cbSouthIndian);
-    
+    int dayspan = m_dlg.m_cfgdlg->m_sCycloneDaySpan->GetValue();
+
+    int month_start, month_end;
+    if(m_dlg.m_cbAll->GetValue()) {
+        month_start = 0;
+        month_end = 11;
+    } else {
+        wxDateTime dt2(m_CurrentTimeline.GetDay(), m_CurrentTimeline.GetMonth(), 1999);
+        wxTimeSpan ts_dayspan = wxTimeSpan::Days(dayspan/2);
+        month_start = (dt2 - ts_dayspan).GetMonth();
+        month_end = (dt2 + ts_dayspan).GetMonth();
+    }
+
+    m_cyclone_drawn_counter++;
+
+    wxDateTime start = wxDateTime::Now();
+    for(int lati = floor(vp.lat_min); lati <= ceil(vp.lat_max); lati++)
+        for(int loni = floor(vp.lon_min); loni <= ceil(vp.lon_max); loni++) {
+            int monthi = month_start;
+            for(;;) {
+                int lonin = loni < 15 ? loni : loni - 360;
+                int hash = (lonin * 180 + lati)*12 + monthi;
+
+                std::list<CycloneState*> &states = m_cyclone_cache[hash];
+                for(std::list<CycloneState*>::iterator it = states.begin();
+                    it != states.end(); it++)
+                    RenderCycloneSegment(**it, vp, dayspan);
+
+                if(monthi == month_end)
+                    break;
+                if(++monthi == 12) monthi = 0;
+            }
+        }
+
+        wxDateTime end = wxDateTime::Now();
+
+        /* rendering is taking too long, and display lists not used */
+        if(m_pdc && (end - start).GetMilliseconds() >= 1200) {
+            m_dlg.m_cbCyclones->SetValue(false);
+
+            wxMessageDialog mdlg(&m_dlg, _("Computer too slow to render cyclones, disabling theater"),
+                             _("Climatology"), wxOK | wxICON_WARNING);
+            mdlg.ShowModal();
+        }
+
 #ifdef USE_DL
         if(!m_pdc)
             glEndList();
     }
+
     if(!m_pdc) {
         //  Does current vp cross cclon ?
         // if so, call the display list again translated

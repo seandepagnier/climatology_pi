@@ -413,7 +413,7 @@ void ClimatologyConfigDialog::OnUpdate()
 
 void ClimatologyConfigDialog::OnUpdateCyclones()
 {
-    pParent->pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
+    pParent->pPlugIn->GetOverlayFactory()->BuildCycloneCache();
     OnUpdate();
 }
 

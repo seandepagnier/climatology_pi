@@ -196,12 +196,6 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxSpinCtrl* m_sCycloneDaySpan;
 		wxSpinCtrl* m_sMinWindSpeed;
 		wxSpinCtrl* m_sMaxPressure;
-		wxCheckBox* m_cbEastPacific;
-		wxCheckBox* m_cbWestPacific;
-		wxCheckBox* m_cbSouthPacific;
-		wxCheckBox* m_cbAtlantic;
-		wxCheckBox* m_cbNorthIndian;
-		wxCheckBox* m_cbSouthIndian;
 		wxCheckBox* m_cbElNino;
 		wxCheckBox* m_cbLaNina;
 		wxCheckBox* m_cbNeutral;

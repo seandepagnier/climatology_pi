@@ -197,7 +197,7 @@ void ClimatologyDialog::DayMonthUpdate()
 
     UpdateTrackingControls();
 
-    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
+//    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
     RefreshRedraw();
 }
 
@@ -212,7 +212,7 @@ void ClimatologyDialog::OnTimeline( wxScrollEvent& event )
     m_sDay->SetValue(timeline.GetDay());
 
     UpdateTrackingControls();
-    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
+//    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
     RefreshRedraw();
 }
 
@@ -237,7 +237,7 @@ void ClimatologyDialog::OnAll( wxCommandEvent& event )
     pPlugIn->GetOverlayFactory()->m_bAllTimes = event.IsChecked();
 
     UpdateTrackingControls();
-    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
+//    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
     RefreshRedraw();
 }
 

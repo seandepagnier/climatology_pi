@@ -88,6 +88,7 @@ struct ElNinoYear
 class CycloneDateTime
 {
 public:
+    CycloneDateTime() {}
     CycloneDateTime(int day1, int month1, int year1, int hour1)
         : hour(hour1), day(day1), month(month1), year(year1) {}
     int hour, day, month, year;
@@ -99,13 +100,23 @@ class CycloneState
 {
 public:
     enum State {TROPICAL, SUBTROPICAL, EXTRATROPICAL, WAVE, REMANENT, UNKNOWN};
-    CycloneState(State s, CycloneDateTime dt, double lat, double lon, double wk, double press)
-    : state(s), datetime(dt), latitude(lat), longitude(lon), windknots(wk), pressure(press)
-    {}
+    CycloneState(State s, CycloneDateTime dt,
+                 double lat0, double lon0, double lat1, double lon1,
+                 double wk, double press)
+        : state(s), datetime(dt),
+        windknots(wk), pressure(press), drawn_counter(0)
+    {
+        lat[0] = lat0, lat[1] = lat1;
+        lon[0] = lon0, lon[1] = lon1;
+    }
 
     State state;
     CycloneDateTime datetime;
-    double latitude, longitude, windknots, pressure;
+    double lat[2], lon[2], windknots, pressure;
+
+    // avoid drawing the same segment twice as it may appear multiple times
+    // in the hash table
+    long drawn_counter;
 };
 
 class Cyclone
@@ -192,6 +203,7 @@ public:
     void ReadCurrentData(int month, wxString filename);
     void AverageCurrentData();
     bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
+    void BuildCycloneCache();
     bool ReadElNinoYears(wxString filename);
 
     void DrawLine( double x1, double y1, double x2, double y2,
@@ -211,10 +223,10 @@ public:
 
     int CycloneTrackCrossings(
         double lat1, double lon1, double lat2, double lon2,
-        const wxDateTime &date, int dayrange, int min_windspeed,
-        const wxDateTime &cyclonedata_startdate);
+        const wxDateTime &date, int dayrange);
 
-    std::map<int, std::list<Cyclone*> > m_cyclone_cache;
+    wxSemaphore m_cyclone_cache_semaphore;
+    std::map<int, std::list<CycloneState*> > m_cyclone_cache;
 
     bool RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp );
 
@@ -223,7 +235,7 @@ public:
     wxDateTime m_CurrentTimeline;
     bool m_bAllTimes;
 
-    bool m_bUpdateCyclones;
+//    bool m_bUpdateCyclones;
 
 private:
     ZUFILE *TryOpenFile(wxString filename);
@@ -235,7 +247,7 @@ private:
     void RenderDirectionArrows(int setting, PlugIn_ViewPort &vp);
 
     void RenderWindAtlas(PlugIn_ViewPort &vp);
-    void RenderCyclonesTheatre(PlugIn_ViewPort &vp, std::list<Cyclone*> &cyclones, wxCheckBox *cb);
+    void RenderCycloneSegment(CycloneState &ss, PlugIn_ViewPort &vp, int dayspan);
     void RenderCyclones(PlugIn_ViewPort &vp);
 
     bool CreateGLTexture(ClimatologyOverlay &O, int setting, int month, PlugIn_ViewPort &vp);
@@ -267,6 +279,7 @@ private:
     wxInt16 m_seadepth[180][360];   /* 1 degree intervals   */
 
     int m_cyclonesDisplayList;
+    long m_cyclone_drawn_counter;
 
     std::list<Cyclone*> m_wpa, m_epa, m_spa, m_atl, m_she, m_nio;
 

@@ -232,15 +232,13 @@ static bool ClimatologyWindAtlasData(wxDateTime &date, double lat, double lon,
 }
 
 static int ClimatologyCycloneTrackCrossings(double lat1, double lon1, double lat2, double lon2,
-                                            const wxDateTime &date, int dayrange, int min_windspeed,
-                                            const wxDateTime &cyclonedata_startdate)
+                                            const wxDateTime &date, int dayrange)
 {
     if(!s_pOverlayFactory)
         return -1;
 
     return s_pOverlayFactory->CycloneTrackCrossings(lat1, lon1, lat2, lon2,
-                                                    date, dayrange, min_windspeed,
-                                                    cyclonedata_startdate);
+                                                    date, dayrange);
 }
 
 void climatology_pi::OnToolbarToolCallback(int id)
@@ -268,8 +266,6 @@ void climatology_pi::OnToolbarToolCallback(int id)
 
 void climatology_pi::OnClimatologyDialogClose()
 {
-//    SetToolbarItemState( m_leftclick_tool_id, false );
-
     if(m_pClimatologyDialog)
         m_pClimatologyDialog->Show(false);
 

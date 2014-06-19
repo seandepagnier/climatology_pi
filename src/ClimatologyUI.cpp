@@ -586,44 +586,6 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	
 	fgSizer5->Add( fgSizer30, 1, wxEXPAND, 5 );
 	
-	wxStaticBoxSizer* sbSizer3;
-	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Theatre") ), wxVERTICAL );
-	
-	wxFlexGridSizer* fgSizer9;
-	fgSizer9 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer9->SetFlexibleDirection( wxBOTH );
-	fgSizer9->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	m_cbEastPacific = new wxCheckBox( m_panel2, wxID_ANY, _("East Pacific"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbEastPacific->SetValue(true); 
-	fgSizer9->Add( m_cbEastPacific, 0, wxALL, 5 );
-	
-	m_cbWestPacific = new wxCheckBox( m_panel2, wxID_ANY, _("West Pacific"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbWestPacific->SetValue(true); 
-	fgSizer9->Add( m_cbWestPacific, 0, wxALL, 5 );
-	
-	m_cbSouthPacific = new wxCheckBox( m_panel2, wxID_ANY, _("South Pacific"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbSouthPacific->SetValue(true); 
-	fgSizer9->Add( m_cbSouthPacific, 0, wxALL, 5 );
-	
-	m_cbAtlantic = new wxCheckBox( m_panel2, wxID_ANY, _("Atlantic"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbAtlantic->SetValue(true); 
-	fgSizer9->Add( m_cbAtlantic, 0, wxALL, 5 );
-	
-	m_cbNorthIndian = new wxCheckBox( m_panel2, wxID_ANY, _("North Indian"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbNorthIndian->SetValue(true); 
-	fgSizer9->Add( m_cbNorthIndian, 0, wxALL, 5 );
-	
-	m_cbSouthIndian = new wxCheckBox( m_panel2, wxID_ANY, _("South Indian"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbSouthIndian->SetValue(true); 
-	fgSizer9->Add( m_cbSouthIndian, 0, wxALL, 5 );
-	
-	
-	sbSizer3->Add( fgSizer9, 1, wxEXPAND, 5 );
-	
-	
-	fgSizer5->Add( sbSizer3, 1, wxEXPAND, 5 );
-	
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("El Nino Period") ), wxVERTICAL );
 	
@@ -884,15 +846,9 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_sWindAtlasOpacity->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdateScroll ), NULL, this );
 	m_dPStart->Connect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesDate ), NULL, this );
 	m_dPEnd->Connect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesDate ), NULL, this );
-	m_sCycloneDaySpan->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
+	m_sCycloneDaySpan->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateSpin ), NULL, this );
 	m_sMinWindSpeed->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
 	m_sMaxPressure->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
-	m_cbEastPacific->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_cbWestPacific->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_cbSouthPacific->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_cbAtlantic->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_cbNorthIndian->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_cbSouthIndian->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
 	m_cbElNino->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
 	m_cbLaNina->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
 	m_cbNeutral->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
@@ -966,15 +922,9 @@ ClimatologyConfigDialogBase::~ClimatologyConfigDialogBase()
 	m_sWindAtlasOpacity->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( ClimatologyConfigDialogBase::OnUpdateScroll ), NULL, this );
 	m_dPStart->Disconnect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesDate ), NULL, this );
 	m_dPEnd->Disconnect( wxEVT_DATE_CHANGED, wxDateEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesDate ), NULL, this );
-	m_sCycloneDaySpan->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
+	m_sCycloneDaySpan->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateSpin ), NULL, this );
 	m_sMinWindSpeed->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
 	m_sMaxPressure->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclonesSpin ), NULL, this );
-	m_cbEastPacific->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_cbWestPacific->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_cbSouthPacific->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_cbAtlantic->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_cbNorthIndian->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
-	m_cbSouthIndian->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
 	m_cbElNino->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
 	m_cbLaNina->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
 	m_cbNeutral->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyConfigDialogBase::OnUpdateCyclones ), NULL, this );
