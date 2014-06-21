@@ -70,8 +70,8 @@
 #endif /* GL_ARB_texture_env_combine */
 
 static int multitexturing = 0;
-static void (*s_glActiveTextureARB)( GLenum texture ) = 0;
-static void (*s_glMultiTexCoord2dARB)( GLenum target, GLdouble s, GLdouble t ) = 0;
+static PFNGLACTIVETEXTUREARBPROC s_glActiveTextureARB = 0;
+static PFNGLMULTITEXCOORD2DARBPROC s_glMultiTexCoord2dARB = 0;
 
 static GLboolean QueryExtension( const char *extName )
 {
@@ -142,9 +142,9 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 {
     // assume we have GL_ARB_multitexture if this passes
     if(QueryExtension( "GL_ARB_texture_env_combine" )) {
-        s_glActiveTextureARB = (void (*)( GLenum ))
+        s_glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
             systemGetProcAddress("glActiveTextureARB");
-        s_glMultiTexCoord2dARB = (void (*)( GLenum, GLdouble, GLdouble ))
+        s_glMultiTexCoord2dARB = (PFNGLMULTITEXCOORD2DARBPROC)
             systemGetProcAddress("glMultiTexCoord2dARB");
         multitexturing = s_glActiveTextureARB && s_glMultiTexCoord2dARB;
 
