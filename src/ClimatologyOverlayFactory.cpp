@@ -1517,6 +1517,8 @@ static double interp_value(double v0, double v1, double d)
 // interpolate two angles in range +- PI, with resulting angle in the same range
 static double interp_angle(double a0, double a1, double d)
 {
+    if(isnan(a0)) return a1;
+    if(isnan(a1)) return a0;
     if(a0 - a1 > M_PI) a0 -= 2*M_PI;
     else if(a1 - a0 > M_PI) a1 -= 2*M_PI;
     double a = (1-d)*a0 + d*a1;
@@ -1583,7 +1585,7 @@ double CurrentData::Value(enum Coord coord, int xi, int yi)
     case U: return u;
     case V: return v;
     case MAG: return hypot(u, v);
-    case DIRECTION: return atan2(u, v);
+    case DIRECTION: return !u && !v ? NAN : atan2(u, v);
     default: printf("error, invalid coord: %d\n", coord);
     }
     return NAN;
@@ -1611,7 +1613,7 @@ double WindData::InterpWind(enum Coord coord, double x, double y)
     if(coord == DIRECTION) {
         double a0 = interp_angle(v00, v01, yi-y0);
         double a1 = interp_angle(v10, v11, yi-y0);
-        return      interp_angle(a0,  a1,  xi-x0 );
+        return      interp_angle(a0,  a1,  xi-x0 ) * 180/M_PI;
     }
 
     double v0 = interp_value(v00, v01, yi-y0);
