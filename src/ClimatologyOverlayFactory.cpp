@@ -836,7 +836,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
             if(zu_read(f, &state, sizeof state) != sizeof state)
                 goto corrupted;
 
-            if(state == -128)
+            if(state == 0x80)
                 break;
 
             CycloneState::State cyclonestate;
