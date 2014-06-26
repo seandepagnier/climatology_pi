@@ -833,7 +833,10 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
         wxInt16 lastlat=-10000, lastlon;
         for(;;) {
             char state;
-            if(zu_read(f, &state, sizeof state) != sizeof state || state == -128)
+            if(zu_read(f, &state, sizeof state) != sizeof state)
+                goto corrupted;
+
+            if(state == -128)
                 break;
 
             CycloneState::State cyclonestate;
@@ -842,15 +845,15 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
             case 'S': cyclonestate = CycloneState::SUBTROPICAL; break;
             case 'E': cyclonestate = CycloneState::EXTRATROPICAL; break;
             case 'W': cyclonestate = CycloneState::WAVE; break;
-
             case 'L': cyclonestate = CycloneState::REMANENT; break;
-            default: cyclonestate = CycloneState::UNKNOWN; break;
+            case 'D': case 'X': cyclonestate = CycloneState::UNKNOWN; break;
+            default: goto corrupted;
             }
 
             char lday, lmonth;
             if(zu_read(f, &lday, sizeof lday) != sizeof lday ||
                zu_read(f, &lmonth, sizeof lmonth) != sizeof lmonth)
-                break;
+                goto corrupted;
 
             if(lmonth < llastmonth)
                 lyear++;
@@ -861,19 +864,16 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
             if(lmonth < 1 || lmonth > 12 ||
                day < 1 || day > wxDateTime::GetNumberOfDays(month, lyear) ||
                hour < 0 || hour >= 24)
-                continue;
+                goto corrupted;
 
             wxInt16 lat, lon;
             if(zu_read(f, &lat, sizeof lat) != sizeof lat ||
                zu_read(f, &lon, sizeof lon) != sizeof lon)
-                break;
+                goto corrupted;
 
             // make sure it's in range
-            if(fabsf((double)lat/10) >= 90 || (double)lon/10 > 15 || (double)lon/10 < -345) {
-                wxLogMessage(climatology_pi + _("cyclone data corrupt: ") + filename
-                             + wxString::Format(_T(" at %ld"), zu_tell(f)));
-                break;
-            }
+            if(fabsf((double)lat/10) >= 90 || (double)lon/10 > 15 || (double)lon/10 < -360)
+                goto corrupted;
 
             if(lastlat != -10000) {
                 cyclone->states.push_back
@@ -889,7 +889,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
                 
             if(zu_read(f, &wk, sizeof wk) != sizeof wk ||
                zu_read(f, &press, sizeof press) != sizeof press)
-                break;
+                goto corrupted;
         }
         cyclones.push_back(cyclone);
     }
@@ -897,6 +897,13 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
     zu_close(f);
     free(f);
     return true;
+
+corrupted:
+    wxLogMessage(climatology_pi + _("cyclone data corrupt: ") + filename
+                 + wxString::Format(_T(" at %ld"), zu_tell(f)));
+    zu_close(f);
+    free(f);
+    return false;
 }
 
 void ClimatologyOverlayFactory::BuildCycloneCache()
