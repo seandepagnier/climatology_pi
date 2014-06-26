@@ -868,6 +868,13 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
                zu_read(f, &lon, sizeof lon) != sizeof lon)
                 break;
 
+            // make sure it's in range
+            if(fabsf((double)lat/10) >= 90 || (double)lon/10 > 15 || (double)lon/10 < -345) {
+                wxLogMessage(climatology_pi + _("cyclone data corrupt: ") + filename
+                             + wxString::Format(_T(" at %ld"), zu_tell(f)));
+                break;
+            }
+
             if(lastlat != -10000) {
                 cyclone->states.push_back
                     (new CycloneState(lastcyclonestate, lastdatetime,
