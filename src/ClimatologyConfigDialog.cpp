@@ -134,6 +134,8 @@ void ClimatologyOverlaySettings::Load()
                       || i == RELATIVE_HUMIDITY || i == LIGHTNING || i == SEADEPTH);
         pConf->Read ( Name + _T ( "OverlayTransparency" ), &Settings[i].m_iOverlayTransparency,
                       0 );
+        pConf->Read ( Name + _T ( "OverlayInterpolation" ), &Settings[i].m_bOverlayInterpolation,
+                      true );
 
         pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars, i==SLP);
         double defspacing[SETTINGS_COUNT] = {5, 2, 10, 5, 5, 20, 1, 10, 1000};
@@ -189,6 +191,7 @@ void ClimatologyOverlaySettings::Save()
         pConf->Write ( Name + _T ( "Enabled" ), Settings[i].m_bEnabled);
         pConf->Write ( Name + _T ( "OverlayMap" ), Settings[i].m_bOverlayMap);
         pConf->Write ( Name + _T ( "OverlayTransparency" ), Settings[i].m_iOverlayTransparency);
+        pConf->Write ( Name + _T ( "OverlayInterpolation" ), Settings[i].m_bOverlayInterpolation);
         pConf->Write ( Name + _T ( "IsoBars" ), Settings[i].m_bIsoBars);
         pConf->Write ( Name + _T ( "IsoBarSpacing" ), Settings[i].m_iIsoBarSpacing);
         pConf->Write ( Name + _T ( "IsoBarStep" ), Settings[i].m_iIsoBarStep);
@@ -327,6 +330,7 @@ void ClimatologyConfigDialog::SetDataTypeSettings(int settings)
     odc.m_bEnabled = m_cbEnabled->GetValue();
     odc.m_bOverlayMap = m_cbOverlayMap->GetValue();
     odc.m_iOverlayTransparency = m_sOverlayTransparency->GetValue();
+    odc.m_bOverlayInterpolation = m_cbOverlayInterpolation->GetValue();
     odc.m_bIsoBars = m_cbIsoBars->GetValue();
     odc.m_iIsoBarSpacing = m_sIsoBarSpacing->GetValue();
     odc.m_iIsoBarStep = m_cIsoBarStep->GetSelection();
@@ -353,6 +357,7 @@ void ClimatologyConfigDialog::ReadDataTypeSettings(int settings)
     m_cbEnabled->SetValue(odc.m_bEnabled);
     m_cbOverlayMap->SetValue(odc.m_bOverlayMap);
     m_sOverlayTransparency->SetValue(odc.m_iOverlayTransparency);
+    m_cbOverlayInterpolation->SetValue(odc.m_bOverlayInterpolation);
     m_cbIsoBars->SetValue(odc.m_bIsoBars);
     m_sIsoBarSpacing->SetValue(odc.m_iIsoBarSpacing);
     m_cIsoBarStep->SetSelection(odc.m_iIsoBarStep);

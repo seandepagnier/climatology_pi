@@ -32,7 +32,7 @@
 #include "climatology_pi.h"
 #include "gldefs.h"
 
-static int multitexturing = 0;
+static int s_multitexturing = 0;
 static PFNGLACTIVETEXTUREARBPROC s_glActiveTextureARB = 0;
 static PFNGLMULTITEXCOORD2DARBPROC s_glMultiTexCoord2dARB = 0;
 
@@ -109,13 +109,13 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             systemGetProcAddress("glActiveTextureARB");
         s_glMultiTexCoord2dARB = (PFNGLMULTITEXCOORD2DARBPROC)
             systemGetProcAddress("glMultiTexCoord2dARB");
-        multitexturing = s_glActiveTextureARB && s_glMultiTexCoord2dARB;
+        s_multitexturing = s_glActiveTextureARB && s_glMultiTexCoord2dARB;
 
-        if(multitexturing) {
+        if(s_multitexturing) {
             GLint MaxTextureUnits;
             glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &MaxTextureUnits);
             if(MaxTextureUnits > 2)
-                multitexturing = 2; /* with blending */
+                s_multitexturing = 2; /* with blending */
         }
     }
     
@@ -1276,7 +1276,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     return true;
 }
 
-static inline void glTexCoord2d_2(double x, double y)
+static inline void glTexCoord2d_2(int multitexturing, double x, double y)
 {
     if(multitexturing) {
         s_glMultiTexCoord2dARB(GL_TEXTURE0_ARB, x, y);
@@ -1290,6 +1290,12 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 { 
     if( !O1.m_iTexture || !O2.m_iTexture )
         return;
+
+    int multitexturing;
+    if(&O1 == &O2)
+        multitexturing = 0;
+    else
+        multitexturing = s_multitexturing;
 
     if(multitexturing) {
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
@@ -1373,7 +1379,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     
 
     glPushMatrix();
-//    double u = (x+w)/2, v = (y+h)/2;
+
     double u = vp.pix_width/2, v = vp.pix_height/2;
     glTranslated(u, v, 0);
     glRotatef(tr*180/M_PI, 0, 0, 1);
@@ -1386,17 +1392,17 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         GetCanvasPixLL( &vp, &p, 0, 0 );
         x = p.x;
 
-        glTexCoord2d_2(lon1,        y1),  glVertex2i(x0, y);
-        glTexCoord2d_2(O1.m_width+1, y1), glVertex2i(x, y);
-        glTexCoord2d_2(O1.m_width+1, y2), glVertex2i(x, h);
-        glTexCoord2d_2(lon1,        y2),  glVertex2i(x0, h);
+        glTexCoord2d_2(multitexturing, lon1,        y1),  glVertex2i(x0, y);
+        glTexCoord2d_2(multitexturing, O1.m_width+1, y1), glVertex2i(x, y);
+        glTexCoord2d_2(multitexturing, O1.m_width+1, y2), glVertex2i(x, h);
+        glTexCoord2d_2(multitexturing, lon1,        y2),  glVertex2i(x0, h);
         lon1 = 0;
     }
 
-    glTexCoord2d_2(lon1, y1), glVertex2i(x, y);
-    glTexCoord2d_2(lon2, y1), glVertex2i(w, y);
-    glTexCoord2d_2(lon2, y2), glVertex2i(w, h);
-    glTexCoord2d_2(lon1, y2), glVertex2i(x, h);
+    glTexCoord2d_2(multitexturing, lon1, y1), glVertex2i(x, y);
+    glTexCoord2d_2(multitexturing, lon2, y1), glVertex2i(w, y);
+    glTexCoord2d_2(multitexturing, lon2, y2), glVertex2i(w, h);
+    glTexCoord2d_2(multitexturing, lon1, y2), glVertex2i(x, h);
     glEnd();
 
     glPopMatrix();
@@ -1878,6 +1884,11 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
         dpos = 1;
     } else
         GetDateInterpolation(NULL, month, nmonth, dpos);
+
+    if(!m_Settings.Settings[setting].m_bOverlayInterpolation) {
+        nmonth = month;
+        dpos = 1;
+    }
 
     ClimatologyOverlay &O1 = m_pOverlay[month][setting];
     ClimatologyOverlay &O2 = m_pOverlay[nmonth][setting];

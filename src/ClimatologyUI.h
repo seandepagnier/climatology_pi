@@ -22,10 +22,10 @@
 #include <wx/sizer.h>
 #include <wx/slider.h>
 #include <wx/statbox.h>
+#include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
-#include <wx/stattext.h>
 #include <wx/radiobut.h>
 #include <wx/clrpicker.h>
 #include <wx/panel.h>
@@ -49,6 +49,8 @@ class ClimatologyDialogBase : public wxDialog
 	
 	protected:
 		wxSpinCtrl* m_sDay;
+		wxStaticText* m_stSpeed;
+		wxStaticText* m_stDirection;
 		wxTextCtrl* m_tWind;
 		wxTextCtrl* m_tWindDir;
 		wxTextCtrl* m_tCurrent;
@@ -112,6 +114,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxCheckBox* m_cbOverlayMap;
 		wxStaticText* m_staticText18;
 		wxSlider* m_sOverlayTransparency;
+		wxCheckBox* m_cbOverlayInterpolation;
 		wxCheckBox* m_cbIsoBars;
 		wxStaticText* m_staticText41;
 		wxSpinCtrl* m_sIsoBarSpacing;

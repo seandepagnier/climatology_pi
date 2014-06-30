@@ -63,6 +63,7 @@ struct ClimatologyOverlaySettings
 
         bool m_bOverlayMap;
         int m_iOverlayTransparency;
+        bool m_bOverlayInterpolation;
 
         bool m_bIsoBars;
         int m_iIsoBarSpacing, m_iIsoBarStep;

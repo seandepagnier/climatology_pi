@@ -61,11 +61,6 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
         m_cbPressure->SetValue(value);
         pConf->Read( _T ( "SeaTemperaturePlot" ), &value, false );
         m_cbSeaTemperature->SetValue(value);
-
-        pConf->Read ( _T ( "lastdatatype" ), &m_lastdatatype, 0);
-
-        pConf->SetPath ( _T ( "/Directories" ) );
-        pConf->Read ( _T ( "ClimatologyDirectory" ), &m_climatology_dir );
 */
     }
 
@@ -101,10 +96,6 @@ ClimatologyDialog::~ClimatologyDialog()
         pConf->Write( _T ( "CurrentPlot" ), m_cbCurrent->GetValue());
         pConf->Write( _T ( "PressurePlot" ), m_cbPressure->GetValue());
         pConf->Write( _T ( "SeaTemperaturePlot" ), m_cbSeaTemperature->GetValue());
-        pConf->Write ( _T ( "lastdatatype" ), m_lastdatatype);
-
-        pConf->SetPath ( _T ( "/Directories" ) );
-        pConf->Write ( _T ( "ClimatologyDirectory" ), m_climatology_dir );
 */
     }
 
@@ -134,6 +125,12 @@ void ClimatologyDialog::PopulateTrackingControls()
 {
     SetControlsVisible(ClimatologyOverlaySettings::WIND, m_cbWind, m_tWind, m_tWindDir);
     SetControlsVisible(ClimatologyOverlaySettings::CURRENT, m_cbCurrent, m_tCurrent, m_tCurrentDir);
+    bool windorcurrent =
+        m_cfgdlg->m_Settings.Settings[ClimatologyOverlaySettings::WIND].m_bEnabled
+     || m_cfgdlg->m_Settings.Settings[ClimatologyOverlaySettings::CURRENT].m_bEnabled;
+    m_stSpeed->Show(windorcurrent);
+    m_stDirection->Show(windorcurrent);
+
     SetControlsVisible(ClimatologyOverlaySettings::SLP, m_cbPressure, m_tPressure);
     SetControlsVisible(ClimatologyOverlaySettings::SST, m_cbSeaTemperature, m_tSeaTemperature);
     SetControlsVisible(ClimatologyOverlaySettings::AT, m_cbAirTemperature, m_tAirTemperature);
@@ -176,9 +173,11 @@ void ClimatologyDialog::SetControlsVisible(ClimatologyOverlaySettings::SettingsT
 
 wxString ClimatologyDialog::GetValue(int index, Coord coord)
 {
-    return wxString::Format(_T("%.2f"), pPlugIn->
-                            GetOverlayFactory()->getCurCalibratedValue
-                            (coord, index, m_cursorlat, m_cursorlon));
+    double val = pPlugIn->GetOverlayFactory()->getCurCalibratedValue
+        (coord, index, m_cursorlat, m_cursorlon);
+    if(isnan(val))
+        return _T("");
+    return wxString::Format(_T("%.2f"), val);
 }
 
 void ClimatologyDialog::DayMonthUpdate()
