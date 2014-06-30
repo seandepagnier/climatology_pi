@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2013 by Sean D'Epagnier   *
+ *   Copyright (C) 2014 by Sean D'Epagnier   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -404,7 +404,11 @@ bool IsoBarMap::Recompute(wxWindow *parent)
               if((now-start).GetMilliseconds() > 500 && lat < (max - min)/2) {
                   progressdialog = new wxProgressDialog(
                       _("Building Isobar Map"), m_Name, max - min + 1, parent,
-                      wxPD_ELAPSED_TIME | wxPD_CAN_ABORT);
+                      wxPD_ELAPSED_TIME
+#ifndef WIN32
+                      | wxPD_CAN_ABORT
+#endif
+                      );
               }
           }
       }
