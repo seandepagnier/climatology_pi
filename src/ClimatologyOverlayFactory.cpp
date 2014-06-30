@@ -832,11 +832,11 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
         CycloneDateTime lastdatetime;
         wxInt16 lastlat=-10000, lastlon;
         for(;;) {
-            char state;
+            signed char state;
             if(zu_read(f, &state, sizeof state) != sizeof state)
                 goto corrupted;
 
-            if(state == 0x80)
+            if(state == -128)
                 break;
 
             CycloneState::State cyclonestate;
