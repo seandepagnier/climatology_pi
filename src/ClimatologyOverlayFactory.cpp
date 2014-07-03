@@ -92,7 +92,8 @@ static const wxString climatology_pi = _T("climatology_pi: ");
 
 double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
 {
-    return m_factory.getCurCalibratedValue(MAG, m_setting, lat, lon);
+//    return m_factory.getCurCalibratedValue(MAG, m_setting, lat, lon);
+    return m_factory.getCalibratedValueMonth(MAG, m_setting, lat, lon, m_month);
 }
 
 #define CYCLONE_CACHE_SEMAPHORE_COUNT 4
@@ -1737,6 +1738,15 @@ double ClimatologyOverlayFactory::getCurCalibratedValue(enum Coord coord, int se
     return m_dlg.m_cfgdlg->m_Settings.CalibrateValue(setting, v);
 }
 
+double ClimatologyOverlayFactory::getCalibratedValueMonth(enum Coord coord, int setting, double lat, double lon, int month)
+{
+    double v = getValueMonth(coord, setting, lat, lon, month);
+    if(coord == DIRECTION)
+        return v;
+
+    return m_dlg.m_cfgdlg->m_Settings.CalibrateValue(setting, v);
+}
+
 double ClimatologyOverlayFactory::GetMin(int setting)
 {
     switch(setting) {
@@ -2002,7 +2012,7 @@ recompute:
         return;
 
     int month = m_bAllTimes ? 12 : m_CurrentTimeline.GetMonth();
-    int day = m_CurrentTimeline.GetDay();
+    int day = 15; //m_CurrentTimeline.GetDay();
     if(setting == ClimatologyOverlaySettings::SEADEPTH)
         month = 0;
 
@@ -2017,7 +2027,7 @@ recompute:
     }
 
     int units = m_Settings.Settings[setting].m_Units;
-    if(pIsobars && !pIsobars->SameSettings(spacing, step, units, day)) {
+    if(pIsobars && !pIsobars->SameSettings(spacing, step, units, month, day)) {
         if(pIsobars->m_bComputing) {
             pIsobars->m_bNeedsRecompute = true;
             return;
@@ -2029,7 +2039,7 @@ recompute:
 
     if( !pIsobars ) {
         pIsobars = new ClimatologyIsoBarMap(m_dlg.m_cfgdlg->SettingName(setting),
-                                            spacing, step, *this, setting, units, day);
+                                            spacing, step, *this, setting, units, month, day);
         bool ret = pIsobars->Recompute(&m_dlg);
         if(!ret) {
             if(pIsobars->m_bNeedsRecompute)
@@ -2052,8 +2062,8 @@ void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)
 
     double space = m_Settings.Settings[setting].m_iNumbersSpacing;
     wxPoint p;
-    for(p.y = space/2; p.y <= vp.rv_rect.height-space/2; p.y+=space)
-        for(p.x = space/2; p.x <= vp.rv_rect.width-space/2; p.x+=space) {
+    for(p.y = space/2; p.y <= vp.rv_rect.height-space/4; p.y+=space)
+        for(p.x = space/2; p.x <= vp.rv_rect.width-space/4; p.x+=space) {
             double lat, lon;
             GetCanvasLLPix( &vp, p, &lat, &lon);
             RenderNumber(p, getCurCalibratedValue(MAG, setting, lat, lon), *wxBLACK);

@@ -4176,7 +4176,7 @@
                                                             <event name="OnRightUp"></event>
                                                             <event name="OnSetFocus"></event>
                                                             <event name="OnSize"></event>
-                                                            <event name="OnSpinCtrl">OnUpdateSpin</event>
+                                                            <event name="OnSpinCtrl">OnUpdateSpinIsobar</event>
                                                             <event name="OnSpinCtrlText"></event>
                                                             <event name="OnUpdateUI"></event>
                                                         </object>
@@ -4327,7 +4327,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnChar"></event>
-                                                            <event name="OnChoice">OnUpdate</event>
+                                                            <event name="OnChoice">OnUpdateIsobar</event>
                                                             <event name="OnEnterWindow"></event>
                                                             <event name="OnEraseBackground"></event>
                                                             <event name="OnKeyDown"></event>

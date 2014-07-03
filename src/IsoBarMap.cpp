@@ -385,33 +385,34 @@ bool IsoBarMap::Recompute(wxWindow *parent)
 
   BuildParamCache(m_Cache[cachepage], min);
 
-  double lastupdate = min;
   for(double lat = min; lat + m_Step <= max; lat += m_Step) {
       if(m_bNeedsRecompute) {
           delete progressdialog;
           return false;
       }
 
-      if(lat - lastupdate > 8) {
-          lastupdate = lat;
-          if(progressdialog) {
+      wxDateTime now = wxDateTime::Now();
+      if(progressdialog) {
+          if((now-start).GetMilliseconds() > 1200) {
               if(!progressdialog->Update(lat - min)) {
                   delete progressdialog;
                   return false;
               }
-          } else {
-              wxDateTime now = wxDateTime::Now();
-              if((now-start).GetMilliseconds() > 500 && lat < (max - min)/2) {
-                  progressdialog = new wxProgressDialog(
-                      _("Building Isobar Map"), m_Name, max - min + 1, parent,
-                      wxPD_ELAPSED_TIME
-#ifndef WIN32
-                      | wxPD_CAN_ABORT
-#endif
-                      );
-              }
+              start = now;
+          }
+      } else if((now-start).GetMilliseconds() > 500) {
+          if(lat < (max - min)/2) {
+              progressdialog = new wxProgressDialog(
+                  _("Building Isobar Map"), m_Name, max - min + 1, parent,
+                  wxPD_ELAPSED_TIME
+//#ifndef WIN32
+                  | wxPD_CAN_ABORT
+//#endif
+                  );
+              progressdialog->Update(0);
           }
       }
+
       cachepage = !cachepage;
       BuildParamCache(m_Cache[cachepage], lat+m_Step);
 
@@ -421,7 +422,13 @@ bool IsoBarMap::Recompute(wxWindow *parent)
       for(double lon = -180; lon+m_Step <= 180; lon += m_Step) {
           int lonind = floor((lon+180)/ZONE_SIZE);
 
-          PlotRegion(m_map[latind][lonind], lat, lon, lat+m_Step, lon+m_Step, 12);
+          PlotRegion(m_map[latind][lonind], lat, lon, lat+m_Step, lon+m_Step,
+#ifdef WIN32
+                     4
+#else
+                     5
+#endif
+);
       }
   }
 

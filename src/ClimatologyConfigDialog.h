@@ -108,6 +108,9 @@ private:
     void OnUpdateSpin( wxSpinEvent& event ) { OnUpdate(); }
     void OnUpdateColor( wxColourPickerEvent& event ) { OnUpdate(); }
     void OnUpdateScroll( wxScrollEvent& event ) { OnUpdate(); }
+    void OnUpdateIsobar();
+    void OnUpdateSpinIsobar( wxSpinEvent& event ) { OnUpdateIsobar(); }
+    void OnUpdateIsobar( wxCommandEvent& event ) { OnUpdateIsobar(); }
 
     void OnUpdateCyclones();
     void OnUpdateCyclonesDate( wxDateEvent& event ) { OnUpdateCyclones(); }
@@ -120,9 +123,13 @@ private:
     void OnAboutAuthor( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event ) { Hide(); }
 
+    void OnRefreshTimer( wxTimerEvent& event );
+
     int m_lastdatatype;
 
     ClimatologyDialog *pParent;
+    
+    wxTimer m_refreshTimer;
 };
 
 #endif

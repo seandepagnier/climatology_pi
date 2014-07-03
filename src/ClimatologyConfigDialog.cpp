@@ -138,7 +138,7 @@ void ClimatologyOverlaySettings::Load()
                       true );
 
         pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars, i==SLP);
-        double defspacing[SETTINGS_COUNT] = {5, 2, 10, 5, 5, 20, 1, 10, 1000};
+        double defspacing[SETTINGS_COUNT] = {5, 2, 10, 5, 5, 20, 1, 10, 30, 1000};
         pConf->Read ( Name + _T ( "IsoBarSpacing" ), &Settings[i].m_iIsoBarSpacing, defspacing[i]);
         pConf->Read ( Name + _T ( "IsoBarStep" ), &Settings[i].m_iIsoBarStep, 2);
 
@@ -219,6 +219,10 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
 {
     pParent = parent;
 
+#ifdef WIN32 // windows is too slow for very fine steps
+    m_cIsoBarStep->Delete(4);
+#endif
+
     m_Settings.Load();
     LoadSettings();
  
@@ -232,6 +236,8 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     m_stVersion->SetLabel(wxString::Format(_T("%d.%d"),
                                            PLUGIN_VERSION_MAJOR, PLUGIN_VERSION_MINOR));
     m_tDataDirectory->SetValue(ClimatologyDataDirectory());
+
+    m_refreshTimer.Connect(wxEVT_TIMER, wxTimerEventHandler( ClimatologyConfigDialog::OnRefreshTimer ), NULL, this);
 
     DimeWindow( this );
 }
@@ -413,7 +419,16 @@ void ClimatologyConfigDialog::OnUpdate()
 {
     int setting = m_cDataType->GetSelection();
     SetDataTypeSettings(setting);
-    pParent->RefreshRedraw();
+
+    m_refreshTimer.Start(200, true);
+}
+
+void ClimatologyConfigDialog::OnUpdateIsobar()
+{
+#ifdef WIN32 // windows is too slow to have interactive update
+    m_cbIsoBars->SetValue(false);
+#endif
+    OnUpdate();
 }
 
 void ClimatologyConfigDialog::OnUpdateCyclones()
@@ -448,4 +463,9 @@ void ClimatologyConfigDialog::OnEnabled( wxCommandEvent& event )
 void ClimatologyConfigDialog::OnAboutAuthor( wxCommandEvent& event )
 {
     wxLaunchDefaultBrowser(_T(ABOUT_AUTHOR_URL));
+}
+
+void ClimatologyConfigDialog::OnRefreshTimer( wxTimerEvent& event )
+{
+    pParent->RefreshRedraw();
 }
