@@ -372,10 +372,8 @@ bool IsoBarMap::Recompute(wxWindow *parent)
 
   m_bComputing = true;
 
-#if 1
   wxProgressDialog *progressdialog = NULL;
   wxDateTime start = wxDateTime::Now();
-#endif
 
   int cachepage = 0;
    m_Cache[0].Initialize(m_Step);
