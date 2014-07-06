@@ -36,6 +36,8 @@ static int s_multitexturing = 0;
 static PFNGLACTIVETEXTUREARBPROC s_glActiveTextureARB = 0;
 static PFNGLMULTITEXCOORD2DARBPROC s_glMultiTexCoord2dARB = 0;
 
+static int texture_format;
+
 static GLboolean QueryExtension( const char *extName )
 {
     /*
@@ -119,6 +121,14 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
                 s_multitexturing = 2; /* with blending */
         }
     }
+
+    if( QueryExtension( "GL_ARB_texture_non_power_of_two" ) ||
+        QueryExtension( "GL_OES_texture_npot" ) )
+        texture_format = GL_TEXTURE_2D;
+    else if( QueryExtension( "GL_ARB_texture_rectangle" ) )
+        texture_format = GL_TEXTURE_RECTANGLE_ARB;
+    else
+        texture_format = 0; // overlays disabled without npot support
     
     for(int month = 0; month<13; month++) {
         m_WindData[month] = NULL;
@@ -1037,9 +1047,6 @@ void ClimatologyOverlayFactory::DrawLine( double x1, double y1, double x2, doubl
         m_pdc->SetBrush( *wxTRANSPARENT_BRUSH);
         m_pdc->DrawLine(x1, y1, x2, y2);
     } else {
-        glEnable( GL_LINE_SMOOTH );
-        glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-
         glColor4ub(color.Red(), color.Green(), color.Blue(), color.Alpha());
         glLineWidth( width );
 
@@ -1197,6 +1204,9 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
                                                 int setting, int month,
                                                 PlugIn_ViewPort &vp)
 {
+    if(!texture_format)
+        return false;
+
     double s;
     switch(setting) {
     case ClimatologyOverlaySettings::WIND:   
@@ -1251,10 +1261,12 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
 
     GLuint texture;
     glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture);
+    glBindTexture(texture_format, texture);
 
-    glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( texture_format, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri( texture_format, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( texture_format, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri( texture_format, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
 
@@ -1263,7 +1275,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, width);
 
-    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, width, height,
+    glTexImage2D(texture_format, 0, GL_RGBA, width, height,
                  0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
     glPopClientAttrib();
@@ -1300,15 +1312,15 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 
     if(multitexturing) {
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
-        glEnable(GL_TEXTURE_RECTANGLE_ARB);
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O2.m_iTexture);
+        glEnable(texture_format);
+        glBindTexture(texture_format, O2.m_iTexture);
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         s_glActiveTextureARB (GL_TEXTURE1_ARB);
     } else
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-    glEnable(GL_TEXTURE_RECTANGLE_ARB);
-    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O1.m_iTexture);
+    glEnable(texture_format);
+    glBindTexture(texture_format, O1.m_iTexture);
 
     if(multitexturing) {
         float fpos = dpos;
@@ -1334,8 +1346,8 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         if(multitexturing > 1) {
             s_glActiveTextureARB (GL_TEXTURE2_ARB);
 
-            glEnable(GL_TEXTURE_RECTANGLE_ARB);
-            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, O2.m_iTexture);
+            glEnable(texture_format);
+            glBindTexture(texture_format, O2.m_iTexture);
 
             constColor[3] = 1 - transparency;
             glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
@@ -1358,67 +1370,51 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 
     glColor4f(1, 1, 1, 1 - transparency);
     
-    int x = vp.rv_rect.x, y = vp.rv_rect.y;
-    int w = vp.rv_rect.width, h = vp.rv_rect.height;
+    int x = 0, y = 0;
+    int w = vp.pix_width, h = vp.pix_height;
 
-    double lat1, lon1, lat2, lon2;
-    double tr = vp.rotation;
-    vp.rotation = 0;
-    GetCanvasLLPix( &vp, wxPoint(x, y), &lat1, &lon1 );
-    GetCanvasLLPix( &vp, wxPoint(w, h), &lat2, &lon2 );
-    vp.rotation = tr;
+    double lat[4], lon[4];
+    GetCanvasLLPix( &vp, wxPoint(x, y), &lat[0], &lon[0] );
+    GetCanvasLLPix( &vp, wxPoint(w, y), &lat[1], &lon[1] );
+    GetCanvasLLPix( &vp, wxPoint(w, h), &lat[2], &lon[2] );
+    GetCanvasLLPix( &vp, wxPoint(x, h), &lat[3], &lon[3] );
 
-    lon1 = positive_degrees(lon1), lon2 = positive_degrees(lon2);
-    lon2 *= O1.m_width/360.0, lon1 *= O1.m_width/360.0;
+    for(int i = 0; i < 4; i++) {
+        if(lon[i] - vp.clon > 180)
+            lon[i] -= 360;
+        else if(lon[i] - vp.clon < -180)
+            lon[i] += 360;
 
-    double s1 = sin(deg2rad(lat1)), s2 = sin(deg2rad(lat2));
-    double y1 = .5 * log((1 + s1) / (1 - s1)), y2 = .5 * log((1 + s2) / (1 - s2));
-    y1 = O1.m_height*(1 + y1/M_PI)/2, y2 = O1.m_height*(1 + y2/M_PI)/2;
+        lon[i] = lon[i] / 360.0;
 
-    lon2+=1;
-    y2+=1;
-    
+        double s1 = sin(deg2rad(lat[i]));
+        double y1 = .5 * log((1 + s1) / (1 - s1));
+        lat[i] = (1 + y1/M_PI)/2;
 
-    glPushMatrix();
-
-    double u = vp.pix_width/2, v = vp.pix_height/2;
-    glTranslated(u, v, 0);
-    glRotatef(tr*180/M_PI, 0, 0, 1);
-    glTranslated(-u, -v, 0);
-
-    glBegin(GL_QUADS);
-    double x0 = x;
-    if(lon1 > lon2) {
-        wxPoint p;
-        GetCanvasPixLL( &vp, &p, 0, 0 );
-        x = p.x;
-
-        glTexCoord2d_2(multitexturing, lon1,        y1),  glVertex2i(x0, y);
-        glTexCoord2d_2(multitexturing, O1.m_width+1, y1), glVertex2i(x, y);
-        glTexCoord2d_2(multitexturing, O1.m_width+1, y2), glVertex2i(x, h);
-        glTexCoord2d_2(multitexturing, lon1,        y2),  glVertex2i(x0, h);
-        lon1 = 0;
+        if(texture_format == GL_TEXTURE_RECTANGLE_ARB) {
+            lon[i] *= O1.m_width;
+            lat[i] *= O1.m_height;
+        }
     }
 
-    glTexCoord2d_2(multitexturing, lon1, y1), glVertex2i(x, y);
-    glTexCoord2d_2(multitexturing, lon2, y1), glVertex2i(w, y);
-    glTexCoord2d_2(multitexturing, lon2, y2), glVertex2i(w, h);
-    glTexCoord2d_2(multitexturing, lon1, y2), glVertex2i(x, h);
+    glBegin(GL_QUADS);
+    glTexCoord2d_2(multitexturing, lon[0], lat[0]), glVertex2i(x, y);
+    glTexCoord2d_2(multitexturing, lon[1], lat[1]), glVertex2i(w, y);
+    glTexCoord2d_2(multitexturing, lon[2], lat[2]), glVertex2i(w, h);
+    glTexCoord2d_2(multitexturing, lon[3], lat[3]), glVertex2i(x, h);
+
     glEnd();
-
-    glPopMatrix();
-
 
     if(multitexturing) {
         if(multitexturing > 1) {
-            glDisable(GL_TEXTURE_RECTANGLE_ARB);
+            glDisable(texture_format);
             s_glActiveTextureARB (GL_TEXTURE1_ARB);
         }
-        glDisable(GL_TEXTURE_RECTANGLE_ARB);
+        glDisable(texture_format);
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
     }
 
-    glDisable(GL_TEXTURE_RECTANGLE_ARB);
+    glDisable(texture_format);
 }
 
 /* return cached wxImage for a given number, or create it if not in the cache */
@@ -1983,25 +1979,37 @@ void ClimatologyOverlayFactory::RenderNumber(wxPoint p, double v, const wxColour
         m_pdc->SetPen( wxPen(color) );        
         m_pdc->DrawBitmap(label, p.x-w/2, p.y-h/2, true);
     } else {
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        if(!texture_format)
+            return;
+
+        glEnable(texture_format);
+
+        glBindTexture(texture_format, 0);
+
+        glTexParameteri( texture_format, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+        glTexParameteri( texture_format, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+
         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
-        glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA,
+        glTexImage2D(texture_format, 0, GL_RGBA,
                      w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, label.GetData());
-        glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, w, h,
+        glTexSubImage2D(texture_format, 0, 0, 0, w, h,
                         GL_ALPHA, GL_UNSIGNED_BYTE, label.GetAlpha());
-        
+
         glColor4ub(color.Red(), color.Green(), color.Blue(), color.Alpha());
 
-        glEnable(GL_TEXTURE_RECTANGLE_ARB);
+        int tw, th;
+        if(texture_format == GL_TEXTURE_RECTANGLE_ARB)
+            tw = w, th = h;
+        else
+            tw = th = 1;
+
         glBegin(GL_QUADS);
-        glTexCoord2i(0, 0), glVertex2i(p.x-w/2, p.y-h/2);
-        glTexCoord2i(w, 0), glVertex2i(p.x+w/2, p.y-h/2);
-        glTexCoord2i(w, h), glVertex2i(p.x+w/2, p.y+h/2);
-        glTexCoord2i(0, h), glVertex2i(p.x-w/2, p.y+h/2);
+        glTexCoord2d(0,  0),  glVertex2i(p.x-w/2, p.y-h/2);
+        glTexCoord2d(tw, 0),  glVertex2i(p.x+w/2, p.y-h/2);
+        glTexCoord2d(tw, th), glVertex2i(p.x+w/2, p.y+h/2);
+        glTexCoord2d(0,  th), glVertex2i(p.x-w/2, p.y+h/2);
         glEnd();
-        glDisable(GL_TEXTURE_RECTANGLE_ARB);
+        glDisable(texture_format);
     }
 }
 
