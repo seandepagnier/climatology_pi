@@ -31,6 +31,10 @@
 #define APIENTRYP APIENTRY *
 #endif
 
+#if !defined(GL_CLAMP_TO_EDGE)
+#define GL_CLAMP_TO_EDGE			0x812F
+#endif
+
 #if !defined(GL_TEXTURE_RECTANGLE_ARB)
 #define GL_TEXTURE_RECTANGLE_ARB          0x84F5
 #endif
