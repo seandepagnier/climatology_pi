@@ -172,8 +172,9 @@ Provides overlay capabilities for historic weather data.\n\n\
 Supported Climatology types include:\n\
 - Average wind directions and speed\n\
 - Percentage of gale and calm conditions\n\
+- Sea Surface Currents\n\
 - Average swell and seastate (not yet implemented)\n\
-- Precipitation, Humidity, and Cloud Cover \n\
+- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n\
 - Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n\
 - Tropical Cyclone tracks\
 ");
