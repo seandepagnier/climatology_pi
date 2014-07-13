@@ -68,7 +68,7 @@ class ClimatologyDialogBase : public wxDialog
 		virtual void OnTimeline( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnTimelineDown( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnTimelineUp( wxScrollEvent& event ) { event.Skip(); }
-		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnUpdateDisplay( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfig( wxCommandEvent& event ) { event.Skip(); }
 		
 	
@@ -107,7 +107,6 @@ class ClimatologyConfigDialogBase : public wxDialog
 	protected:
 		wxNotebook* m_notebook1;
 		wxPanel* m_panel5;
-		wxChoice* m_cDataType;
 		wxStaticText* m_staticText3;
 		wxChoice* m_cDataUnits;
 		wxCheckBox* m_cbEnabled;
@@ -178,6 +177,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		virtual void OnDataTypeChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnEnabled( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnUpdateOverlayConfig( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdateScroll( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnUpdateSpinIsobar( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnUpdateIsobar( wxCommandEvent& event ) { event.Skip(); }
@@ -192,6 +192,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		
 	
 	public:
+		wxChoice* m_cDataType;
 		wxCheckBox* m_cbWindAtlasEnable;
 		wxSpinCtrl* m_sWindAtlasSize;
 		wxSpinCtrl* m_sWindAtlasSpacing;

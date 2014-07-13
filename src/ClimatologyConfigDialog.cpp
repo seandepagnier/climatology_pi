@@ -423,6 +423,22 @@ void ClimatologyConfigDialog::OnUpdate()
     m_refreshTimer.Start(200, true);
 }
 
+void ClimatologyConfigDialog::OnUpdateOverlayConfig( wxCommandEvent& event )
+{
+    // must disable all others to have only 1 overlay at a time
+    int cursetting = m_cDataType->GetSelection();
+    if(event.IsChecked() && m_cbEnabled->GetValue() && pParent->SettingEnabled(cursetting)) {
+        for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
+            if(i == cursetting)
+                continue;
+            ClimatologyOverlaySettings::OverlayDataSettings &odc = m_Settings.Settings[i];
+            if(pParent->SettingEnabled(i) && odc.m_bOverlayMap)
+                pParent->DisableSetting(i);
+        }
+    }
+    OnUpdate();
+}
+
 void ClimatologyConfigDialog::OnUpdateIsobar()
 {
 #ifdef WIN32 // windows is too slow to have interactive update

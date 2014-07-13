@@ -57,11 +57,14 @@ public:
     void PopulateTrackingControls();
     void RefreshRedraw();
     void SetCursorLatLon(double lat, double lon);
+    bool SettingEnabled(int setting);
+    void DisableSetting(int setting);
 
     ClimatologyConfigDialog *m_cfgdlg;
     climatology_pi *pPlugIn;
 
 private:
+    wxCheckBox *GetSettingControl(int setting);
     void SetControlsVisible(ClimatologyOverlaySettings::SettingsType type,
                             wxControl *ctrl1, wxControl *ctrl2=NULL, wxControl *ctrl3=NULL);
 
@@ -74,8 +77,7 @@ private:
     void OnTimelineDown( wxScrollEvent& event );
     void OnTimelineUp( wxScrollEvent& event );
     void OnAll( wxCommandEvent& event );
-    void OnUpdate( wxCommandEvent& event );
-    void OnUpdate2( wxCommandEvent& event ) { OnUpdate(event); }
+    void OnUpdateDisplay( wxCommandEvent& event );
     void OnConfig( wxCommandEvent& event );
 
     void OnClose( wxCloseEvent& event );

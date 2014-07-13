@@ -2419,16 +2419,7 @@ bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
 
     for(int overlay = 1; overlay >= 0; overlay--)
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
-        if((i == ClimatologyOverlaySettings::WIND           && !m_dlg.m_cbWind->GetValue()) ||
-           (i == ClimatologyOverlaySettings::CURRENT        && !m_dlg.m_cbCurrent->GetValue()) ||
-           (i == ClimatologyOverlaySettings::SLP            && !m_dlg.m_cbPressure->GetValue()) ||
-           (i == ClimatologyOverlaySettings::SST            && !m_dlg.m_cbSeaTemperature->GetValue()) ||
-           (i == ClimatologyOverlaySettings::AT             && !m_dlg.m_cbAirTemperature->GetValue()) ||
-           (i == ClimatologyOverlaySettings::CLOUD          && !m_dlg.m_cbCloudCover->GetValue()) ||
-           (i == ClimatologyOverlaySettings::PRECIPITATION  && !m_dlg.m_cbPrecipitation->GetValue()) ||
-           (i == ClimatologyOverlaySettings::RELATIVE_HUMIDITY  && !m_dlg.m_cbRelativeHumidity->GetValue()) ||
-           (i == ClimatologyOverlaySettings::LIGHTNING      && !m_dlg.m_cbLightning->GetValue()) ||
-           (i == ClimatologyOverlaySettings::SEADEPTH       && !m_dlg.m_cbSeaDepth->GetValue()))
+        if(!m_dlg.SettingEnabled(i))
             continue;
 
         if(!m_Settings.Settings[i].m_bEnabled)

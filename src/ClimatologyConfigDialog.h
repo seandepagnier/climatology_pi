@@ -90,6 +90,8 @@ public:
     wxString SettingName(int setting);
     void DisableIsoBars(int setting);
 
+    void OnDataTypeChoice( wxCommandEvent& event );
+
     ClimatologyOverlaySettings m_Settings;
 
 private:
@@ -101,12 +103,12 @@ private:
     void PopulateUnits(int settings);
 
     void OnPageChanged( wxNotebookEvent& event );
-    void OnDataTypeChoice( wxCommandEvent& event );
 
     void OnUpdate();
     void OnUpdate( wxCommandEvent& event ) { OnUpdate(); }
     void OnUpdateSpin( wxSpinEvent& event ) { OnUpdate(); }
     void OnUpdateColor( wxColourPickerEvent& event ) { OnUpdate(); }
+    void OnUpdateOverlayConfig( wxCommandEvent& event );
     void OnUpdateScroll( wxScrollEvent& event ) { OnUpdate(); }
     void OnUpdateIsobar();
     void OnUpdateSpinIsobar( wxSpinEvent& event ) { OnUpdateIsobar(); }

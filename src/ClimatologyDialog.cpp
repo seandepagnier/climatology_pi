@@ -157,6 +157,33 @@ void  ClimatologyDialog::SetCursorLatLon(double lat, double lon)
     UpdateTrackingControls();
 }
 
+bool ClimatologyDialog::SettingEnabled(int setting)
+{
+    return GetSettingControl(setting)->GetValue();
+}
+
+void ClimatologyDialog::DisableSetting(int setting)
+{
+    GetSettingControl(setting)->SetValue(false);
+}
+
+wxCheckBox *ClimatologyDialog::GetSettingControl(int setting)
+{
+    switch(setting) {
+    case ClimatologyOverlaySettings::WIND:          return m_cbWind;
+    case ClimatologyOverlaySettings::CURRENT:       return m_cbCurrent;
+    case ClimatologyOverlaySettings::SLP:           return m_cbPressure;
+    case ClimatologyOverlaySettings::SST:           return m_cbSeaTemperature;
+    case ClimatologyOverlaySettings::AT:            return m_cbAirTemperature;
+    case ClimatologyOverlaySettings::CLOUD:         return m_cbCloudCover;
+    case ClimatologyOverlaySettings::PRECIPITATION: return m_cbPrecipitation;
+    case ClimatologyOverlaySettings::RELATIVE_HUMIDITY:      return m_cbRelativeHumidity;
+    case ClimatologyOverlaySettings::LIGHTNING:     return m_cbLightning;
+    case ClimatologyOverlaySettings::SEADEPTH:      return m_cbSeaDepth;
+    }
+    return NULL;
+}
+
 void ClimatologyDialog::SetControlsVisible(ClimatologyOverlaySettings::SettingsType type,
                                            wxControl *ctrl1, wxControl *ctrl2, wxControl *ctrl3)
 {
@@ -240,8 +267,28 @@ void ClimatologyDialog::OnAll( wxCommandEvent& event )
     RefreshRedraw();
 }
 
-void ClimatologyDialog::OnUpdate( wxCommandEvent& event )
+void ClimatologyDialog::OnUpdateDisplay( wxCommandEvent& event )
 {
+    if(event.IsChecked()) {
+        int cursetting = 0;
+        for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++)
+            if(wxDynamicCast(event.GetEventObject(), wxCheckBox) == GetSettingControl(i)) {
+                m_cfgdlg->m_cDataType->SetSelection(i);
+                m_cfgdlg->OnDataTypeChoice( event );
+                cursetting = i;
+                break;
+            }
+
+        if(m_cfgdlg->m_Settings.Settings[cursetting].m_bOverlayMap)
+            for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
+                if(i == cursetting)
+                    continue;
+                ClimatologyOverlaySettings::OverlayDataSettings &odc = m_cfgdlg->m_Settings.Settings[i];
+                if(SettingEnabled(i) && odc.m_bOverlayMap)
+                    DisableSetting(i);
+            }
+    }
+
     RefreshRedraw();
 }
 
