@@ -1265,7 +1265,9 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
 
     glTexParameteri( texture_format, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( texture_format, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameteri( texture_format, GL_TEXTURE_WRAP_S, GL_REPEAT );
+
+//    glTexParameteri( texture_format, GL_TEXTURE_WRAP_S, GL_REPEAT ); // illegal for many npot
+    glTexParameteri( texture_format, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameteri( texture_format, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
@@ -1298,6 +1300,52 @@ static inline void glTexCoord2d_2(int multitexturing, double x, double y)
         glTexCoord2d(x, y);
 }
 
+#if 0
+    /* We must manually perform wrapping by breaking the screen up along the prime meridian.
+       Either render 4 triangles, 2 quads, or 1 quad (if the meridian doesn't cross the screen)
+
+       0(x,y)---0---1(w,y)
+         |    / | \    |
+         |  /   |   \  |
+         |/     |     \|
+         1------ ------2
+         |\     |     /|
+         |  \   |   /  |
+         |    \ | /    |
+      3(x,h)----3---2(w,h)
+     */
+
+    double p[4];
+    if(lon[0]*lon[1] < 0) p[0] = w*lon[0]/(lon[0] - lon[1]);
+    if(lon[0]*lon[3] < 0) p[1] = h*lon[0]/(lon[0] - lon[3]);
+    if(lon[1]*lon[2] < 0) p[2] = h*lon[1]/(lon[1] - lon[2]);
+    if(lon[2]*lon[3] < 0) p[3] = w*lon[3]/(lon[3] - lon[2]);
+
+    if(lon[0]*lon[1] < 0) {
+        if(lon[0]*lon[3] < 0)
+            Draw4Triangles(multitexturing, lat, lon, x, y, w, h, 0, 1, 2, 3, p[0], p[1], false);
+        else if(lon[1]*lon[2] < 0)
+            Draw4Triangles(multitexturing, lat, lon, w, y, x, h, 1, 2, 3, 0, p[2], p[0], true);
+        else
+            Draw2Quads(multitexturing, lat, lon, w, y, x, h, 1, 2, 3, 0, p[0], p[3], false);
+    } else if(lon[0]*lon[3] < 0) {
+        if(lon[2]*lon[3] < 0)
+            Draw4Triangles(multitexturing, lat, lon, x, h, w, y, 3, 0, 1, 2, p[1], p[3], true);
+        else
+            Draw2Quads(multitexturing, lat, lon, x, y, w, h, 0, 1, 2, 3, p[0], p[2], true);
+    } else if(lon[2]*lon[3] < 0)
+        Draw4Triangles(multitexturing, lat, lon, w, h, x, y, 2, 3, 0, 1, p[3], p[2], false);
+    else {
+        // prime meridian does not intersect the screen
+        glBegin(GL_QUADS);
+        glTexCoord2d_2(multitexturing, lon[0], lat[0]), glVertex2i(x, y);
+        glTexCoord2d_2(multitexturing, lon[1], lat[1]), glVertex2i(w, y);
+        glTexCoord2d_2(multitexturing, lon[2], lat[2]), glVertex2i(w, h);
+        glTexCoord2d_2(multitexturing, lon[3], lat[3]), glVertex2i(x, h);
+        glEnd();
+    }
+#endif
+
 void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, ClimatologyOverlay &O2,
                                                double dpos, PlugIn_ViewPort &vp, double transparency)
 { 
@@ -1315,8 +1363,8 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         glEnable(texture_format);
         glBindTexture(texture_format, O2.m_iTexture);
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        s_glActiveTextureARB (GL_TEXTURE1_ARB);
-    } else
+        s_glActiveTextureARB (GL_TEXTURE1_ARB); 
+   } else
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     glEnable(texture_format);
@@ -1370,7 +1418,70 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 
     glColor4f(1, 1, 1, 1 - transparency);
     
-    int x = 0, y = 0;
+#if 1  // npot textures don't support GL_REPEAT on GLES, and texture rectangle doesn't either
+    double x = vp.rv_rect.x, y = vp.rv_rect.y;
+    double w = x+vp.rv_rect.width, h = y+vp.rv_rect.height;
+
+    double tx[2], ty[2];
+    double r = vp.rotation;
+    vp.rotation = 0;
+    GetCanvasLLPix( &vp, wxPoint(x, y), &ty[0], &tx[0] );
+    GetCanvasLLPix( &vp, wxPoint(w, h), &ty[1], &tx[1] );
+    vp.rotation = r;
+
+    for(int i = 0; i < 2; i++) {
+        // normalize
+        tx[i] = tx[i] / 360.0;
+
+        // mercator conversion
+        double s1 = sin(deg2rad(ty[i]));
+        double y1 = .5 * log((1 + s1) / (1 - s1));
+        ty[i] = (1 + y1/M_PI)/2;
+
+        if(texture_format == GL_TEXTURE_RECTANGLE_ARB) {
+            tx[i] *= O1.m_width;
+            ty[i] *= O1.m_height;
+        }
+    }
+
+    double tw = (texture_format == GL_TEXTURE_RECTANGLE_ARB) ? O1.m_width : 1;
+
+    glPushMatrix();
+    glTranslated(vp.pix_width/2.0, vp.pix_height/2.0, 0);
+    glRotated(vp.rotation*180/M_PI, 0, 0, 1);
+    glTranslated(-vp.pix_width/2.0, -vp.pix_height/2.0, 0);
+
+    glBegin(GL_QUADS);
+    if(tx[1]*tx[0]<0 && fabsf(tx[1]-tx[0]) < .5*tw) { // meridian crosses rv_rect
+        double t = x + (w-x)*tx[0]/(tx[0] - tx[1]);
+
+        glTexCoord2d_2(multitexturing,     0, ty[0]), glVertex2d(t, y);
+        glTexCoord2d_2(multitexturing, tx[1], ty[0]), glVertex2d(w, y);
+        glTexCoord2d_2(multitexturing, tx[1], ty[1]), glVertex2d(w, h);
+        glTexCoord2d_2(multitexturing,     0, ty[1]), glVertex2d(t, h);
+
+        w = t;
+        tx[0] += tw;
+        tx[1] = tw;
+    } else {
+        if(tx[0] < 0)
+            tx[0] += tw;
+        if(tx[1] < 0)
+            tx[1] += tw;
+    }
+
+    glTexCoord2d_2(multitexturing, tx[0], ty[0]), glVertex2d(x, y);
+    glTexCoord2d_2(multitexturing, tx[1], ty[0]), glVertex2d(w, y);
+    glTexCoord2d_2(multitexturing, tx[1], ty[1]), glVertex2d(w, h);
+    glTexCoord2d_2(multitexturing, tx[0], ty[1]), glVertex2d(x, h);
+    glEnd();
+
+    glPopMatrix();
+
+#else // this only works if npot textures support GL_REPEAT
+    // it's kind of cool because uses a single quad exactly filling viewport
+    // and modifys tex coordinates
+        int x = 0, y = 0;
     int w = vp.pix_width, h = vp.pix_height;
 
     double lat[4], lon[4];
@@ -1385,16 +1496,13 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         else if(lon[i] - vp.clon < -180)
             lon[i] += 360;
 
+        // normalize
         lon[i] = lon[i] / 360.0;
 
+        // mercator conversion
         double s1 = sin(deg2rad(lat[i]));
         double y1 = .5 * log((1 + s1) / (1 - s1));
         lat[i] = (1 + y1/M_PI)/2;
-
-        if(texture_format == GL_TEXTURE_RECTANGLE_ARB) {
-            lon[i] *= O1.m_width;
-            lat[i] *= O1.m_height;
-        }
     }
 
     glBegin(GL_QUADS);
@@ -1402,8 +1510,8 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     glTexCoord2d_2(multitexturing, lon[1], lat[1]), glVertex2i(w, y);
     glTexCoord2d_2(multitexturing, lon[2], lat[2]), glVertex2i(w, h);
     glTexCoord2d_2(multitexturing, lon[3], lat[3]), glVertex2i(x, h);
-
     glEnd();
+#endif
 
     if(multitexturing) {
         if(multitexturing > 1) {
