@@ -1300,52 +1300,6 @@ static inline void glTexCoord2d_2(int multitexturing, double x, double y)
         glTexCoord2d(x, y);
 }
 
-#if 0
-    /* We must manually perform wrapping by breaking the screen up along the prime meridian.
-       Either render 4 triangles, 2 quads, or 1 quad (if the meridian doesn't cross the screen)
-
-       0(x,y)---0---1(w,y)
-         |    / | \    |
-         |  /   |   \  |
-         |/     |     \|
-         1------ ------2
-         |\     |     /|
-         |  \   |   /  |
-         |    \ | /    |
-      3(x,h)----3---2(w,h)
-     */
-
-    double p[4];
-    if(lon[0]*lon[1] < 0) p[0] = w*lon[0]/(lon[0] - lon[1]);
-    if(lon[0]*lon[3] < 0) p[1] = h*lon[0]/(lon[0] - lon[3]);
-    if(lon[1]*lon[2] < 0) p[2] = h*lon[1]/(lon[1] - lon[2]);
-    if(lon[2]*lon[3] < 0) p[3] = w*lon[3]/(lon[3] - lon[2]);
-
-    if(lon[0]*lon[1] < 0) {
-        if(lon[0]*lon[3] < 0)
-            Draw4Triangles(multitexturing, lat, lon, x, y, w, h, 0, 1, 2, 3, p[0], p[1], false);
-        else if(lon[1]*lon[2] < 0)
-            Draw4Triangles(multitexturing, lat, lon, w, y, x, h, 1, 2, 3, 0, p[2], p[0], true);
-        else
-            Draw2Quads(multitexturing, lat, lon, w, y, x, h, 1, 2, 3, 0, p[0], p[3], false);
-    } else if(lon[0]*lon[3] < 0) {
-        if(lon[2]*lon[3] < 0)
-            Draw4Triangles(multitexturing, lat, lon, x, h, w, y, 3, 0, 1, 2, p[1], p[3], true);
-        else
-            Draw2Quads(multitexturing, lat, lon, x, y, w, h, 0, 1, 2, 3, p[0], p[2], true);
-    } else if(lon[2]*lon[3] < 0)
-        Draw4Triangles(multitexturing, lat, lon, w, h, x, y, 2, 3, 0, 1, p[3], p[2], false);
-    else {
-        // prime meridian does not intersect the screen
-        glBegin(GL_QUADS);
-        glTexCoord2d_2(multitexturing, lon[0], lat[0]), glVertex2i(x, y);
-        glTexCoord2d_2(multitexturing, lon[1], lat[1]), glVertex2i(w, y);
-        glTexCoord2d_2(multitexturing, lon[2], lat[2]), glVertex2i(w, h);
-        glTexCoord2d_2(multitexturing, lon[3], lat[3]), glVertex2i(x, h);
-        glEnd();
-    }
-#endif
-
 void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, ClimatologyOverlay &O2,
                                                double dpos, PlugIn_ViewPort &vp, double transparency)
 { 
@@ -1431,7 +1385,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 
     for(int i = 0; i < 2; i++) {
         // normalize
-        tx[i] = tx[i] / 360.0;
+        tx[i] = tx[i] / 360.0 * (O1.m_width-1)/O1.m_width;
 
         // mercator conversion
         double s1 = sin(deg2rad(ty[i]));
@@ -1445,6 +1399,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     }
 
     double tw = (texture_format == GL_TEXTURE_RECTANGLE_ARB) ? O1.m_width : 1;
+    double s = .5 * tw/O1.m_width;
 
     glPushMatrix();
     glTranslated(vp.pix_width/2.0, vp.pix_height/2.0, 0);
@@ -1455,25 +1410,25 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     if(tx[1]*tx[0]<0 && fabsf(tx[1]-tx[0]) < .5*tw) { // meridian crosses rv_rect
         double t = x + (w-x)*tx[0]/(tx[0] - tx[1]);
 
-        glTexCoord2d_2(multitexturing,     0, ty[0]), glVertex2d(t, y);
-        glTexCoord2d_2(multitexturing, tx[1], ty[0]), glVertex2d(w, y);
-        glTexCoord2d_2(multitexturing, tx[1], ty[1]), glVertex2d(w, h);
-        glTexCoord2d_2(multitexturing,     0, ty[1]), glVertex2d(t, h);
+        glTexCoord2d_2(multitexturing,       s, ty[0]), glVertex2d(t, y);
+        glTexCoord2d_2(multitexturing, tx[1]+s, ty[0]), glVertex2d(w, y);
+        glTexCoord2d_2(multitexturing, tx[1]+s, ty[1]), glVertex2d(w, h);
+        glTexCoord2d_2(multitexturing,       s, ty[1]), glVertex2d(t, h);
 
         w = t;
-        tx[0] += tw;
-        tx[1] = tw;
+        tx[0] += tw-2*s;
+        tx[1] = tw-2*s;
     } else {
         if(tx[0] < 0)
-            tx[0] += tw;
+            tx[0] += tw-2*s;
         if(tx[1] < 0)
-            tx[1] += tw;
+            tx[1] += tw-2*s;
     }
 
-    glTexCoord2d_2(multitexturing, tx[0], ty[0]), glVertex2d(x, y);
-    glTexCoord2d_2(multitexturing, tx[1], ty[0]), glVertex2d(w, y);
-    glTexCoord2d_2(multitexturing, tx[1], ty[1]), glVertex2d(w, h);
-    glTexCoord2d_2(multitexturing, tx[0], ty[1]), glVertex2d(x, h);
+    glTexCoord2d_2(multitexturing, tx[0]+s, ty[0]), glVertex2d(x, y);
+    glTexCoord2d_2(multitexturing, tx[1]+s, ty[0]), glVertex2d(w, y);
+    glTexCoord2d_2(multitexturing, tx[1]+s, ty[1]), glVertex2d(w, h);
+    glTexCoord2d_2(multitexturing, tx[0]+s, ty[1]), glVertex2d(x, h);
     glEnd();
 
     glPopMatrix();
