@@ -1,4 +1,5 @@
-/* This program takes the air temperature data from
+/* This program takes the lightning data from
+   ftp://ghrc.nsstc.nasa.gov/pub/lis/climatology/HRMC/data/LISOTD_HRMC_V2.3.2013.hdf
 
    ghrc.nsstc.nasa.gov
    to produce a much condensed binary file to be compressed

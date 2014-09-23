@@ -12,8 +12,8 @@ echo >> Makefile
 # Wind
 for i in `seq -f %02.0f 1 12`; do
     echo 'WIND_DATA_'$i' := $(WIND_DATA_DIR)/uv[1-2][0-9][0-9][0-9]'$i'[0-3][0-9].be.gz' >> Makefile
-    echo '$(DATA)/wind'$i'.gz: Makefile genwinddata $(WIND_DATA_'$i')' >> Makefile
-    echo "\t"'./genwinddata $(PARTS_PER_FILE) $(WIND_DATA_'$i') | gzip > $@'"\n" >> Makefile
+    echo '$(DATA)/wind'$i': Makefile genwinddata $(WIND_DATA_'$i')' >> Makefile
+    echo "\t"'./genwinddata $(PARTS_PER_FILE) $(WIND_DATA_'$i') > $@'"\n" >> Makefile
 done
 
 # Current

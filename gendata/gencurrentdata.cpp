@@ -30,7 +30,7 @@
 
 int8_t encode_value(float value)
 {
-    if(fabs(value) < .3) /* throw away small currents,
+    if(fabs(value) < .2) /* throw away small currents,
                             this greatly improves
                             compressed file size */
         value = 0;

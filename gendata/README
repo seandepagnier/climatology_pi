@@ -1,4 +1,11 @@
 You must install libnetcdf (on debian):
 sudo apt-get install libnetcdf-dev
 
-next 
+next, symlink to the directory with wind and current data, or copy into the winddata and currentdata folders:
+ln -s /media/sean/TOSHIBA\ EXT/Climatology-Data/Climate-Winds-6hr/ winddata
+ln -s /media/sean/TOSHIBA\ EXT/Climatology-Data/Climate-Current-Yearly-gz/ currentdata
+
+run the configure script:
+./configure
+
+and make:

@@ -11,8 +11,8 @@ PROJECT(climatology_pi)
 SET(PACKAGE_NAME climatology_pi)
 SET(CPACK_PACKAGE_CONTACT "Sean D'Epagnier ")
 
-SET(VERSION_MAJOR "0")
-SET(VERSION_MINOR "13")
+SET(VERSION_MAJOR "1")
+SET(VERSION_MINOR "0")
 
 INCLUDE("cmake/PluginConfigure.cmake")
 
@@ -54,6 +54,8 @@ IF(NOT UNIX)
     INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/zlib-1.2.3)
     INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/bzip2)
 ENDIF(NOT UNIX)
+
+#TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} Qt5Widgets Qt5OpenGL Qt5Gui Qt5Test Qt5Core )
 
 INCLUDE("cmake/PluginInstall.cmake")
 INCLUDE("cmake/PluginLocalization.cmake")

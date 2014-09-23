@@ -42,28 +42,33 @@ struct WindData
     {
         WindPolar() : directions(NULL), speeds(NULL) {}
         ~WindPolar() { delete [] directions; delete [] speeds; }
-        wxUint8 storm, calm, *directions, *speeds;
+        wxUint8 gale, calm, *directions, *speeds;
         double Value(enum Coord coord, int dir_cnt);
     };
 
-    WindData(int lats, int lons, int dirs)
-    : latitudes(lats), longitudes(lons), dir_cnt(dirs), data(new WindPolar[lats*lons]) {}
+    WindData(int lats, int lons, int dirs, float dir_res, float spd_mul)
+    : latitudes(lats), longitudes(lons), dir_cnt(dirs),
+        direction_resolution(dir_res), speed_multiplier(spd_mul),
+        data(new WindPolar[lats*lons]) {}
 
     double InterpWind(enum Coord coord, double lat, double lon);
     WindPolar *GetPolar(double lat, double lon) {
-        int lati = round(latitudes*(.5+lat/180.0));
-        int loni = round(longitudes*lon/360.0);
+        double latoff = 90.0/latitudes, lonoff = 180.0/longitudes;
+
+        int lati = round(latitudes*(.5 + (lat-latoff)/180.0));
+        int loni = round(longitudes*(lon-lonoff)/360.0);
         if(lati < 0 || lati >= latitudes || loni < 0 || loni >= longitudes)
             return NULL;
 
         WindPolar *polar = &data[lati*longitudes + loni];
-        if(polar->storm == 255)
+        if(polar->gale == 255)
             return NULL;
 
         return polar;
     }
 
     int latitudes, longitudes, dir_cnt;
+    float direction_resolution, speed_multiplier;
     WindPolar *data;
 };
 
@@ -192,12 +197,12 @@ public:
     bool InterpolateWindAtlasTime(int month, int nmonth, double dpos,
                                   double lat, double lon,
                                   double *directions, double *speeds,
-                                  double &storm, double &calm);
+                                  double &gale, double &calm);
 
     bool InterpolateWindAtlas(wxDateTime &date,
                               double lat, double lon,
                               double *directions, double *speeds,
-                              double &storm, double &calm);
+                              double &gale, double &calm);
 
     void ReadWindData(int month, wxString filename);
     void AverageWindData();
@@ -237,8 +242,6 @@ public:
 
     wxDateTime m_CurrentTimeline;
     bool m_bAllTimes;
-
-//    bool m_bUpdateCyclones;
 
 private:
     ZUFILE *TryOpenFile(wxString filename);

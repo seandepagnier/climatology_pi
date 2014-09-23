@@ -75,6 +75,7 @@ static GLboolean QueryExtension( const char *extName )
 #include <dlfcn.h>
 #define systemGetProcAddress(ADDR) dlsym( RTLD_DEFAULT, ADDR)
 #else
+#include <GL/glx.h>
 #define systemGetProcAddress(ADDR) glXGetProcAddress((const GLubyte*)ADDR)
 #endif
 
@@ -137,6 +138,8 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     m_CurrentTimeline = wxDateTime::Now();
     m_CurrentTimeline.SetYear(1999); /* without leap year */
+
+    m_bAllTimes = false;
 
     wxProgressDialog progressdialog( _("Climatology"), wxString(), 38, &m_dlg,
                                      wxPD_CAN_ABORT | wxPD_ELAPSED_TIME);
@@ -502,14 +505,14 @@ void ClimatologyOverlayFactory::GetDateInterpolation(const wxDateTime *cdate,
 bool ClimatologyOverlayFactory::InterpolateWindAtlasTime(int month, int nmonth, double dpos,
                                                          double lat, double lon,
                                                          double *directions, double *speeds,
-                                                         double &storm, double &calm)
+                                                         double &gale, double &calm)
 {
     WindData::WindPolar *polar1 = m_WindData[month]->GetPolar(lat, positive_degrees(lon));
     WindData::WindPolar *polar2 = m_WindData[nmonth]->GetPolar(lat, positive_degrees(lon));
     if(!polar1 || !polar2)
         return false;
 
-    storm = (dpos*polar1->storm + (1-dpos)*polar2->storm) / 100.0;
+    gale = (dpos*polar1->gale + (1-dpos)*polar2->gale) / 100.0;
     calm = (dpos*polar1->calm + (1-dpos)*polar2->calm) / 100.0;
 
     int dir_cnt = m_WindData[month]->dir_cnt;
@@ -521,12 +524,12 @@ bool ClimatologyOverlayFactory::InterpolateWindAtlasTime(int month, int nmonth, 
     }
 
     for(int i=0; i<dir_cnt; i++) {
-        double direction1 = polar1->directions[i]/totald1;
-        double direction2 = polar2->directions[i]/totald2;
+        double direction1 = polar1->directions[i]/m_WindData[month]->direction_resolution;
+        double direction2 = polar2->directions[i]/m_WindData[nmonth]->direction_resolution;
         directions[i] = dpos*direction1 + (1-dpos)*direction2;
 
-        double speed1 = (double)polar1->speeds[i] / polar1->directions[i];
-        double speed2 = (double)polar2->speeds[i] / polar2->directions[i];
+        double speed1 = (double)polar1->speeds[i] / m_WindData[month]->speed_multiplier;
+        double speed2 = (double)polar2->speeds[i] / m_WindData[nmonth]->speed_multiplier;
 
         if(direction1) {
             if(direction2)
@@ -552,13 +555,13 @@ static double interpquad(double v1, double v2, double v3, double v4, double d1, 
 bool ClimatologyOverlayFactory::InterpolateWindAtlas(wxDateTime &date,
                                                      double lat, double lon,
                                                      double *directions, double *speeds,
-                                                     double &storm, double &calm)
+                                                     double &gale, double &calm)
 {
     int month, nmonth;
     double dpos;
     GetDateInterpolation(&date, month, nmonth, dpos);
 
-    double idirections[4][8], ispeeds[4][8], istorm[4], icalm[4];
+    double idirections[4][8], ispeeds[4][8], igale[4], icalm[4];
 
     double lats[2] = {floor(lat), ceil(lat)}, lons[2] = {floor(lon), ceil(lon)};
     double latd = lat - lats[0], lond = lon - lons[0];
@@ -568,7 +571,7 @@ bool ClimatologyOverlayFactory::InterpolateWindAtlas(wxDateTime &date,
         for(int loni = 0; loni<2; loni++) {
             int i = 2*lati + loni;
             havedata[i] = InterpolateWindAtlasTime(month, nmonth, dpos, lats[lati], lons[loni],
-                                                   idirections[i], ispeeds[i], istorm[i], icalm[i]);
+                                                   idirections[i], ispeeds[i], igale[i], icalm[i]);
         }
 
     /* fill in missing data */
@@ -580,7 +583,7 @@ bool ClimatologyOverlayFactory::InterpolateWindAtlas(wxDateTime &date,
                 if(havedata[k]) {
                     memcpy(idirections[i], idirections[k], sizeof *idirections);
                     memcpy(ispeeds[i], ispeeds[k], sizeof *ispeeds);
-                    istorm[i] = istorm[k];
+                    igale[i] = igale[k];
                     icalm[i] = icalm[k];
                     goto outer_continue;
                 }
@@ -597,7 +600,7 @@ bool ClimatologyOverlayFactory::InterpolateWindAtlas(wxDateTime &date,
                                ispeeds[2][i], ispeeds[3][i], latd, lond);
     }
 
-    storm = interpquad(istorm[0], istorm[1], istorm[2], istorm[3], latd, lond);
+    gale = interpquad(igale[0], igale[1], igale[2], igale[3], latd, lond);
     calm = interpquad(icalm[0], icalm[1], icalm[2], icalm[3], latd, lond);
 
     return true;
@@ -611,42 +614,58 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
 
     m_dlg.m_cbWind->Enable();
 
-    wxUint16 header[3];
-    if(zu_read(f, header, sizeof header) != sizeof header ||
-       header[0] > 180*16 || header[1] > 360*16 || header[2] > 64)
+    wxUint16 header[7];
+    int dirs;
+    if(zu_read(f, header, sizeof header) != sizeof header)
         goto corrupt;
 
-    m_WindData[month] = new WindData(header[0], header[1], header[2]);
+    if(header[0] != 0xfefe ||
+       header[1] > 180*16 || header[2] > 360*16 || header[3] != 8)
+        goto corrupt;
 
-    for(int lati = 0; lati < m_WindData[month]->latitudes; lati++) {
-        for(int loni = 0; loni < m_WindData[month]->longitudes; loni++) {
-            WindData::WindPolar &wp = m_WindData[month]->data[lati*m_WindData[month]->longitudes + loni];
-            int dirs = m_WindData[month]->dir_cnt;
-            if(zu_read(f, &wp.storm, 1) != 1)
-                goto corrupt;
-            if(wp.storm != 255) {
-                if(zu_read(f, &wp.calm, 1) != 1)
-                    goto corrupt;
+    m_WindData[month] = new WindData(header[1], header[2], header[3], header[4], (float)header[5] / header[6]);
 
-                wxUint8 directions[8], speeds[8];
-                if(zu_read(f, directions, dirs) != dirs)
-                    goto corrupt;
-                if(zu_read(f, speeds, dirs) != dirs)
-                    goto corrupt;
+    dirs = m_WindData[month]->dir_cnt;
 
-                // note Wind Polar has 0 indice at west, going counter clockwise, we return data 0 north clockwise
-                // this will be corrected in future revisions of climatology when the data is rebuilt
+    for(int pass=0; pass<2*dirs+1; pass++)
+        for(int lati = 0; lati < m_WindData[month]->latitudes; lati++) {
+            for(int loni = 0; loni < m_WindData[month]->longitudes; loni++) {
+                WindData::WindPolar &wp = m_WindData[month]->data[lati*m_WindData[month]->longitudes + loni];
+                uint8_t value;
 
-                wp.directions = new wxUint8[dirs];
-                wp.speeds = new wxUint8[dirs];
-                int mapping[8] = {6, 5, 4, 3, 2, 1, 0, 7};
-                for(int i=0; i<8; i++) {
-                    wp.directions[i] = directions[mapping[i]];
-                    wp.speeds[i] = speeds[mapping[i]];
+                if(pass == 0) {
+                    if(zu_read(f, &value, 1) != 1)
+                        goto corrupt;
+
+                    if(value > 200)
+                        wp.gale = 255;
+                    else if(value >= 100) {
+                        wp.gale = value - 100;
+                        wp.calm = 0;
+                    } else {
+                        wp.gale = 0;
+                        wp.calm = value;
+                    }
+
+                    wp.directions = new wxUint8[dirs];
+                    wp.speeds = new wxUint8[dirs];
+                } else if(wp.gale != 255) {
+                    if(pass < dirs + 1) {
+                        if(zu_read(f, &value, 1) != 1)
+                            goto corrupt;
+                        wp.directions[pass - 1] = value;
+                    } else {
+                        if(wp.directions[pass-dirs-1] == 0)
+                            continue;
+
+                        if(zu_read(f, &value, 1) != 1)
+                            goto corrupt;
+                        wp.speeds[pass-dirs-1] = value;
+                    }
                 }
             }
         }
-    }
+
     zu_close(f), free(f);
     return;
 
@@ -678,7 +697,9 @@ havedata:
     int latitudes = m_WindData[fmonth]->latitudes;
     int longitudes = m_WindData[fmonth]->longitudes;
     int dir_cnt = m_WindData[fmonth]->dir_cnt;
-    m_WindData[12] = new WindData(latitudes, longitudes, dir_cnt);
+    float dir_res = m_WindData[fmonth]->direction_resolution;
+    float spd_mul = m_WindData[fmonth]->speed_multiplier;
+    m_WindData[12] = new WindData(latitudes, longitudes, dir_cnt, dir_res, spd_mul);
 
 
     float *directions = new float[dir_cnt];
@@ -689,7 +710,7 @@ havedata:
             double lat = 180.0*((double)lati/latitudes-.5);
             double lon = 360.0*loni/longitudes;
 
-            double storm = 0, calm = 0;
+            double gale = 0, calm = 0;
             for(int i=0; i<dir_cnt; i++)
                 directions[i] = speeds[i] = 0;
 
@@ -704,7 +725,7 @@ havedata:
                 }
 
                 int mdir_cnt = m_WindData[month]->dir_cnt;
-                storm += polar->storm;
+                gale += polar->gale;
                 calm +=  polar->calm;
                 for(int i=0; i<dir_cnt; i++) {
                     directions[i] += polar->directions[i*mdir_cnt/dir_cnt];
@@ -715,17 +736,17 @@ havedata:
 
             WindData::WindPolar &wp = m_WindData[12]->data[lati*longitudes + loni];
             if(mcount == 0) {
-                wp.storm = 255;
+                wp.gale = 255;
                 goto done;
             }
 
-            wp.storm = storm / mcount;
+            wp.gale = gale / mcount;
             wp.calm = calm / mcount;
 
             /* fit back to 256 */
             while(max_value(directions, dir_cnt) >= 256 || max_value(speeds, dir_cnt) >= 256) {
                 if(max_value(directions, dir_cnt) == 0) { /* corrupted data */
-                    wp.storm = 255;
+                    wp.gale = 255;
                     goto done;
                 }
 
@@ -1210,7 +1231,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     double s;
     switch(setting) {
     case ClimatologyOverlaySettings::WIND:   
-        s = (m_WindData[month] && m_WindData[month]->longitudes > 360) ? 2 : 1;
+        s = m_WindData[month] ? m_WindData[month]->longitudes / 360 : 1;
         break;
     case ClimatologyOverlaySettings::CURRENT: s = 3;  break;
     case ClimatologyOverlaySettings::SLP:     s = .5; break;
@@ -1595,7 +1616,7 @@ double InterpArray(double x, double y, wxInt16 *a, int h)
 
 double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
 {
-    if(storm == 255)
+    if(gale == 255)
         return NAN;
 
     if(coord == DIRECTION) // maybe should do most likely here rather than vector average?
@@ -1613,7 +1634,7 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
         default: printf("error, invalid coord: %d\n", coord);
         }
 
-        totals += mul*speeds[i];
+        totals += mul*speeds[i]*directions[i];
     }
     return (double)totals / totald;
 }
@@ -1636,9 +1657,11 @@ double CurrentData::Value(enum Coord coord, int xi, int yi)
 
 double WindData::InterpWind(enum Coord coord, double x, double y)
 {
-    y = positive_degrees(y - 135.0/longitudes + .25);
-    double xi = latitudes*(.5 - (90.0/latitudes - x)/180.0);
-    double yi = longitudes*y/360.0;
+    double latoff = 90.0/latitudes, lonoff = 180.0/longitudes;
+
+    double xi = latitudes*(.5 + (x - latoff)/180.0);
+    double yi = longitudes*positive_degrees(y - lonoff)/360.0;
+
     int h = longitudes, d = dir_cnt;
 
     if(yi<0) yi+=h;
@@ -1661,7 +1684,7 @@ double WindData::InterpWind(enum Coord coord, double x, double y)
 
     double v0 = interp_value(v00, v01, yi-y0);
     double v1 = interp_value(v10, v11, yi-y0);
-    return      interp_value(v0,  v1,  xi-x0 );
+    return      interp_value(v0,  v1,  xi-x0 ) / speed_multiplier;
 }
 
 double CurrentData::InterpCurrent(enum Coord coord, double x, double y)
@@ -2243,20 +2266,25 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
     if(!m_WindData[month] || !m_WindData[nmonth])
         return;
 
-    double step = 360.0 / (m_WindData[month]->longitudes);
+    double latstep = 180.0 / (m_WindData[month]->latitudes);
+    double lonstep = 360.0 / (m_WindData[month]->longitudes);
     const double r = 12;
     double size = m_dlg.m_cfgdlg->m_sWindAtlasSize->GetValue();
     double spacing = m_dlg.m_cfgdlg->m_sWindAtlasSpacing->GetValue();
+
     int w = vp.pix_width, h = vp.pix_height;
-    while((vp.lat_max - vp.lat_min) / step > h / spacing ||
-          (vp.lon_max - vp.lon_min) / step > w / spacing)
-        step *= 2;
+    while((vp.lat_max - vp.lat_min) / latstep > h / spacing)
+        latstep *= 2;
+    while((vp.lon_max - vp.lon_min) / lonstep > w / spacing)
+        lonstep *= 2;
 
     int dir_cnt = m_WindData[month]->dir_cnt;
-    for(double lat = round(vp.lat_min/step)*step-1; lat <= vp.lat_max+1; lat+=step)
-        for(double lon = round(vp.lon_min/step)*step-1; lon <= vp.lon_max+1; lon+=step) {
-            double directions[64], speeds[64], storm, calm;
-            if(!InterpolateWindAtlasTime(month, nmonth, dpos, lat, lon, directions, speeds, storm, calm))
+    double latoff = 90.0/m_WindData[month]->latitudes, lonoff = 180.0/m_WindData[month]->longitudes;
+
+    for(double lat = round(vp.lat_min/latstep)*latstep-latoff; lat <= vp.lat_max+1; lat+=latstep)
+        for(double lon = round(vp.lon_min/lonstep)*lonstep-lonoff; lon <= vp.lon_max+1; lon+=lonstep) {
+            double directions[64], speeds[64], gale, calm;
+            if(!InterpolateWindAtlasTime(month, nmonth, dpos, lat, lon, directions, speeds, gale, calm))
                 continue;
 
             wxPoint p;
@@ -2264,8 +2292,8 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
 
             int opacity = m_dlg.m_cfgdlg->m_sWindAtlasOpacity->GetValue();
 
-            if(storm*2 > calm)
-                RenderNumber(p, 100.0*storm, wxColour(255, 0, 0, opacity));
+            if(gale*2 > calm)
+                RenderNumber(p, 100.0*gale, wxColour(255, 0, 0, opacity));
             else if(calm > 0)
                 RenderNumber(p, 100.0*calm, wxColour(0, 0, 180, opacity));
             
@@ -2279,8 +2307,8 @@ void ClimatologyOverlayFactory::RenderWindAtlas(PlugIn_ViewPort &vp)
                 if(directions[d] == 0)
                     continue;
 
-                const double maxdirection = .35;
-                bool split = directions[d] >= maxdirection;
+                const double maxdirection = .29;
+                bool split = directions[d] > maxdirection;
                 double u = r + size*(split ? maxdirection : directions[d]);
                 double x2 = p.x+u*sin(theta), y2 = p.y-u*cos(theta);
 
@@ -2353,9 +2381,6 @@ void ClimatologyOverlayFactory::RenderCycloneSegment(CycloneState &ss, PlugIn_Vi
 
 void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 {
-//    if(m_pdc) /* display list optimization not possible */
-//        m_bUpdateCyclones = true;
-
     /* no cyclones ever existed between 10 and 20 longitude
        so use 15 east as the meridian to split the world on.. */
 //#define USE_DL

@@ -6627,7 +6627,7 @@
                                                             <property name="gripper">0</property>
                                                             <property name="hidden">0</property>
                                                             <property name="id">wxID_ANY</property>
-                                                            <property name="label">The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is 35% or more a number is shown.&#x0A;&#x0A;The barbs indicate wind speed, each barb being 5 knots.&#x0A;&#x0A;The numbers in the circle, give percentage of calm (less than 3 knots) in blue or storm (above 47 knots) in red.</property>
+                                                            <property name="label">The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.&#x0A;&#x0A;The barbs indicate wind speed, each barb being 5 knots.&#x0A;&#x0A;The numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above).</property>
                                                             <property name="max_size"></property>
                                                             <property name="maximize_button">0</property>
                                                             <property name="maximum_size"></property>

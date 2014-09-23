@@ -267,8 +267,8 @@ void ClimatologyConfigDialog::LoadSettings()
     pConf->SetPath ( _T( "/PlugIns/Climatology/WindAtlas" ) );
 
     m_cbWindAtlasEnable->SetValue((bool)pConf->Read ( _T ( "Enabled" ), 1L));
-    m_sWindAtlasSize->SetValue(pConf->Read ( _T ( "Size" ), 100L));
-    m_sWindAtlasSpacing->SetValue(pConf->Read ( _T ( "Spacing" ), 100L));
+    m_sWindAtlasSize->SetValue(pConf->Read ( _T ( "Size1" ), 120L));
+    m_sWindAtlasSpacing->SetValue(pConf->Read ( _T ( "Spacing1" ), 90L));
     m_sWindAtlasOpacity->SetValue(pConf->Read ( _T ( "Opacity" ), 205L));
 
     /* cyclone settings */
@@ -312,8 +312,8 @@ void ClimatologyConfigDialog::SaveSettings()
 
     /* wind atlas settings */
     pConf->Write ( _T ( "Enabled" ), m_cbWindAtlasEnable->GetValue());
-    pConf->Write ( _T ( "Size" ), m_sWindAtlasSize->GetValue());
-    pConf->Write ( _T ( "Spacing" ), m_sWindAtlasSpacing->GetValue());
+    pConf->Write ( _T ( "Size1" ), m_sWindAtlasSize->GetValue());
+    pConf->Write ( _T ( "Spacing1" ), m_sWindAtlasSpacing->GetValue());
     pConf->Write ( _T ( "Opacity" ), m_sWindAtlasOpacity->GetValue());
 
     /* cyclone settings */

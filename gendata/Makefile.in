@@ -1,8 +1,8 @@
 DATA = ../data
 
-ALL_WIND  = $(DATA)/wind01.gz $(DATA)/wind02.gz $(DATA)/wind03.gz $(DATA)/wind04.gz
-ALL_WIND += $(DATA)/wind05.gz $(DATA)/wind06.gz $(DATA)/wind07.gz $(DATA)/wind08.gz
-ALL_WIND += $(DATA)/wind09.gz $(DATA)/wind10.gz $(DATA)/wind11.gz $(DATA)/wind12.gz
+ALL_WIND  = $(DATA)/wind01 $(DATA)/wind02 $(DATA)/wind03 $(DATA)/wind04
+ALL_WIND += $(DATA)/wind05 $(DATA)/wind06 $(DATA)/wind07 $(DATA)/wind08
+ALL_WIND += $(DATA)/wind09 $(DATA)/wind10 $(DATA)/wind11 $(DATA)/wind12
 
 ALL_CURRENT  = $(DATA)/current01 $(DATA)/current02 $(DATA)/current03
 ALL_CURRENT += $(DATA)/current04 $(DATA)/current05 $(DATA)/current06
@@ -18,12 +18,19 @@ clean:
 	rm -rf $(ALL)
 	rm -rf genatdata genrelativehumiditydata genseadepthdata genclddata gencurrentdata gencyclonedata gencyclonedata1 genslpdata gensstdata genastdata genprecipdata genwinddata
 
-CURRENT =  oscar_vel1992.nc oscar_vel1993.nc oscar_vel1994.nc oscar_vel1995.nc
-CURRENT += oscar_vel1996.nc oscar_vel1997.nc oscar_vel1998.nc oscar_vel1999.nc
-CURRENT += oscar_vel2000.nc oscar_vel2001.nc oscar_vel2002.nc oscar_vel2003.nc
-CURRENT += oscar_vel2004.nc oscar_vel2005.nc oscar_vel2006.nc oscar_vel2007.nc
-CURRENT += oscar_vel2008.nc oscar_vel2009.nc oscar_vel2010.nc oscar_vel2011.nc
-CURRENT += oscar_vel2012.nc
+CURRENT_DATA_DIR = currentdata
+
+CURRENT =  $(CURRENT_DATA_DIR)/oscar_vel1993.nc
+CURRENT += $(CURRENT_DATA_DIR)/oscar_vel1994.nc $(CURRENT_DATA_DIR)/oscar_vel1995.nc
+CURRENT += $(CURRENT_DATA_DIR)/oscar_vel1996.nc $(CURRENT_DATA_DIR)/oscar_vel1997.nc
+CURRENT += $(CURRENT_DATA_DIR)/oscar_vel1998.nc $(CURRENT_DATA_DIR)/oscar_vel1999.nc
+CURRENT += $(CURRENT_DATA_DIR)/oscar_vel2000.nc $(CURRENT_DATA_DIR)/oscar_vel2001.nc
+CURRENT += $(CURRENT_DATA_DIR)/oscar_vel2002.nc $(CURRENT_DATA_DIR)/oscar_vel2003.nc
+CURRENT += $(CURRENT_DATA_DIR)/oscar_vel2004.nc $(CURRENT_DATA_DIR)/oscar_vel2005.nc
+CURRENT += $(CURRENT_DATA_DIR)/oscar_vel2006.nc $(CURRENT_DATA_DIR)/oscar_vel2007.nc
+CURRENT += $(CURRENT_DATA_DIR)/oscar_vel2008.nc $(CURRENT_DATA_DIR)/oscar_vel2009.nc
+CURRENT += $(CURRENT_DATA_DIR)/oscar_vel2010.nc $(CURRENT_DATA_DIR)/oscar_vel2011.nc
+CURRENT += $(CURRENT_DATA_DIR)/oscar_vel2012.nc
 
 genwinddata: genwinddata.cpp zuFile.cpp
 	g++ -o genwinddata genwinddata.cpp zuFile.cpp -lbz2 -lz -g -O2
@@ -130,7 +137,6 @@ $(DATA)/cyclone-%.gz: tracks.% gencyclonedata
 gencyclonedata: gencyclonedata.cpp
 	g++ -o gencyclonedata gencyclonedata.cpp -g
 
-CURRENT_DATA_DIR = currentdata
-
-$(ALL_CURRENT) : $(CURRENT_DATA_DIR)/$(CURRENT) gencurrentdata
-	./gencurrentdata $<
+$(ALL_CURRENT) : $(CURRENT) gencurrentdata
+	./gencurrentdata $(CURRENT)
+	mv current* $(DATA)

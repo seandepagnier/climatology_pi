@@ -62,6 +62,12 @@ SET(BUILD_SHARED_LIBS TRUE)
 
 FIND_PACKAGE(wxWidgets REQUIRED)
 
+# change the package name to include the wx configuration
+#if(DEFINED _wx_selected_config)
+#string(REGEX REPLACE "-.*$" "" WX_SHORT_CONFIG ${_wx_selected_config})
+#string(REGEX REPLACE "_pi$" "_${WX_SHORT_CONFIG}_pi" PACKAGE_NAME ${PACKAGE_NAME})
+#endif()
+
 IF(MSYS)
 # this is just a hack. I think the bug is in FindwxWidgets.cmake
 STRING( REGEX REPLACE "/usr/local" "\\\\;C:/MinGW/msys/1.0/usr/local" wxWidgets_INCLUDE_DIRS ${wxWidgets_INCLUDE_DIRS} )

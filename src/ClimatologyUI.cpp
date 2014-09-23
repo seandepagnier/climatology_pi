@@ -497,7 +497,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	
 	fgSizer24->Add( fgSizer17, 1, wxEXPAND, 5 );
 	
-	m_staticText19 = new wxStaticText( m_panel41, wxID_ANY, _("The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is 35% or more a number is shown.\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers in the circle, give percentage of calm (less than 3 knots) in blue or storm (above 47 knots) in red."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText19 = new wxStaticText( m_panel41, wxID_ANY, _("The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText19->Wrap( 240 );
 	fgSizer24->Add( m_staticText19, 0, wxALL|wxEXPAND, 5 );
 	
