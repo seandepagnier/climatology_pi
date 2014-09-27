@@ -1229,9 +1229,11 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
         return false;
 
     double s;
+    double latoff = 0, lonoff = 0;
     switch(setting) {
     case ClimatologyOverlaySettings::WIND:   
         s = m_WindData[month] ? m_WindData[month]->longitudes / 360 : 1;
+        latoff = 90.0/m_WindData[month]->latitudes, lonoff = 180.0/m_WindData[month]->longitudes;
         break;
     case ClimatologyOverlaySettings::CURRENT: s = 3;  break;
     case ClimatologyOverlaySettings::SLP:     s = .5; break;
@@ -1268,7 +1270,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
             lat = 2*rad2deg(atan(exp(lat))) - 90;
             double lon = x/s;
 
-            double v = getValueMonth(MAG, setting, lat, lon, month);
+            double v = getValueMonth(MAG, setting, lat + latoff, lon + lonoff, month);
             wxColour c = GetGraphicColor(setting, v);
 
             int doff = 4*(y*width + x);
@@ -1308,6 +1310,8 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     O.m_iTexture = texture;
     O.m_width = width - 1;
     O.m_height = height;
+    O.m_latoff = latoff;
+    O.m_lonoff = lonoff;
 
     return true;
 }
@@ -1405,6 +1409,9 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     vp.rotation = r;
 
     for(int i = 0; i < 2; i++) {
+        tx[i] -= O1.m_lonoff;
+        ty[i] -= O1.m_latoff;
+
         // normalize
         tx[i] = tx[i] / 360.0 * (O1.m_width-1)/O1.m_width;
 

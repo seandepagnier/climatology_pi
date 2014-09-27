@@ -140,6 +140,7 @@ public:
     {
         m_iTexture = 0;
         m_pDCBitmap = NULL, m_pRGBA = NULL;
+        m_latoff = m_lonoff = 0;
     }
 
     ~ClimatologyOverlay( void );
@@ -149,8 +150,8 @@ public:
     wxBitmap *m_pDCBitmap; /* dc mode */
     unsigned char *m_pRGBA;
 
-    int m_width;
-    int m_height;
+    int m_width, m_height;
+    double m_latoff, m_lonoff;
 };
 
 //----------------------------------------------------------------------------------------------------------
