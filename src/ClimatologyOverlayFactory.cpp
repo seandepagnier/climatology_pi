@@ -632,7 +632,7 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
         for(int lati = 0; lati < m_WindData[month]->latitudes; lati++) {
             for(int loni = 0; loni < m_WindData[month]->longitudes; loni++) {
                 WindData::WindPolar &wp = m_WindData[month]->data[lati*m_WindData[month]->longitudes + loni];
-                uint8_t value;
+                wxUint8 value;
 
                 if(pass == 0) {
                     if(zu_read(f, &value, 1) != 1)
