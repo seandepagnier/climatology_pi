@@ -509,6 +509,7 @@ bool ClimatologyOverlayFactory::InterpolateWindAtlasTime(int month, int nmonth, 
 {
     WindData::WindPolar *polar1 = m_WindData[month]->GetPolar(lat, positive_degrees(lon));
     WindData::WindPolar *polar2 = m_WindData[nmonth]->GetPolar(lat, positive_degrees(lon));
+
     if(!polar1 || !polar2)
         return false;
 
@@ -653,6 +654,7 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
                     if(pass < dirs + 1) {
                         if(zu_read(f, &value, 1) != 1)
                             goto corrupt;
+
                         wp.directions[pass - 1] = value;
                     } else {
                         if(wp.directions[pass-dirs-1] == 0)
@@ -660,6 +662,7 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
 
                         if(zu_read(f, &value, 1) != 1)
                             goto corrupt;
+
                         wp.speeds[pass-dirs-1] = value;
                     }
                 }
@@ -701,14 +704,15 @@ havedata:
     float spd_mul = m_WindData[fmonth]->speed_multiplier;
     m_WindData[12] = new WindData(latitudes, longitudes, dir_cnt, dir_res, spd_mul);
 
+    float latoff = 90.0/m_WindData[fmonth]->latitudes, lonoff = 180.0/m_WindData[fmonth]->longitudes;
 
     float *directions = new float[dir_cnt];
     float *speeds = new float[dir_cnt];
 
     for(int lati = 0; lati < latitudes; lati++)
         for(int loni = 0; loni < longitudes; loni++) {
-            double lat = 180.0*((double)lati/latitudes-.5);
-            double lon = 360.0*loni/longitudes;
+            double lat = 180.0*((double)lati/latitudes-.5) + latoff;
+            double lon = 360.0*loni/longitudes + lonoff;
 
             double gale = 0, calm = 0;
             for(int i=0; i<dir_cnt; i++)
@@ -743,28 +747,12 @@ havedata:
             wp.gale = gale / mcount;
             wp.calm = calm / mcount;
 
-            /* fit back to 256 */
-            while(max_value(directions, dir_cnt) >= 256 || max_value(speeds, dir_cnt) >= 256) {
-                if(max_value(directions, dir_cnt) == 0) { /* corrupted data */
-                    wp.gale = 255;
-                    goto done;
-                }
-
-                for(int i=0; i<dir_cnt; i++)
-                    if(directions[i]) {
-                        speeds[i] /= directions[i];
-                        directions[i] /= 2;
-                        directions[i] = floor(directions[i]);
-                        speeds[i] *= directions[i];
-                    }
-            }
-
             wp.directions = new wxUint8[dir_cnt];
             wp.speeds = new wxUint8[dir_cnt];
 
             for(int i=0; i<dir_cnt; i++) {
-                wp.directions[i] = directions[i];
-                wp.speeds[i] = speeds[i];
+                wp.directions[i] = directions[i] / mcount;
+                wp.speeds[i] = speeds[i] / mcount;
             }
 
         done:;

@@ -153,37 +153,43 @@ int main(int argc, char *argv[])
     for(int lati = 0; lati < LATITUDES*OUTPUT_DEGREE_STEP; lati++)
         for(int loni = 0; loni < LONGITUDES*OUTPUT_DEGREE_STEP; loni++) {
             struct windpilot *wp = &map[lati*LONGITUDES*OUTPUT_DEGREE_STEP + loni];
+
+            // throw away areas with few data points as these are inaccurate and don't compress well
+#if 1
+            if(wp->total < maxtotal * 1 / 2)
+                wp->total = 0;
+#endif
             if(!wp->total)
                 continue;
 
             wp->gale /= wp->total;
             wp->calm /= wp->total;
 
-            // throw away areas with few data points as these are inaccurate and don't compress well
-            if(wp->total < maxtotal * 2 / 3) {
-                wp->total = 0;
-                continue;
-            }
-
+#if 1
             // throw away uncommon directions to reduce file size
             int t = wp->total;
             for(int i=0; i<DIRECTIONS; i++)
-                if(wp->directions[i] <= t / 25) {
+                if(wp->directions[i] <= t / 40) {
                     wp->total -= wp->directions[i];
                     wp->directions[i] = 0;
                 }
-
+#endif
             for(int i=0; i<DIRECTIONS; i++) {
                 if(wp->directions[i]) {
                     wp->speeds[i] *= (double)SPEED_MULTIPLIER / SPEED_DIVISOR
                         / wp->directions[i];
+
                     if(wp->speeds[i] > 255) {
                         fprintf(stderr, "sustained speed average above 64 knots.. overflow\n");
                         exit(0);
                     }
+                    wp->directions[i] *= DIRECTION_RESOLUTION / wp->total;
                 }
 
-                wp->directions[i] *= DIRECTION_RESOLUTION / wp->total;
+                // ensure we are zero if fractional so rounding below doesn't
+                // corrupt data (when we skip writing speeds)
+                if(round(wp->directions[i]) < 1)
+                    wp->directions[i] = 0;
             }
         }
 
@@ -214,6 +220,7 @@ int main(int argc, char *argv[])
                     } else {
                         if(wp->directions[pass-DIRECTIONS-1] == 0)
                             continue;
+
                         value = wp->speeds[pass-DIRECTIONS-1];
                     }
                 }
