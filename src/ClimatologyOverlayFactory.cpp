@@ -977,10 +977,10 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
                         if(!m_dlg.m_cfgdlg->m_cbNotAvailable->GetValue())
                             continue;
                     } else {
-                        if(value >= .75) {
+                        if(value >= .5) {
                             if(!m_dlg.m_cfgdlg->m_cbElNino->GetValue())
                                 continue;
-                        } else if(value <= -.75) {
+                        } else if(value <= -.5) {
                             if(!m_dlg.m_cfgdlg->m_cbLaNina->GetValue())
                                 continue;
                         } else if(!m_dlg.m_cfgdlg->m_cbNeutral->GetValue())
