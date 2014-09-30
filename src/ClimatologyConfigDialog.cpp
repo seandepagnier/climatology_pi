@@ -266,7 +266,7 @@ void ClimatologyConfigDialog::LoadSettings()
     /* wind atlas settings */
     pConf->SetPath ( _T( "/PlugIns/Climatology/WindAtlas" ) );
 
-    m_cbWindAtlasEnable->SetValue((bool)pConf->Read ( _T ( "Enabled" ), 1L));
+    m_cbWindAtlasEnable->SetValue((bool)pConf->Read ( _T ( "Enabled" ), true));
     m_sWindAtlasSize->SetValue(pConf->Read ( _T ( "Size1" ), 120L));
     m_sWindAtlasSpacing->SetValue(pConf->Read ( _T ( "Spacing1" ), 90L));
     m_sWindAtlasOpacity->SetValue(pConf->Read ( _T ( "Opacity" ), 205L));
