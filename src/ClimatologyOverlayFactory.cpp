@@ -29,6 +29,11 @@
 #include <wx/glcanvas.h>
 #include <wx/progdlg.h>
 
+#ifdef __WXOSX__
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/gl3.h>
+#endif
+
 #include "climatology_pi.h"
 #include "gldefs.h"
 
