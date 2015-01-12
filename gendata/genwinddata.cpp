@@ -16,6 +16,7 @@
 #include <stdint.h>
 #include <math.h>
 
+#include "elnino.h"
 #include "zuFile.h"
 
 #define FILE_MAGIC 0xfefe /* change if format changes */
@@ -71,14 +72,19 @@ void fix_data(float *data, int count)
 int main(int argc, char *argv[])
 {
     if(argc < 3) {
-        fprintf(stderr, "Usage: %s parts-per-file file1 .. filen > output\n", argv[0]);
+        fprintf(stderr, "Usage: %s output-file parts-per-file file1 .. filen\n", argv[0]);
         return 0;
     }
 
-    int parts_per_file = strtol(argv[1], NULL, 10);
+    if(!ReadElNinoYears("../data/elnino_years.txt"))
+        return 1;
+    
+    const char *output_filename = argv[1];
+
+    int parts_per_file = strtol(argv[2], NULL, 10);
     int maxtotal = 0;
 
-    for(int i=2; i<argc; i++) {
+    for(int i=3; i<argc; i++) {
         fprintf(stderr, "reading file: %s\n", argv[i]);
         float u_data[(LATITUDES*INPUT_DEGREE_STEP-1)*LONGITUDES*INPUT_DEGREE_STEP];
         float v_data[(LATITUDES*INPUT_DEGREE_STEP-1)*LONGITUDES*INPUT_DEGREE_STEP];
@@ -194,6 +200,7 @@ int main(int argc, char *argv[])
         }
 
     fprintf(stderr, "writing\n");
+    FILE *output = fopen(output_filename, "wb");
 
     for(int pass=0; pass<2*DIRECTIONS+1; pass++)
         for(int lati = 0; lati < LATITUDES*OUTPUT_DEGREE_STEP; lati++)
@@ -226,6 +233,8 @@ int main(int argc, char *argv[])
                 }
 
                 uint8_t bvalue = round(value);
-                fwrite(&bvalue, 1, 1, stdout);
+                fwrite(&bvalue, 1, 1, output);
             }
+
+    fclose(output);
 }
