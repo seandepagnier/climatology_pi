@@ -45,25 +45,6 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
     pParent = parent;
     pPlugIn = ppi;
 
-    wxFileConfig *pConf = GetOCPNConfigObject();
-
-    if(pConf) {
-        pConf->SetPath ( _T ( "/Settings/Climatology" ) );
-/*
-        bool value;
-        pConf->Read( _T ( "WindPlot" ), &value, true );
-        m_cbWind->SetValue(value);
-        pConf->Read( _T ( "WavePlot" ), &value, false );
-        m_cbWave->SetValue(value);
-        pConf->Read( _T ( "CurrentPlot" ), &value, false );
-        m_cbCurrent->SetValue(value);
-        pConf->Read( _T ( "PressurePlot" ), &value, true );
-        m_cbPressure->SetValue(value);
-        pConf->Read( _T ( "SeaTemperaturePlot" ), &value, false );
-        m_cbSeaTemperature->SetValue(value);
-*/
-    }
-
     m_cfgdlg = new ClimatologyConfigDialog(this);
 
     PopulateTrackingControls();
@@ -86,19 +67,6 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 
 ClimatologyDialog::~ClimatologyDialog()
 {
-    wxFileConfig *pConf = GetOCPNConfigObject();;
-
-    if(pConf) {
-        pConf->SetPath ( _T ( "/Settings/Climatology" ) );
-/*
-        pConf->Write( _T ( "WindPlot" ), m_cbWind->GetValue());
-        pConf->Write( _T ( "WavePlot" ), m_cbWave->GetValue());
-        pConf->Write( _T ( "CurrentPlot" ), m_cbCurrent->GetValue());
-        pConf->Write( _T ( "PressurePlot" ), m_cbPressure->GetValue());
-        pConf->Write( _T ( "SeaTemperaturePlot" ), m_cbSeaTemperature->GetValue());
-*/
-    }
-
     delete m_cfgdlg;
 }
 

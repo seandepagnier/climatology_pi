@@ -100,7 +100,6 @@ static const wxString climatology_pi = _T("climatology_pi: ");
 
 double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
 {
-//    return m_factory.getCurCalibratedValue(MAG, m_setting, lat, lon);
     return m_factory.getCalibratedValueMonth(MAG, m_setting, lat, lon, m_month);
 }
 
