@@ -55,7 +55,7 @@ MACRO(GETTEXT_BUILD_MO)
 IF(APPLE)
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_gmoFile}
-      COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} --check -o ${_gmoFile} ${_absFile}
+      COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} ${MSGFMT_PARAMS} -o ${_gmoFile} ${_absFile}
       COMMAND ${CMAKE_COMMAND} -E copy ${_gmoFile} "Resources/${_poBasename}.lproj/opencpn-${PACKAGE_NAME}.mo"
       DEPENDS ${_absFile}
       COMMENT "${I18N_NAME}-i18n [${_poBasename}]: Created mo file."
@@ -63,7 +63,7 @@ IF(APPLE)
 ELSE(APPLE)
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_gmoFile}
-      COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} --check -o ${_gmoFile} ${_absFile}
+      COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} ${MSGFMT_PARAMS} -o ${_gmoFile} ${_absFile}
       COMMAND ${CMAKE_COMMAND} -E copy ${_gmoFile} "Resources/${_poBasename}/LC_MESSAGES/opencpn-${PACKAGE_NAME}.mo"
       DEPENDS ${_absFile}
       COMMENT "${I18N_NAME}-i18n [${_poBasename}]: Created mo file."
