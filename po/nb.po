@@ -1,0 +1,631 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: opencpn\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-04 11:32-0600\n"
+"PO-Revision-Date: 2015-01-18 18:35-0500\n"
+"Last-Translator: nohal <pavel@kalian.cz>\n"
+"Language-Team: Norwegian Bokmal\n"
+"Language: nb_NO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: opencpn\n"
+"X-Crowdin-File: /plugins/climatology_pi/po/climatology_pi.pot\n"
+
+#: src/ClimatologyConfigDialog.cpp:41
+msgid "Knots"
+msgstr "Knop"
+
+#: src/ClimatologyConfigDialog.cpp:41
+msgid "M/S"
+msgstr "M/S"
+
+#: src/ClimatologyConfigDialog.cpp:41
+msgid "MPH"
+msgstr "MPH"
+
+#: src/ClimatologyConfigDialog.cpp:41
+msgid "KPH"
+msgstr "KM/T"
+
+#: src/ClimatologyConfigDialog.cpp:42
+msgid "MilliBars"
+msgstr "Millibar"
+
+#: src/ClimatologyConfigDialog.cpp:42
+msgid "mmHG"
+msgstr "mmHG"
+
+#: src/ClimatologyConfigDialog.cpp:43
+msgid "Meters"
+msgstr "Meter"
+
+#: src/ClimatologyConfigDialog.cpp:43
+msgid "Feet"
+msgstr "Fot"
+
+#: src/ClimatologyConfigDialog.cpp:43
+msgid "Inches"
+msgstr "Tommer"
+
+#: src/ClimatologyConfigDialog.cpp:44
+msgid "Celcius"
+msgstr "Celcius"
+
+#: src/ClimatologyConfigDialog.cpp:44
+msgid "Fahrenheit"
+msgstr "Fahrenheit"
+
+#: src/ClimatologyConfigDialog.cpp:45
+msgid "Percent"
+msgstr "Prosent"
+
+#: src/ClimatologyConfigDialog.cpp:46
+msgid "Unknown"
+msgstr "Ukjent"
+
+#: src/ClimatologyConfigDialog.cpp:60 src/ClimatologyUI.cpp:75
+#: src/ClimatologyUI.cpp:514
+msgid "Wind"
+msgstr "Vind"
+
+#: src/ClimatologyConfigDialog.cpp:61 src/ClimatologyUI.cpp:86
+msgid "Current"
+msgstr "Strøm"
+
+#: src/ClimatologyConfigDialog.cpp:62
+msgid "Sea Level Pressure"
+msgstr "Trykk ved havnivå"
+
+#: src/ClimatologyConfigDialog.cpp:63
+msgid "Sea Surface Temperature"
+msgstr "Temperatur ved havnivå"
+
+#: src/ClimatologyConfigDialog.cpp:64 src/ClimatologyUI.cpp:121
+msgid "Air Temperature"
+msgstr "Lufttemperatur"
+
+#: src/ClimatologyConfigDialog.cpp:65 src/ClimatologyUI.cpp:129
+msgid "Cloud Cover"
+msgstr "Skydekke"
+
+#: src/ClimatologyConfigDialog.cpp:66 src/ClimatologyUI.cpp:137
+msgid "Precipitation"
+msgstr "Nedbør"
+
+#: src/ClimatologyConfigDialog.cpp:67
+msgid "Relative Humidity"
+msgstr "Relativ fuktighet"
+
+#: src/ClimatologyConfigDialog.cpp:68 src/ClimatologyUI.cpp:153
+msgid "Lightning"
+msgstr "Lyn"
+
+#: src/ClimatologyConfigDialog.cpp:69 src/ClimatologyUI.cpp:161
+msgid "Sea Depth"
+msgstr "Havdybde"
+
+#: src/ClimatologyConfigDialog.cpp:407
+msgid "ClimatologyInformation.html"
+msgstr "ClimatologyInformation.html"
+
+#: src/ClimatologyOverlayFactory.cpp:144 src/ClimatologyOverlayFactory.cpp:453
+#: src/ClimatologyOverlayFactory.cpp:459 src/ClimatologyOverlayFactory.cpp:1249
+#: src/ClimatologyOverlayFactory.cpp:2458 src/climatology_pi.cpp:101
+#: src/climatology_pi.cpp:158
+msgid "Climatology"
+msgstr "Klimatologi"
+
+#: src/ClimatologyOverlayFactory.cpp:158
+msgid "averaging wind"
+msgstr "gjennomsnitts vind"
+
+#: src/ClimatologyOverlayFactory.cpp:170
+msgid "averaging current"
+msgstr "gjennomsnitts strøm"
+
+#: src/ClimatologyOverlayFactory.cpp:176
+msgid "sea level presure"
+msgstr "trykk ved havnivå"
+
+#: src/ClimatologyOverlayFactory.cpp:182
+msgid "slp file truncated"
+msgstr "slp fil ble avkortet"
+
+#: src/ClimatologyOverlayFactory.cpp:204
+msgid "sea surface temperature"
+msgstr "havoverflate temperatur"
+
+#: src/ClimatologyOverlayFactory.cpp:210
+msgid "sst file truncated"
+msgstr "sst fil ble avkortet"
+
+#: src/ClimatologyOverlayFactory.cpp:234
+msgid "air temperature"
+msgstr "lufttemperatur"
+
+#: src/ClimatologyOverlayFactory.cpp:240
+msgid "at file truncated"
+msgstr "at fil ble avkortet"
+
+#: src/ClimatologyOverlayFactory.cpp:264
+msgid "cloud cover"
+msgstr "skydekke"
+
+#: src/ClimatologyOverlayFactory.cpp:270
+msgid "cld file truncated"
+msgstr "cld fil ble avkortet"
+
+#: src/ClimatologyOverlayFactory.cpp:294
+msgid "precipitation"
+msgstr "nedbør"
+
+#: src/ClimatologyOverlayFactory.cpp:300
+msgid "precip file truncated"
+msgstr "precip fil ble avkortet"
+
+#: src/ClimatologyOverlayFactory.cpp:324
+msgid "relative humidity"
+msgstr "relativ fuktighet"
+
+#: src/ClimatologyOverlayFactory.cpp:330
+msgid "relative humidity file truncated"
+msgstr "relativ fuktighetsfil ble avkortet"
+
+#: src/ClimatologyOverlayFactory.cpp:355
+msgid "lightning"
+msgstr "lyn"
+
+#: src/ClimatologyOverlayFactory.cpp:361
+msgid "lightning file truncated"
+msgstr "lynfil ble avkortet"
+
+#: src/ClimatologyOverlayFactory.cpp:379
+msgid "sea depth"
+msgstr "havdybde"
+
+#: src/ClimatologyOverlayFactory.cpp:385
+msgid "seadepth file truncated"
+msgstr "havdybdefil ble avkortet"
+
+#: src/ClimatologyOverlayFactory.cpp:401
+msgid "cyclone (east pacific)"
+msgstr "syklon (stillehavet øst)"
+
+#: src/ClimatologyOverlayFactory.cpp:406
+msgid "cyclone (west pacific)"
+msgstr "syklon (stillehavet vest)"
+
+#: src/ClimatologyOverlayFactory.cpp:411
+msgid "cyclone (south pacific)"
+msgstr "syklon (stillehavet sør)"
+
+#: src/ClimatologyOverlayFactory.cpp:416
+msgid "cyclone (atlantic)"
+msgstr "syklon (atlanterhavet)"
+
+#: src/ClimatologyOverlayFactory.cpp:421
+msgid "cyclone (north indian)"
+msgstr "syklon (indiske hav nord)"
+
+#: src/ClimatologyOverlayFactory.cpp:426
+msgid "cyclone (south indian)"
+msgstr "syklon (indiske hav sør)"
+
+#: src/ClimatologyOverlayFactory.cpp:434
+msgid "el nino years"
+msgstr "el nino årene"
+
+#: src/ClimatologyOverlayFactory.cpp:443
+msgid "cyclone cache"
+msgstr "syklon hurtigbuffer"
+
+#: src/ClimatologyOverlayFactory.cpp:450
+msgid "Some Data Failed to load:\n"
+msgstr "Noen data ble ikke lastet:\n"
+
+#: src/ClimatologyOverlayFactory.cpp:452
+msgid "Would you like to try to download?"
+msgstr "Vil du forsøke å laste ned?"
+
+#: src/ClimatologyOverlayFactory.cpp:457
+msgid "You must extract this data, and place in: "
+msgstr "Du må pakke ut disse data og plassere de i: "
+
+#: src/ClimatologyOverlayFactory.cpp:458
+msgid "\nthen restart opencpn"
+msgstr "\nog starte OpenCPN på nytt"
+
+#: src/ClimatologyOverlayFactory.cpp:678
+msgid "wind data file corrupt: "
+msgstr "vind-datafil er ødelagt: "
+
+#: src/ClimatologyOverlayFactory.cpp:823
+msgid "Average Current includes only"
+msgstr "Gjennomsnittlig strøm inkluderer bare"
+
+#: src/ClimatologyOverlayFactory.cpp:824
+msgid "months"
+msgstr "måneder"
+
+#: src/ClimatologyOverlayFactory.cpp:922
+msgid "cyclone data corrupt: "
+msgstr "syklondata er ødelagt: "
+
+#: src/ClimatologyOverlayFactory.cpp:1029
+msgid "failed to open file: "
+msgstr "kunne ikke åpne fil: "
+
+#: src/ClimatologyOverlayFactory.cpp:1249
+msgid "Building Overlay map"
+msgstr "Bygger overleggskart"
+
+#: src/ClimatologyOverlayFactory.cpp:1511 src/ClimatologyUI.cpp:623
+msgid "N/A"
+msgstr "N/A"
+
+#: src/ClimatologyOverlayFactory.cpp:2009
+msgid "Climatology overlay map unsupported unless OpenGL is enabled"
+msgstr "Klimatologi overleggskart er ikke støttet uten at OpenGL er aktivert"
+
+#: src/ClimatologyOverlayFactory.cpp:2047
+msgid "failed to read file: "
+msgstr "kunne ikke lese fil: "
+
+#: src/ClimatologyOverlayFactory.cpp:2457
+msgid "Computer too slow to render cyclones, disabling theater"
+msgstr "Datamaskin er for treg til å gjengi sykloner, deaktiverer teater"
+
+#: src/ClimatologyUI.cpp:22
+msgid "Month"
+msgstr "Måned"
+
+#: src/ClimatologyUI.cpp:30
+msgid "January"
+msgstr "Januar"
+
+#: src/ClimatologyUI.cpp:30
+msgid "Febuary"
+msgstr "Februar"
+
+#: src/ClimatologyUI.cpp:30
+msgid "March"
+msgstr "Mars"
+
+#: src/ClimatologyUI.cpp:30
+msgid "April"
+msgstr "April"
+
+#: src/ClimatologyUI.cpp:30
+msgid "May"
+msgstr "Mai"
+
+#: src/ClimatologyUI.cpp:30
+msgid "June"
+msgstr "Juni"
+
+#: src/ClimatologyUI.cpp:30
+msgid "July"
+msgstr "Juli"
+
+#: src/ClimatologyUI.cpp:30
+msgid "August"
+msgstr "August"
+
+#: src/ClimatologyUI.cpp:30
+msgid "September"
+msgstr "September"
+
+#: src/ClimatologyUI.cpp:30
+msgid "October"
+msgstr "Oktober"
+
+#: src/ClimatologyUI.cpp:30
+msgid "November"
+msgstr "November"
+
+#: src/ClimatologyUI.cpp:30
+msgid "December"
+msgstr "Desember"
+
+#: src/ClimatologyUI.cpp:39
+msgid "All"
+msgstr "Alle"
+
+#: src/ClimatologyUI.cpp:52
+msgid "Climatology Data"
+msgstr "Klimatologi data"
+
+#: src/ClimatologyUI.cpp:67
+msgid "Speed"
+msgstr "Fart"
+
+#: src/ClimatologyUI.cpp:71
+msgid "Direction"
+msgstr "Retning"
+
+#: src/ClimatologyUI.cpp:105
+msgid "Pressure"
+msgstr "Trykk"
+
+#: src/ClimatologyUI.cpp:113
+msgid "Sea Temperature"
+msgstr "Sjøtemperatur"
+
+#: src/ClimatologyUI.cpp:145
+msgid "Rel Humidity"
+msgstr "Rel fuktighet"
+
+#: src/ClimatologyUI.cpp:169 src/ClimatologyUI.cpp:747
+msgid "Cyclones"
+msgstr "Sykloner"
+
+#: src/ClimatologyUI.cpp:174
+msgid "Config"
+msgstr "Konfigurasjon"
+
+#: src/ClimatologyUI.cpp:287
+msgid "Units"
+msgstr "Enheter"
+
+#: src/ClimatologyUI.cpp:296
+msgid "Enabled"
+msgstr "Aktivert"
+
+#: src/ClimatologyUI.cpp:308
+msgid "OverlayMap"
+msgstr "Overleggskart"
+
+#: src/ClimatologyUI.cpp:311
+msgid "Transparency"
+msgstr "Gjennomsiktighet"
+
+#: src/ClimatologyUI.cpp:318
+msgid "Interpolation"
+msgstr "Interpolering"
+
+#: src/ClimatologyUI.cpp:329
+msgid "Iso Bars"
+msgstr "Isobarer"
+
+#: src/ClimatologyUI.cpp:332 src/ClimatologyUI.cpp:360
+#: src/ClimatologyUI.cpp:428 src/ClimatologyUI.cpp:483
+msgid "Spacing"
+msgstr "Mellomrom"
+
+#: src/ClimatologyUI.cpp:339
+msgid "Step"
+msgstr "Trinn"
+
+#: src/ClimatologyUI.cpp:343
+msgid "Very Coarse"
+msgstr "Svært grov"
+
+#: src/ClimatologyUI.cpp:343
+msgid "Coarse"
+msgstr "Grov"
+
+#: src/ClimatologyUI.cpp:343
+msgid "Normal"
+msgstr "Normal"
+
+#: src/ClimatologyUI.cpp:343
+msgid "Fine"
+msgstr "Fin"
+
+#: src/ClimatologyUI.cpp:343
+msgid "Very Fine"
+msgstr "Veldig fin"
+
+#: src/ClimatologyUI.cpp:357
+msgid "Numbers"
+msgstr "Nummer"
+
+#: src/ClimatologyUI.cpp:381
+msgid "Direction Arrows"
+msgstr "Retningspiler"
+
+#: src/ClimatologyUI.cpp:388 src/ClimatologyUI.cpp:470
+msgid "Enable"
+msgstr "Aktiver"
+
+#: src/ClimatologyUI.cpp:394
+msgid "Barbs"
+msgstr "Mothaker"
+
+#: src/ClimatologyUI.cpp:397
+msgid "Length"
+msgstr "Lengde"
+
+#: src/ClimatologyUI.cpp:400
+msgid "Width"
+msgstr "Bredde"
+
+#: src/ClimatologyUI.cpp:407
+msgid "Color"
+msgstr "Farge"
+
+#: src/ClimatologyUI.cpp:414 src/ClimatologyUI.cpp:490
+msgid "Opacity"
+msgstr "Gjennomsiktighet"
+
+#: src/ClimatologyUI.cpp:421 src/ClimatologyUI.cpp:476
+msgid "Size"
+msgstr "Størrelse"
+
+#: src/ClimatologyUI.cpp:448
+msgid "Standard Displays"
+msgstr "Standard visninger"
+
+#: src/ClimatologyUI.cpp:457
+msgid "Wind Atlas"
+msgstr "Vindatlas"
+
+#: src/ClimatologyUI.cpp:500
+#, c-format
+msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
+msgstr "Vindatlas visning, viser prosentvis hvor mye av tiden det er vind i hver av åtte retninger i form av lengden på en pil, eller når det er over 29%, vises et nummer.\n\nMothakene indikerer vindhastighet, hver hake er 5 knop.\n\nTallene i sirklene, hvis blå - prosentvis av gjennomsnitts vindhastighet som stille (3 knop eller mindre). Rød indikerer minst kuling (34 knop eller mer)."
+
+#: src/ClimatologyUI.cpp:527
+msgid "Start Date"
+msgstr "Startdato"
+
+#: src/ClimatologyUI.cpp:536
+msgid "End Date"
+msgstr "Sluttdato"
+
+#: src/ClimatologyUI.cpp:550
+msgid "Display Spanning"
+msgstr "Vis fordeling"
+
+#: src/ClimatologyUI.cpp:560
+msgid "days"
+msgstr "dager"
+
+#: src/ClimatologyUI.cpp:575
+msgid "Min Windspeed"
+msgstr "Min. Vindhastighet"
+
+#: src/ClimatologyUI.cpp:590
+msgid "Max Pressure"
+msgstr "Maks trykk"
+
+#: src/ClimatologyUI.cpp:604
+msgid "El Nino Period"
+msgstr "El Nino periode"
+
+#: src/ClimatologyUI.cpp:611
+msgid "El Nino"
+msgstr "El Nino"
+
+#: src/ClimatologyUI.cpp:615
+msgid "La Nina"
+msgstr "La Nina"
+
+#: src/ClimatologyUI.cpp:619
+msgid "Neutral"
+msgstr "Nøytral"
+
+#: src/ClimatologyUI.cpp:633
+msgid "Storm Types"
+msgstr "Stormtyper"
+
+#: src/ClimatologyUI.cpp:640
+msgid "Tropical"
+msgstr "Tropisk"
+
+#: src/ClimatologyUI.cpp:644
+msgid "Sub Tropical"
+msgstr "Subtropisk"
+
+#: src/ClimatologyUI.cpp:648
+msgid "ExtraTropical"
+msgstr "Ekstratropisk"
+
+#: src/ClimatologyUI.cpp:652
+msgid "Remanent"
+msgstr "Gjenværende"
+
+#: src/ClimatologyUI.cpp:662
+msgid "Sustained Wind Key (knots)"
+msgstr "Vedvarende vindnøkler (knop)"
+
+#: src/ClimatologyUI.cpp:670
+msgid "20"
+msgstr "20"
+
+#: src/ClimatologyUI.cpp:677
+msgid "40"
+msgstr "40"
+
+#: src/ClimatologyUI.cpp:684
+msgid "60"
+msgstr "60"
+
+#: src/ClimatologyUI.cpp:691
+msgid "80"
+msgstr "80"
+
+#: src/ClimatologyUI.cpp:698
+msgid "100"
+msgstr "100"
+
+#: src/ClimatologyUI.cpp:705
+msgid "120"
+msgstr "120"
+
+#: src/ClimatologyUI.cpp:712
+msgid "140"
+msgstr "140"
+
+#: src/ClimatologyUI.cpp:719
+msgid "160"
+msgstr "160"
+
+#: src/ClimatologyUI.cpp:726
+msgid "200"
+msgstr "200"
+
+#: src/ClimatologyUI.cpp:739
+msgid "Direction arrows are spaced every 6 hours on storm track"
+msgstr "Retningspiler er distansert hver 6 timer ved stormsporing"
+
+#: src/ClimatologyUI.cpp:762
+msgid "Climatology Plugin Version"
+msgstr "Klimatologi utvidelses versjon"
+
+#: src/ClimatologyUI.cpp:770
+msgid "Climatology Data Directory"
+msgstr "Klimatologi datamappe"
+
+#: src/ClimatologyUI.cpp:787
+msgid "About"
+msgstr "Om"
+
+#: src/ClimatologyUI.cpp:797
+msgid "About Author"
+msgstr "Om Opphav"
+
+#: src/ClimatologyUI.cpp:800
+msgid "Close"
+msgstr "Lukk"
+
+#: src/ClimatologyUI.h:95
+msgid "Climatology Display Control"
+msgstr "Klimatologi visningskontroll"
+
+#: src/ClimatologyUI.h:214
+msgid "Climatology Configuration"
+msgstr "Klimatologi konfigurasjon"
+
+#: src/IsoBarMap.cpp:404
+msgid "Building Isobar Map"
+msgstr "Bygger isobarkart"
+
+#: src/IsoBarMap.h:137
+msgid "Declination"
+msgstr "Helling utover"
+
+#: src/IsoBarMap.h:141
+msgid "Inclination"
+msgstr "Helling innover"
+
+#: src/IsoBarMap.h:144
+msgid "Field Strength"
+msgstr "Feltstyrke"
+
+#: src/climatology_pi.cpp:164
+msgid "Climatology PlugIn for OpenCPN"
+msgstr "Klimatologi utvidelse for OpenCPN"
+
+#: src/climatology_pi.cpp:170
+msgid "Climatology PlugIn for OpenCPN\nProvides overlay capabilities for historic weather data.\n\nSupported Climatology types include:\n- Average wind directions and speed\n- Percentage of gale and calm conditions\n- Sea Surface Currents\n- Average swell and seastate (not yet implemented)\n- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n- Tropical Cyclone tracks"
+msgstr "Klimatologi utvidelse for OpenCPN\nGir overleggs muligheter for historiske værdata.\n\nStøttede klimatologityper er:\n- Gjennomsnittlig vind og retning\n- Prosentvis kuling og stille forhold\n- Sjøoverflate strømmer\n-Gjennomsnitt dønninger og bølgeforhold (ikke implementert enda)\n- Nedbør, luftfuktighet, skydekke og lynnedslag \n- Månedlig gjennomsnitts havnivå lufttrykk og havtemperatur, lufttemperatur\n-Tropisk syklonsporing"
+
+#: src/climatology_pi.cpp:195
+msgid "Climatology Preferences"
+msgstr "Klimatologi innstillinger"
+

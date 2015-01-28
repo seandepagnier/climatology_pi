@@ -1,0 +1,631 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: opencpn\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-04 11:32-0600\n"
+"PO-Revision-Date: 2015-01-18 18:34-0500\n"
+"Last-Translator: nohal <pavel@kalian.cz>\n"
+"Language-Team: Czech\n"
+"Language: cs_CZ\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: opencpn\n"
+"X-Crowdin-File: /plugins/climatology_pi/po/climatology_pi.pot\n"
+
+#: src/ClimatologyConfigDialog.cpp:41
+msgid "Knots"
+msgstr "Uzly"
+
+#: src/ClimatologyConfigDialog.cpp:41
+msgid "M/S"
+msgstr ""
+
+#: src/ClimatologyConfigDialog.cpp:41
+msgid "MPH"
+msgstr ""
+
+#: src/ClimatologyConfigDialog.cpp:41
+msgid "KPH"
+msgstr ""
+
+#: src/ClimatologyConfigDialog.cpp:42
+msgid "MilliBars"
+msgstr "Milibary"
+
+#: src/ClimatologyConfigDialog.cpp:42
+msgid "mmHG"
+msgstr ""
+
+#: src/ClimatologyConfigDialog.cpp:43
+msgid "Meters"
+msgstr "Metry"
+
+#: src/ClimatologyConfigDialog.cpp:43
+msgid "Feet"
+msgstr "Stopy"
+
+#: src/ClimatologyConfigDialog.cpp:43
+msgid "Inches"
+msgstr "Palce"
+
+#: src/ClimatologyConfigDialog.cpp:44
+msgid "Celcius"
+msgstr "Celsia"
+
+#: src/ClimatologyConfigDialog.cpp:44
+msgid "Fahrenheit"
+msgstr "Fahrenheita"
+
+#: src/ClimatologyConfigDialog.cpp:45
+msgid "Percent"
+msgstr "Procent"
+
+#: src/ClimatologyConfigDialog.cpp:46
+msgid "Unknown"
+msgstr "Neznámý"
+
+#: src/ClimatologyConfigDialog.cpp:60 src/ClimatologyUI.cpp:75
+#: src/ClimatologyUI.cpp:514
+msgid "Wind"
+msgstr "Vítr"
+
+#: src/ClimatologyConfigDialog.cpp:61 src/ClimatologyUI.cpp:86
+msgid "Current"
+msgstr "Proud"
+
+#: src/ClimatologyConfigDialog.cpp:62
+msgid "Sea Level Pressure"
+msgstr "Tlak na hladině moře"
+
+#: src/ClimatologyConfigDialog.cpp:63
+msgid "Sea Surface Temperature"
+msgstr "Povrchová teplota moře"
+
+#: src/ClimatologyConfigDialog.cpp:64 src/ClimatologyUI.cpp:121
+msgid "Air Temperature"
+msgstr "Teplota vzduchu"
+
+#: src/ClimatologyConfigDialog.cpp:65 src/ClimatologyUI.cpp:129
+msgid "Cloud Cover"
+msgstr "Oblačnost"
+
+#: src/ClimatologyConfigDialog.cpp:66 src/ClimatologyUI.cpp:137
+msgid "Precipitation"
+msgstr "Srážky"
+
+#: src/ClimatologyConfigDialog.cpp:67
+msgid "Relative Humidity"
+msgstr "Relativní vlhkost"
+
+#: src/ClimatologyConfigDialog.cpp:68 src/ClimatologyUI.cpp:153
+msgid "Lightning"
+msgstr "Blesky"
+
+#: src/ClimatologyConfigDialog.cpp:69 src/ClimatologyUI.cpp:161
+msgid "Sea Depth"
+msgstr "Hloubka moře"
+
+#: src/ClimatologyConfigDialog.cpp:407
+msgid "ClimatologyInformation.html"
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:144 src/ClimatologyOverlayFactory.cpp:453
+#: src/ClimatologyOverlayFactory.cpp:459 src/ClimatologyOverlayFactory.cpp:1249
+#: src/ClimatologyOverlayFactory.cpp:2458 src/climatology_pi.cpp:101
+#: src/climatology_pi.cpp:158
+msgid "Climatology"
+msgstr "Klimatologie"
+
+#: src/ClimatologyOverlayFactory.cpp:158
+msgid "averaging wind"
+msgstr "průměrný vítr"
+
+#: src/ClimatologyOverlayFactory.cpp:170
+msgid "averaging current"
+msgstr "průměrný proud"
+
+#: src/ClimatologyOverlayFactory.cpp:176
+msgid "sea level presure"
+msgstr "tlak na hladině moře"
+
+#: src/ClimatologyOverlayFactory.cpp:182
+msgid "slp file truncated"
+msgstr "slp soubor zkrácen"
+
+#: src/ClimatologyOverlayFactory.cpp:204
+msgid "sea surface temperature"
+msgstr "teplota hladiny moře"
+
+#: src/ClimatologyOverlayFactory.cpp:210
+msgid "sst file truncated"
+msgstr "sst soubor zkrácen"
+
+#: src/ClimatologyOverlayFactory.cpp:234
+msgid "air temperature"
+msgstr "teplota vzduchu"
+
+#: src/ClimatologyOverlayFactory.cpp:240
+msgid "at file truncated"
+msgstr "at soubor zkrácen"
+
+#: src/ClimatologyOverlayFactory.cpp:264
+msgid "cloud cover"
+msgstr "oblačnost"
+
+#: src/ClimatologyOverlayFactory.cpp:270
+msgid "cld file truncated"
+msgstr "cld soubor zkrácen"
+
+#: src/ClimatologyOverlayFactory.cpp:294
+msgid "precipitation"
+msgstr "srážky"
+
+#: src/ClimatologyOverlayFactory.cpp:300
+msgid "precip file truncated"
+msgstr "soubor srážek zkrácen"
+
+#: src/ClimatologyOverlayFactory.cpp:324
+msgid "relative humidity"
+msgstr "relativní vlhkost"
+
+#: src/ClimatologyOverlayFactory.cpp:330
+msgid "relative humidity file truncated"
+msgstr "soubor relativní vlhkosti zkrácen"
+
+#: src/ClimatologyOverlayFactory.cpp:355
+msgid "lightning"
+msgstr "blesky"
+
+#: src/ClimatologyOverlayFactory.cpp:361
+msgid "lightning file truncated"
+msgstr "soubor blesků zkrácen"
+
+#: src/ClimatologyOverlayFactory.cpp:379
+msgid "sea depth"
+msgstr "hloubka moře"
+
+#: src/ClimatologyOverlayFactory.cpp:385
+msgid "seadepth file truncated"
+msgstr "soubor hloubky moře zkrácen"
+
+#: src/ClimatologyOverlayFactory.cpp:401
+msgid "cyclone (east pacific)"
+msgstr "cyklóny (východní Pacifik)"
+
+#: src/ClimatologyOverlayFactory.cpp:406
+msgid "cyclone (west pacific)"
+msgstr "cyklóny (západní Pacifik)"
+
+#: src/ClimatologyOverlayFactory.cpp:411
+msgid "cyclone (south pacific)"
+msgstr "cyklóny (Jižní Pacifik)"
+
+#: src/ClimatologyOverlayFactory.cpp:416
+msgid "cyclone (atlantic)"
+msgstr "cyklóny (Atlantik)"
+
+#: src/ClimatologyOverlayFactory.cpp:421
+msgid "cyclone (north indian)"
+msgstr "cyklóny (Severní Indický)"
+
+#: src/ClimatologyOverlayFactory.cpp:426
+msgid "cyclone (south indian)"
+msgstr "cyklóny (Jižní Indický)"
+
+#: src/ClimatologyOverlayFactory.cpp:434
+msgid "el nino years"
+msgstr "El nino roky"
+
+#: src/ClimatologyOverlayFactory.cpp:443
+msgid "cyclone cache"
+msgstr "cache cyklón"
+
+#: src/ClimatologyOverlayFactory.cpp:450
+msgid "Some Data Failed to load:\n"
+msgstr "Některé údaje se nepodařilo načíst: \n"
+
+#: src/ClimatologyOverlayFactory.cpp:452
+msgid "Would you like to try to download?"
+msgstr "Chceš se pokusit stáhnout?"
+
+#: src/ClimatologyOverlayFactory.cpp:457
+msgid "You must extract this data, and place in: "
+msgstr "Je třeba extrahovat data a umístit do: "
+
+#: src/ClimatologyOverlayFactory.cpp:458
+msgid "\nthen restart opencpn"
+msgstr "\npak restartovat opencpn"
+
+#: src/ClimatologyOverlayFactory.cpp:678
+msgid "wind data file corrupt: "
+msgstr "datový soubor větru je poškozen: "
+
+#: src/ClimatologyOverlayFactory.cpp:823
+msgid "Average Current includes only"
+msgstr "Průměrný proud zahrnuje pouze"
+
+#: src/ClimatologyOverlayFactory.cpp:824
+msgid "months"
+msgstr "měsíců"
+
+#: src/ClimatologyOverlayFactory.cpp:922
+msgid "cyclone data corrupt: "
+msgstr "data cyklón poškozena: "
+
+#: src/ClimatologyOverlayFactory.cpp:1029
+msgid "failed to open file: "
+msgstr "Nepodařilo se otevřít soubor: "
+
+#: src/ClimatologyOverlayFactory.cpp:1249
+msgid "Building Overlay map"
+msgstr "Vytvářím překryvnou mapu"
+
+#: src/ClimatologyOverlayFactory.cpp:1511 src/ClimatologyUI.cpp:623
+msgid "N/A"
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:2009
+msgid "Climatology overlay map unsupported unless OpenGL is enabled"
+msgstr "Překryvná klimatologická mapa není podporována, pokud není zapnuto OpenGL"
+
+#: src/ClimatologyOverlayFactory.cpp:2047
+msgid "failed to read file: "
+msgstr "Nepodařilo se přečíst soubor: "
+
+#: src/ClimatologyOverlayFactory.cpp:2457
+msgid "Computer too slow to render cyclones, disabling theater"
+msgstr "Počítač je příliš pomalý na vykreslování cyklón, vypínám divadlo"
+
+#: src/ClimatologyUI.cpp:22
+msgid "Month"
+msgstr "Měsíc"
+
+#: src/ClimatologyUI.cpp:30
+msgid "January"
+msgstr "Leden"
+
+#: src/ClimatologyUI.cpp:30
+msgid "Febuary"
+msgstr "Únor"
+
+#: src/ClimatologyUI.cpp:30
+msgid "March"
+msgstr "Březen"
+
+#: src/ClimatologyUI.cpp:30
+msgid "April"
+msgstr "Duben"
+
+#: src/ClimatologyUI.cpp:30
+msgid "May"
+msgstr "Květen"
+
+#: src/ClimatologyUI.cpp:30
+msgid "June"
+msgstr "Červen"
+
+#: src/ClimatologyUI.cpp:30
+msgid "July"
+msgstr "Červenec"
+
+#: src/ClimatologyUI.cpp:30
+msgid "August"
+msgstr "Srpen"
+
+#: src/ClimatologyUI.cpp:30
+msgid "September"
+msgstr "Záři"
+
+#: src/ClimatologyUI.cpp:30
+msgid "October"
+msgstr "Říjen"
+
+#: src/ClimatologyUI.cpp:30
+msgid "November"
+msgstr "Listopad"
+
+#: src/ClimatologyUI.cpp:30
+msgid "December"
+msgstr "Prosinec"
+
+#: src/ClimatologyUI.cpp:39
+msgid "All"
+msgstr "Vše"
+
+#: src/ClimatologyUI.cpp:52
+msgid "Climatology Data"
+msgstr "Klimatologická data"
+
+#: src/ClimatologyUI.cpp:67
+msgid "Speed"
+msgstr "Rychlost"
+
+#: src/ClimatologyUI.cpp:71
+msgid "Direction"
+msgstr "Směr"
+
+#: src/ClimatologyUI.cpp:105
+msgid "Pressure"
+msgstr "Tlak"
+
+#: src/ClimatologyUI.cpp:113
+msgid "Sea Temperature"
+msgstr "Teplota moře"
+
+#: src/ClimatologyUI.cpp:145
+msgid "Rel Humidity"
+msgstr "Rel vlhkost"
+
+#: src/ClimatologyUI.cpp:169 src/ClimatologyUI.cpp:747
+msgid "Cyclones"
+msgstr "Cyklóny"
+
+#: src/ClimatologyUI.cpp:174
+msgid "Config"
+msgstr "Nastavení"
+
+#: src/ClimatologyUI.cpp:287
+msgid "Units"
+msgstr "Jednotky"
+
+#: src/ClimatologyUI.cpp:296
+msgid "Enabled"
+msgstr "Zapnuto"
+
+#: src/ClimatologyUI.cpp:308
+msgid "OverlayMap"
+msgstr "Překryvná mapa"
+
+#: src/ClimatologyUI.cpp:311
+msgid "Transparency"
+msgstr "Průhlednost"
+
+#: src/ClimatologyUI.cpp:318
+msgid "Interpolation"
+msgstr "Interpolace"
+
+#: src/ClimatologyUI.cpp:329
+msgid "Iso Bars"
+msgstr "Izobary"
+
+#: src/ClimatologyUI.cpp:332 src/ClimatologyUI.cpp:360
+#: src/ClimatologyUI.cpp:428 src/ClimatologyUI.cpp:483
+msgid "Spacing"
+msgstr "Mezery"
+
+#: src/ClimatologyUI.cpp:339
+msgid "Step"
+msgstr "Krok"
+
+#: src/ClimatologyUI.cpp:343
+msgid "Very Coarse"
+msgstr "Velmi hrubé"
+
+#: src/ClimatologyUI.cpp:343
+msgid "Coarse"
+msgstr "Hrubé"
+
+#: src/ClimatologyUI.cpp:343
+msgid "Normal"
+msgstr "Normální"
+
+#: src/ClimatologyUI.cpp:343
+msgid "Fine"
+msgstr "Jemné"
+
+#: src/ClimatologyUI.cpp:343
+msgid "Very Fine"
+msgstr "Velmi jemné"
+
+#: src/ClimatologyUI.cpp:357
+msgid "Numbers"
+msgstr "Čísla"
+
+#: src/ClimatologyUI.cpp:381
+msgid "Direction Arrows"
+msgstr "Směrové šipky"
+
+#: src/ClimatologyUI.cpp:388 src/ClimatologyUI.cpp:470
+msgid "Enable"
+msgstr "Povolit"
+
+#: src/ClimatologyUI.cpp:394
+msgid "Barbs"
+msgstr "Ostny"
+
+#: src/ClimatologyUI.cpp:397
+msgid "Length"
+msgstr "Délka"
+
+#: src/ClimatologyUI.cpp:400
+msgid "Width"
+msgstr "Šířka"
+
+#: src/ClimatologyUI.cpp:407
+msgid "Color"
+msgstr "Barva"
+
+#: src/ClimatologyUI.cpp:414 src/ClimatologyUI.cpp:490
+msgid "Opacity"
+msgstr "Průhlednost"
+
+#: src/ClimatologyUI.cpp:421 src/ClimatologyUI.cpp:476
+msgid "Size"
+msgstr "Velikost"
+
+#: src/ClimatologyUI.cpp:448
+msgid "Standard Displays"
+msgstr "Standardní zobrazení"
+
+#: src/ClimatologyUI.cpp:457
+msgid "Wind Atlas"
+msgstr "Atlas větru"
+
+#: src/ClimatologyUI.cpp:500
+#, c-format
+msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
+msgstr ""
+
+#: src/ClimatologyUI.cpp:527
+msgid "Start Date"
+msgstr "Datum zahájení"
+
+#: src/ClimatologyUI.cpp:536
+msgid "End Date"
+msgstr "Datum ukončení"
+
+#: src/ClimatologyUI.cpp:550
+msgid "Display Spanning"
+msgstr "Zahrnutí v zobrazení"
+
+#: src/ClimatologyUI.cpp:560
+msgid "days"
+msgstr "dny"
+
+#: src/ClimatologyUI.cpp:575
+msgid "Min Windspeed"
+msgstr "Min. rychlost větru"
+
+#: src/ClimatologyUI.cpp:590
+msgid "Max Pressure"
+msgstr "Max tlak"
+
+#: src/ClimatologyUI.cpp:604
+msgid "El Nino Period"
+msgstr "El Nino období"
+
+#: src/ClimatologyUI.cpp:611
+msgid "El Nino"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:615
+msgid "La Nina"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:619
+msgid "Neutral"
+msgstr "Neutrální"
+
+#: src/ClimatologyUI.cpp:633
+msgid "Storm Types"
+msgstr "Typy bouří"
+
+#: src/ClimatologyUI.cpp:640
+msgid "Tropical"
+msgstr "Tropické"
+
+#: src/ClimatologyUI.cpp:644
+msgid "Sub Tropical"
+msgstr "Subtropické"
+
+#: src/ClimatologyUI.cpp:648
+msgid "ExtraTropical"
+msgstr "ExtraTropické"
+
+#: src/ClimatologyUI.cpp:652
+msgid "Remanent"
+msgstr "Zbytek"
+
+#: src/ClimatologyUI.cpp:662
+msgid "Sustained Wind Key (knots)"
+msgstr "Klíč k trvalému větru (uzly)"
+
+#: src/ClimatologyUI.cpp:670
+msgid "20"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:677
+msgid "40"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:684
+msgid "60"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:691
+msgid "80"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:698
+msgid "100"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:705
+msgid "120"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:712
+msgid "140"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:719
+msgid "160"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:726
+msgid "200"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:739
+msgid "Direction arrows are spaced every 6 hours on storm track"
+msgstr "Směrové šipky jsou na trase bouře rozloženy po 6 hodinách"
+
+#: src/ClimatologyUI.cpp:762
+msgid "Climatology Plugin Version"
+msgstr "Verze doplňku Klimatologie"
+
+#: src/ClimatologyUI.cpp:770
+msgid "Climatology Data Directory"
+msgstr "Adresář dat klimatologie"
+
+#: src/ClimatologyUI.cpp:787
+msgid "About"
+msgstr "O programu"
+
+#: src/ClimatologyUI.cpp:797
+msgid "About Author"
+msgstr "O autorovi"
+
+#: src/ClimatologyUI.cpp:800
+msgid "Close"
+msgstr "Zavřít"
+
+#: src/ClimatologyUI.h:95
+msgid "Climatology Display Control"
+msgstr "Ovládání displeje klimatologie"
+
+#: src/ClimatologyUI.h:214
+msgid "Climatology Configuration"
+msgstr "Nastavení Klimatologie"
+
+#: src/IsoBarMap.cpp:404
+msgid "Building Isobar Map"
+msgstr "Vytváří se mapa izobar"
+
+#: src/IsoBarMap.h:137
+msgid "Declination"
+msgstr "Deklinace"
+
+#: src/IsoBarMap.h:141
+msgid "Inclination"
+msgstr "Inklinace"
+
+#: src/IsoBarMap.h:144
+msgid "Field Strength"
+msgstr "Intenzita pole"
+
+#: src/climatology_pi.cpp:164
+msgid "Climatology PlugIn for OpenCPN"
+msgstr "Doplněk Klimatologie pro OpenCPN"
+
+#: src/climatology_pi.cpp:170
+msgid "Climatology PlugIn for OpenCPN\nProvides overlay capabilities for historic weather data.\n\nSupported Climatology types include:\n- Average wind directions and speed\n- Percentage of gale and calm conditions\n- Sea Surface Currents\n- Average swell and seastate (not yet implemented)\n- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n- Tropical Cyclone tracks"
+msgstr ""
+
+#: src/climatology_pi.cpp:195
+msgid "Climatology Preferences"
+msgstr "Nastavení Klimatologie"
+
