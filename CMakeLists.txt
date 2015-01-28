@@ -6,6 +6,7 @@
 
 # define minimum cmake version
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
+cmake_policy(SET CMP0012 NEW)
 
 PROJECT(climatology_pi)
 
