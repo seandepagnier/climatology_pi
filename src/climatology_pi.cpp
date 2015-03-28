@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2014 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2015 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -106,7 +106,6 @@ int climatology_pi::Init(void)
            WANTS_TOOLBAR_CALLBACK    |
            INSTALLS_TOOLBAR_TOOL     |
            WANTS_CONFIG              |
-//           WANTS_PREFERENCES         |
            WANTS_PLUGIN_MESSAGING
             );
 }
@@ -190,18 +189,6 @@ int climatology_pi::GetToolbarToolCount(void)
       return 1;
 }
 
-void climatology_pi::ShowPreferencesDialog( wxWindow* parent )
-{
-      wxDialog *dialog = new wxDialog( parent, wxID_ANY, _("Climatology Preferences"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE );
-
-   dialog->Fit();
-
-    if(dialog->ShowModal() == wxID_OK)
-    {
-        SaveConfig();
-    }
-}
-
 static ClimatologyOverlayFactory *s_pOverlayFactory = NULL;
 static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lon,
                             double &dir, double &speed)
@@ -249,6 +236,10 @@ void climatology_pi::OnToolbarToolCallback(int id)
         m_pClimatologyDialog = new ClimatologyDialog(m_parent_window, this);
         m_pClimatologyDialog->Move(wxPoint(m_climatology_dialog_x, m_climatology_dialog_y));
 
+        wxIcon icon;
+        icon.CopyFromBitmap(*_img_climatology);
+        m_pClimatologyDialog->SetIcon(icon);
+
         // Create the drawing factory
         m_pOverlayFactory = new ClimatologyOverlayFactory( *m_pClimatologyDialog );
 
@@ -256,13 +247,13 @@ void climatology_pi::OnToolbarToolCallback(int id)
         SendClimatology(true);
 
         m_pClimatologyDialog->UpdateTrackingControls();
-        RequestRefresh(m_parent_window); // refresh main window
     }
 
     if(m_pClimatologyDialog->IsShown() && m_pClimatologyDialog->m_cfgdlg)
         m_pClimatologyDialog->m_cfgdlg->Hide();
 
     m_pClimatologyDialog->Show(!m_pClimatologyDialog->IsShown());
+    RequestRefresh(m_parent_window); // refresh main window
 }
 
 void climatology_pi::OnClimatologyDialogClose()
