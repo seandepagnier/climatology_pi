@@ -72,7 +72,7 @@ ClimatologyDialog::~ClimatologyDialog()
 
 void ClimatologyDialog::UpdateTrackingControls()
 {
-    if(!pPlugIn->GetOverlayFactory())
+    if(!pPlugIn->GetOverlayFactory() || !IsShown())
         return;
 
     m_tWind->SetValue(GetValue(ClimatologyOverlaySettings::WIND));
