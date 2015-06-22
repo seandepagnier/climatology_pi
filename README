@@ -18,6 +18,11 @@ Build as normally:
 * make
 * make install
 
+Please note the plugin requires about 5-7mb of data. If the data is missing from the package, it can be found at 
+http://sourceforge.net/projects/opencpnplugins/files/climatology_pi/    CL-DATA-1.0.tar.xz
+Please unpack into plugins/climatology_pi/data directory.
+
 License
 =======
 The plugin code is licensed under the terms of the GPL v3 or, at your will, later.
+
