@@ -30,6 +30,7 @@
 #include "zuFile.h"
 
 #include "IsoBarMap.h"
+#include "TexFont.h"
 
 void DrawGLLine( double x1, double y1, double x2, double y2 );
 
@@ -271,6 +272,7 @@ private:
     wxDC *m_pdc;
 
     std::map < double , wxImage > m_labelCache;
+    TexFont m_Numbers;
 
     WindData *m_WindData[13];
     CurrentData *m_CurrentData[13];

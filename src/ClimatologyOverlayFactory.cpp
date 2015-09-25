@@ -1514,7 +1514,7 @@ wxImage &ClimatologyOverlayFactory::getLabel(double value)
     if(isnan(value))
         labels = _("N/A");
     else
-        labels.Printf(_T("%.0f"), value);
+        labels.Printf(_T("%.0f"), round(value));
     wxColour text_color;
     GetGlobalColor( _T ( "DILG3" ), &text_color );
     wxColour back_color;
@@ -2057,44 +2057,33 @@ ZUFILE *ClimatologyOverlayFactory::TryOpenFile(wxString filename)
 
 void ClimatologyOverlayFactory::RenderNumber(wxPoint p, double v, const wxColour &color)
 {
-    wxImage &label = getLabel(v);
-    int w = label.GetWidth(), h = label.GetHeight();
-
     if( m_pdc ) {
-        m_pdc->SetPen( wxPen(color) );        
+        m_pdc->SetPen( wxPen(color) );
+
+	wxImage &label = getLabel(v);
+	int w = label.GetWidth(), h = label.GetHeight();
+
         m_pdc->DrawBitmap(label, p.x-w/2, p.y-h/2, true);
     } else {
-        if(!texture_format)
-            return;
+	if(!m_Numbers.IsBuilt()) {
+	    wxFont mfont( 12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+	    m_Numbers.Build(mfont);
+	}
 
-        glEnable(texture_format);
-
-        glBindTexture(texture_format, 0);
-
-        glTexParameteri( texture_format, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-        glTexParameteri( texture_format, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-
-        glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-        glTexImage2D(texture_format, 0, GL_RGBA,
-                     w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, label.GetData());
-        glTexSubImage2D(texture_format, 0, 0, 0, w, h,
-                        GL_ALPHA, GL_UNSIGNED_BYTE, label.GetAlpha());
-
+	wxString labels;
+	if(isnan(v))
+	    labels = _("N/A");
+	else
+	    labels.Printf(_T("%.0f"), round(v));
+	
         glColor4ub(color.Red(), color.Green(), color.Blue(), color.Alpha());
 
-        int tw, th;
-        if(texture_format == GL_TEXTURE_RECTANGLE_ARB)
-            tw = w, th = h;
-        else
-            tw = th = 1;
+	int w, h;
+	m_Numbers.GetTextExtent( labels, &w, &h);
 
-        glBegin(GL_QUADS);
-        glTexCoord2d(0,  0),  glVertex2i(p.x-w/2, p.y-h/2);
-        glTexCoord2d(tw, 0),  glVertex2i(p.x+w/2, p.y-h/2);
-        glTexCoord2d(tw, th), glVertex2i(p.x+w/2, p.y+h/2);
-        glTexCoord2d(0,  th), glVertex2i(p.x-w/2, p.y+h/2);
-        glEnd();
-        glDisable(texture_format);
+	glEnable(GL_TEXTURE_2D);
+	m_Numbers.RenderString( labels, p.x-w/2, p.y-h/2);
+	glDisable(GL_TEXTURE_2D);
     }
 }
 
