@@ -939,6 +939,7 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
         if(cyclones[i]->empty())
             return;
 
+    
     int statemask = 0;
     statemask |= 1*m_dlg.m_cfgdlg->m_cbTropical->GetValue();
     statemask |= 2*m_dlg.m_cfgdlg->m_cbSubTropical->GetValue();
@@ -948,16 +949,20 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
     for(int i=0; i<CYCLONE_CACHE_SEMAPHORE_COUNT; i++)
         m_cyclone_cache_semaphore.Wait();
 
+    int minwindspeed = m_dlg.m_cfgdlg->m_sMinWindSpeed->GetValue();
+    int maxpressure = m_dlg.m_cfgdlg->m_sMaxPressure->GetValue();
+
     m_cyclone_cache.clear();
+    wxStopWatch sw;
     for(int i=0; i < 6; i++) {
         for(std::list<Cyclone*>::iterator it = cyclones[i]->begin(); it != cyclones[i]->end(); it++) {
             Cyclone *s = *it;
 
             for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++) {
-                if((*it2)->windknots < m_dlg.m_cfgdlg->m_sMinWindSpeed->GetValue())
+                if((*it2)->windknots < minwindspeed)
                     continue;
 
-                if((*it2)->pressure > m_dlg.m_cfgdlg->m_sMaxPressure->GetValue())
+                if((*it2)->pressure > maxpressure)
                     continue;
 
                 /* rebuild cache for these? */
@@ -1009,7 +1014,8 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
             }
         }
     }
-
+    wxLogMessage(climatology_pi + _("cyclone cache: ") + wxString::Format(_T("%ld"), sw.Time()));
+    
     for(int i=0; i<CYCLONE_CACHE_SEMAPHORE_COUNT; i++)
         m_cyclone_cache_semaphore.Post();
 }
