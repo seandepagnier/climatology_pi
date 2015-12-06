@@ -37,7 +37,7 @@
 #define ROWS_GLYPHS ((NUM_GLYPHS / COLS_GLYPHS)+1)
 
 #ifndef DECL_EXP
-#ifdef __WXMSW__
+#ifdef __MSVC__
 #  define DECL_EXP     __declspec(dllexport)
 #else
 #  define DECL_EXP
