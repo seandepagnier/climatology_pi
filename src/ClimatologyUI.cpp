@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Oct  8 2012)
+// C++ code generated with wxFormBuilder (version Dec  8 2015)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -15,6 +15,8 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	wxFlexGridSizer* fgSizer1;
 	fgSizer1 = new wxFlexGridSizer( 4, 1, 0, 0 );
+	fgSizer1->AddGrowableCol( 0 );
+	fgSizer1->AddGrowableRow( 0 );
 	fgSizer1->SetFlexibleDirection( wxVERTICAL );
 	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
 	
@@ -22,22 +24,25 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	sbSizer21 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Month") ), wxVERTICAL );
 	
 	wxFlexGridSizer* fgSizer23;
-	fgSizer23 = new wxFlexGridSizer( 0, 3, 0, 0 );
+	fgSizer23 = new wxFlexGridSizer( 0, 0, 0, 0 );
 	fgSizer23->AddGrowableCol( 0 );
 	fgSizer23->SetFlexibleDirection( wxBOTH );
 	fgSizer23->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	wxString m_cMonthChoices[] = { _("January"), _("Febuary"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"), _("September"), _("October"), _("November"), _("December") };
 	int m_cMonthNChoices = sizeof( m_cMonthChoices ) / sizeof( wxString );
-	m_cMonth = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cMonthNChoices, m_cMonthChoices, 0 );
+	m_cMonth = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 80,-1 ), m_cMonthNChoices, m_cMonthChoices, 0 );
 	m_cMonth->SetSelection( 0 );
 	fgSizer23->Add( m_cMonth, 0, wxALL|wxEXPAND, 5 );
 	
-	m_sDay = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 40,-1 ), wxSP_ARROW_KEYS, 1, 31, 1 );
+	m_sDay = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 1, 31, 1 );
 	fgSizer23->Add( m_sDay, 0, wxALL, 5 );
 	
 	m_cbAll = new wxCheckBox( this, wxID_ANY, _("All"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer23->Add( m_cbAll, 0, wxALL, 5 );
+	fgSizer23->Add( m_cbAll, 0, wxALL, 0 );
+	
+	m_bpNow = new wxBitmapButton( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	fgSizer23->Add( m_bpNow, 0, wxALL, 0 );
 	
 	
 	sbSizer21->Add( fgSizer23, 1, wxEXPAND, 5 );
@@ -194,6 +199,7 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	m_cMonth->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
 	m_sDay->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyDialogBase::OnDay ), NULL, this );
 	m_cbAll->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnAll ), NULL, this );
+	m_bpNow->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnNow ), NULL, this );
 	m_sTimeline->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
 	m_sTimeline->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
 	m_sTimeline->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
@@ -225,6 +231,7 @@ ClimatologyDialogBase::~ClimatologyDialogBase()
 	m_cMonth->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( ClimatologyDialogBase::OnMonth ), NULL, this );
 	m_sDay->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( ClimatologyDialogBase::OnDay ), NULL, this );
 	m_cbAll->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnAll ), NULL, this );
+	m_bpNow->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ClimatologyDialogBase::OnNow ), NULL, this );
 	m_sTimeline->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
 	m_sTimeline->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
 	m_sTimeline->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( ClimatologyDialogBase::OnTimeline ), NULL, this );
