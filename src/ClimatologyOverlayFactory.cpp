@@ -30,8 +30,13 @@
 #include <wx/progdlg.h>
 
 #ifdef __WXOSX__
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/gl3.h>
+# include <OpenGL/OpenGL.h>
+# include <OpenGL/gl3.h>
+#else
+# ifdef __OCPN__ANDROID__
+#  include "qopengl.h"                  // this gives us the qt runtime gles2.h
+#  include "GL/gl_private.h"
+# endif
 #endif
 
 #include "climatology_pi.h"
@@ -79,8 +84,9 @@ static GLboolean QueryExtension( const char *extName )
 #elif defined(__WXOSX__)
 #include <dlfcn.h>
 #define systemGetProcAddress(ADDR) dlsym( RTLD_DEFAULT, ADDR)
+#elif defined(__OCPN__ANDROID__)
+#define systemGetProcAddress(ADDR) eglGetProcAddress(ADDR)
 #else
-#include <GL/glx.h>
 #define systemGetProcAddress(ADDR) glXGetProcAddress((const GLubyte*)ADDR)
 #endif
 

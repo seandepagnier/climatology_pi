@@ -79,3 +79,6 @@ typedef void (APIENTRYP PFNGLMULTITEXCOORD2DARBPROC) (GLenum target, GLdouble s,
 #define GL_PRIMARY_COLOR_ARB              0x8577
 #define GL_PREVIOUS_ARB                   0x8578
 #endif /* GL_ARB_texture_env_combine */
+
+GLAPI void GLAPIENTRY glTexCoord2d( GLdouble s, GLdouble t );
+GLAPI void GLAPIENTRY glTexEnvfv( GLenum target, GLenum pname, const GLfloat *params );
