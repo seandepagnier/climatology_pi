@@ -27,6 +27,11 @@
 #include <wx/wx.h>
 #include <wx/progdlg.h>
 
+# ifdef __OCPN__ANDROID__
+#  include "qopengl.h"                  // this gives us the qt runtime gles2.h
+#  include "GL/gl_private.h"
+# endif
+
 #include "ocpn_plugin.h"
 
 #include "IsoBarMap.h"

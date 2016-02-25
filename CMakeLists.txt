@@ -34,6 +34,7 @@ SET(SRC_CLIMATOLOGY
             src/ClimatologyConfigDialog.cpp
             src/zuFile.cpp
             src/IsoBarMap.cpp
+            src/TexFont.cpp
             src/icons.cpp
 )
 

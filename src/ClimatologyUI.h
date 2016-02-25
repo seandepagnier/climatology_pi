@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Oct  8 2012)
+// C++ code generated with wxFormBuilder (version Dec  8 2015)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -19,19 +19,20 @@
 #include <wx/settings.h>
 #include <wx/spinctrl.h>
 #include <wx/checkbox.h>
+#include <wx/bitmap.h>
+#include <wx/image.h>
+#include <wx/icon.h>
+#include <wx/bmpbuttn.h>
+#include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/slider.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/radiobut.h>
 #include <wx/clrpicker.h>
 #include <wx/panel.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/icon.h>
 #include <wx/datectrl.h>
 #include <wx/dateevt.h>
 #include <wx/html/htmlwin.h>
@@ -49,6 +50,7 @@ class ClimatologyDialogBase : public wxDialog
 	
 	protected:
 		wxSpinCtrl* m_sDay;
+		wxBitmapButton* m_bpNow;
 		wxStaticText* m_stSpeed;
 		wxStaticText* m_stDirection;
 		wxTextCtrl* m_tWind;
@@ -65,6 +67,7 @@ class ClimatologyDialogBase : public wxDialog
 		virtual void OnMonth( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDay( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnAll( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnNow( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTimeline( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnTimelineDown( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnTimelineUp( wxScrollEvent& event ) { event.Skip(); }

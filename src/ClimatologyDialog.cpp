@@ -49,17 +49,14 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 
     PopulateTrackingControls();
 
-    wxDateTime now = wxDateTime::Now();
-
-    m_cMonth->SetSelection(now.GetMonth());
-    m_sDay->SetValue(now.GetDay());
-
-    int timeline = now.GetDayOfYear();
-    if(timeline <= 67)
-        timeline += 356;
-    m_sTimeline->SetValue(timeline);
+    Now();
 
     m_cursorlat = m_cursorlon = 0;
+
+    {
+#include "now.xpm"
+    m_bpNow->SetBitmapLabel(now);
+    }
 
     DimeWindow( this );
 }
@@ -72,7 +69,7 @@ ClimatologyDialog::~ClimatologyDialog()
 
 void ClimatologyDialog::UpdateTrackingControls()
 {
-    if(!pPlugIn->GetOverlayFactory())
+    if(!pPlugIn->GetOverlayFactory() || !IsShown())
         return;
 
     m_tWind->SetValue(GetValue(ClimatologyOverlaySettings::WIND));
@@ -235,6 +232,12 @@ void ClimatologyDialog::OnAll( wxCommandEvent& event )
     RefreshRedraw();
 }
 
+void ClimatologyDialog::OnNow( wxCommandEvent& event )
+{
+    Now();
+    RequestRefresh( pParent );
+}
+
 void ClimatologyDialog::OnUpdateDisplay( wxCommandEvent& event )
 {
     if(event.IsChecked()) {
@@ -273,4 +276,17 @@ void ClimatologyDialog::OnClose( wxCloseEvent& event )
 void ClimatologyDialog::OnCBAny( wxCommandEvent& event )
 {
     RefreshRedraw();                     // Reload the visibility options
+}
+
+void ClimatologyDialog::Now()
+{
+    wxDateTime now = wxDateTime::Now();
+
+    m_cMonth->SetSelection(now.GetMonth());
+    m_sDay->SetValue(now.GetDay());
+
+    int timeline = now.GetDayOfYear();
+    if(timeline <= 67)
+        timeline += 356;
+    m_sTimeline->SetValue(timeline);
 }

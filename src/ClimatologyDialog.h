@@ -77,12 +77,15 @@ private:
     void OnTimelineDown( wxScrollEvent& event );
     void OnTimelineUp( wxScrollEvent& event );
     void OnAll( wxCommandEvent& event );
+    void OnNow( wxCommandEvent& event );
     void OnUpdateDisplay( wxCommandEvent& event );
     void OnConfig( wxCommandEvent& event );
 
     void OnClose( wxCloseEvent& event );
     void OnCBAny( wxCommandEvent& event );
 
+    void Now();
+    
     wxWindow *pParent;
 
     double m_cursorlat, m_cursorlon;
