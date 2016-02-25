@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-04 11:32-0600\n"
-"PO-Revision-Date: 2015-01-27 17:29-0500\n"
+"POT-Creation-Date: 2016-02-25 18:10-0300\n"
+"PO-Revision-Date: 2016-02-25 16:12-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: opencpn\n"
+"X-Crowdin-Language: fi\n"
 "X-Crowdin-File: /plugins/climatology_pi/po/climatology_pi.pot\n"
 
 #: src/ClimatologyConfigDialog.cpp:41
@@ -110,174 +111,176 @@ msgstr "Veden syvyys"
 
 #: src/ClimatologyConfigDialog.cpp:407
 msgid "ClimatologyInformation.html"
-msgstr "Ilmastotietoa.html"
+msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:144 src/ClimatologyOverlayFactory.cpp:453
-#: src/ClimatologyOverlayFactory.cpp:459 src/ClimatologyOverlayFactory.cpp:1249
-#: src/ClimatologyOverlayFactory.cpp:2458 src/climatology_pi.cpp:101
-#: src/climatology_pi.cpp:158
+#: src/ClimatologyOverlayFactory.cpp:148 src/ClimatologyOverlayFactory.cpp:457
+#: src/ClimatologyOverlayFactory.cpp:463 src/ClimatologyOverlayFactory.cpp:1253
+#: src/ClimatologyOverlayFactory.cpp:2462 src/climatology_pi.cpp:101
+#: src/climatology_pi.cpp:157
 msgid "Climatology"
 msgstr "Ilmasto"
 
-#: src/ClimatologyOverlayFactory.cpp:158
+#: src/ClimatologyOverlayFactory.cpp:162
 msgid "averaging wind"
 msgstr "keskimääräinen tuuli"
 
-#: src/ClimatologyOverlayFactory.cpp:170
+#: src/ClimatologyOverlayFactory.cpp:174
 msgid "averaging current"
 msgstr "keskimääräinen virtaus"
 
-#: src/ClimatologyOverlayFactory.cpp:176
+#: src/ClimatologyOverlayFactory.cpp:180
 msgid "sea level presure"
 msgstr "ilmanpaine merenpinnassa"
 
-#: src/ClimatologyOverlayFactory.cpp:182
+#: src/ClimatologyOverlayFactory.cpp:186
 msgid "slp file truncated"
 msgstr "slp tiedosto katkaistu"
 
-#: src/ClimatologyOverlayFactory.cpp:204
-msgid "sea surface temperature"
+#: src/ClimatologyOverlayFactory.cpp:208
+msgid "sea surface tempertature"
 msgstr "meren pintalämpötila"
 
-#: src/ClimatologyOverlayFactory.cpp:210
+#: src/ClimatologyOverlayFactory.cpp:214
 msgid "sst file truncated"
 msgstr "sst tiedosto katkaistu"
 
-#: src/ClimatologyOverlayFactory.cpp:234
-msgid "air temperature"
+#: src/ClimatologyOverlayFactory.cpp:238
+msgid "air tempertature"
 msgstr "ilman lämpötila"
 
-#: src/ClimatologyOverlayFactory.cpp:240
+#: src/ClimatologyOverlayFactory.cpp:244
 msgid "at file truncated"
 msgstr "at tiedosto on katkaistu"
 
-#: src/ClimatologyOverlayFactory.cpp:264
+#: src/ClimatologyOverlayFactory.cpp:268
 msgid "cloud cover"
 msgstr "pilvisyys"
 
-#: src/ClimatologyOverlayFactory.cpp:270
+#: src/ClimatologyOverlayFactory.cpp:274
 msgid "cld file truncated"
 msgstr "cld tiedosto on katkaistu"
 
-#: src/ClimatologyOverlayFactory.cpp:294
+#: src/ClimatologyOverlayFactory.cpp:298
 msgid "precipitation"
 msgstr "sademäärä"
 
-#: src/ClimatologyOverlayFactory.cpp:300
+#: src/ClimatologyOverlayFactory.cpp:304
 msgid "precip file truncated"
 msgstr "precip tiedosto on katkaistu"
 
-#: src/ClimatologyOverlayFactory.cpp:324
+#: src/ClimatologyOverlayFactory.cpp:328
 msgid "relative humidity"
 msgstr "suhteellinen kosteus"
 
-#: src/ClimatologyOverlayFactory.cpp:330
+#: src/ClimatologyOverlayFactory.cpp:334
 msgid "relative humidity file truncated"
 msgstr "suhteellinen kosteus tiedosto katkaistu"
 
-#: src/ClimatologyOverlayFactory.cpp:355
+#: src/ClimatologyOverlayFactory.cpp:359
 msgid "lightning"
 msgstr "salamointi"
 
-#: src/ClimatologyOverlayFactory.cpp:361
+#: src/ClimatologyOverlayFactory.cpp:365
 msgid "lightning file truncated"
 msgstr "lightning tiedosto on katkaistu"
 
-#: src/ClimatologyOverlayFactory.cpp:379
+#: src/ClimatologyOverlayFactory.cpp:383
 msgid "sea depth"
 msgstr "veden syvyys"
 
-#: src/ClimatologyOverlayFactory.cpp:385
+#: src/ClimatologyOverlayFactory.cpp:389
 msgid "seadepth file truncated"
 msgstr "seadepth tiedosto on katkaistu"
 
-#: src/ClimatologyOverlayFactory.cpp:401
+#: src/ClimatologyOverlayFactory.cpp:405
 msgid "cyclone (east pacific)"
 msgstr "Syklooni (itäinen Tyynimeri)"
 
-#: src/ClimatologyOverlayFactory.cpp:406
+#: src/ClimatologyOverlayFactory.cpp:410
 msgid "cyclone (west pacific)"
 msgstr "Syklooni (läntinen Tyynimeri)"
 
-#: src/ClimatologyOverlayFactory.cpp:411
+#: src/ClimatologyOverlayFactory.cpp:415
 msgid "cyclone (south pacific)"
 msgstr "Syklooni (eteläinen Tyynimeri)"
 
-#: src/ClimatologyOverlayFactory.cpp:416
+#: src/ClimatologyOverlayFactory.cpp:420
 msgid "cyclone (atlantic)"
 msgstr "Syklooni (atlantti)"
 
-#: src/ClimatologyOverlayFactory.cpp:421
+#: src/ClimatologyOverlayFactory.cpp:425
 msgid "cyclone (north indian)"
 msgstr "Syklooni (pohjoisintia)"
 
-#: src/ClimatologyOverlayFactory.cpp:426
+#: src/ClimatologyOverlayFactory.cpp:430
 msgid "cyclone (south indian)"
 msgstr "Syklooni (eteläintia)"
 
-#: src/ClimatologyOverlayFactory.cpp:434
+#: src/ClimatologyOverlayFactory.cpp:438
 msgid "el nino years"
 msgstr "el nino vuodet"
 
-#: src/ClimatologyOverlayFactory.cpp:443
+#: src/ClimatologyOverlayFactory.cpp:447
 msgid "cyclone cache"
-msgstr "Cyclone välimuisti"
+msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:450
+#: src/ClimatologyOverlayFactory.cpp:454
 msgid "Some Data Failed to load:\n"
 msgstr "Joitakin tietoja ei ladattu:\n"
 
-#: src/ClimatologyOverlayFactory.cpp:452
+#: src/ClimatologyOverlayFactory.cpp:456
 msgid "Would you like to try to download?"
 msgstr "Haluatko yrittää ladata?"
 
-#: src/ClimatologyOverlayFactory.cpp:457
+#: src/ClimatologyOverlayFactory.cpp:461
 msgid "You must extract this data, and place in: "
 msgstr "Pura tiedot ja sijoita: "
 
-#: src/ClimatologyOverlayFactory.cpp:458
-msgid "\nthen restart opencpn"
-msgstr "\nsitten käynnistä opencpn uudelleen"
+#: src/ClimatologyOverlayFactory.cpp:462
+msgid "\n"
+"then restart opencpn"
+msgstr "\n"
+"sitten käynnistä opencpn uudelleen"
 
-#: src/ClimatologyOverlayFactory.cpp:678
+#: src/ClimatologyOverlayFactory.cpp:682
 msgid "wind data file corrupt: "
 msgstr "Tuuli datatiedosto on vioittunut: "
 
-#: src/ClimatologyOverlayFactory.cpp:823
+#: src/ClimatologyOverlayFactory.cpp:827
 msgid "Average Current includes only"
 msgstr "Vain keskimääräinen virtaus sisältyy"
 
-#: src/ClimatologyOverlayFactory.cpp:824
+#: src/ClimatologyOverlayFactory.cpp:828
 msgid "months"
 msgstr "kuukautta"
 
-#: src/ClimatologyOverlayFactory.cpp:922
+#: src/ClimatologyOverlayFactory.cpp:926
 msgid "cyclone data corrupt: "
-msgstr "Sykloonin tiedot vioittuneet: "
+msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:1029
+#: src/ClimatologyOverlayFactory.cpp:1033
 msgid "failed to open file: "
 msgstr "tiedoston avaaminen ei onnistu: "
 
-#: src/ClimatologyOverlayFactory.cpp:1249
+#: src/ClimatologyOverlayFactory.cpp:1253
 msgid "Building Overlay map"
 msgstr "Overlaykartan muodostaminen"
 
-#: src/ClimatologyOverlayFactory.cpp:1511 src/ClimatologyUI.cpp:623
+#: src/ClimatologyOverlayFactory.cpp:1515 src/ClimatologyUI.cpp:623
 msgid "N/A"
 msgstr "N/A"
 
-#: src/ClimatologyOverlayFactory.cpp:2009
+#: src/ClimatologyOverlayFactory.cpp:2013
 msgid "Climatology overlay map unsupported unless OpenGL is enabled"
 msgstr "Ilmasto peittokuvakartan ei tueta ellei OpenGL käytössä"
 
-#: src/ClimatologyOverlayFactory.cpp:2047
+#: src/ClimatologyOverlayFactory.cpp:2051
 msgid "failed to read file: "
 msgstr "tiedostoa ei voi lukea: "
 
-#: src/ClimatologyOverlayFactory.cpp:2457
+#: src/ClimatologyOverlayFactory.cpp:2461
 msgid "Computer too slow to render cyclones, disabling theater"
-msgstr "Tietokone liian hidas tekemään syklooneja, poistetaan esitys"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:22
 msgid "Month"
@@ -341,11 +344,11 @@ msgstr "Ilmasto tiedot"
 
 #: src/ClimatologyUI.cpp:67
 msgid "Speed"
-msgstr "Nopeus"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:71
 msgid "Direction"
-msgstr "Suunta"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:105
 msgid "Pressure"
@@ -385,14 +388,14 @@ msgstr "Läpinäkyvyys"
 
 #: src/ClimatologyUI.cpp:318
 msgid "Interpolation"
-msgstr "Interpolointi"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:329
 msgid "Iso Bars"
 msgstr "Iso baarit"
 
-#: src/ClimatologyUI.cpp:332 src/ClimatologyUI.cpp:360
-#: src/ClimatologyUI.cpp:428 src/ClimatologyUI.cpp:483
+#: src/ClimatologyUI.cpp:332 src/ClimatologyUI.cpp:360 src/ClimatologyUI.cpp:428
+#: src/ClimatologyUI.cpp:483
 msgid "Spacing"
 msgstr "Tyhjä"
 
@@ -401,12 +404,12 @@ msgid "Step"
 msgstr "Vaihe"
 
 #: src/ClimatologyUI.cpp:343
-msgid "Very Coarse"
+msgid "Very Course"
 msgstr "Hyvin karkea"
 
 #: src/ClimatologyUI.cpp:343
-msgid "Coarse"
-msgstr "Karkea"
+msgid "Course"
+msgstr "Kurssi"
 
 #: src/ClimatologyUI.cpp:343
 msgid "Normal"
@@ -466,8 +469,10 @@ msgstr "Tuuli Atlas"
 
 #: src/ClimatologyUI.cpp:500
 #, c-format
-msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
-msgstr "Tuuli atlas näyttö esittää tuulen ajallista prosenttiosuutta, kaikkiin kahdeksaan suuntaan nuolen pituutena tai jos osuus on yli 29% niin luku näytetään.\n\nVäkäset osoittavat tuulennopeutta, jokainen piikki on 5 solmua.\n\nNumerot ympyrän sisällä, jos sininen antaa keskimääräisen tuulennopeuden prosentteina noin tyynessä  (3 solmun tai vähemmän) tai punaisella vähintään myrskyn voimalla (34 solmua ja enemmän)."
+msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\n"
+"The barbs indicate wind speed, each barb being 5 knots.\n\n"
+"The numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
+msgstr ""
 
 #: src/ClimatologyUI.cpp:527
 msgid "Start Date"
@@ -617,15 +622,20 @@ msgstr "Kaltevuus"
 msgid "Field Strength"
 msgstr "Voimakkuus"
 
-#: src/climatology_pi.cpp:164
+#: src/climatology_pi.cpp:163
 msgid "Climatology PlugIn for OpenCPN"
 msgstr "OpenCPN: n ilmasto lisäosa"
 
-#: src/climatology_pi.cpp:170
-msgid "Climatology PlugIn for OpenCPN\nProvides overlay capabilities for historic weather data.\n\nSupported Climatology types include:\n- Average wind directions and speed\n- Percentage of gale and calm conditions\n- Sea Surface Currents\n- Average swell and seastate (not yet implemented)\n- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n- Tropical Cyclone tracks"
-msgstr "OpenCPN:n Ilmastolisäosa\nTuottaa valmiuden näyttää säähistoriadatan kartalla.\n\nTuetut ilmastotyypit sisältävät:\n keskimääräisen tuulen suunnan ja nopeuden\n osuuden rajumyrskylle ja rauhallisille olosuhteille\n - meren pinnan virtaukset\n - keskimääräisen mainingin ja pintavaihtelut (ei toteutettu) \n-sade, kosteus, Pilvisyys ja salamaniskut \n-kuukausittainen keskimääräinen merenpinnan ilmanpaine ja meriveden lämpötila ilmanlämpötila\n - Trooppisten pyörremyrskyjen kulkutiet"
-
-#: src/climatology_pi.cpp:195
-msgid "Climatology Preferences"
-msgstr "Ilmasto-ominaisuudet"
+#: src/climatology_pi.cpp:169
+msgid "Climatology PlugIn for OpenCPN\n"
+"Provides overlay capabilities for historic weather data.\n\n"
+"Supported Climatology types include:\n"
+"- Average wind directions and speed\n"
+"- Percentage of gale and calm conditions\n"
+"- Sea Surface Currents\n"
+"- Average swell and seastate (not yet implemented)\n"
+"- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n"
+"- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n"
+"- Tropical Cyclone tracks"
+msgstr ""
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-04 11:32-0600\n"
-"PO-Revision-Date: 2015-01-23 23:57-0500\n"
+"POT-Creation-Date: 2016-02-25 18:10-0300\n"
+"PO-Revision-Date: 2016-02-25 16:12-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Greek\n"
 "Language: el_GR\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: opencpn\n"
+"X-Crowdin-Language: el\n"
 "X-Crowdin-File: /plugins/climatology_pi/po/climatology_pi.pot\n"
 
 #: src/ClimatologyConfigDialog.cpp:41
@@ -21,15 +22,15 @@ msgstr "Κόμβοι"
 
 #: src/ClimatologyConfigDialog.cpp:41
 msgid "M/S"
-msgstr ""
+msgstr "Mps"
 
 #: src/ClimatologyConfigDialog.cpp:41
 msgid "MPH"
-msgstr ""
+msgstr "Mph"
 
 #: src/ClimatologyConfigDialog.cpp:41
 msgid "KPH"
-msgstr ""
+msgstr "km/h"
 
 #: src/ClimatologyConfigDialog.cpp:42
 msgid "MilliBars"
@@ -37,7 +38,7 @@ msgstr "μιλιμπαρ"
 
 #: src/ClimatologyConfigDialog.cpp:42
 msgid "mmHG"
-msgstr ""
+msgstr "mmHg"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "Meters"
@@ -110,174 +111,176 @@ msgstr "Βάθος θαλάσσης"
 
 #: src/ClimatologyConfigDialog.cpp:407
 msgid "ClimatologyInformation.html"
-msgstr "ClimatologyInformation.html"
+msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:144 src/ClimatologyOverlayFactory.cpp:453
-#: src/ClimatologyOverlayFactory.cpp:459 src/ClimatologyOverlayFactory.cpp:1249
-#: src/ClimatologyOverlayFactory.cpp:2458 src/climatology_pi.cpp:101
-#: src/climatology_pi.cpp:158
+#: src/ClimatologyOverlayFactory.cpp:148 src/ClimatologyOverlayFactory.cpp:457
+#: src/ClimatologyOverlayFactory.cpp:463 src/ClimatologyOverlayFactory.cpp:1253
+#: src/ClimatologyOverlayFactory.cpp:2462 src/climatology_pi.cpp:101
+#: src/climatology_pi.cpp:157
 msgid "Climatology"
 msgstr "Κλιματολογία"
 
-#: src/ClimatologyOverlayFactory.cpp:158
+#: src/ClimatologyOverlayFactory.cpp:162
 msgid "averaging wind"
-msgstr "μέσος άνεμος"
+msgstr "υπολογισμός μέσου ανέμου"
 
-#: src/ClimatologyOverlayFactory.cpp:170
+#: src/ClimatologyOverlayFactory.cpp:174
 msgid "averaging current"
-msgstr "μέσο ρεύμα"
+msgstr "υπολογισμός μέσου ρεύματος"
 
-#: src/ClimatologyOverlayFactory.cpp:176
+#: src/ClimatologyOverlayFactory.cpp:180
 msgid "sea level presure"
 msgstr "πίεση στην επιφάνεια της θάλασσας"
 
-#: src/ClimatologyOverlayFactory.cpp:182
+#: src/ClimatologyOverlayFactory.cpp:186
 msgid "slp file truncated"
 msgstr "το αρχείο slp έχει περικοπεί"
 
-#: src/ClimatologyOverlayFactory.cpp:204
-msgid "sea surface temperature"
+#: src/ClimatologyOverlayFactory.cpp:208
+msgid "sea surface tempertature"
 msgstr "θερμοκρασία στην επιφάνεια της θάλασσας"
 
-#: src/ClimatologyOverlayFactory.cpp:210
+#: src/ClimatologyOverlayFactory.cpp:214
 msgid "sst file truncated"
 msgstr "το αρχείο sst έχει περικoπεί"
 
-#: src/ClimatologyOverlayFactory.cpp:234
-msgid "air temperature"
+#: src/ClimatologyOverlayFactory.cpp:238
+msgid "air tempertature"
 msgstr "θερμοκρασία αέρα"
 
-#: src/ClimatologyOverlayFactory.cpp:240
+#: src/ClimatologyOverlayFactory.cpp:244
 msgid "at file truncated"
 msgstr "το αρχείο at έχει περικοπεί"
 
-#: src/ClimatologyOverlayFactory.cpp:264
+#: src/ClimatologyOverlayFactory.cpp:268
 msgid "cloud cover"
 msgstr "νεφοκάλυψη"
 
-#: src/ClimatologyOverlayFactory.cpp:270
+#: src/ClimatologyOverlayFactory.cpp:274
 msgid "cld file truncated"
 msgstr "το αρχείο cld έχει περικοπεί"
 
-#: src/ClimatologyOverlayFactory.cpp:294
+#: src/ClimatologyOverlayFactory.cpp:298
 msgid "precipitation"
 msgstr "Υετός"
 
-#: src/ClimatologyOverlayFactory.cpp:300
+#: src/ClimatologyOverlayFactory.cpp:304
 msgid "precip file truncated"
 msgstr "to αρχείο υετού έχει περικοπεί"
 
-#: src/ClimatologyOverlayFactory.cpp:324
+#: src/ClimatologyOverlayFactory.cpp:328
 msgid "relative humidity"
 msgstr "σχετική υγρασία"
 
-#: src/ClimatologyOverlayFactory.cpp:330
+#: src/ClimatologyOverlayFactory.cpp:334
 msgid "relative humidity file truncated"
 msgstr "το αρχείο σχετικής υγρασίας έχει περικοπεί"
 
-#: src/ClimatologyOverlayFactory.cpp:355
+#: src/ClimatologyOverlayFactory.cpp:359
 msgid "lightning"
 msgstr "αστραπές"
 
-#: src/ClimatologyOverlayFactory.cpp:361
+#: src/ClimatologyOverlayFactory.cpp:365
 msgid "lightning file truncated"
 msgstr "το αρχείο αστρραπών έχει περικοπεί"
 
-#: src/ClimatologyOverlayFactory.cpp:379
+#: src/ClimatologyOverlayFactory.cpp:383
 msgid "sea depth"
 msgstr "βάθος θάλασσας"
 
-#: src/ClimatologyOverlayFactory.cpp:385
+#: src/ClimatologyOverlayFactory.cpp:389
 msgid "seadepth file truncated"
 msgstr "το βαθυμετρικό αρχείο έχει περικοπεί"
 
-#: src/ClimatologyOverlayFactory.cpp:401
+#: src/ClimatologyOverlayFactory.cpp:405
 msgid "cyclone (east pacific)"
 msgstr "κυκλώνας (ανατολικός Ειρηνικός)"
 
-#: src/ClimatologyOverlayFactory.cpp:406
+#: src/ClimatologyOverlayFactory.cpp:410
 msgid "cyclone (west pacific)"
 msgstr "κυκλώνας (δυτικός Ειρηνικός)"
 
-#: src/ClimatologyOverlayFactory.cpp:411
+#: src/ClimatologyOverlayFactory.cpp:415
 msgid "cyclone (south pacific)"
 msgstr "κυκλώνας (Νοτίου Ειρηνικού)"
 
-#: src/ClimatologyOverlayFactory.cpp:416
+#: src/ClimatologyOverlayFactory.cpp:420
 msgid "cyclone (atlantic)"
 msgstr "κυκλώνας (Ατλαντικός)"
 
-#: src/ClimatologyOverlayFactory.cpp:421
+#: src/ClimatologyOverlayFactory.cpp:425
 msgid "cyclone (north indian)"
 msgstr "κυκλώνας (Βόρειος Ινδικός)"
 
-#: src/ClimatologyOverlayFactory.cpp:426
+#: src/ClimatologyOverlayFactory.cpp:430
 msgid "cyclone (south indian)"
 msgstr "κυκλώνας (Νότιος Ινδικός)"
 
-#: src/ClimatologyOverlayFactory.cpp:434
+#: src/ClimatologyOverlayFactory.cpp:438
 msgid "el nino years"
 msgstr "Χρονιές του Ελ Νίνιο"
 
-#: src/ClimatologyOverlayFactory.cpp:443
+#: src/ClimatologyOverlayFactory.cpp:447
 msgid "cyclone cache"
-msgstr "αποθηκευμένοι κυκλώνες"
+msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:450
+#: src/ClimatologyOverlayFactory.cpp:454
 msgid "Some Data Failed to load:\n"
 msgstr "Κάποια δεδομένα δεν φορτώθηκαν: \n"
 
-#: src/ClimatologyOverlayFactory.cpp:452
+#: src/ClimatologyOverlayFactory.cpp:456
 msgid "Would you like to try to download?"
 msgstr "Θα θέλατε να δοκιμάσετε να κατεβάσετε;"
 
-#: src/ClimatologyOverlayFactory.cpp:457
+#: src/ClimatologyOverlayFactory.cpp:461
 msgid "You must extract this data, and place in: "
 msgstr "Πρέπει να εξαγάγετε αυτά τα δεδομένα, και να τα τοποθετήστε σε: "
 
-#: src/ClimatologyOverlayFactory.cpp:458
-msgid "\nthen restart opencpn"
-msgstr "\nκαι μετά επανεκκίνηση του opencpn"
+#: src/ClimatologyOverlayFactory.cpp:462
+msgid "\n"
+"then restart opencpn"
+msgstr "\n"
+"και μετά επανεκκίνηση του opencpn"
 
-#: src/ClimatologyOverlayFactory.cpp:678
+#: src/ClimatologyOverlayFactory.cpp:682
 msgid "wind data file corrupt: "
 msgstr "κατεστραμμένο αρχείο ανέμων: "
 
-#: src/ClimatologyOverlayFactory.cpp:823
+#: src/ClimatologyOverlayFactory.cpp:827
 msgid "Average Current includes only"
 msgstr "Το μέσο ρεύμα περιλαμβάνει μόνο"
 
-#: src/ClimatologyOverlayFactory.cpp:824
+#: src/ClimatologyOverlayFactory.cpp:828
 msgid "months"
 msgstr "μήνες"
 
-#: src/ClimatologyOverlayFactory.cpp:922
+#: src/ClimatologyOverlayFactory.cpp:926
 msgid "cyclone data corrupt: "
-msgstr "τα δεδομένα του κυκλώνα είναι κατεστραμένα: "
+msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:1029
+#: src/ClimatologyOverlayFactory.cpp:1033
 msgid "failed to open file: "
 msgstr "απέτυχε να ανοίξει το αρχείο: "
 
-#: src/ClimatologyOverlayFactory.cpp:1249
+#: src/ClimatologyOverlayFactory.cpp:1253
 msgid "Building Overlay map"
 msgstr "Κατασκευή του χάρτη επικάλυψης"
 
-#: src/ClimatologyOverlayFactory.cpp:1511 src/ClimatologyUI.cpp:623
+#: src/ClimatologyOverlayFactory.cpp:1515 src/ClimatologyUI.cpp:623
 msgid "N/A"
 msgstr "Δ/Υ"
 
-#: src/ClimatologyOverlayFactory.cpp:2009
+#: src/ClimatologyOverlayFactory.cpp:2013
 msgid "Climatology overlay map unsupported unless OpenGL is enabled"
-msgstr ""
+msgstr "Ο χάρτης επικάλυψης climatology δεν υποστηρίζεται εκτός αν ενεργοποιηθεί το OpenGL"
 
-#: src/ClimatologyOverlayFactory.cpp:2047
+#: src/ClimatologyOverlayFactory.cpp:2051
 msgid "failed to read file: "
 msgstr "Απέτυχε η ανάγνωση του αρχείου: "
 
-#: src/ClimatologyOverlayFactory.cpp:2457
+#: src/ClimatologyOverlayFactory.cpp:2461
 msgid "Computer too slow to render cyclones, disabling theater"
-msgstr "Ο υπολογιστή που είναι πολύ αργός για να παραστήσει τους κυκλώνες, απενεργοποίηση θεάτρου"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:22
 msgid "Month"
@@ -341,11 +344,11 @@ msgstr "Κλιματικά δεδομένα"
 
 #: src/ClimatologyUI.cpp:67
 msgid "Speed"
-msgstr "Ταχύτητα"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:71
 msgid "Direction"
-msgstr "Κατεύθυνση"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:105
 msgid "Pressure"
@@ -385,14 +388,14 @@ msgstr "Διαφάνεια"
 
 #: src/ClimatologyUI.cpp:318
 msgid "Interpolation"
-msgstr "Παρεμβολή"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:329
 msgid "Iso Bars"
 msgstr "Ισοβαρείς"
 
-#: src/ClimatologyUI.cpp:332 src/ClimatologyUI.cpp:360
-#: src/ClimatologyUI.cpp:428 src/ClimatologyUI.cpp:483
+#: src/ClimatologyUI.cpp:332 src/ClimatologyUI.cpp:360 src/ClimatologyUI.cpp:428
+#: src/ClimatologyUI.cpp:483
 msgid "Spacing"
 msgstr "Διαστήματα"
 
@@ -401,11 +404,11 @@ msgid "Step"
 msgstr "Ισοβαρείς"
 
 #: src/ClimatologyUI.cpp:343
-msgid "Very Coarse"
+msgid "Very Course"
 msgstr "Πολύ αδρό"
 
 #: src/ClimatologyUI.cpp:343
-msgid "Coarse"
+msgid "Course"
 msgstr "Αδρό"
 
 #: src/ClimatologyUI.cpp:343
@@ -466,8 +469,10 @@ msgstr "Άτλαντας ανέμων"
 
 #: src/ClimatologyUI.cpp:500
 #, c-format
-msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
-msgstr "Στον άτλαντα των ανέμων το μήκος του κάθε βέλους σε κάθε μία από τις οκτώ κατευθύνσεις δείχνει την πιθανότητα ανέμου σε αυτή την κατεύθυνση. Αν αυτή είναι πάνω από 29% αυτή παρουσιάζεται με νούμερο.\n\nΟι κάθετες γραμμούλες δείχνουν την ταχύτητα, με κάθε γραμμούλα να αντιστοιχεί σε 5 κόμβους.\n\nΟι αριθμοί μέσα στον κύκλο δίνουν το ποσοστό άπνοιας (≤3 κόμβους, μπλε) και θύελλας (≥34 κόμβους, κόκκινοι) ."
+msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\n"
+"The barbs indicate wind speed, each barb being 5 knots.\n\n"
+"The numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
+msgstr ""
 
 #: src/ClimatologyUI.cpp:527
 msgid "Start Date"
@@ -535,39 +540,39 @@ msgstr "Κλειδί σταθερού ανέμου (κόμβοι)"
 
 #: src/ClimatologyUI.cpp:670
 msgid "20"
-msgstr ""
+msgstr "20"
 
 #: src/ClimatologyUI.cpp:677
 msgid "40"
-msgstr ""
+msgstr "40"
 
 #: src/ClimatologyUI.cpp:684
 msgid "60"
-msgstr ""
+msgstr "60"
 
 #: src/ClimatologyUI.cpp:691
 msgid "80"
-msgstr ""
+msgstr "80"
 
 #: src/ClimatologyUI.cpp:698
 msgid "100"
-msgstr ""
+msgstr "100"
 
 #: src/ClimatologyUI.cpp:705
 msgid "120"
-msgstr ""
+msgstr "120"
 
 #: src/ClimatologyUI.cpp:712
 msgid "140"
-msgstr ""
+msgstr "140"
 
 #: src/ClimatologyUI.cpp:719
 msgid "160"
-msgstr ""
+msgstr "160"
 
 #: src/ClimatologyUI.cpp:726
 msgid "200"
-msgstr ""
+msgstr "200"
 
 #: src/ClimatologyUI.cpp:739
 msgid "Direction arrows are spaced every 6 hours on storm track"
@@ -617,15 +622,20 @@ msgstr "Κλίση"
 msgid "Field Strength"
 msgstr "Ένταση πεδίου"
 
-#: src/climatology_pi.cpp:164
+#: src/climatology_pi.cpp:163
 msgid "Climatology PlugIn for OpenCPN"
 msgstr "Πρόσθετο Κλιματολογίας του OpenCPN"
 
-#: src/climatology_pi.cpp:170
-msgid "Climatology PlugIn for OpenCPN\nProvides overlay capabilities for historic weather data.\n\nSupported Climatology types include:\n- Average wind directions and speed\n- Percentage of gale and calm conditions\n- Sea Surface Currents\n- Average swell and seastate (not yet implemented)\n- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n- Tropical Cyclone tracks"
+#: src/climatology_pi.cpp:169
+msgid "Climatology PlugIn for OpenCPN\n"
+"Provides overlay capabilities for historic weather data.\n\n"
+"Supported Climatology types include:\n"
+"- Average wind directions and speed\n"
+"- Percentage of gale and calm conditions\n"
+"- Sea Surface Currents\n"
+"- Average swell and seastate (not yet implemented)\n"
+"- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n"
+"- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n"
+"- Tropical Cyclone tracks"
 msgstr ""
-
-#: src/climatology_pi.cpp:195
-msgid "Climatology Preferences"
-msgstr "Προτιμήσεις κλιματολογίας"
 
