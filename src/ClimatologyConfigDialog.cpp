@@ -275,11 +275,8 @@ void ClimatologyConfigDialog::LoadSettings()
     pConf->SetPath ( _T( "/PlugIns/Climatology/Cyclones" ) );
 
     wxDateTime StartDate = wxDateTime::Now();
-#ifdef __MSVC__
     StartDate.SetYear(1972);
-#else
-    StartDate.SetYear(1945);
-#endif
+
     wxString StartDateString = StartDate.FormatDate();
     pConf->Read( _T ( "StartDate" ), &StartDateString, StartDateString);
     StartDate.ParseDate(StartDateString);
