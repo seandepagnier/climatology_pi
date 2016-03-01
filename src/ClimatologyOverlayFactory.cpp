@@ -147,7 +147,13 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     }
 
     m_CurrentTimeline = wxDateTime::Now();
-    m_CurrentTimeline.SetYear(1999); /* without leap year */
+    /* use a year without a leap year */
+    if(m_CurrentTimeline.IsLeapYear() &&
+       m_CurrentTimeline.GetMonth() == wxDateTime::Feb &&
+       m_CurrentTimeline.GetDay() == 29)
+        m_CurrentTimeline.SetDay(28);
+
+    m_CurrentTimeline.SetYear(1999);
 
     m_bAllTimes = false;
 
