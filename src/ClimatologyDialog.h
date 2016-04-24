@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2014 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2016 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -60,6 +60,8 @@ public:
     bool SettingEnabled(int setting);
     void DisableSetting(int setting);
 
+    void FitLater() { m_fittimer.Start(100, true); }
+
     ClimatologyConfigDialog *m_cfgdlg;
     climatology_pi *pPlugIn;
 
@@ -84,11 +86,15 @@ private:
     void OnClose( wxCloseEvent& event );
     void OnCBAny( wxCommandEvent& event );
 
+    void OnFitTimer( wxTimerEvent & ) { Fit(); }
+
     void Now();
     
     wxWindow *pParent;
 
     double m_cursorlat, m_cursorlon;
+
+    wxTimer m_fittimer;
 };
 
 #endif

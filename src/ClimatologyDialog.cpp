@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2014 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2016 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -47,8 +47,6 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 
     m_cfgdlg = new ClimatologyConfigDialog(this);
 
-    PopulateTrackingControls();
-
     Now();
 
     m_cursorlat = m_cursorlon = 0;
@@ -59,6 +57,11 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
     }
 
     DimeWindow( this );
+    PopulateTrackingControls();
+
+    // run fit delayed (buggy wxwidgets)
+    m_fittimer.Connect(wxEVT_TIMER, wxTimerEventHandler
+                       ( ClimatologyDialog::OnFitTimer ), NULL, this);
 }
 
 
@@ -105,8 +108,8 @@ void ClimatologyDialog::PopulateTrackingControls()
     SetControlsVisible(ClimatologyOverlaySettings::LIGHTNING, m_cbLightning, m_tLightning);
     SetControlsVisible(ClimatologyOverlaySettings::SEADEPTH, m_cbSeaDepth, m_tSeaDepth);
 
-    Fit();
     Refresh();
+    Fit();
 }
 
 void ClimatologyDialog::RefreshRedraw()
@@ -235,7 +238,7 @@ void ClimatologyDialog::OnAll( wxCommandEvent& event )
 void ClimatologyDialog::OnNow( wxCommandEvent& event )
 {
     Now();
-    RequestRefresh( pParent );
+    RefreshRedraw();
 }
 
 void ClimatologyDialog::OnUpdateDisplay( wxCommandEvent& event )
@@ -285,8 +288,15 @@ void ClimatologyDialog::Now()
     m_cMonth->SetSelection(now.GetMonth());
     m_sDay->SetValue(now.GetDay());
 
-    int timeline = now.GetDayOfYear();
-    if(timeline <= 67)
-        timeline += 356;
-    m_sTimeline->SetValue(timeline);
+    int day = now.GetDayOfYear();
+    if(pPlugIn->GetOverlayFactory()) {
+        wxDateTime &timeline = pPlugIn->GetOverlayFactory()->m_CurrentTimeline;
+        timeline.SetToYearDay(day + 1);
+    }
+
+    if(day <= 67)
+        day += 356;
+    m_sTimeline->SetValue(day);
+
+    UpdateTrackingControls();
 }

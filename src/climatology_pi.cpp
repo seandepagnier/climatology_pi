@@ -247,6 +247,7 @@ void climatology_pi::OnToolbarToolCallback(int id)
         SendClimatology(true);
 
         m_pClimatologyDialog->UpdateTrackingControls();
+        m_pClimatologyDialog->FitLater(); // buggy wx
     }
 
     if(m_pClimatologyDialog->IsShown() && m_pClimatologyDialog->m_cfgdlg)
