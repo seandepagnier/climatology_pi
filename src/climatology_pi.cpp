@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2015 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2016 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -89,9 +89,6 @@ int climatology_pi::Init(void)
 
       //    Get a pointer to the opencpn configuration object
       m_pconfig = GetOCPNConfigObject();
-
-      //    And load the configuration items
-      LoadConfig();
 
       // Get a pointer to the opencpn display canvas, to use as a parent for the  dialog
       m_parent_window = GetOCPNCanvasWindow();
@@ -233,6 +230,9 @@ void climatology_pi::OnToolbarToolCallback(int id)
 {
     if(!m_pClimatologyDialog)
     {
+        //    And load the configuration items
+        LoadConfig();
+
         m_pClimatologyDialog = new ClimatologyDialog(m_parent_window, this);
         m_pClimatologyDialog->Move(wxPoint(m_climatology_dialog_x, m_climatology_dialog_y));
 
