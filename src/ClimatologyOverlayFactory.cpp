@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2014 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2016 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -103,6 +103,7 @@ ClimatologyOverlay::~ClimatologyOverlay()
 }
 
 static const wxString climatology_pi = _T("climatology_pi: ");
+static bool s_bnoglrepeat = true;
 
 double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
 {
@@ -133,8 +134,11 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
         }
     }
 
-    if( QueryExtension( "GL_ARB_texture_non_power_of_two" ) ||
-        QueryExtension( "GL_OES_texture_npot" ) )
+    // npot textures don't support GL_REPEAT on GLES
+    // and texture rectangle doesn't either
+    if( QueryExtension( "GL_ARB_texture_non_power_of_two" ) )
+        texture_format = GL_TEXTURE_2D, s_bnoglrepeat = false;
+    else if( QueryExtension( "GL_OES_texture_npot" ) )
         texture_format = GL_TEXTURE_2D;
     else if( QueryExtension( "GL_ARB_texture_rectangle" ) )
         texture_format = GL_TEXTURE_RECTANGLE_ARB;
@@ -951,7 +955,6 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
         if(cyclones[i]->empty())
             return;
 
-    
     int statemask = 0;
     statemask |= 1*m_dlg.m_cfgdlg->m_cbTropical->GetValue();
     statemask |= 2*m_dlg.m_cfgdlg->m_cbSubTropical->GetValue();
@@ -1242,8 +1245,9 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     double latoff = 0, lonoff = 0;
     switch(setting) {
     case ClimatologyOverlaySettings::WIND:   
-        s = m_WindData[month] ? m_WindData[month]->longitudes / 360 : 1;
-        latoff = 90.0/m_WindData[month]->latitudes, lonoff = 180.0/m_WindData[month]->longitudes;
+        s = m_WindData[month]->longitudes / 360;
+        latoff = 90.0/m_WindData[month]->latitudes;
+        lonoff = 180.0/m_WindData[month]->longitudes;
         break;
     case ClimatologyOverlaySettings::CURRENT: s = 3;  break;
     case ClimatologyOverlaySettings::SLP:     s = .5; break;
@@ -1299,8 +1303,10 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     glTexParameteri( texture_format, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( texture_format, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
-//    glTexParameteri( texture_format, GL_TEXTURE_WRAP_S, GL_REPEAT ); // illegal for many npot
-    glTexParameteri( texture_format, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    if(s_bnoglrepeat)
+       glTexParameteri( texture_format, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    else
+        glTexParameteri( texture_format, GL_TEXTURE_WRAP_S, GL_REPEAT );
     glTexParameteri( texture_format, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
@@ -1341,6 +1347,9 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     if( !O1.m_iTexture || !O2.m_iTexture )
         return;
 
+    if(vp.m_projection_type != PI_PROJECTION_MERCATOR)
+        return;
+           
     int multitexturing;
     if(&O1 == &O2)
         multitexturing = 0;
@@ -1386,8 +1395,8 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
             glEnable(texture_format);
             glBindTexture(texture_format, O2.m_iTexture);
 
-            constColor[3] = 1 - transparency;
-            glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
+//            constColor[3] = 1;//1 - transparency;
+//            glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
         
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
             glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, GL_REPLACE);
@@ -1406,105 +1415,110 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     }
 
     glColor4f(1, 1, 1, 1 - transparency);
-    
-#if 1  // npot textures don't support GL_REPEAT on GLES, and texture rectangle doesn't either
-    double x = vp.rv_rect.x, y = vp.rv_rect.y;
-    double w = x+vp.rv_rect.width, h = y+vp.rv_rect.height;
 
-    double tx[2], ty[2];
-    double r = vp.rotation;
-    vp.rotation = 0;
-    GetCanvasLLPix( &vp, wxPoint(x, y), &ty[0], &tx[0] );
-    GetCanvasLLPix( &vp, wxPoint(w, h), &ty[1], &tx[1] );
-    vp.rotation = r;
+    if(s_bnoglrepeat) {
+        // this should be replaced by vp box
+        double x = vp.rv_rect.x, y = vp.rv_rect.y;
+        double w = x+vp.rv_rect.width, h = y+vp.rv_rect.height;
 
-    for(int i = 0; i < 2; i++) {
-        tx[i] -= O1.m_lonoff;
-        ty[i] -= O1.m_latoff;
+        double tx[2], ty[2];
+        double r = vp.rotation;
+        vp.rotation = 0;
+        GetCanvasLLPix( &vp, wxPoint(x, y), &ty[0], &tx[0] );
+        GetCanvasLLPix( &vp, wxPoint(w, h), &ty[1], &tx[1] );
+        vp.rotation = r;
 
-        // normalize
-        tx[i] = tx[i] / 360.0 * (O1.m_width-1)/O1.m_width;
+        for(int i = 0; i < 2; i++) {
+            tx[i] -= O1.m_lonoff;
+            ty[i] -= O1.m_latoff;
 
-        // mercator conversion
-        double s1 = sin(deg2rad(ty[i]));
-        double y1 = .5 * log((1 + s1) / (1 - s1));
-        ty[i] = (1 + y1/M_PI)/2;
+            // normalize
+            tx[i] = tx[i] / 360.0 * (O1.m_width-1)/O1.m_width;
 
-        if(texture_format == GL_TEXTURE_RECTANGLE_ARB) {
-            tx[i] *= O1.m_width;
-            ty[i] *= O1.m_height;
+            // mercator conversion
+            double s1 = sin(deg2rad(ty[i]));
+            double y1 = .5 * log((1 + s1) / (1 - s1));
+            ty[i] = (1 + y1/M_PI)/2;
+
+            if(texture_format == GL_TEXTURE_RECTANGLE_ARB) {
+                tx[i] *= O1.m_width;
+                ty[i] *= O1.m_height;
+            }
         }
-    }
+    
+        double tw = (texture_format == GL_TEXTURE_RECTANGLE_ARB) ? O1.m_width : 1;
+        double s = .5 * tw/O1.m_width;
 
-    double tw = (texture_format == GL_TEXTURE_RECTANGLE_ARB) ? O1.m_width : 1;
-    double s = .5 * tw/O1.m_width;
+        if(tx[0] > tx[1])
+            tx[1] += tw;
 
-    glPushMatrix();
-    glTranslated(vp.pix_width/2.0, vp.pix_height/2.0, 0);
-    glRotated(vp.rotation*180/M_PI, 0, 0, 1);
-    glTranslated(-vp.pix_width/2.0, -vp.pix_height/2.0, 0);
+        glPushMatrix();
+        glTranslated(vp.pix_width/2.0, vp.pix_height/2.0, 0);
+        glRotated(vp.rotation*180/M_PI, 0, 0, 1);
+        glTranslated(-vp.pix_width/2.0, -vp.pix_height/2.0, 0);
 
-    glBegin(GL_QUADS);
-    if(tx[1]*tx[0]<0 && fabsf(tx[1]-tx[0]) < .5*tw) { // meridian crosses rv_rect
-        double t = x + (w-x)*tx[0]/(tx[0] - tx[1]);
+        glBegin(GL_QUADS);
+        if(tx[1]*tx[0]<0) { // meridian crosses rv_rect
+            double t = x + (w-x)*tx[0]/(tx[0] - tx[1]);
 
-        glTexCoord2d_2(multitexturing,       s, ty[0]), glVertex2d(t, y);
+            glTexCoord2d_2(multitexturing,       s, ty[0]), glVertex2d(t, y);
+            glTexCoord2d_2(multitexturing, tx[1]+s, ty[0]), glVertex2d(w, y);
+            glTexCoord2d_2(multitexturing, tx[1]+s, ty[1]), glVertex2d(w, h);
+            glTexCoord2d_2(multitexturing,       s, ty[1]), glVertex2d(t, h);
+
+            w = t;
+            tx[0] += tw-2*s;
+            tx[1] = tw-2*s;
+        } else {
+            if(tx[0] < 0)
+                tx[0] += tw-2*s;
+            if(tx[1] < 0)
+                tx[1] += tw-2*s;
+        }
+
+        glTexCoord2d_2(multitexturing, tx[0]+s, ty[0]), glVertex2d(x, y);
         glTexCoord2d_2(multitexturing, tx[1]+s, ty[0]), glVertex2d(w, y);
         glTexCoord2d_2(multitexturing, tx[1]+s, ty[1]), glVertex2d(w, h);
-        glTexCoord2d_2(multitexturing,       s, ty[1]), glVertex2d(t, h);
+        glTexCoord2d_2(multitexturing, tx[0]+s, ty[1]), glVertex2d(x, h);
+        glEnd();
 
-        w = t;
-        tx[0] += tw-2*s;
-        tx[1] = tw-2*s;
+        glPopMatrix();
     } else {
-        if(tx[0] < 0)
-            tx[0] += tw-2*s;
-        if(tx[1] < 0)
-            tx[1] += tw-2*s;
-    }
-
-    glTexCoord2d_2(multitexturing, tx[0]+s, ty[0]), glVertex2d(x, y);
-    glTexCoord2d_2(multitexturing, tx[1]+s, ty[0]), glVertex2d(w, y);
-    glTexCoord2d_2(multitexturing, tx[1]+s, ty[1]), glVertex2d(w, h);
-    glTexCoord2d_2(multitexturing, tx[0]+s, ty[1]), glVertex2d(x, h);
-    glEnd();
-
-    glPopMatrix();
-
-#else // this only works if npot textures support GL_REPEAT
-    // it's kind of cool because uses a single quad exactly filling viewport
-    // and modifys tex coordinates
+        // this only works if npot textures support GL_REPEAT, and of course
+        // for mercator projections only
+        // it's kind of cool because uses a single quad exactly filling viewport
+        // and modifys tex coordinates
         int x = 0, y = 0;
-    int w = vp.pix_width, h = vp.pix_height;
+        int w = vp.pix_width, h = vp.pix_height;
 
-    double lat[4], lon[4];
-    GetCanvasLLPix( &vp, wxPoint(x, y), &lat[0], &lon[0] );
-    GetCanvasLLPix( &vp, wxPoint(w, y), &lat[1], &lon[1] );
-    GetCanvasLLPix( &vp, wxPoint(w, h), &lat[2], &lon[2] );
-    GetCanvasLLPix( &vp, wxPoint(x, h), &lat[3], &lon[3] );
+        double lat[4], lon[4];
+        GetCanvasLLPix( &vp, wxPoint(x, y), &lat[0], &lon[0] );
+        GetCanvasLLPix( &vp, wxPoint(w, y), &lat[1], &lon[1] );
+        GetCanvasLLPix( &vp, wxPoint(w, h), &lat[2], &lon[2] );
+        GetCanvasLLPix( &vp, wxPoint(x, h), &lat[3], &lon[3] );
 
-    for(int i = 0; i < 4; i++) {
-        if(lon[i] - vp.clon > 180)
-            lon[i] -= 360;
-        else if(lon[i] - vp.clon < -180)
-            lon[i] += 360;
+        for(int i = 0; i < 4; i++) {
+            if(lon[i] - vp.clon > 180)
+                lon[i] -= 360;
+            else if(lon[i] - vp.clon < -180)
+                lon[i] += 360;
 
-        // normalize
-        lon[i] = lon[i] / 360.0;
+            // normalize
+            lon[i] = lon[i] / 360.0;
 
-        // mercator conversion
-        double s1 = sin(deg2rad(lat[i]));
-        double y1 = .5 * log((1 + s1) / (1 - s1));
-        lat[i] = (1 + y1/M_PI)/2;
+            // mercator conversion
+            double s1 = sin(deg2rad(lat[i]));
+            double y1 = .5 * log((1 + s1) / (1 - s1));
+            lat[i] = (1 + y1/M_PI)/2;
+        }
+
+        glBegin(GL_QUADS);
+        glTexCoord2d_2(multitexturing, lon[0], lat[0]), glVertex2i(x, y);
+        glTexCoord2d_2(multitexturing, lon[1], lat[1]), glVertex2i(w, y);
+        glTexCoord2d_2(multitexturing, lon[2], lat[2]), glVertex2i(w, h);
+        glTexCoord2d_2(multitexturing, lon[3], lat[3]), glVertex2i(x, h);
+        glEnd();
     }
-
-    glBegin(GL_QUADS);
-    glTexCoord2d_2(multitexturing, lon[0], lat[0]), glVertex2i(x, y);
-    glTexCoord2d_2(multitexturing, lon[1], lat[1]), glVertex2i(w, y);
-    glTexCoord2d_2(multitexturing, lon[2], lat[2]), glVertex2i(w, h);
-    glTexCoord2d_2(multitexturing, lon[3], lat[3]), glVertex2i(x, h);
-    glEnd();
-#endif
 
     if(multitexturing) {
         if(multitexturing > 1) {
