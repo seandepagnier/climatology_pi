@@ -1,14 +1,37 @@
+/******************************************************************************
+ *
+ * Project:  OpenCPN
+ * Purpose:  Climatology Plugin
+ * Author:   Sean D'Epagnier
+ *
+ ***************************************************************************
+ *   Copyright (C) 2016 by Sean D'Epagnier                                 *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.             *
+ ***************************************************************************
+ */
+
 /* This program takes wind uv input files downloaded from:
    ftp://eclipse.ncdc.noaa.gov/pub/seawinds/SI/uv/daily/ieee/
 
    to produce the atlas file (read by the plugin execute)
    where file1 to filen are the daily files in the month
-   ./program file1 file2 .. filen | > winddata01.gz
+   ./program file1 file2 .. filen > winddata01
 
-   For each month, then all the files for winddata13 to generate
-   the yearly file.
-
-   It would also be possible to use the 6-hourly files
+   It is also possible to use the 6-hourly files
 */
 
 #include <stdio.h>
@@ -19,7 +42,10 @@
 #include "elnino.h"
 #include "zuFile.h"
 
-#define FILE_MAGIC 0xfefe /* change if format changes */
+/* change these if that format changes */
+#define FILE_MAGIC 0xfeff 
+#define EXTENDED_FILE_MAGIC 0xf00f
+
 #define INPUT_DEGREE_STEP 4 /* quarter degree map */
 #define OUTPUT_DEGREE_STEP 2 /* must divide input evenly (1, 2 or 4) */
 
@@ -27,21 +53,25 @@
                                    (from 1 to 255), 100 would allow each percentage
                                    higher gives better resolution but results in a file
                                    which doesn't compress as well */
-#define SPEED_MULTIPLIER 1 // SPEED_MULTIPLIER/SPEED_DIVISOR
-#define SPEED_DIVISOR 1    /* from 0-4, higher value results in more accurate but
-                              larger file. value of 1 gives speed at each knot. */
 
 #define LATITUDES 180
 #define LONGITUDES 360
 #define DIRECTIONS 8
 
-static struct windpilot
+// For the extended atlas, speeds from 0-10, 10-20, 20-30, 30-40 and 40+
+// only need 4 
+#define DIRECTION_SPEEDS 4
+
+static struct atlas
 {
     double calm, gale;
     double total;
 
     double directions[DIRECTIONS];
     double speeds[DIRECTIONS];
+
+    // extended data
+    double direction_speeds[DIRECTION_SPEEDS][DIRECTIONS];
 } map[LATITUDES*LONGITUDES*OUTPUT_DEGREE_STEP*OUTPUT_DEGREE_STEP];
 
 double max_value(double *values)
@@ -80,6 +110,9 @@ int main(int argc, char *argv[])
         return 1;
     
     const char *output_filename = argv[1];
+    const char extended_output_filename[1000] = "extended_";
+    strncat(extended_output_filename, argv[1],
+            sizeof extended_output_filename);
 
     int parts_per_file = strtol(argv[2], NULL, 10);
     int maxtotal = 0;
@@ -117,7 +150,7 @@ int main(int argc, char *argv[])
                     if(!isnan(u) && !isnan(v)) {
                         int lato = lati*OUTPUT_DEGREE_STEP/INPUT_DEGREE_STEP;
                         int lono = loni*OUTPUT_DEGREE_STEP/INPUT_DEGREE_STEP;
-                        struct windpilot *wp = &map[lato*LONGITUDES*OUTPUT_DEGREE_STEP + lono];
+                        struct atlas *wp = &map[lato*LONGITUDES*OUTPUT_DEGREE_STEP + lono];
 
                         int direction = round(atan2(-u, -v) * DIRECTIONS / (2.0 * M_PI));
                         if(direction < 0)
@@ -135,6 +168,11 @@ int main(int argc, char *argv[])
 
                         wp->directions[direction]++;
                         wp->speeds[direction]+=velocity;
+
+                        int ivelocity = velocity/10;
+                        if(ivelocity >= DIRECTION_SPEEDS)
+                            ivelocity = DIRECTION_SPEEDS-1;
+                        wp->extended_direction_speeds[ivelocity][direction]++;
                     }
                 }
         }
@@ -143,22 +181,13 @@ int main(int argc, char *argv[])
             zu_close(file);
     }
 
-    uint16_t header[] = {FILE_MAGIC,
-                         LATITUDES*OUTPUT_DEGREE_STEP,
-                         LONGITUDES*OUTPUT_DEGREE_STEP,
-                         DIRECTIONS,
-                         DIRECTION_RESOLUTION,
-                         SPEED_MULTIPLIER,
-                         SPEED_DIVISOR};
-
-    fwrite(header, sizeof header, 1, stdout);
     uint8_t undef = 255;
 
     fprintf(stderr, "processing\n");
 
     for(int lati = 0; lati < LATITUDES*OUTPUT_DEGREE_STEP; lati++)
         for(int loni = 0; loni < LONGITUDES*OUTPUT_DEGREE_STEP; loni++) {
-            struct windpilot *wp = &map[lati*LONGITUDES*OUTPUT_DEGREE_STEP + loni];
+            struct atlas *wp = &map[lati*LONGITUDES*OUTPUT_DEGREE_STEP + loni];
 
             // throw away areas with few data points as these are inaccurate and don't compress well
 #if 1
@@ -170,9 +199,9 @@ int main(int argc, char *argv[])
 
             wp->gale /= wp->total;
             wp->calm /= wp->total;
-
 #if 1
-            // throw away uncommon directions to reduce file size
+            // throw away uncommon directions (below 2.5%)
+            // to reduce file size
             int t = wp->total;
             for(int i=0; i<DIRECTIONS; i++)
                 if(wp->directions[i] <= t / 40) {
@@ -182,13 +211,19 @@ int main(int argc, char *argv[])
 #endif
             for(int i=0; i<DIRECTIONS; i++) {
                 if(wp->directions[i]) {
-                    wp->speeds[i] *= (double)SPEED_MULTIPLIER / SPEED_DIVISOR
-                        / wp->directions[i];
+                    wp->speeds[i] /= wp->directions[i];
+                    // resolution of 1 knot is fine
+//                    wp->speeds[i] *= (double)SPEED_MULTIPLIER / SPEED_DIVISOR
 
                     if(wp->speeds[i] > 255) {
-                        fprintf(stderr, "sustained speed average above 64 knots.. overflow\n");
+                        fprintf(stderr, "sustained speed average overflow\n");
                         exit(0);
                     }
+
+                    for(int j=0; j<DIRECTION_SPEEDS; j++)
+                        wp->extended_direction_speeds[j][i];
+                            *= DIRECTION_RESOLUTION / wp->directions[i];
+                    
                     wp->directions[i] *= DIRECTION_RESOLUTION / wp->total;
                 }
 
@@ -202,10 +237,18 @@ int main(int argc, char *argv[])
     fprintf(stderr, "writing\n");
     FILE *output = fopen(output_filename, "wb");
 
+    uint16_t header[] = {FILE_MAGIC,
+                         LATITUDES*OUTPUT_DEGREE_STEP,
+                         LONGITUDES*OUTPUT_DEGREE_STEP,
+                         DIRECTIONS,
+                         DIRECTION_RESOLUTION};
+
+    fwrite(header, sizeof header, 1, output);
+
     for(int pass=0; pass<2*DIRECTIONS+1; pass++)
         for(int lati = 0; lati < LATITUDES*OUTPUT_DEGREE_STEP; lati++)
             for(int loni = 0; loni < LONGITUDES*OUTPUT_DEGREE_STEP; loni++) {
-                struct windpilot *wp = &map[lati*LONGITUDES*OUTPUT_DEGREE_STEP + loni];
+                struct atlas *wp = &map[lati*LONGITUDES*OUTPUT_DEGREE_STEP + loni];
 
                 double value;
                 if(pass == 0) {
@@ -235,6 +278,35 @@ int main(int argc, char *argv[])
                 uint8_t bvalue = round(value);
                 fwrite(&bvalue, 1, 1, output);
             }
+
+    fclose(output);
+
+    fprintf(stderr, "writing extended data\n");
+    FILE *output = fopen(extended_output_filename, "wb");
+
+    uint16_t extended_header[] = {EXTENDED_FILE_MAGIC,
+                                  LATITUDES*OUTPUT_DEGREE_STEP,
+                                  LONGITUDES*OUTPUT_DEGREE_STEP,
+                                  DIRECTIONS,
+                                  DIRECTION_RESOLUTION};
+
+    fwrite(extended_header, sizeof extended_header, 1, output);
+
+    for(int i=0; i<DIRECTION_SPEEDS; i++)
+        for(int j=0; j<DIRECTIONS; j++)
+            for(int lati = 0; lati < LATITUDES*OUTPUT_DEGREE_STEP; lati++)
+                for(int loni = 0; loni < LONGITUDES*OUTPUT_DEGREE_STEP; loni++) {
+                    struct atlas *wp = &map[lati*LONGITUDES*OUTPUT_DEGREE_STEP + loni];
+                    if(!wp->total)
+                        continue;
+
+                    if(wp->directions[j] == 0)
+                        continue;
+
+                    double value = wp->extended_direction_speeds[i][j];
+                    uint8_t bvalue = round(value);
+                    fwrite(&bvalue, 1, 1, output);
+                }
 
     fclose(output);
 }
