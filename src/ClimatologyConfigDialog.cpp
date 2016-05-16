@@ -446,7 +446,7 @@ void ClimatologyConfigDialog::OnUpdateIsobar()
 
 void ClimatologyConfigDialog::OnUpdateCyclones()
 {
-    pParent->pPlugIn->GetOverlayFactory()->BuildCycloneCache();
+    g_pOverlayFactory->BuildCycloneCache();
     OnUpdate();
 }
 

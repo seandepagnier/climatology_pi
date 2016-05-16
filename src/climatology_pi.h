@@ -74,6 +74,8 @@ public:
       wxString GetShortDescription();
       wxString GetLongDescription();
 
+      void CreateOverlayFactory();
+
 //    The override PlugIn Methods
       bool RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp);
       void SetCursorLatLon(double lat, double lon);
@@ -96,9 +98,10 @@ public:
       void SetColorScheme(PI_ColorScheme cs);
 
       void OnClimatologyDialogClose();
-      ClimatologyOverlayFactory *GetOverlayFactory(){ return m_pOverlayFactory; }
 
 private:
+      void FreeData();
+
       bool LoadConfig(void);
       bool SaveConfig(void);
 
@@ -106,7 +109,6 @@ private:
       wxWindow         *m_parent_window;
 
       ClimatologyDialog       *m_pClimatologyDialog;
-      ClimatologyOverlayFactory *m_pOverlayFactory;
 
       int              m_display_width, m_display_height;
       int              m_leftclick_tool_id;
@@ -116,4 +118,5 @@ private:
 
 };
 
+extern ClimatologyOverlayFactory *g_pOverlayFactory;
 #endif

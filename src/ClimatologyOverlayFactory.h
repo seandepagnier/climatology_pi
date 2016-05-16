@@ -51,6 +51,7 @@ struct WindData
     : latitudes(lats), longitudes(lons), dir_cnt(dirs),
         direction_resolution(dir_res), speed_multiplier(spd_mul),
         data(new WindPolar[lats*lons]) {}
+    ~WindData() { delete [] data; }
 
     double InterpWind(enum Coord coord, double lat, double lon);
     WindPolar *GetPolar(double lat, double lon) {
@@ -125,9 +126,8 @@ public:
     long drawn_counter;
 };
 
-class Cyclone
+struct Cyclone
 {
-public:
     std::list<CycloneState*> states;
 };
 
@@ -245,6 +245,9 @@ public:
     wxDateTime m_CurrentTimeline;
     bool m_bAllTimes;
 
+    bool m_bFailedLoading; // maybe loaded some data, but some is corrupted or missing
+    bool m_bCompletedLoading; // finished loading climatology data without abort
+
 private:
     ZUFILE *TryOpenFile(wxString filename);
 
@@ -294,6 +297,5 @@ private:
 
     std::map<int, ElNinoYear> m_ElNinoYears;
 
-    bool m_bFailedLoading;
     wxString m_sFailedMessage;
 };

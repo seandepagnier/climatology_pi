@@ -114,9 +114,9 @@ double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
 ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     : //m_bUpdateCyclones(true),
     m_cyclone_cache_semaphore(CYCLONE_CACHE_SEMAPHORE_COUNT),
-      m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings),
-      m_cyclonesDisplayList(0), m_cyclone_drawn_counter(0),
-      m_bFailedLoading(false)
+    m_bFailedLoading(false), m_bCompletedLoading(false),
+    m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings),
+    m_cyclonesDisplayList(0), m_cyclone_drawn_counter(0)
 {
     // assume we have GL_ARB_multitexture if this passes
     if(QueryExtension( "GL_ARB_texture_env_combine" )) {
@@ -480,6 +480,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             mdlg.ShowModal();
         }
     }
+    m_bCompletedLoading = true;
 }
 
 ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
@@ -490,6 +491,22 @@ ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
         for(int m=0; m<13; m++)
             delete m_Settings.Settings[i].m_pIsobars[m];
 #endif
+
+    // free wind data
+    for(int m=0; m<13; m++) {
+        delete m_WindData[m];
+        delete m_CurrentData[m];
+    }
+    
+    // free cyclones
+    std::list<Cyclone*> *cyclones[6] = {&m_epa, &m_wpa, &m_spa, &m_atl, &m_nio, &m_she};
+    for(int i=0; i < 6; i++)
+        for(std::list<Cyclone*>::iterator it = cyclones[i]->begin(); it != cyclones[i]->end(); it++) {
+            Cyclone *s = *it;
+            for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++)
+                delete *it2;
+            delete s;
+        }
 }
 
 void ClimatologyOverlayFactory::GetDateInterpolation(const wxDateTime *cdate,

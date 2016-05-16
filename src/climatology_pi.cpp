@@ -39,6 +39,8 @@
 #include "icons.h"
 #include "ClimatologyDialog.h"
 
+ClimatologyOverlayFactory *g_pOverlayFactory = NULL;
+
 // the class factories, used to create and destroy instances of the PlugIn
 
 extern "C" DECL_EXP opencpn_plugin* create_pi(void *ppimgr)
@@ -70,6 +72,7 @@ climatology_pi::climatology_pi(void *ppimgr)
 
 climatology_pi::~climatology_pi(void)
 {
+      FreeData();
       delete _img_climatology;
 }
 
@@ -83,7 +86,6 @@ int climatology_pi::Init(void)
       m_climatology_dialog_sx = 200;
       m_climatology_dialog_sy = 400;
       m_pClimatologyDialog = NULL;
-      m_pOverlayFactory = NULL;
 
       ::wxDisplaySize(&m_display_width, &m_display_height);
 
@@ -115,9 +117,6 @@ bool climatology_pi::DeInit(void)
         delete m_pClimatologyDialog;
         m_pClimatologyDialog = NULL;
     }
-
-    delete m_pOverlayFactory;
-    m_pOverlayFactory = NULL;
 
     RemovePlugInTool(m_leftclick_tool_id);
 
@@ -177,6 +176,29 @@ Supported Climatology types include:\n\
 
 }
 
+void climatology_pi::CreateOverlayFactory()
+{
+    //    And load the configuration items
+    LoadConfig();
+    
+    m_pClimatologyDialog = new ClimatologyDialog(m_parent_window, this);
+    m_pClimatologyDialog->Move(wxPoint(m_climatology_dialog_x, m_climatology_dialog_y));
+    
+    wxIcon icon;
+    icon.CopyFromBitmap(*_img_climatology);
+    m_pClimatologyDialog->SetIcon(icon);
+    
+    // Create the drawing factory
+    g_pOverlayFactory = new ClimatologyOverlayFactory( *m_pClimatologyDialog );
+    
+    if(g_pOverlayFactory->m_bCompletedLoading) {
+        SendClimatology(true);
+        
+        m_pClimatologyDialog->UpdateTrackingControls();
+        m_pClimatologyDialog->FitLater(); // buggy wx
+    }
+}
+
 void climatology_pi::SetDefaults(void)
 {
 }
@@ -186,17 +208,19 @@ int climatology_pi::GetToolbarToolCount(void)
       return 1;
 }
 
-static ClimatologyOverlayFactory *s_pOverlayFactory = NULL;
 static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lon,
                             double &dir, double &speed)
 {
-    if(!s_pOverlayFactory)
-        s_climatology_pi->OnToolbarToolCallback(0);
+    if(!g_pOverlayFactory)
+        s_climatology_pi->CreateOverlayFactory();
 
-    if(isnan(speed = s_pOverlayFactory->getValue(MAG, setting, lat, lon, &date)))
+    if(!g_pOverlayFactory->m_bCompletedLoading || g_pOverlayFactory->m_bFailedLoading)
         return false;
 
-    if(isnan(dir = s_pOverlayFactory->getValue(DIRECTION, setting, lat, lon, &date)))
+    if(isnan(speed = g_pOverlayFactory->getValue(MAG, setting, lat, lon, &date)))
+        return false;
+
+    if(isnan(dir = g_pOverlayFactory->getValue(DIRECTION, setting, lat, lon, &date)))
         return false;
 
     return true;
@@ -206,49 +230,40 @@ static bool ClimatologyWindAtlasData(wxDateTime &date, double lat, double lon,
                                      int &count, double *directions, double *speeds,
                                      double &storm, double &calm)
 {
-    if(!s_pOverlayFactory)
+    if(!g_pOverlayFactory)
         return false;
 
     if(count != 8)
         return false;
     
-    return s_pOverlayFactory->InterpolateWindAtlas
+    return g_pOverlayFactory->InterpolateWindAtlas
         (date, lat, lon, directions, speeds, storm, calm);
 }
 
 static int ClimatologyCycloneTrackCrossings(double lat1, double lon1, double lat2, double lon2,
                                             const wxDateTime &date, int dayrange)
 {
-    if(!s_pOverlayFactory)
+    if(!g_pOverlayFactory)
         return -1;
 
-    return s_pOverlayFactory->CycloneTrackCrossings(lat1, lon1, lat2, lon2,
+    return g_pOverlayFactory->CycloneTrackCrossings(lat1, lon1, lat2, lon2,
                                                     date, dayrange);
 }
 
 void climatology_pi::OnToolbarToolCallback(int id)
 {
-    if(!m_pClimatologyDialog)
-    {
-        //    And load the configuration items
-        LoadConfig();
+    if(g_pOverlayFactory &&
+       (!g_pOverlayFactory->m_bCompletedLoading ||
+        (!m_pClimatologyDialog->IsShown() && g_pOverlayFactory->m_bFailedLoading)))
+        FreeData();
 
-        m_pClimatologyDialog = new ClimatologyDialog(m_parent_window, this);
-        m_pClimatologyDialog->Move(wxPoint(m_climatology_dialog_x, m_climatology_dialog_y));
-
-        wxIcon icon;
-        icon.CopyFromBitmap(*_img_climatology);
-        m_pClimatologyDialog->SetIcon(icon);
-
-        // Create the drawing factory
-        m_pOverlayFactory = new ClimatologyOverlayFactory( *m_pClimatologyDialog );
-
-        s_pOverlayFactory = m_pOverlayFactory;
-        SendClimatology(true);
-
-        m_pClimatologyDialog->UpdateTrackingControls();
-        m_pClimatologyDialog->FitLater(); // buggy wx
-    }
+    if(!g_pOverlayFactory) {
+        CreateOverlayFactory();
+        if(!g_pOverlayFactory->m_bCompletedLoading) {
+            FreeData();
+            return;
+        }
+    } 
 
     if(m_pClimatologyDialog->IsShown() && m_pClimatologyDialog->m_cfgdlg)
         m_pClimatologyDialog->m_cfgdlg->Hide();
@@ -268,20 +283,20 @@ void climatology_pi::OnClimatologyDialogClose()
 bool climatology_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
 {
     if(!m_pClimatologyDialog || !m_pClimatologyDialog->IsShown() ||
-       !m_pOverlayFactory)
+       !g_pOverlayFactory)
         return false;
 
-    m_pOverlayFactory->RenderOverlay ( &dc, *vp );
+    g_pOverlayFactory->RenderOverlay ( &dc, *vp );
     return true;
 }
 
 bool climatology_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
 {
     if(!m_pClimatologyDialog || !m_pClimatologyDialog->IsShown() ||
-       !m_pOverlayFactory)
+       !g_pOverlayFactory)
         return false;
 
-    m_pOverlayFactory->RenderOverlay ( NULL, *vp );
+    g_pOverlayFactory->RenderOverlay ( NULL, *vp );
     return true;
 }
 
@@ -318,6 +333,14 @@ void climatology_pi::SetPluginMessage(wxString &message_id, wxString &message_bo
     if(message_id == _T("CLIMATOLOGY_REQUEST")) {
         SendClimatology(true);
     }
+}
+
+void climatology_pi::FreeData()
+{
+    delete g_pOverlayFactory;
+    g_pOverlayFactory = NULL;
+    delete m_pClimatologyDialog;
+    m_pClimatologyDialog = NULL;
 }
 
 bool climatology_pi::LoadConfig(void)
