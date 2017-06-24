@@ -47,6 +47,7 @@ static PFNGLACTIVETEXTUREARBPROC s_glActiveTextureARB = 0;
 static PFNGLMULTITEXCOORD2DARBPROC s_glMultiTexCoord2dARB = 0;
 
 static int texture_format;
+static bool glQueried = false;
 
 static GLboolean QueryExtension( const char *extName )
 {
@@ -118,33 +119,6 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings),
     m_cyclonesDisplayList(0), m_cyclone_drawn_counter(0)
 {
-    // assume we have GL_ARB_multitexture if this passes
-    if(QueryExtension( "GL_ARB_texture_env_combine" )) {
-        s_glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
-            systemGetProcAddress("glActiveTextureARB");
-        s_glMultiTexCoord2dARB = (PFNGLMULTITEXCOORD2DARBPROC)
-            systemGetProcAddress("glMultiTexCoord2dARB");
-        s_multitexturing = s_glActiveTextureARB && s_glMultiTexCoord2dARB;
-
-        if(s_multitexturing) {
-            GLint MaxTextureUnits;
-            glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &MaxTextureUnits);
-            if(MaxTextureUnits > 2)
-                s_multitexturing = 2; /* with blending */
-        }
-    }
-
-    // npot textures don't support GL_REPEAT on GLES
-    // and texture rectangle doesn't either
-    if( QueryExtension( "GL_ARB_texture_non_power_of_two" ) )
-        texture_format = GL_TEXTURE_2D, s_bnoglrepeat = false;
-    else if( QueryExtension( "GL_OES_texture_npot" ) )
-        texture_format = GL_TEXTURE_2D;
-    else if( QueryExtension( "GL_ARB_texture_rectangle" ) )
-        texture_format = GL_TEXTURE_RECTANGLE_ARB;
-    else
-        texture_format = 0; // overlays disabled without npot support
-    
     for(int month = 0; month<13; month++) {
         m_WindData[month] = NULL;
         m_CurrentData[month] = NULL;
@@ -2527,12 +2501,46 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 #endif
 }
 
-bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
+static void QueryGL()
 {
+    // assume we have GL_ARB_multitexture if this passes
+    if(QueryExtension( "GL_ARB_texture_env_combine" )) {
+        s_glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
+            systemGetProcAddress("glActiveTextureARB");
+        s_glMultiTexCoord2dARB = (PFNGLMULTITEXCOORD2DARBPROC)
+            systemGetProcAddress("glMultiTexCoord2dARB");
+        s_multitexturing = s_glActiveTextureARB && s_glMultiTexCoord2dARB;
+
+        if(s_multitexturing) {
+            GLint MaxTextureUnits;
+            glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &MaxTextureUnits);
+            if(MaxTextureUnits > 2)
+                s_multitexturing = 2; /* with blending */
+        }
+    }
+
+    // npot textures don't support GL_REPEAT on GLES
+    // and texture rectangle doesn't either
+    if( QueryExtension( "GL_ARB_texture_non_power_of_two" ) )
+        texture_format = GL_TEXTURE_2D, s_bnoglrepeat = false;
+    else if( QueryExtension( "GL_OES_texture_npot" ) )
+        texture_format = GL_TEXTURE_2D;
+    else if( QueryExtension( "GL_ARB_texture_rectangle" ) )
+        texture_format = GL_TEXTURE_RECTANGLE_ARB;
+    else
+        texture_format = 0; // overlays disabled without npot support
+}
+
+bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
+{    
     m_pdc = dc;
 
     if(!dc) {
-        glPushAttrib( GL_LINE_BIT | GL_ENABLE_BIT | GL_HINT_BIT ); //Save state
+        if(!glQueried) {
+            QueryGL();
+            glQueried = true;
+        }
+       glPushAttrib( GL_LINE_BIT | GL_ENABLE_BIT | GL_HINT_BIT ); //Save state
 
         //      Enable anti-aliased lines, at best quality
         glEnable( GL_LINE_SMOOTH );

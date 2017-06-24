@@ -67,6 +67,7 @@ climatology_pi::climatology_pi(void *ppimgr)
 {
       // Create the PlugIn icons
       initialize_images();
+      m_pClimatologyDialog = NULL;
       s_climatology_pi = this;
 }
 
@@ -85,7 +86,6 @@ int climatology_pi::Init(void)
       m_climatology_dialog_y = 0;
       m_climatology_dialog_sx = 200;
       m_climatology_dialog_sy = 400;
-      m_pClimatologyDialog = NULL;
 
       ::wxDisplaySize(&m_display_width, &m_display_height);
 
