@@ -193,7 +193,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbPressure->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     if(!progressdialog.Update(27, _("sea surface tempertature")))
         return;
@@ -223,7 +223,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbSeaTemperature->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     if(!progressdialog.Update(28, _("air tempertature")))
         return;
@@ -253,7 +253,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbAirTemperature->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     if(!progressdialog.Update(28, _("cloud cover")))
         return;
@@ -283,7 +283,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbCloudCover->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     if(!progressdialog.Update(29, _("precipitation")))
         return;
@@ -313,7 +313,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbPrecipitation->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     if(!progressdialog.Update(30, _("relative humidity")))
         return;
@@ -343,7 +343,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbRelativeHumidity->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     /* load lightning */
     if(!progressdialog.Update(30, _("lightning")))
@@ -367,7 +367,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbLightning->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     /* load sea depth */
     if(!progressdialog.Update(30, _("sea depth")))
@@ -388,7 +388,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbSeaDepth->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     /* load cyclone tracks */
     bool allcyclone = true;
@@ -680,14 +680,14 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
             }
         }
 
-    zu_close(f), free(f);
+    zu_close(f);
     return;
 
 corrupt:
     delete m_WindData[month];
     m_WindData[month] = NULL;
     wxLogMessage(climatology_pi + _("wind data file corrupt: ") + filename);
-    zu_close(f), free(f);
+    zu_close(f);
 }
 
 float max_value(float *values, int cnt)
@@ -797,7 +797,7 @@ void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
                     m_CurrentData[month]->data[dim][ind] = (float)v / m_CurrentData[month]->multiplier;
             }
 
-    zu_close(f), free(f);
+    zu_close(f);
 }
 
 void ClimatologyOverlayFactory::AverageCurrentData()
@@ -926,14 +926,12 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
     }
 
     zu_close(f);
-    free(f);
     return true;
 
 corrupted:
     wxLogMessage(climatology_pi + _("cyclone data corrupt: ") + filename
                  + wxString::Format(_T(" at %ld"), zu_tell(f)));
     zu_close(f);
-    free(f);
     return false;
 }
 
