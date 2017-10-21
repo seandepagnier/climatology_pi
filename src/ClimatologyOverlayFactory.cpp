@@ -849,12 +849,13 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
         return false;
 
     wxUint16 lyear, llastmonth;
+    Cyclone *cyclone;
     while(zu_read(f, &lyear, sizeof lyear)==sizeof lyear) {
 #ifdef __MSVC__
         if(lyear < 1972)
             lyear = 1972;
 #endif
-        Cyclone *cyclone = new Cyclone;
+        cyclone = new Cyclone;
         llastmonth = 0;
 
         wxUint8 wk;
@@ -931,6 +932,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
 corrupted:
     wxLogMessage(climatology_pi + _("cyclone data corrupt: ") + filename
                  + wxString::Format(_T(" at %ld"), zu_tell(f)));
+    delete cyclone;
     zu_close(f);
     return false;
 }
