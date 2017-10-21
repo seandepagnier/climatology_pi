@@ -455,6 +455,7 @@ void ClimatologyConfigDialog::OnUpdateCyclones()
 void ClimatologyConfigDialog::OnPaintKey( wxPaintEvent& event )
 {
     wxWindow *window = dynamic_cast<wxWindow*>(event.GetEventObject());
+    assert( window != 0);
 
     wxPaintDC dc( window );
 
