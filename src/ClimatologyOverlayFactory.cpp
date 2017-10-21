@@ -1059,6 +1059,7 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
             m_ElNinoYears[year] = elninoyear;
         }
     }
+    fclose(f);
     return true;
 }
 
