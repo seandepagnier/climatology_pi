@@ -1657,6 +1657,7 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
 
         totals += mul*speeds[i]*directions[i];
     }
+    assert(totald != 0);
     return (double)totals / totald;
 }
 
