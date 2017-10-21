@@ -91,7 +91,7 @@ private:
     virtual double CalcParameter(double lat, double lon) = 0;
     double Parameter(double lat, double lon);
 
-    void PlotRegion(std::list<PlotLineSeg*> &region,
+    void PlotRegion(std::list<PlotLineSeg> &region,
                     double lat1, double lon1, double lat2, double lon2,
                     int maxdepth);
     void BuildParamCache(ParamCache &cache, double lat);
@@ -109,7 +109,7 @@ private:
     ParamCache m_Cache[2];
 
     /* the line segments for the entire globe split into zones */
-    std::list<PlotLineSeg*> m_map[LATITUDE_ZONES][LONGITUDE_ZONES];
+    std::list<PlotLineSeg> m_map[LATITUDE_ZONES][LONGITUDE_ZONES];
 
     double m_MinContour, m_MaxContour;
     int m_contourcachesize;
