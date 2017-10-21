@@ -143,6 +143,7 @@ IsoBarMap::IsoBarMap(wxString name, double spacing, double step) :
     m_Spacing(spacing), m_Step(step), m_PoleAccuracy(1e-4),
     m_MinContour(NAN), m_MaxContour(NAN),
     m_contourcachesize(0), m_contourcache(NULL),
+    lastx(0), lasty(0),
     m_Name(name), m_bPolar(false), m_Color(*wxBLACK)
      {}
 
@@ -566,6 +567,8 @@ ContourBitmap IsoBarMap::ContourCacheData(double value)
     ContourBitmap t;
     t.image = image;
     t.data = e;
+    t.lastx = 0;
+    t.lasty = 0;
     return t;
 }
 
