@@ -659,8 +659,8 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
                         wp.calm = value;
                     }
 
-                    wp.directions = new wxUint8[dirs];
-                    wp.speeds = new wxUint8[dirs];
+                    wp.directions = new wxUint8[dirs]();
+                    wp.speeds = new wxUint8[dirs]();
                 } else if(wp.gale != 255) {
                     if(pass < dirs + 1) {
                         if(zu_read(f, &value, 1) != 1)
