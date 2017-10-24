@@ -782,21 +782,29 @@ void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
     m_dlg.m_cbCurrent->Enable();
 
     wxUint16 header[3];
-    zu_read(f, header, sizeof header);
-    m_CurrentData[month] = new CurrentData(header[0], header[1], header[2]);
+    if (zu_read(f, header, sizeof header) != sizeof header)
+        goto corrupt;
 
+    m_CurrentData[month] = new CurrentData(header[0], header[1], header[2]);
     for(int dim = 0; dim<2; dim++)
         for(int lati = 0; lati < m_CurrentData[month]->latitudes; lati++)
             for(int loni = 0; loni < m_CurrentData[month]->longitudes; loni++) {
                 int ind = m_CurrentData[month]->longitudes * lati + loni;
                 wxInt8 v;
-                zu_read(f, &v, 1);
+                if (zu_read(f, &v, 1) != 1)
+                    goto corrupt;
+
                 if(v == -128)
                     m_CurrentData[month]->data[dim][ind] = NAN;
                 else
                     m_CurrentData[month]->data[dim][ind] = (float)v / m_CurrentData[month]->multiplier;
             }
-
+    zu_close(f);
+    return;
+corrupt:
+    delete m_CurrentData[month];
+    m_CurrentData[month] = NULL;
+    wxLogMessage(climatology_pi + _("current data file corrupt: ") + filename);
     zu_close(f);
 }
 
