@@ -844,6 +844,8 @@ havedata:
 
                 nwarned = false;
             }
+            if (mcount == 0)
+                mcount = 1;
 
             m_CurrentData[12]->data[0][lati*longitudes + loni] = u / mcount;
             m_CurrentData[12]->data[1][lati*longitudes + loni] = v / mcount;
