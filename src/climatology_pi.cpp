@@ -274,9 +274,12 @@ void climatology_pi::OnToolbarToolCallback(int id)
 
 void climatology_pi::OnClimatologyDialogClose()
 {
-    if(m_pClimatologyDialog)
+    if(m_pClimatologyDialog) {
+        if(m_pClimatologyDialog->m_cfgdlg)
+            m_pClimatologyDialog->m_cfgdlg->Hide();
         m_pClimatologyDialog->Show(false);
-
+        RequestRefresh(m_parent_window); // refresh main window
+    }
     SaveConfig();
 }
 
