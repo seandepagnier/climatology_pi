@@ -295,7 +295,7 @@ void ClimatologyDialog::Now()
     }
 
     if(day <= 67)
-        day += 356;
+        day += 365;
     m_sTimeline->SetValue(day);
 
     UpdateTrackingControls();
