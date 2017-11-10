@@ -98,6 +98,7 @@ public:
       void SetColorScheme(PI_ColorScheme cs);
 
       void OnClimatologyDialogClose();
+      void SendTimelineMessage(wxDateTime time);
 
 private:
       void FreeData();

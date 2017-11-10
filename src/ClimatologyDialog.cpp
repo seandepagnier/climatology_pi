@@ -40,10 +40,9 @@
 #include "ClimatologyConfigDialog.h"
 
 ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
-    : ClimatologyDialogBase(parent)
+    : ClimatologyDialogBase(parent), pPlugIn(ppi), pParent(parent)
+
 {
-    pParent = parent;
-    pPlugIn = ppi;
 
     m_cfgdlg = new ClimatologyConfigDialog(this);
 
@@ -64,6 +63,18 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
                        ( ClimatologyDialog::OnFitTimer ), NULL, this);
 }
 
+bool ClimatologyDialog::Show(bool show)
+{
+    if (show == false) {
+        pPlugIn->SendTimelineMessage( wxInvalidDateTime );
+    }
+    else if (g_pOverlayFactory != 0 && m_sTimeline != 0) {
+        wxDateTime timeline = g_pOverlayFactory->m_CurrentTimeline;
+        timeline.SetYear(wxDateTime::Now().GetYear() + ( m_sTimeline->GetValue() > 365?1:0));
+        pPlugIn->SendTimelineMessage( timeline );
+    }
+    return ClimatologyDialogBase::Show(show);
+}
 
 ClimatologyDialog::~ClimatologyDialog()
 {
@@ -185,12 +196,15 @@ void ClimatologyDialog::DayMonthUpdate()
     timeline.SetDay(m_sDay->GetValue());
 
     int yearday = g_pOverlayFactory->m_CurrentTimeline.GetDayOfYear();
-    if(yearday < 67)
+    if(yearday < 67) {
         yearday += 365;
+    }
     m_sTimeline->SetValue(yearday);
 
     UpdateTrackingControls();
-
+    wxDateTime now = timeline;
+    now.SetYear(wxDateTime::Now().GetYear() + ( yearday > 365?1:0));
+    pPlugIn->SendTimelineMessage(now);
 //    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
     RefreshRedraw();
 }
@@ -198,14 +212,22 @@ void ClimatologyDialog::DayMonthUpdate()
 void ClimatologyDialog::OnTimeline( wxScrollEvent& event )
 {
     wxDateTime &timeline = g_pOverlayFactory->m_CurrentTimeline;
+    wxDateTime old = timeline;
+
     timeline.SetToYearDay((event.GetPosition() - 1) % 365 + 1);
     m_cMonth->SetSelection(timeline.GetMonth());
+
 
     m_sDay->SetRange(1, wxDateTime::GetNumberOfDays(timeline.GetMonth(),
                                                     1999)); // not a leap year
     m_sDay->SetValue(timeline.GetDay());
 
+    if (old.IsSameDate(timeline))
+        return;
     UpdateTrackingControls();
+    wxDateTime now = timeline;
+    now.SetYear(wxDateTime::Now().GetYear()+ ( event.GetPosition() > 365?1:0));
+    pPlugIn->SendTimelineMessage(now);
 //    pPlugIn->GetOverlayFactory()->m_bUpdateCyclones = true;
     RefreshRedraw();
 }
@@ -297,6 +319,6 @@ void ClimatologyDialog::Now()
     if(day <= 67)
         day += 356;
     m_sTimeline->SetValue(day);
-
+    pPlugIn->SendTimelineMessage(now);
     UpdateTrackingControls();
 }
