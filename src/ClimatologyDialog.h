@@ -64,6 +64,7 @@ public:
 
     ClimatologyConfigDialog *m_cfgdlg;
     climatology_pi *pPlugIn;
+    bool Show(bool show);
 
 private:
     wxCheckBox *GetSettingControl(int setting);

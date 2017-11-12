@@ -335,6 +335,33 @@ void climatology_pi::SetPluginMessage(wxString &message_id, wxString &message_bo
     }
 }
 
+// -------------------------------------------------------
+// GRIB_TIMELINE is a misnomer
+void climatology_pi::SendTimelineMessage(wxDateTime time)
+{
+    wxJSONValue v;
+    if (time.IsValid()) {
+        v[_T("Day")] = time.GetDay();
+        v[_T("Month")] = time.GetMonth();
+        v[_T("Year")] = time.GetYear();
+        v[_T("Hour")] = time.GetHour();
+        v[_T("Minute")] = time.GetMinute();
+        v[_T("Second")] = time.GetSecond();
+    }
+    else {
+        v[_T("Day")] = -1;
+        v[_T("Month")] = -1;
+        v[_T("Year")] = -1;
+        v[_T("Hour")] = -1;
+        v[_T("Minute")] = -1;
+        v[_T("Second")] = -1;
+    }
+    wxJSONWriter w;
+    wxString out;
+    w.Write(v, out);
+    SendPluginMessage(wxString(_T("GRIB_TIMELINE")), out);
+}
+
 void climatology_pi::FreeData()
 {
     delete g_pOverlayFactory;
