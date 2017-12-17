@@ -518,6 +518,8 @@ bool ClimatologyOverlayFactory::InterpolateWindAtlasTime(int month, int nmonth, 
                                                          double *directions, double *speeds,
                                                          double &gale, double &calm)
 {
+    if(!m_WindData[month] || !m_WindData[nmonth])
+        return false;
     WindData::WindPolar *polar1 = m_WindData[month]->GetPolar(lat, positive_degrees(lon));
     WindData::WindPolar *polar2 = m_WindData[nmonth]->GetPolar(lat, positive_degrees(lon));
 
