@@ -8,8 +8,14 @@
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-    #pragma implementation "jsonreader.cpp"
+//#ifdef __GNUG__
+//    #pragma implementation "jsonreader.cpp"
+//#endif
+
+#ifdef NDEBUG
+// make wxLogTrace a noop if no debug set, it's really slow
+// must be defined before including debug.h
+#define wxDEBUG_LEVEL 0
 #endif
 
 #include "jsonreader.h"
@@ -18,7 +24,6 @@
 #include <wx/sstream.h>
 #include <wx/debug.h>
 #include <wx/log.h>
-
 
 
 /*! \class wxJSONReader
@@ -171,9 +176,10 @@
 // trace messages by setting the:
 // WXTRACE=traceReader StoreComment
 // environment variable
+#if wxDEBUG_LEVEL > 0
 static const wxChar* traceMask = _T("traceReader");
 static const wxChar* storeTraceMask = _T("StoreComment");
-
+#endif
 
 //! Ctor
 /*!
@@ -1971,26 +1977,28 @@ wxJSONReader::Strtoll( const wxString& str, wxInt64* i64 )
     wxUint64 ui64;
     bool r = DoStrto_ll( str, &ui64, &sign );
 
-    // check overflow for signed long long
-    switch ( sign )  {
-        case '-' :
-            if ( ui64 > (wxUint64) LLONG_MAX + 1 )  {
-                r = false;
-            }
-            else  {
-                *i64 = (wxInt64) (ui64 * -1);
-            }
-            break;
+    if ( r) {
+        // check overflow for signed long long
+        switch ( sign )  {
+            case '-' :
+                if ( ui64 > (wxUint64) LLONG_MAX + 1 )  {
+                    r = false;
+                }
+                else  {
+                    *i64 = (wxInt64) (ui64 * -1);
+                }
+                break;
 
-        // case '+' :
-        default :
-            if ( ui64 > LLONG_MAX )  {
-                r = false;
-            }
-            else  {
-                *i64 = (wxInt64) ui64;
-            }
-            break;
+            // case '+' :
+            default :
+                if ( ui64 > LLONG_MAX )  {
+                    r = false;
+                }
+                else  {
+                    *i64 = (wxInt64) ui64;
+                }
+                break;
+        }
     }
     return r;
 }
