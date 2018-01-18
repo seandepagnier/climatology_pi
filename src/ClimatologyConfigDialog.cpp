@@ -217,7 +217,11 @@ void ClimatologyOverlaySettings::Save()
 }
 
 ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
-  : ClimatologyConfigDialogBase(parent)
+#ifndef __WXOSX__
+    : ClimatologyConfigDialogBase(parent)
+#else
+    : ClimatologyConfigDialogBase(parent, wxID_ANY, _("Climatology Configuration"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP)
+#endif
 {
     pParent = parent;
 

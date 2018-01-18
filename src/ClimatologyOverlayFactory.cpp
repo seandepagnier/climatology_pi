@@ -42,6 +42,8 @@
 #include "climatology_pi.h"
 #include "gldefs.h"
 
+#define FAILED_FILELIST_MSG_LEN 500
+
 static int s_multitexturing = 0;
 static PFNGLACTIVETEXTUREARBPROC s_glActiveTextureARB = 0;
 static PFNGLMULTITEXCOORD2DARBPROC s_glMultiTexCoord2dARB = 0;
@@ -440,16 +442,19 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     BuildCycloneCache();
 
     if(m_bFailedLoading) {
-        wxMessageDialog mdlg(&m_dlg, 
+        wxString failed_msg = m_sFailedMessage.Left(FAILED_FILELIST_MSG_LEN);
+        if( m_sFailedMessage.Len() > FAILED_FILELIST_MSG_LEN )
+            failed_msg.Append("...\n\n");
+        wxMessageDialog mdlg(&m_dlg,
                              _("Some Data Failed to load:\n")
-                             + m_sFailedMessage +
+                             + failed_msg +
                              _("Would you like to try to download?"),
                              _("Climatology"), wxYES | wxNO | wxICON_WARNING);
         if(mdlg.ShowModal() == wxID_YES) {
             wxLaunchDefaultBrowser(
                 _T("http://sourceforge.net/projects/opencpnplugins/files/climatology_pi/"));
             wxMessageDialog mdlg(&m_dlg, _("You must extract this data, and place in: ") + path +
-                                 _("\nthen restart opencpn"),
+                                 _("\nthen restart OpenCPN"),
                                  _("Climatology"), wxOK);
             mdlg.ShowModal();
         }
