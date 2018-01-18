@@ -148,8 +148,10 @@ void ClimatologyOverlaySettings::Load()
         pConf->Read ( Name + _T ( "Numbers" ), &Settings[i].m_bNumbers, 0);
         pConf->Read ( Name + _T ( "NumbersSpacing" ), &Settings[i].m_iNumbersSpacing, 50);
 
-        if(i > CURRENT)
+        if(i > CURRENT) {
+            Settings[i].m_bDirectionArrows = false;
             continue;
+        }
 
         pConf->Read ( Name + _T ( "DirectionArrows" ), &Settings[i].m_bDirectionArrows, i==CURRENT);
         pConf->Read ( Name + _T ( "DirectionArrowsLengthType" ), &Settings[i].m_iDirectionArrowsLengthType, 1);
@@ -453,6 +455,7 @@ void ClimatologyConfigDialog::OnUpdateCyclones()
 void ClimatologyConfigDialog::OnPaintKey( wxPaintEvent& event )
 {
     wxWindow *window = dynamic_cast<wxWindow*>(event.GetEventObject());
+    assert( window != 0);
 
     wxPaintDC dc( window );
 

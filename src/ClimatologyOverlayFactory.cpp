@@ -193,7 +193,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbPressure->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     if(!progressdialog.Update(27, _("sea surface tempertature")))
         return;
@@ -223,7 +223,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbSeaTemperature->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     if(!progressdialog.Update(28, _("air tempertature")))
         return;
@@ -253,7 +253,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbAirTemperature->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     if(!progressdialog.Update(28, _("cloud cover")))
         return;
@@ -283,7 +283,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbCloudCover->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     if(!progressdialog.Update(29, _("precipitation")))
         return;
@@ -313,7 +313,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbPrecipitation->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     if(!progressdialog.Update(30, _("relative humidity")))
         return;
@@ -343,7 +343,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbRelativeHumidity->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     /* load lightning */
     if(!progressdialog.Update(30, _("lightning")))
@@ -367,7 +367,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbLightning->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     /* load sea depth */
     if(!progressdialog.Update(30, _("sea depth")))
@@ -388,7 +388,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             m_dlg.m_cbSeaDepth->Enable();
         }
     }
-    zu_close(f), free(f);
+    zu_close(f);
 
     /* load cyclone tracks */
     bool allcyclone = true;
@@ -661,8 +661,8 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
                         wp.calm = value;
                     }
 
-                    wp.directions = new wxUint8[dirs];
-                    wp.speeds = new wxUint8[dirs];
+                    wp.directions = new wxUint8[dirs]();
+                    wp.speeds = new wxUint8[dirs]();
                 } else if(wp.gale != 255) {
                     if(pass < dirs + 1) {
                         if(zu_read(f, &value, 1) != 1)
@@ -682,14 +682,14 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
             }
         }
 
-    zu_close(f), free(f);
+    zu_close(f);
     return;
 
 corrupt:
     delete m_WindData[month];
     m_WindData[month] = NULL;
     wxLogMessage(climatology_pi + _("wind data file corrupt: ") + filename);
-    zu_close(f), free(f);
+    zu_close(f);
 }
 
 float max_value(float *values, int cnt)
@@ -784,22 +784,30 @@ void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
     m_dlg.m_cbCurrent->Enable();
 
     wxUint16 header[3];
-    zu_read(f, header, sizeof header);
-    m_CurrentData[month] = new CurrentData(header[0], header[1], header[2]);
+    if (zu_read(f, header, sizeof header) != sizeof header)
+        goto corrupt;
 
+    m_CurrentData[month] = new CurrentData(header[0], header[1], header[2]);
     for(int dim = 0; dim<2; dim++)
         for(int lati = 0; lati < m_CurrentData[month]->latitudes; lati++)
             for(int loni = 0; loni < m_CurrentData[month]->longitudes; loni++) {
                 int ind = m_CurrentData[month]->longitudes * lati + loni;
                 wxInt8 v;
-                zu_read(f, &v, 1);
+                if (zu_read(f, &v, 1) != 1)
+                    goto corrupt;
+
                 if(v == -128)
                     m_CurrentData[month]->data[dim][ind] = NAN;
                 else
                     m_CurrentData[month]->data[dim][ind] = (float)v / m_CurrentData[month]->multiplier;
             }
-
-    zu_close(f), free(f);
+    zu_close(f);
+    return;
+corrupt:
+    delete m_CurrentData[month];
+    m_CurrentData[month] = NULL;
+    wxLogMessage(climatology_pi + _("current data file corrupt: ") + filename);
+    zu_close(f);
 }
 
 void ClimatologyOverlayFactory::AverageCurrentData()
@@ -838,6 +846,8 @@ havedata:
 
                 nwarned = false;
             }
+            if (mcount == 0)
+                mcount = 1;
 
             m_CurrentData[12]->data[0][lati*longitudes + loni] = u / mcount;
             m_CurrentData[12]->data[1][lati*longitudes + loni] = v / mcount;
@@ -851,12 +861,13 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
         return false;
 
     wxUint16 lyear, llastmonth;
+    Cyclone *cyclone;
     while(zu_read(f, &lyear, sizeof lyear)==sizeof lyear) {
 #ifdef __MSVC__
         if(lyear < 1972)
             lyear = 1972;
 #endif
-        Cyclone *cyclone = new Cyclone;
+        cyclone = new Cyclone;
         llastmonth = 0;
 
         wxUint8 wk;
@@ -928,14 +939,13 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
     }
 
     zu_close(f);
-    free(f);
     return true;
 
 corrupted:
     wxLogMessage(climatology_pi + _("cyclone data corrupt: ") + filename
                  + wxString::Format(_T(" at %ld"), zu_tell(f)));
+    delete cyclone;
     zu_close(f);
-    free(f);
     return false;
 }
 
@@ -1063,6 +1073,7 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
             m_ElNinoYears[year] = elninoyear;
         }
     }
+    fclose(f);
     return true;
 }
 
@@ -1660,6 +1671,7 @@ double WindData::WindPolar::Value(enum Coord coord, int dir_cnt)
 
         totals += mul*speeds[i]*directions[i];
     }
+    assert(totald != 0);
     return (double)totals / totald;
 }
 

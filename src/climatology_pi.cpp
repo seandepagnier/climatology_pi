@@ -217,10 +217,12 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
     if(!g_pOverlayFactory->m_bCompletedLoading || g_pOverlayFactory->m_bFailedLoading)
         return false;
 
-    if(isnan(speed = g_pOverlayFactory->getValue(MAG, setting, lat, lon, &date)))
+    speed = g_pOverlayFactory->getValue(MAG, setting, lat, lon, &date);
+    if(isnan(speed))
         return false;
 
-    if(isnan(dir = g_pOverlayFactory->getValue(DIRECTION, setting, lat, lon, &date)))
+    dir = g_pOverlayFactory->getValue(DIRECTION, setting, lat, lon, &date);
+    if(isnan(dir))
         return false;
 
     return true;
