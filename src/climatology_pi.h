@@ -33,7 +33,7 @@
 #include "version.h"
 
 #define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    9
+#define     MY_API_VERSION_MINOR    13
 
 #define ABOUT_AUTHOR_URL "http://seandepagnier.users.sourceforge.net"
 
@@ -55,7 +55,7 @@ wxString ClimatologyDataDirectory();
 
 #define CLIMATOLOGY_TOOL_POSITION    -1          // Request default positioning of toolbar tool
 
-class climatology_pi : public opencpn_plugin_19
+class climatology_pi : public opencpn_plugin_113
 {
 public:
       climatology_pi(void *ppimgr);

@@ -25,17 +25,24 @@
  */
 
 #include <wx/wx.h>
+#include <wx/glcanvas.h>
 #include <wx/progdlg.h>
 
+#ifdef __WXOSX__
+# include <OpenGL/OpenGL.h>
+# include <OpenGL/gl3.h>
+#else
 # ifdef __OCPN__ANDROID__
 #  include "qopengl.h"                  // this gives us the qt runtime gles2.h
 #  include "GL/gl_private.h"
 # endif
+#endif
 
 #include "ocpn_plugin.h"
 
 #include "IsoBarMap.h"
 #include "defs.h"
+#include "gldefs.h"
 
 /* initialize cache to contain data */
 void ParamCache::Initialize(double step)
