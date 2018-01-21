@@ -63,7 +63,7 @@ wxString ClimatologyDataDirectory()
 }
 
 climatology_pi::climatology_pi(void *ppimgr)
-      :opencpn_plugin_19(ppimgr)
+      :opencpn_plugin_113(ppimgr)
 {
       // Create the PlugIn icons
       initialize_images();
@@ -96,9 +96,14 @@ int climatology_pi::Init(void)
       m_parent_window = GetOCPNCanvasWindow();
 
       //    This PlugIn needs a toolbar icon, so request its insertion if enabled locally
+#ifdef CLIMATOLOGY_USE_SVG
+      m_leftclick_tool_id = InsertPlugInToolSVG(_T( "Climatology" ), _svg_climatology, _svg_climatology_rollover, _svg_climatology_toggled,
+                                              wxITEM_CHECK, _("Climatology"), _T( "" ), NULL, CLIMATOLOGY_TOOL_POSITION, 0, this);
+#else
       m_leftclick_tool_id  = InsertPlugInTool(_T(""), _img_climatology, _img_climatology, wxITEM_NORMAL,
                                               _("Climatology"), _T(""), NULL,
                                               CLIMATOLOGY_TOOL_POSITION, 0, this);
+#endif
       return (WANTS_OVERLAY_CALLBACK |
            WANTS_OPENGL_OVERLAY_CALLBACK |
            WANTS_CURSOR_LATLON       |
