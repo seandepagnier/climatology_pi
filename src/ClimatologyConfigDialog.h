@@ -52,9 +52,10 @@ struct ClimatologyOverlaySettings
                        RELATIVE_HUMIDITY, LIGHTNING, SEADEPTH, SETTINGS_COUNT};
     enum Units0 {KNOTS, M_S, MPH, KPH};
     enum Units1 {MILLIBARS, MMHG};
-    enum Units2 {METERS, FEET, INCHES};
+    enum Units2 {MM_DAY, IN_DAY, MM_MONTH, M_MONTH, IN_MONTH, FT_MONTH, M_YEAR, IN_YEAR, FT_YEAR};
     enum Units3 {CELCIUS, FAHRENHEIT};
     enum Units4 {PERCENTAGE};
+    enum Units6 {METERS, FEET};
 
     struct OverlayDataSettings {
         int m_Units;
