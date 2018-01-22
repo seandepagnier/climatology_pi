@@ -25,17 +25,24 @@
  */
 
 #include <wx/wx.h>
+#include <wx/glcanvas.h>
 #include <wx/progdlg.h>
 
+#ifdef __WXOSX__
+# include <OpenGL/OpenGL.h>
+# include <OpenGL/gl3.h>
+#else
 # ifdef __OCPN__ANDROID__
 #  include "qopengl.h"                  // this gives us the qt runtime gles2.h
 #  include "GL/gl_private.h"
 # endif
+#endif
 
 #include "ocpn_plugin.h"
 
 #include "IsoBarMap.h"
 #include "defs.h"
+#include "gldefs.h"
 
 /* initialize cache to contain data */
 void ParamCache::Initialize(double step)
@@ -143,6 +150,7 @@ IsoBarMap::IsoBarMap(wxString name, double spacing, double step) :
     m_Spacing(spacing), m_Step(step), m_PoleAccuracy(1e-4),
     m_MinContour(NAN), m_MaxContour(NAN),
     m_contourcachesize(0), m_contourcache(NULL),
+    lastx(0), lasty(0),
     m_Name(name), m_bPolar(false), m_Color(*wxBLACK)
      {}
 
@@ -265,14 +273,13 @@ bool IsoBarMap::Interpolate(double x1, double x2, double y1, double y2, bool lat
 }
 
 /* once we have a final line segment, store it in the database */
-void AddLineSeg(std::list<PlotLineSeg*> &region, double lat1, double lon1, double lat2, double lon2,
+void AddLineSeg(std::list<PlotLineSeg> &region, double lat1, double lon1, double lat2, double lon2,
                 double contour1, double contour2)
 {
     if(contour1 != contour2) /* this should not be possible */
         return;
 
-    PlotLineSeg *seg = new PlotLineSeg(lat1, lon1, lat2, lon2, contour1);
-    region.push_back(seg);
+    region.push_back(PlotLineSeg(lat1, lon1, lat2, lon2, contour1));
 }
 
 
@@ -288,7 +295,7 @@ void AddLineSeg(std::list<PlotLineSeg*> &region, double lat1, double lon1, doubl
               lon4
 
 */
-void IsoBarMap::PlotRegion(std::list<PlotLineSeg*> &region,
+void IsoBarMap::PlotRegion(std::list<PlotLineSeg> &region,
                            double lat1, double lon1, double lat2, double lon2,
                            int maxdepth)
 {
@@ -566,6 +573,8 @@ ContourBitmap IsoBarMap::ContourCacheData(double value)
     ContourBitmap t;
     t.image = image;
     t.data = e;
+    t.lastx = 0;
+    t.lasty = 0;
     return t;
 }
 
@@ -645,13 +654,13 @@ void IsoBarMap::Plot(wxDC *dc, PlugIn_ViewPort &vp)
         for(int lonind = startlonind;;lonind++) {
             if(lonind > LONGITUDE_ZONES-1)
                 lonind = 0;
-            for(std::list<PlotLineSeg*>::iterator it = m_map[latind][lonind].begin();
+            for(std::list<PlotLineSeg>::iterator it = m_map[latind][lonind].begin();
                 it!=m_map[latind][lonind].end(); it++) {
-                DrawLineSeg(dc, vp, (*it)->lat1, (*it)->lon1, (*it)->lat2, (*it)->lon2);
+                DrawLineSeg(dc, vp, (*it).lat1, (*it).lon1, (*it).lat2, (*it).lon2);
                 wxString msg;
-                DrawContour(dc, vp, (*it)->contour,
-                            ((*it)->lat1 + (*it)->lat2)/2,
-                            ((*it)->lon1 + (*it)->lon2)/2);
+                DrawContour(dc, vp, (*it).contour,
+                            ((*it).lat1 + (*it).lat2)/2,
+                            ((*it).lon1 + (*it).lon2)/2);
             }
             if(lonind == endlonind)
                 break;

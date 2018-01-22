@@ -64,6 +64,7 @@ class ClimatologyDialogBase : public wxDialog
 		wxButton* m_bConfig;
 		
 		// Virtual event handlers, overide them in your derived class
+		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnMonth( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDay( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnAll( wxCommandEvent& event ) { event.Skip(); }

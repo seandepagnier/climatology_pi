@@ -40,8 +40,12 @@
 #include "ClimatologyConfigDialog.h"
 
 ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
-    : ClimatologyDialogBase(parent), pPlugIn(ppi), pParent(parent)
-
+#ifndef __WXOSX__
+    : ClimatologyDialogBase(parent),
+#else
+    : ClimatologyDialogBase(parent, wxID_ANY, _("Climatology Display Control"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxCLOSE_BOX|wxDIALOG_NO_PARENT|wxRESIZE_BORDER|wxSYSTEM_MENU|wxSTAY_ON_TOP),
+#endif
+    pPlugIn(ppi), pParent(parent)
 {
 
     m_cfgdlg = new ClimatologyConfigDialog(this);
@@ -317,7 +321,7 @@ void ClimatologyDialog::Now()
     }
 
     if(day <= 67)
-        day += 356;
+        day += 365;
     m_sTimeline->SetValue(day);
     pPlugIn->SendTimelineMessage(now);
     UpdateTrackingControls();
