@@ -267,7 +267,6 @@ msgstr "siklon önbelleği"
 #: src/ClimatologyOverlayFactory.cpp:449
 msgid "Some Data Failed to load:\n"
 msgstr "Bazı veriler yüklenirken:\n"
-" başarısız oldu"
 
 #: src/ClimatologyOverlayFactory.cpp:451
 msgid "Would you like to try to download?"
