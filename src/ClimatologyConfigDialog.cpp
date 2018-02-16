@@ -48,7 +48,8 @@ static const wxString units4_names[] = {"Percent", wxEmptyString};
 static const wxString units5_names[] = {"Unknown", wxEmptyString};
 static const wxString units6_names[] = {"Meters", "Feet", wxEmptyString};
 static const wxString *unit_names[] = {units0_names, units1_names, units2_names,
-                                       units3_names, units4_names, units5_names};
+                                       units3_names, units4_names, units5_names,
+				       units6_names};
 
 static const wxString name_from_index[] = {"Wind", "Current",
                                            "Sea Level Pressure", "Sea Surface Temperature",
