@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-15 13:12-0300\n"
-"PO-Revision-Date: 2018-02-15 13:05-0500\n"
+"PO-Revision-Date: 2018-03-03 08:23-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -42,39 +42,39 @@ msgstr "mmHG"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "mm/day"
-msgstr ""
+msgstr "mm/jour"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "in/day"
-msgstr ""
+msgstr "pouces/jour"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "mm/month"
-msgstr ""
+msgstr "mm/Mois"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "M/month"
-msgstr ""
+msgstr "M/mois"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "in/month"
-msgstr ""
+msgstr "pouces/mois"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "ft/month"
-msgstr ""
+msgstr "pieds/mois"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "M/year"
-msgstr ""
+msgstr "M/an"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "in/year"
-msgstr ""
+msgstr "pouces/an"
 
 #: src/ClimatologyConfigDialog.cpp:45
 msgid "ft/year"
-msgstr ""
+msgstr "pieds/an"
 
 #: src/ClimatologyConfigDialog.cpp:46
 msgid "Celcius"
@@ -279,7 +279,8 @@ msgstr "Vous devez extraire les données, et les placer dans : "
 #: src/ClimatologyOverlayFactory.cpp:457
 msgid "\n"
 "then restart OpenCPN"
-msgstr ""
+msgstr "\n"
+"puis redémarrer OpenCPN"
 
 #: src/ClimatologyOverlayFactory.cpp:696
 msgid "wind data file corrupt: "
@@ -287,7 +288,7 @@ msgstr "fichier des données du vent corrompu"
 
 #: src/ClimatologyOverlayFactory.cpp:814
 msgid "current data file corrupt: "
-msgstr ""
+msgstr "fichier des données courant corrompu : "
 
 #: src/ClimatologyOverlayFactory.cpp:849
 msgid "Average Current includes only"
@@ -303,7 +304,7 @@ msgstr "données de cyclone corrompues : "
 
 #: src/ClimatologyOverlayFactory.cpp:1040
 msgid "cyclone cache: "
-msgstr ""
+msgstr "cache des cyclones : "
 
 #: src/ClimatologyOverlayFactory.cpp:1062
 msgid "failed to open file: "
