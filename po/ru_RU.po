@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-15 13:12-0300\n"
-"PO-Revision-Date: 2018-02-15 13:06-0500\n"
+"PO-Revision-Date: 2018-03-03 08:25-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: opencpn\n"
 "X-Crowdin-Language: ru\n"
@@ -143,7 +143,7 @@ msgstr ""
 
 #: src/ClimatologyConfigDialog.cpp:235 src/ClimatologyUI.h:218
 msgid "Climatology Configuration"
-msgstr ""
+msgstr "Конфигурация Климатологии"
 
 #: src/ClimatologyConfigDialog.cpp:422
 msgid "ClimatologyInformation.html"
@@ -151,7 +151,7 @@ msgstr ""
 
 #: src/ClimatologyDialog.cpp:46 src/ClimatologyUI.h:99
 msgid "Climatology Display Control"
-msgstr ""
+msgstr "Управление Дисплея Климатологии"
 
 #: src/ClimatologyOverlayFactory.cpp:140 src/ClimatologyOverlayFactory.cpp:452
 #: src/ClimatologyOverlayFactory.cpp:458 src/ClimatologyOverlayFactory.cpp:1284
@@ -162,7 +162,7 @@ msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:154
 msgid "averaging wind"
-msgstr ""
+msgstr "усреднение ветра"
 
 #: src/ClimatologyOverlayFactory.cpp:166
 msgid "averaging current"
@@ -214,7 +214,7 @@ msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:326
 msgid "relative humidity file truncated"
-msgstr ""
+msgstr "усеченный файл относительной влажности"
 
 #: src/ClimatologyOverlayFactory.cpp:351
 msgid "lightning"
@@ -274,7 +274,7 @@ msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:456
 msgid "You must extract this data, and place in: "
-msgstr ""
+msgstr "Вы должны извлечь эти данные, и поместить их в: "
 
 #: src/ClimatologyOverlayFactory.cpp:457
 msgid "\n"
@@ -291,7 +291,7 @@ msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:849
 msgid "Average Current includes only"
-msgstr ""
+msgstr "Средний ток включает только"
 
 #: src/ClimatologyOverlayFactory.cpp:850
 msgid "months"
@@ -320,7 +320,7 @@ msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:2055
 msgid "Climatology overlay map unsupported unless OpenGL is enabled"
-msgstr ""
+msgstr "Климатология наложение данных на карту не поддерживается если версия OpenGL включен"
 
 #: src/ClimatologyOverlayFactory.cpp:2093
 msgid "failed to read file: "
@@ -328,7 +328,7 @@ msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:2492
 msgid "Computer too slow to render cyclones, disabling theater"
-msgstr ""
+msgstr "Компьютер слишком медленно рендерить циклоны, отключив театр"
 
 #: src/ClimatologyUI.cpp:24
 msgid "Month"
@@ -520,7 +520,9 @@ msgstr ""
 msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\n"
 "The barbs indicate wind speed, each barb being 5 knots.\n\n"
 "The numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
-msgstr ""
+msgstr "На дисплее атласа ветра отображается процент времени, в течение которого ветер находится в каждом из восьми направлений в виде длины стрелки, или в случае если он превышает 29% отображается число.\n\n"
+"Колючки показывают скорость ветра, каждая колючка 5 узлов.\n\n"
+"Числа внутри круга, если синий дать процент средней скорости ветра как спокойствие (3 узлов или меньше) или в красном по крайней мере штормовой силы (34 узлов и выше)."
 
 #: src/ClimatologyUI.cpp:536
 msgid "Start Date"
@@ -624,11 +626,11 @@ msgstr ""
 
 #: src/ClimatologyUI.cpp:748
 msgid "Direction arrows are spaced every 6 hours on storm track"
-msgstr ""
+msgstr "Стрелки направления расположены каждые 6 часов на тропе шторма"
 
 #: src/ClimatologyUI.cpp:771
 msgid "Climatology Plugin Version"
-msgstr ""
+msgstr "Версия Плагина Климатологии"
 
 #: src/ClimatologyUI.cpp:779
 msgid "Climatology Data Directory"
@@ -664,7 +666,7 @@ msgstr ""
 
 #: src/climatology_pi.cpp:164
 msgid "Climatology PlugIn for OpenCPN"
-msgstr ""
+msgstr "Плагин климатологии для OpenCPN"
 
 #: src/climatology_pi.cpp:170
 msgid "Climatology PlugIn for OpenCPN\n"
@@ -677,5 +679,14 @@ msgid "Climatology PlugIn for OpenCPN\n"
 "- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n"
 "- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n"
 "- Tropical Cyclone tracks"
-msgstr ""
+msgstr "Плагин климатологии для OpenCPN\n"
+"Предоставляет возможности наложения для исторических погодных данных.\n\n"
+"Поддерживаемые типы Климатологии включают:\n"
+"- Средние направления ветра и скорость\n"
+"- Процент шторма и спокойных условий\n"
+"- Морские Поверхностные Течения\n"
+"- Средний набухают и seastate (еще не реализованы)\n"
+"- Осадки, влажность, Облачный Покров, и удары молнии \n"
+"- Ежемесячное среднее давление уровня моря и температура моря, температура воздушной среды\n"
+"- Тропические циклоны треков"
 

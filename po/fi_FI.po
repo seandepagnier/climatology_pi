@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-15 13:12-0300\n"
-"PO-Revision-Date: 2018-02-15 13:05-0500\n"
+"PO-Revision-Date: 2018-03-03 08:23-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -42,39 +42,39 @@ msgstr "mmHG"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "mm/day"
-msgstr ""
+msgstr "mm/vrk"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "in/day"
-msgstr ""
+msgstr "tuuma/päivä"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "mm/month"
-msgstr ""
+msgstr "mm/kk"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "M/month"
-msgstr ""
+msgstr "m/kk"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "in/month"
-msgstr ""
+msgstr "tuuma/kk"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "ft/month"
-msgstr ""
+msgstr "jalkaa/kk"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "M/year"
-msgstr ""
+msgstr "m/vuodessa"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "in/year"
-msgstr ""
+msgstr "tuumaa/vuosi"
 
 #: src/ClimatologyConfigDialog.cpp:45
 msgid "ft/year"
-msgstr ""
+msgstr "jalkaa/vuosi"
 
 #: src/ClimatologyConfigDialog.cpp:46
 msgid "Celcius"
@@ -279,7 +279,8 @@ msgstr "Pura tiedot ja sijoita: "
 #: src/ClimatologyOverlayFactory.cpp:457
 msgid "\n"
 "then restart OpenCPN"
-msgstr ""
+msgstr "\n"
+"sitten käynnistä opencpn uudelleen"
 
 #: src/ClimatologyOverlayFactory.cpp:696
 msgid "wind data file corrupt: "
@@ -287,7 +288,7 @@ msgstr "Tuuli datatiedosto on vioittunut: "
 
 #: src/ClimatologyOverlayFactory.cpp:814
 msgid "current data file corrupt: "
-msgstr ""
+msgstr "nykyinen datatiedosto on vioittunut: "
 
 #: src/ClimatologyOverlayFactory.cpp:849
 msgid "Average Current includes only"
@@ -303,7 +304,7 @@ msgstr "sykloonin tiedot vioittuneet: "
 
 #: src/ClimatologyOverlayFactory.cpp:1040
 msgid "cyclone cache: "
-msgstr ""
+msgstr "cyclone välimuisti: "
 
 #: src/ClimatologyOverlayFactory.cpp:1062
 msgid "failed to open file: "

@@ -3,147 +3,147 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-15 13:12-0300\n"
-"PO-Revision-Date: 2018-03-03 08:22-0500\n"
+"PO-Revision-Date: 2018-03-03 08:24-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
-"Language-Team: Arabic\n"
-"Language: ar_SA\n"
+"Language-Team: Indonesian\n"
+"Language: id_ID\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: opencpn\n"
-"X-Crowdin-Language: ar\n"
+"X-Crowdin-Language: id\n"
 "X-Crowdin-File: /plugins/climatology_pi/po/climatology_pi.pot\n"
 
 #: src/ClimatologyConfigDialog.cpp:41
 msgid "Knots"
-msgstr ""
+msgstr "Knot"
 
 #: src/ClimatologyConfigDialog.cpp:41
 msgid "M/S"
-msgstr ""
+msgstr "M/S"
 
 #: src/ClimatologyConfigDialog.cpp:41
 msgid "MPH"
-msgstr ""
+msgstr "MPH"
 
 #: src/ClimatologyConfigDialog.cpp:41
 msgid "KPH"
-msgstr ""
+msgstr "KPH"
 
 #: src/ClimatologyConfigDialog.cpp:42
 msgid "MilliBars"
-msgstr ""
+msgstr "MiliBar"
 
 #: src/ClimatologyConfigDialog.cpp:42
 msgid "mmHG"
-msgstr ""
+msgstr "mmHG"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "mm/day"
-msgstr ""
+msgstr "mm/hari"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "in/day"
-msgstr ""
+msgstr "in/hari"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "mm/month"
-msgstr ""
+msgstr "mm/bulan"
 
 #: src/ClimatologyConfigDialog.cpp:43
 msgid "M/month"
-msgstr ""
+msgstr "M/bulan"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "in/month"
-msgstr ""
+msgstr "in/bulan"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "ft/month"
-msgstr ""
+msgstr "ft/bulan"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "M/year"
-msgstr ""
+msgstr "M/tahun"
 
 #: src/ClimatologyConfigDialog.cpp:44
 msgid "in/year"
-msgstr ""
+msgstr "in/tahun"
 
 #: src/ClimatologyConfigDialog.cpp:45
 msgid "ft/year"
-msgstr ""
+msgstr "ft/tahun"
 
 #: src/ClimatologyConfigDialog.cpp:46
 msgid "Celcius"
-msgstr ""
+msgstr "Celcius"
 
 #: src/ClimatologyConfigDialog.cpp:46
 msgid "Fahrenheit"
-msgstr ""
+msgstr "Fahrenheit"
 
 #: src/ClimatologyConfigDialog.cpp:47
 msgid "Percent"
-msgstr ""
+msgstr "Persen"
 
 #: src/ClimatologyConfigDialog.cpp:48
 msgid "Unknown"
-msgstr ""
+msgstr "Tidak diketahui"
 
 #: src/ClimatologyConfigDialog.cpp:49
 msgid "Meters"
-msgstr ""
+msgstr "Meter"
 
 #: src/ClimatologyConfigDialog.cpp:49
 msgid "Feet"
-msgstr ""
+msgstr "Kaki"
 
 #: src/ClimatologyConfigDialog.cpp:63 src/ClimatologyUI.cpp:80
 #: src/ClimatologyUI.cpp:523
 msgid "Wind"
-msgstr ""
+msgstr "Angin"
 
 #: src/ClimatologyConfigDialog.cpp:64 src/ClimatologyUI.cpp:91
 msgid "Current"
-msgstr ""
+msgstr "Saat ini"
 
 #: src/ClimatologyConfigDialog.cpp:65
 msgid "Sea Level Pressure"
-msgstr ""
+msgstr "Tingkatan Tekanan Laut"
 
 #: src/ClimatologyConfigDialog.cpp:66
 msgid "Sea Surface Temperature"
-msgstr ""
+msgstr "Suhu Permukaan Laut"
 
 #: src/ClimatologyConfigDialog.cpp:67 src/ClimatologyUI.cpp:126
 msgid "Air Temperature"
-msgstr ""
+msgstr "Temperatur udara"
 
 #: src/ClimatologyConfigDialog.cpp:68 src/ClimatologyUI.cpp:134
 msgid "Cloud Cover"
-msgstr ""
+msgstr "Penutup Awan"
 
 #: src/ClimatologyConfigDialog.cpp:69 src/ClimatologyUI.cpp:142
 msgid "Precipitation"
-msgstr ""
+msgstr "Pengendapan"
 
 #: src/ClimatologyConfigDialog.cpp:70
 msgid "Relative Humidity"
-msgstr ""
+msgstr "Kelembaban relatif"
 
 #: src/ClimatologyConfigDialog.cpp:71 src/ClimatologyUI.cpp:158
 msgid "Lightning"
-msgstr ""
+msgstr "Petir"
 
 #: src/ClimatologyConfigDialog.cpp:72 src/ClimatologyUI.cpp:166
 msgid "Sea Depth"
-msgstr ""
+msgstr "Kedalaman Laut"
 
 #: src/ClimatologyConfigDialog.cpp:235 src/ClimatologyUI.h:218
 msgid "Climatology Configuration"
-msgstr ""
+msgstr "Konfigurasi Klimatologi"
 
 #: src/ClimatologyConfigDialog.cpp:422
 msgid "ClimatologyInformation.html"
@@ -151,408 +151,411 @@ msgstr ""
 
 #: src/ClimatologyDialog.cpp:46 src/ClimatologyUI.h:99
 msgid "Climatology Display Control"
-msgstr ""
+msgstr "Kontrol Display Klimatologi"
 
 #: src/ClimatologyOverlayFactory.cpp:140 src/ClimatologyOverlayFactory.cpp:452
 #: src/ClimatologyOverlayFactory.cpp:458 src/ClimatologyOverlayFactory.cpp:1284
 #: src/ClimatologyOverlayFactory.cpp:2493 src/climatology_pi.cpp:101
 #: src/climatology_pi.cpp:104 src/climatology_pi.cpp:158
 msgid "Climatology"
-msgstr ""
+msgstr "Klimatologi"
 
 #: src/ClimatologyOverlayFactory.cpp:154
 msgid "averaging wind"
-msgstr ""
+msgstr "angin rata"
 
 #: src/ClimatologyOverlayFactory.cpp:166
 msgid "averaging current"
-msgstr ""
+msgstr "arus rata-rata"
 
 #: src/ClimatologyOverlayFactory.cpp:172
 msgid "sea level presure"
-msgstr ""
+msgstr "tingkatan tekanan laut"
 
 #: src/ClimatologyOverlayFactory.cpp:178
 msgid "slp file truncated"
-msgstr ""
+msgstr "berkas slp terpotong"
 
 #: src/ClimatologyOverlayFactory.cpp:200
 msgid "sea surface tempertature"
-msgstr ""
+msgstr "permukaan laut tempertature"
 
 #: src/ClimatologyOverlayFactory.cpp:206
 msgid "sst file truncated"
-msgstr ""
+msgstr "file sst terpotong"
 
 #: src/ClimatologyOverlayFactory.cpp:230
 msgid "air tempertature"
-msgstr ""
+msgstr "udara tempertature"
 
 #: src/ClimatologyOverlayFactory.cpp:236
 msgid "at file truncated"
-msgstr ""
+msgstr "pada file terpotong"
 
 #: src/ClimatologyOverlayFactory.cpp:260
 msgid "cloud cover"
-msgstr ""
+msgstr "penutup awan"
 
 #: src/ClimatologyOverlayFactory.cpp:266
 msgid "cld file truncated"
-msgstr ""
+msgstr "file cld terpotong"
 
 #: src/ClimatologyOverlayFactory.cpp:290
 msgid "precipitation"
-msgstr ""
+msgstr "pengendapan"
 
 #: src/ClimatologyOverlayFactory.cpp:296
 msgid "precip file truncated"
-msgstr ""
+msgstr "berkas presipitasi terpotong"
 
 #: src/ClimatologyOverlayFactory.cpp:320
 msgid "relative humidity"
-msgstr ""
+msgstr "kelembaban relatif"
 
 #: src/ClimatologyOverlayFactory.cpp:326
 msgid "relative humidity file truncated"
-msgstr ""
+msgstr "file kelembaban relatif terpotong"
 
 #: src/ClimatologyOverlayFactory.cpp:351
 msgid "lightning"
-msgstr ""
+msgstr "petir"
 
 #: src/ClimatologyOverlayFactory.cpp:357
 msgid "lightning file truncated"
-msgstr ""
+msgstr "file petir terpotong"
 
 #: src/ClimatologyOverlayFactory.cpp:375
 msgid "sea depth"
-msgstr ""
+msgstr "kedalaman laut"
 
 #: src/ClimatologyOverlayFactory.cpp:381
 msgid "seadepth file truncated"
-msgstr ""
+msgstr "berkas seadepth terpotong"
 
 #: src/ClimatologyOverlayFactory.cpp:397
 msgid "cyclone (east pacific)"
-msgstr ""
+msgstr "angin topan (timur pacific)"
 
 #: src/ClimatologyOverlayFactory.cpp:402
 msgid "cyclone (west pacific)"
-msgstr ""
+msgstr "angin topan (pacific barat)"
 
 #: src/ClimatologyOverlayFactory.cpp:407
 msgid "cyclone (south pacific)"
-msgstr ""
+msgstr "topan (pasifik selatan)"
 
 #: src/ClimatologyOverlayFactory.cpp:412
 msgid "cyclone (atlantic)"
-msgstr ""
+msgstr "siklon (atlantik)"
 
 #: src/ClimatologyOverlayFactory.cpp:417
 msgid "cyclone (north indian)"
-msgstr ""
+msgstr "topan (india utara)"
 
 #: src/ClimatologyOverlayFactory.cpp:422
 msgid "cyclone (south indian)"
-msgstr ""
+msgstr "topan (india selatan)"
 
 #: src/ClimatologyOverlayFactory.cpp:430
 msgid "el nino years"
-msgstr ""
+msgstr "tahun el nino"
 
 #: src/ClimatologyOverlayFactory.cpp:439
 msgid "cyclone cache"
-msgstr ""
+msgstr "topan tersembunyi"
 
 #: src/ClimatologyOverlayFactory.cpp:449
 msgid "Some Data Failed to load:\n"
-msgstr ""
+msgstr "Beberapa Data Gagal memuat:\n"
 
 #: src/ClimatologyOverlayFactory.cpp:451
 msgid "Would you like to try to download?"
-msgstr ""
+msgstr "Anda ingin mencoba untuk mengunduh?"
 
 #: src/ClimatologyOverlayFactory.cpp:456
 msgid "You must extract this data, and place in: "
-msgstr ""
+msgstr "Data ini harus anda ekstrak, dan menempatkan di: "
 
 #: src/ClimatologyOverlayFactory.cpp:457
 msgid "\n"
 "then restart OpenCPN"
-msgstr ""
+msgstr "\n"
+" kemudian restart OpenCPN"
 
 #: src/ClimatologyOverlayFactory.cpp:696
 msgid "wind data file corrupt: "
-msgstr ""
+msgstr "berkas data angin rusak: "
 
 #: src/ClimatologyOverlayFactory.cpp:814
 msgid "current data file corrupt: "
-msgstr ""
+msgstr "file data saat ini rusak: "
 
 #: src/ClimatologyOverlayFactory.cpp:849
 msgid "Average Current includes only"
-msgstr ""
+msgstr "Arus Rata-rata hanya mencakup"
 
 #: src/ClimatologyOverlayFactory.cpp:850
 msgid "months"
-msgstr ""
+msgstr "bulan"
 
 #: src/ClimatologyOverlayFactory.cpp:950
 msgid "cyclone data corrupt: "
-msgstr ""
+msgstr "data siklon korup: "
 
 #: src/ClimatologyOverlayFactory.cpp:1040
 msgid "cyclone cache: "
-msgstr ""
+msgstr "topan tersembunyi: "
 
 #: src/ClimatologyOverlayFactory.cpp:1062
 msgid "failed to open file: "
-msgstr ""
+msgstr "gagal membuka file: "
 
 #: src/ClimatologyOverlayFactory.cpp:1284
 msgid "Building Overlay map"
-msgstr ""
+msgstr "Peta overlay bangunan"
 
 #: src/ClimatologyOverlayFactory.cpp:1556 src/ClimatologyOverlayFactory.cpp:2117
 #: src/ClimatologyUI.cpp:632
 msgid "N/A"
-msgstr ""
+msgstr "N/A"
 
 #: src/ClimatologyOverlayFactory.cpp:2055
 msgid "Climatology overlay map unsupported unless OpenGL is enabled"
-msgstr ""
+msgstr "Peta hamparan klimatologi tidak didukung kecuali OpenGL diaktifkan"
 
 #: src/ClimatologyOverlayFactory.cpp:2093
 msgid "failed to read file: "
-msgstr ""
+msgstr "gagal membaca file: "
 
 #: src/ClimatologyOverlayFactory.cpp:2492
 msgid "Computer too slow to render cyclones, disabling theater"
-msgstr ""
+msgstr "Komputer terlalu lambat untuk membuat siklon, melumpuhkan teater"
 
 #: src/ClimatologyUI.cpp:24
 msgid "Month"
-msgstr ""
+msgstr "Bulan"
 
 #: src/ClimatologyUI.cpp:32
 msgid "January"
-msgstr ""
+msgstr "Januari"
 
 #: src/ClimatologyUI.cpp:32
 msgid "Febuary"
-msgstr ""
+msgstr "Februari"
 
 #: src/ClimatologyUI.cpp:32
 msgid "March"
-msgstr ""
+msgstr "Maret"
 
 #: src/ClimatologyUI.cpp:32
 msgid "April"
-msgstr ""
+msgstr "April"
 
 #: src/ClimatologyUI.cpp:32
 msgid "May"
-msgstr ""
+msgstr "Mai"
 
 #: src/ClimatologyUI.cpp:32
 msgid "June"
-msgstr ""
+msgstr "Juni"
 
 #: src/ClimatologyUI.cpp:32
 msgid "July"
-msgstr ""
+msgstr "Juli"
 
 #: src/ClimatologyUI.cpp:32
 msgid "August"
-msgstr ""
+msgstr "Agustus"
 
 #: src/ClimatologyUI.cpp:32
 msgid "September"
-msgstr ""
+msgstr "September"
 
 #: src/ClimatologyUI.cpp:32
 msgid "October"
-msgstr ""
+msgstr "Oktober"
 
 #: src/ClimatologyUI.cpp:32
 msgid "November"
-msgstr ""
+msgstr "November"
 
 #: src/ClimatologyUI.cpp:32
 msgid "December"
-msgstr ""
+msgstr "Desember"
 
 #: src/ClimatologyUI.cpp:41
 msgid "All"
-msgstr ""
+msgstr "Semua"
 
 #: src/ClimatologyUI.cpp:57
 msgid "Climatology Data"
-msgstr ""
+msgstr "Data klimatologi"
 
 #: src/ClimatologyUI.cpp:72
 msgid "Speed"
-msgstr ""
+msgstr "Kecepatan"
 
 #: src/ClimatologyUI.cpp:76
 msgid "Direction"
-msgstr ""
+msgstr "Arah"
 
 #: src/ClimatologyUI.cpp:110
 msgid "Pressure"
-msgstr ""
+msgstr "Tekanan"
 
 #: src/ClimatologyUI.cpp:118
 msgid "Sea Temperature"
-msgstr ""
+msgstr "Suhu laut"
 
 #: src/ClimatologyUI.cpp:150
 msgid "Rel Humidity"
-msgstr ""
+msgstr "Kelembaban Rel"
 
 #: src/ClimatologyUI.cpp:174 src/ClimatologyUI.cpp:756
 msgid "Cyclones"
-msgstr ""
+msgstr "Siklon"
 
 #: src/ClimatologyUI.cpp:179
 msgid "Config"
-msgstr ""
+msgstr "Konfigurasi"
 
 #: src/ClimatologyUI.cpp:296
 msgid "Units"
-msgstr ""
+msgstr "Unit"
 
 #: src/ClimatologyUI.cpp:305
 msgid "Enabled"
-msgstr ""
+msgstr "Diaktifkan"
 
 #: src/ClimatologyUI.cpp:317
 msgid "OverlayMap"
-msgstr ""
+msgstr "Hamparan Peta"
 
 #: src/ClimatologyUI.cpp:320
 msgid "Transparency"
-msgstr ""
+msgstr "Transparansi"
 
 #: src/ClimatologyUI.cpp:327
 msgid "Interpolation"
-msgstr ""
+msgstr "Interpolasi"
 
 #: src/ClimatologyUI.cpp:338
 msgid "Iso Bars"
-msgstr ""
+msgstr "Bar iso"
 
 #: src/ClimatologyUI.cpp:341 src/ClimatologyUI.cpp:369 src/ClimatologyUI.cpp:437
 #: src/ClimatologyUI.cpp:492
 msgid "Spacing"
-msgstr ""
+msgstr "Jarak"
 
 #: src/ClimatologyUI.cpp:348
 msgid "Step"
-msgstr ""
+msgstr "Langkah"
 
 #: src/ClimatologyUI.cpp:352
 msgid "Very Course"
-msgstr ""
+msgstr "Sangat singkat"
 
 #: src/ClimatologyUI.cpp:352
 msgid "Course"
-msgstr ""
+msgstr "Tujuan"
 
 #: src/ClimatologyUI.cpp:352
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: src/ClimatologyUI.cpp:352
 msgid "Fine"
-msgstr ""
+msgstr "Baik"
 
 #: src/ClimatologyUI.cpp:352
 msgid "Very Fine"
-msgstr ""
+msgstr "Sangat baik"
 
 #: src/ClimatologyUI.cpp:366
 msgid "Numbers"
-msgstr ""
+msgstr "Angka"
 
 #: src/ClimatologyUI.cpp:390
 msgid "Direction Arrows"
-msgstr ""
+msgstr "Arah Panah"
 
 #: src/ClimatologyUI.cpp:397 src/ClimatologyUI.cpp:479
 msgid "Enable"
-msgstr ""
+msgstr "Aktif"
 
 #: src/ClimatologyUI.cpp:403
 msgid "Barbs"
-msgstr ""
+msgstr "Duri-duri"
 
 #: src/ClimatologyUI.cpp:406
 msgid "Length"
-msgstr ""
+msgstr "Panjang"
 
 #: src/ClimatologyUI.cpp:409
 msgid "Width"
-msgstr ""
+msgstr "Lebar"
 
 #: src/ClimatologyUI.cpp:416
 msgid "Color"
-msgstr ""
+msgstr "Warna"
 
 #: src/ClimatologyUI.cpp:423 src/ClimatologyUI.cpp:499
 msgid "Opacity"
-msgstr ""
+msgstr "Kegelapan"
 
 #: src/ClimatologyUI.cpp:430 src/ClimatologyUI.cpp:485
 msgid "Size"
-msgstr ""
+msgstr "Ukuran"
 
 #: src/ClimatologyUI.cpp:457
 msgid "Standard Displays"
-msgstr ""
+msgstr "Tampilan Standar"
 
 #: src/ClimatologyUI.cpp:466
 msgid "Wind Atlas"
-msgstr ""
+msgstr "Atlas angin"
 
 #: src/ClimatologyUI.cpp:509
 #, c-format
 msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\n"
 "The barbs indicate wind speed, each barb being 5 knots.\n\n"
 "The numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
-msgstr ""
+msgstr "Tampilan atlas angin menunjukkan persentase angin waktu di masing-masing dari delapan arah sebagai panjang panah, atau dalam kasus ini lebih dari 29% angka ditampilkan.\n\n"
+" Barbs menunjukkan kecepatan angin, masing-masing duri menjadi 5 knot.\n\n"
+" Angka-angka di dalam lingkaran, jika biru memberi persentase kecepatan angin rata-rata dengan tenang (3 knot atau kurang) atau paling tidak sedikit kekuatan gale (34 knot dan lebih tinggi)."
 
 #: src/ClimatologyUI.cpp:536
 msgid "Start Date"
-msgstr ""
+msgstr "Mulai tanggal"
 
 #: src/ClimatologyUI.cpp:545
 msgid "End Date"
-msgstr ""
+msgstr "Tanggal akhir"
 
 #: src/ClimatologyUI.cpp:559
 msgid "Display Spanning"
-msgstr ""
+msgstr "Tampilan Spanning"
 
 #: src/ClimatologyUI.cpp:569
 msgid "days"
-msgstr ""
+msgstr "hari"
 
 #: src/ClimatologyUI.cpp:584
 msgid "Min Windspeed"
-msgstr ""
+msgstr "Kecepatan angin minimal"
 
 #: src/ClimatologyUI.cpp:599
 msgid "Max Pressure"
-msgstr ""
+msgstr "Tekanan maksimal"
 
 #: src/ClimatologyUI.cpp:613
 msgid "El Nino Period"
-msgstr ""
+msgstr "Masa El Nino"
 
 #: src/ClimatologyUI.cpp:620
 msgid "El Nino"
-msgstr ""
+msgstr "El Nino"
 
 #: src/ClimatologyUI.cpp:624
 msgid "La Nina"
@@ -560,23 +563,23 @@ msgstr ""
 
 #: src/ClimatologyUI.cpp:628
 msgid "Neutral"
-msgstr ""
+msgstr "Netral"
 
 #: src/ClimatologyUI.cpp:642
 msgid "Storm Types"
-msgstr ""
+msgstr "Jenis badai"
 
 #: src/ClimatologyUI.cpp:649
 msgid "Tropical"
-msgstr ""
+msgstr "Tropis"
 
 #: src/ClimatologyUI.cpp:653
 msgid "Sub Tropical"
-msgstr ""
+msgstr "Sub tropis"
 
 #: src/ClimatologyUI.cpp:657
 msgid "ExtraTropical"
-msgstr ""
+msgstr "Ekstra Tropis"
 
 #: src/ClimatologyUI.cpp:661
 msgid "Remanent"
@@ -624,47 +627,47 @@ msgstr ""
 
 #: src/ClimatologyUI.cpp:748
 msgid "Direction arrows are spaced every 6 hours on storm track"
-msgstr ""
+msgstr "Arah panah berjarak setiap 6 jam pada jalur badai"
 
 #: src/ClimatologyUI.cpp:771
 msgid "Climatology Plugin Version"
-msgstr ""
+msgstr "Versi Plugin Klimatologi"
 
 #: src/ClimatologyUI.cpp:779
 msgid "Climatology Data Directory"
-msgstr ""
+msgstr "Direktori Data Klimatologi"
 
 #: src/ClimatologyUI.cpp:796
 msgid "About"
-msgstr ""
+msgstr "Tentang"
 
 #: src/ClimatologyUI.cpp:806
 msgid "About Author"
-msgstr ""
+msgstr "Tentang Penulis"
 
 #: src/ClimatologyUI.cpp:809
 msgid "Close"
-msgstr ""
+msgstr "Dekat"
 
 #: src/IsoBarMap.cpp:416
 msgid "Building Isobar Map"
-msgstr ""
+msgstr "Peta Isobar Bangunan"
 
 #: src/IsoBarMap.h:137
 msgid "Declination"
-msgstr ""
+msgstr "Penolakan"
 
 #: src/IsoBarMap.h:141
 msgid "Inclination"
-msgstr ""
+msgstr "Kecenderungan"
 
 #: src/IsoBarMap.h:144
 msgid "Field Strength"
-msgstr ""
+msgstr "Kekuatan lapangan"
 
 #: src/climatology_pi.cpp:164
 msgid "Climatology PlugIn for OpenCPN"
-msgstr ""
+msgstr "Plugin Klimatologi untuk OpenCPN"
 
 #: src/climatology_pi.cpp:170
 msgid "Climatology PlugIn for OpenCPN\n"
@@ -677,5 +680,14 @@ msgid "Climatology PlugIn for OpenCPN\n"
 "- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n"
 "- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n"
 "- Tropical Cyclone tracks"
-msgstr ""
+msgstr "Plugin Klimatologi untuk OpenCPN\n"
+" Menyediakan kemampuan overlay untuk data cuaca yang bersejarah.\n\n"
+" Jenis Klimatologi yang Didukung meliputi:\n"
+" - Arah dan kecepatan angin rata-rata\n"
+" - Persentase kondisi badai dan ketenangan\n"
+" - Arus Permukaan Laut\n"
+" - Rata-rata membengkak dan melimpah (belum diimplementasikan)\n"
+" - Pengendapan, Kelembaban, Penutup Awan, dan Terang Petir\n"
+" - Rata-rata tekanan permukaan laut dan suhu laut, suhu udara\n"
+" - jalur siklon tropis"
 
