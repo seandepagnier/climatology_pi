@@ -63,15 +63,15 @@ ParamCache() : values(NULL), m_step(0) {}
 
 /* cache text bitmap data to speed up rendering.  This contains the rgba
    values in data for opengl, or the image in wxformat */
-class ContourBitmap
+class ContourText
 {
 public:
-    wxImage image;
-    unsigned char *data;
-
+    wxString text;
+    int w, h;
     int lastx, lasty; /* when rendering to prevent overcluttering */
 };
 
+class clDC;
 /* main model map suitable for a single plot type */
 class IsoBarMap
 {
@@ -81,7 +81,7 @@ public:
 
     bool Recompute(wxWindow *parent);
 
-    void Plot(wxDC *dc, PlugIn_ViewPort &vp);
+    void Plot(clDC *dc, PlugIn_ViewPort &vp);
 
     bool m_bNeedsRecompute, m_bComputing;
 protected:
@@ -100,8 +100,8 @@ private:
                      double lonval, double &rx, double &ry);
 
     void ClearMap();
-    ContourBitmap ContourCacheData(double value);
-    void DrawContour(wxDC *dc, PlugIn_ViewPort &VP, double contour, double lat, double lon);
+    ContourText ContourCacheData(double value);
+    void DrawContour(clDC *dc, PlugIn_ViewPort &VP, double contour, double lat, double lon);
 
     /* two caches for all longitudes alternate
        places (step over each other) to cover the two latitudes
@@ -113,7 +113,7 @@ private:
 
     double m_MinContour, m_MaxContour;
     int m_contourcachesize;
-    ContourBitmap *m_contourcache;
+    ContourText *m_contourcache;
     int lastx, lasty; /* when rendering to prevent overcluttering */
 
     wxString m_Name;
@@ -156,7 +156,7 @@ class MagneticPlotMap : public IsoBarMap
     bool Recompute(wxDateTime date);
     void ConfigureAccuracy(int step, int poleaccuracy);
 
-    void Plot(wxDC *dc, PlugIn_ViewPort &vp)
+    void Plot(clDC *dc, PlugIn_ViewPort &vp)
     {
         if(m_bEnabled)
             IsoBarMap::Plot(dc, vp);

@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2016 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2018 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -32,16 +32,23 @@
 #ifdef __WXOSX__
 # include <OpenGL/OpenGL.h>
 # include <OpenGL/gl3.h>
-#else
-# ifdef __OCPN__ANDROID__
-#  include "qopengl.h"                  // this gives us the qt runtime gles2.h
-#  include "GL/gl_private.h"
-# endif
+#endif
+
+#ifdef __OCPN__ANDROID__
+#include <qopengl.h>
+#include "GL/gl_private.h"
+#endif
+
+#ifdef USE_ANDROID_GLES2
+#include "GLES2/gl2.h"
 #endif
 
 #include "climatology_pi.h"
 #include "gldefs.h"
+#include "icons.h"
 
+#include "pi_shaders.h"
+#include "qdebug.h"
 #define FAILED_FILELIST_MSG_LEN 500
 
 static int s_multitexturing = 0;
@@ -117,10 +124,23 @@ double ClimatologyIsoBarMap::CalcParameter(double lat, double lon)
 ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     : //m_bUpdateCyclones(true),
     m_cyclone_cache_semaphore(CYCLONE_CACHE_SEMAPHORE_COUNT),
-    m_bFailedLoading(false), m_bCompletedLoading(false),
+    m_bCompletedLoading(false),
     m_dlg(dlg), m_Settings(dlg.m_cfgdlg->m_Settings),
     m_cyclonesDisplayList(0), m_cyclone_drawn_counter(0)
 {
+    Load();
+}
+
+ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
+{
+    Free();
+}
+
+void ClimatologyOverlayFactory::Load()
+{
+    Free();
+    m_FailedFiles.clear();
+    
     for(int month = 0; month<13; month++) {
         m_WindData[month] = NULL;
         m_CurrentData[month] = NULL;
@@ -174,9 +194,10 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     wxString slp_path = path + _T("sealevelpressure");
     if((f = TryOpenFile(slp_path))) {
         wxInt16 slp[12][90][180];
-        if(zu_read(f, slp, sizeof slp) != sizeof slp)
+        if(zu_read(f, slp, sizeof slp) != sizeof slp) {
+            m_FailedFiles.push_back(slp_path);
             wxLogMessage(climatology_pi + _("slp file truncated"));
-        else {
+        } else {
             for(int j=0; j<90; j++)
                 for(int k=0; k<180; k++) {
                     long total = 0, totalcount = 0;
@@ -202,9 +223,10 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     wxString sst_path = path + _T("seasurfacetemperature");
     if((f = TryOpenFile(sst_path))) {
         wxInt8 sst[12][180][360];
-        if(zu_read(f, sst, sizeof sst) != sizeof sst)
+        if(zu_read(f, sst, sizeof sst) != sizeof sst) {
+            m_FailedFiles.push_back(sst_path);
             wxLogMessage(climatology_pi + _("sst file truncated"));
-        else {
+        } else {
             for(int j=0; j<180; j++)
                 for(int k=0; k<360; k++) {
                     long total = 0, totalcount = 0;
@@ -232,9 +254,10 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     wxString at_path = path + _T("airtemperature");
     if((f = TryOpenFile(at_path))) {
         wxInt8 at[12][90][180];
-        if(zu_read(f, at, sizeof at) != sizeof at)
+        if(zu_read(f, at, sizeof at) != sizeof at) {
+            m_FailedFiles.push_back(at_path);
             wxLogMessage(climatology_pi + _("at file truncated"));
-        else {
+        } else {
             for(int j=0; j<90; j++)
                 for(int k=0; k<180; k++) {
                     long total = 0, totalcount = 0;
@@ -262,9 +285,10 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     wxString cld_path = path + _T("cloud");
     if((f = TryOpenFile(cld_path))) {
         wxUint8 cld[12][90][180];
-        if(zu_read(f, cld, sizeof cld) != sizeof cld)
+        if(zu_read(f, cld, sizeof cld) != sizeof cld) {
+            m_FailedFiles.push_back(cld_path);
             wxLogMessage(climatology_pi + _("cld file truncated"));
-        else {
+        } else {
             for(int j=0; j<90; j++)
                 for(int k=0; k<180; k++) {
                     long total = 0, totalcount = 0;
@@ -292,9 +316,10 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     wxString precip_path = path + _T("precipitation");
     if((f = TryOpenFile(precip_path))) {
         wxUint8 precip[12][72][144];
-        if(zu_read(f, precip, sizeof precip) != sizeof precip)
+        if(zu_read(f, precip, sizeof precip) != sizeof precip) {
+            m_FailedFiles.push_back(precip_path);
             wxLogMessage(climatology_pi + _("precip file truncated"));
-        else {
+        } else {
             for(int j=0; j<72; j++)
                 for(int k=0; k<144; k++) {
                     long total = 0, totalcount = 0;
@@ -322,9 +347,10 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     wxString rhum_path = path + _T("relativehumidity");
     if((f = TryOpenFile(rhum_path))) {
         wxUint8 rhum[12][180][360];
-        if(zu_read(f, rhum, sizeof rhum) != sizeof rhum)
+        if(zu_read(f, rhum, sizeof rhum) != sizeof rhum) {
+            m_FailedFiles.push_back(rhum_path);
             wxLogMessage(climatology_pi + _("relative humidity file truncated"));
-        else {
+        } else {
             for(int j=0; j<180; j++)
                 for(int k=0; k<360; k++) {
                     long total = 0, totalcount = 0;
@@ -353,9 +379,10 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     wxString lightn_path = path + _T("lightning");
     if((f = TryOpenFile(lightn_path))) {
         wxUint8 lightn[12][180][360];
-        if(zu_read(f, lightn, sizeof lightn) != sizeof lightn)
+        if(zu_read(f, lightn, sizeof lightn) != sizeof lightn) {
+            m_FailedFiles.push_back(lightn_path);
             wxLogMessage(climatology_pi + _("lightning file truncated"));
-        else {
+        } else {
             for(int j=0; j<180; j++)
                 for(int k=0; k<360; k++) {
                     long total = 0, totalcount = 0;
@@ -377,9 +404,10 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
     wxString seadepth_path = path + _T("seadepth");
     if((f = TryOpenFile(seadepth_path))) {
         wxInt8 seadepth[180][360];
-        if(zu_read(f, seadepth, sizeof seadepth) != sizeof seadepth)
+        if(zu_read(f, seadepth, sizeof seadepth) != sizeof seadepth) {
+            m_FailedFiles.push_back(seadepth_path);
             wxLogMessage(climatology_pi + _("seadepth file truncated"));
-        else {
+        } else {
             for(int j=0; j<180; j++)
                 for(int k=0; k<360; k++)
                     if(seadepth[j][k] == -128)
@@ -441,7 +469,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
 
     BuildCycloneCache();
 
-    if(m_bFailedLoading) {
+    if(m_FailedFiles.size()) {
         wxString failed_msg = m_sFailedMessage.Left(FAILED_FILELIST_MSG_LEN);
         if( m_sFailedMessage.Len() > FAILED_FILELIST_MSG_LEN )
             failed_msg.Append("...\n\n");
@@ -451,20 +479,36 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
                              _("Would you like to try to download?"),
                              _("Climatology"), wxYES | wxNO | wxICON_WARNING);
         if(mdlg.ShowModal() == wxID_YES) {
-            wxLaunchDefaultBrowser(
-                _T("http://sourceforge.net/projects/opencpnplugins/files/climatology_pi/"));
-            wxMessageDialog mdlg(&m_dlg, _("You must extract this data, and place in: ") + path +
-                                 _("\nthen restart OpenCPN"),
-                                 _("Climatology"), wxOK);
-            mdlg.ShowModal();
+            int i = 0;
+            bool failed = false;
+            for(std::list<wxString>::iterator it = m_FailedFiles.begin();
+                it != m_FailedFiles.end(); it++ ) {
+                wxString fn = *it;
+                if(!fn.EndsWith("txt"))
+                    fn += ".gz"; // download gzipped file
+                _OCPN_DLStatus status = OCPN_downloadFile(
+                    _T("http://sourceforge.net/projects/opencpnplugins/files/climatology_pi/CL-DATA-1.0/") + fn,
+                    path + fn, _("downloading climatology data file"),
+                    wxString::Format("%d / %d", ++i, m_FailedFiles.size()),
+                    *_img_climatology, GetOCPNCanvasWindow(), OCPN_DLDS_DEFAULT_STYLE, 0);
+                if(status != OCPN_DL_NO_ERROR)
+                    failed = true;
+            }
+
+            if(failed) {
+                wxMessageDialog mdlg(&m_dlg,
+                                     _("Some Data Failed to download.  Climatology data incomplete"), _("Climatology"), wxOK | wxICON_WARNING);
+                mdlg.ShowModal();
+            } else
+                Load();
         }
-    }
-    m_bCompletedLoading = true;
+    } else
+        m_bCompletedLoading = true;
 }
 
-ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
+void ClimatologyOverlayFactory::Free()
 {
-//    glDeleteLists(m_cyclonelist, 1);
+    //    glDeleteLists(m_cyclonelist, 1);
 #if 0
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++)
         for(int m=0; m<13; m++)
@@ -474,18 +518,23 @@ ClimatologyOverlayFactory::~ClimatologyOverlayFactory()
     // free wind data
     for(int m=0; m<13; m++) {
         delete m_WindData[m];
+        m_WindData[m] = NULL;
         delete m_CurrentData[m];
+        m_CurrentData[m] = NULL;
     }
     
     // free cyclones
     std::list<Cyclone*> *cyclones[6] = {&m_epa, &m_wpa, &m_spa, &m_atl, &m_nio, &m_she};
-    for(int i=0; i < 6; i++)
+    for(int i=0; i < 6; i++) {
         for(std::list<Cyclone*>::iterator it = cyclones[i]->begin(); it != cyclones[i]->end(); it++) {
             Cyclone *s = *it;
             for(std::list<CycloneState*>::iterator it2 = s->states.begin(); it2 != s->states.end(); it2++)
                 delete *it2;
             delete s;
         }
+        cyclones[i]->clear();
+    }
+    m_cyclone_cache.clear();
 }
 
 void ClimatologyOverlayFactory::GetDateInterpolation(const wxDateTime *cdate,
@@ -628,11 +677,16 @@ bool ClimatologyOverlayFactory::InterpolateWindAtlas(wxDateTime &date,
 void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
 {
     ZUFILE *f;
+#ifdef __OCPN__ANDROID__
+    int div = 1; // less ram usage half resolution
+#else
+    int div = 1;
+#endif
     if(!(f = TryOpenFile(filename)))
-        return;
+        goto missing;
 
     m_dlg.m_cbWind->Enable();
-
+    
     wxUint16 header[7];
     int dirs;
     if(zu_read(f, header, sizeof header) != sizeof header)
@@ -642,14 +696,14 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
        header[1] > 180*16 || header[2] > 360*16 || header[3] != 8)
         goto corrupt;
 
-    m_WindData[month] = new WindData(header[1], header[2], header[3], header[4], (float)header[5] / header[6]);
+    m_WindData[month] = new WindData(header[1]/div, header[2]/div, header[3], header[4], (float)header[5] / header[6]);
 
     dirs = m_WindData[month]->dir_cnt;
 
     for(int pass=0; pass<2*dirs+1; pass++)
-        for(int lati = 0; lati < m_WindData[month]->latitudes; lati++) {
-            for(int loni = 0; loni < m_WindData[month]->longitudes; loni++) {
-                WindData::WindPolar &wp = m_WindData[month]->data[lati*m_WindData[month]->longitudes + loni];
+        for(int lati = 0; lati < header[1]; lati++) {
+            for(int loni = 0; loni < header[2]; loni++) {
+                WindData::WindPolar &wp = m_WindData[month]->data[lati*m_WindData[month]->longitudes/div + loni/div];
                 wxUint8 value;
 
                 if(pass == 0) {
@@ -666,8 +720,8 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
                         wp.calm = value;
                     }
 
-                    wp.directions = new wxUint8[dirs]();
-                    wp.speeds = new wxUint8[dirs]();
+//                    wp.directions = new wxUint8[dirs]();
+//                    wp.speeds = new wxUint8[dirs]();
                 } else if(wp.gale != 255) {
                     if(pass < dirs + 1) {
                         if(zu_read(f, &value, 1) != 1)
@@ -691,10 +745,12 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
     return;
 
 corrupt:
+    zu_close(f);
     delete m_WindData[month];
     m_WindData[month] = NULL;
+missing:
+    m_FailedFiles.push_back(filename);
     wxLogMessage(climatology_pi + _("wind data file corrupt: ") + filename);
-    zu_close(f);
 }
 
 float max_value(float *values, int cnt)
@@ -765,8 +821,8 @@ havedata:
             wp.gale = gale / mcount;
             wp.calm = calm / mcount;
 
-            wp.directions = new wxUint8[dir_cnt];
-            wp.speeds = new wxUint8[dir_cnt];
+//            wp.directions = new wxUint8[dir_cnt];
+//            wp.speeds = new wxUint8[dir_cnt];
 
             for(int i=0; i<dir_cnt; i++) {
                 wp.directions[i] = directions[i] / mcount;
@@ -784,7 +840,7 @@ void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
 {
     ZUFILE *f;
     if(!(f = TryOpenFile(filename)))
-        return;
+        goto missing;
 
     m_dlg.m_cbCurrent->Enable();
 
@@ -811,8 +867,10 @@ void ClimatologyOverlayFactory::ReadCurrentData(int month, wxString filename)
 corrupt:
     delete m_CurrentData[month];
     m_CurrentData[month] = NULL;
-    wxLogMessage(climatology_pi + _("current data file corrupt: ") + filename);
     zu_close(f);
+missing:
+    m_FailedFiles.push_back(filename);
+    wxLogMessage(climatology_pi + _("current data file corrupt: ") + filename);
 }
 
 void ClimatologyOverlayFactory::AverageCurrentData()
@@ -863,7 +921,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
 {
     ZUFILE *f = TryOpenFile(filename);
     if (!f)
-        return false;
+        goto missing;
 
     wxUint16 lyear, llastmonth;
     Cyclone *cyclone;
@@ -947,10 +1005,12 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
     return true;
 
 corrupted:
+    zu_close(f);
+    delete cyclone;
+missing:
+    m_FailedFiles.push_back(filename);
     wxLogMessage(climatology_pi + _("cyclone data corrupt: ") + filename
                  + wxString::Format(_T(" at %ld"), zu_tell(f)));
-    delete cyclone;
-    zu_close(f);
     return false;
 }
 
@@ -977,6 +1037,7 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
 
     m_cyclone_cache.clear();
     wxStopWatch sw;
+
     for(int i=0; i < 6; i++) {
         for(std::list<Cyclone*>::iterator it = cyclones[i]->begin(); it != cyclones[i]->end(); it++) {
             Cyclone *s = *it;
@@ -989,11 +1050,12 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
                     continue;
 
                 /* rebuild cache for these? */
+#ifndef __OCPN__ANDROID__                
                 wxDateTime dt = (*it2)->datetime.DateTime();
                 if((dt < m_dlg.m_cfgdlg->m_dPStart->GetValue()) ||
                    (dt > m_dlg.m_cfgdlg->m_dPEnd->GetValue()))
                     continue;
-
+#endif
                 /* el nino test */
                 int year = (*it2)->datetime.year;
                 std::map<int, ElNinoYear>::iterator ipt = m_ElNinoYears.find(year);
@@ -1037,6 +1099,7 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
             }
         }
     }
+
     wxLogMessage(climatology_pi + _("cyclone cache: ") + wxString::Format(_T("%ld"), sw.Time()));
     
     for(int i=0; i<CYCLONE_CACHE_SEMAPHORE_COUNT; i++)
@@ -1057,14 +1120,11 @@ static double strtod_nan(const char *str)
 
 bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
 {
-    FILE *f = fopen(filename.mb_str(), "r");
-    if (!f) {
-        wxLogMessage(climatology_pi + _("failed to open file: ") + filename);
-        return false;
-    }
-
     char line[128];
     int header = 1;
+    FILE *f = fopen(filename.mb_str(), "r");
+    if (!f)
+        goto missing;
     while(fgets(line, sizeof line, f)) {
         if(header)
             header--;
@@ -1080,16 +1140,27 @@ bool ClimatologyOverlayFactory::ReadElNinoYears(wxString filename)
     }
     fclose(f);
     return true;
+missing:
+    fclose(f);
+    wxLogMessage(climatology_pi + _("failed to open file: ") + filename);
+    m_FailedFiles.push_back(filename);
+    
+    return false;
 }
 
 void ClimatologyOverlayFactory::DrawLine( double x1, double y1, double x2, double y2,
                                           const wxColour &color, double width )
 {
+    m_dc->SetPen( wxPen(color, width ) );
+    m_dc->SetBrush( *wxTRANSPARENT_BRUSH);
+    m_dc->DrawLine(x1, y1, x2, y2);
+#if 0
     if( m_pdc ) {
         m_pdc->SetPen( wxPen(color, width ) );
         m_pdc->SetBrush( *wxTRANSPARENT_BRUSH);
         m_pdc->DrawLine(x1, y1, x2, y2);
     } else {
+#ifndef __OCPN__ANDROID__
         glColor4ub(color.Red(), color.Green(), color.Blue(), color.Alpha());
         glLineWidth( width );
 
@@ -1097,17 +1168,31 @@ void ClimatologyOverlayFactory::DrawLine( double x1, double y1, double x2, doubl
         glVertex2d( x1, y1 );
         glVertex2d( x2, y2 );
         glEnd();
+#endif
     }
+#endif
 }
 
 void ClimatologyOverlayFactory::DrawCircle( double x, double y, double r,
                                             const wxColour &color, double width )
 {
+    m_dc->SetPen( wxPen(color, width ) );
+    m_dc->SetBrush( *wxTRANSPARENT_BRUSH);
+    m_dc->DrawCircle(x, y, r);
+#if 0
     if( m_pdc ) {
         m_pdc->SetPen( wxPen(color, width ) );
         m_pdc->SetBrush( *wxTRANSPARENT_BRUSH);
         m_pdc->DrawCircle(x, y, r);
     } else {
+#ifdef __OCPN__ANDROID__
+        double lx=x+r, ly = y;
+        for(double t=0; t<2*M_PI; t+=M_PI/8) {
+            double cx = x+r*cos(t), cy = y+r*sin(t);
+            DrawLine(cx, cy, lx, ly, color, width);
+            lx = cx, ly = cy;
+        }
+#else
         glColor4ub(color.Red(), color.Green(), color.Blue(), color.Alpha());
         glLineWidth( width );
 
@@ -1115,7 +1200,9 @@ void ClimatologyOverlayFactory::DrawCircle( double x, double y, double r,
         for(double t=0; t<2*M_PI; t+=M_PI/24)
             glVertex2d(x+r*cos(t), y+r*sin(t));
         glEnd();
+#endif
     }
+#endif
 }
 
 struct ColorMap {
@@ -1198,6 +1285,17 @@ ColorMap CycloneMap[] =
  {120, _T("#d90000"), 0}, {130, _T("#ff0000"), 0}, {140, _T("#ff0080"), 0}, {150, _T("#ff00ff"), 0},
  {160, _T("#ff40ff"), 0}, {180, _T("#ff80ff"), 0}, {200, _T("#ffffff"), 0}};
 
+int color255(char a, char b)
+{
+    char str[3] = {a, b, 0};
+    return strtol(str, 0, 16);
+}
+
+static wxColour TextColor(wxString text)
+{
+    return wxColour(color255(text[1], text[2]), color255(text[3], text[4]), color255(text[5], text[6]));
+}                        
+
 ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap, AirTempMap,
                          CloudMap, PrecipitationMap, RelativeHumidityMap, LightningMap,
                          SeaDepthMap, CycloneMap};
@@ -1230,8 +1328,10 @@ wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in)
         double nmapvalb = map[i].val/cmax;
         if(nmapvalb > val_in || i==maplen-1) {
             wxColour b, c;
-            c.Set(map[i].text);
-            b.Set(map[i-1].text);
+//            c.Set(map[i].text);
+//            b.Set(map[i-1].text);
+            c = TextColor(map[i].text);
+            b = TextColor(map[i-1].text);
             double d = (val_in-nmapvala)/(nmapvalb-nmapvala);
             c.Set((1-d)*b.Red()   + d*c.Red(),
                   (1-d)*b.Green() + d*c.Green(),
@@ -1318,7 +1418,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
         glTexParameteri( texture_format, GL_TEXTURE_WRAP_S, GL_REPEAT );
     glTexParameteri( texture_format, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-    glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
+    //glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
@@ -1328,7 +1428,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     glTexImage2D(texture_format, 0, GL_RGBA, width, height,
                  0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-    glPopClientAttrib();
+    //glPopClientAttrib();
 
     delete [] data;
 
@@ -1358,7 +1458,115 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 
     if(vp.m_projection_type != PI_PROJECTION_MERCATOR)
         return;
-           
+
+#ifdef __OCPN__ANDROID__
+        int w = vp.pix_width, h = vp.pix_height;
+
+        double lat[4], lon[4];
+        GetCanvasLLPix( &vp, wxPoint(0, 0), &lat[0], &lon[0] );
+        GetCanvasLLPix( &vp, wxPoint(w, 0), &lat[1], &lon[1] );
+        GetCanvasLLPix( &vp, wxPoint(w, h), &lat[2], &lon[2] );
+        GetCanvasLLPix( &vp, wxPoint(0, h), &lat[3], &lon[3] );
+
+        for(int i = 0; i < 4; i++) {
+            if(lon[i] - vp.clon > 180)
+                lon[i] -= 360;
+            else if(lon[i] - vp.clon < -180)
+                lon[i] += 360;
+
+            // normalize
+            lon[i] = lon[i] / 360.0;
+
+            // mercator conversion
+            double s1 = sin(deg2rad(lat[i]));
+            double y1 = .5 * log((1 + s1) / (1 - s1));
+            lat[i] = (1 + y1/M_PI)/2;
+        }
+    
+    glEnable(texture_format);
+    glBindTexture(texture_format, O1.m_iTexture);
+
+    float uv[8];
+    float coords[8];
+    
+    //normal uv
+    uv[0] = lon[0]; uv[1] = lat[0]; uv[2] = lon[1]; uv[3] = lat[1];
+    uv[4] = lon[2]; uv[5] = lat[2]; uv[6] = lon[3]; uv[7] = lat[3];
+        
+    coords[0] = 0; coords[1] = 0; coords[2] = w; coords[3] = 0;
+    coords[4] = w; coords[5] = h; coords[6] = 0; coords[7] = h;
+    
+    glUseProgram( pi_texture_2DA_shader_program );
+    
+    // Get pointers to the attributes in the program.
+    GLint mPosAttrib = glGetAttribLocation( pi_texture_2DA_shader_program, "aPos" );
+    GLint mUvAttrib  = glGetAttribLocation( pi_texture_2DA_shader_program, "aUV" );
+    
+    // Set up the texture sampler to texture unit 0
+    GLint texUni = glGetUniformLocation( pi_texture_2DA_shader_program, "uTex" );
+    glUniform1i( texUni, 0 );
+    
+    // Disable VBO's (vertex buffer objects) for attributes.
+    glBindBuffer( GL_ARRAY_BUFFER, 0 );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+    
+    // Set the attribute mPosAttrib with the vertices in the screen coordinates...
+    glVertexAttribPointer( mPosAttrib, 2, GL_FLOAT, GL_FALSE, 0, coords );
+    // ... and enable it.
+    glEnableVertexAttribArray( mPosAttrib );
+
+    float colorv[4] = {0, 0, 0, -(float)transparency};
+
+    GLint colloc = glGetUniformLocation(pi_texture_2DA_shader_program,"color");
+    glUniform4fv(colloc, 1, colorv);
+
+    // Set the attribute mUvAttrib with the vertices in the GL coordinates...
+    glVertexAttribPointer( mUvAttrib, 2, GL_FLOAT, GL_FALSE, 0, uv );
+    // ... and enable it.
+    glEnableVertexAttribArray( mUvAttrib );
+    
+    // Rotate 
+    float angle = 0;
+    mat4x4 I, Q;
+    mat4x4_identity(I);
+    mat4x4_rotate_Z(Q, I, angle);
+    
+    // Translate
+    Q[3][0] = 0;
+    Q[3][1] = 0;
+    
+    GLint matloc = glGetUniformLocation(pi_texture_2DA_shader_program,"TransformMatrix");
+    glUniformMatrix4fv( matloc, 1, GL_FALSE, (const GLfloat*)Q); 
+    
+    // Select the active texture unit.
+    glActiveTexture( GL_TEXTURE0 );
+
+    float co1[8];
+    co1[0] = coords[0];
+    co1[1] = coords[1];
+    co1[2] = coords[2];
+    co1[3] = coords[3];
+    co1[4] = coords[6];
+    co1[5] = coords[7];
+    co1[6] = coords[4];
+    co1[7] = coords[5];
+    
+    float tco1[8];
+    tco1[0] = uv[0];
+    tco1[1] = uv[1];
+    tco1[2] = uv[2];
+    tco1[3] = uv[3];
+    tco1[4] = uv[6];
+    tco1[5] = uv[7];
+    tco1[6] = uv[4];
+    tco1[7] = uv[5];
+    
+    glVertexAttribPointer( mPosAttrib, 2, GL_FLOAT, GL_FALSE, 0, co1 );
+    glVertexAttribPointer( mUvAttrib, 2, GL_FLOAT, GL_FALSE, 0, tco1 );
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+#else
     int multitexturing;
     if(&O1 == &O2)
         multitexturing = 0;
@@ -1539,6 +1747,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     }
 
     glDisable(texture_format);
+#endif
 }
 
 /* return cached wxImage for a given number, or create it if not in the cache */
@@ -2026,7 +2235,7 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
     ClimatologyOverlay &O1 = m_pOverlay[month][setting];
     ClimatologyOverlay &O2 = m_pOverlay[nmonth][setting];
 
-    if( !m_pdc )
+    if( !m_dc->GetDC() )
     {
         if( !O1.m_iTexture )
             CreateGLTexture( O1, setting, month, vp);
@@ -2077,7 +2286,7 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
 
     wxBitmap sbm = bm.GetSubBitmap( wxRect( 0, 0, wdraw, h ) );
     int x = vp.pix_width, y = vp.pix_height;
-    m_pdc->DrawBitmap( sbm, (x-wdraw)/2, y - ( GetChartbarHeight() + h ), false );
+    m_dc->DrawBitmap( sbm, (x-wdraw)/2, y - ( GetChartbarHeight() + h ), false );
 #endif        
     }
 }
@@ -2089,8 +2298,7 @@ ZUFILE *ClimatologyOverlayFactory::TryOpenFile(wxString filename)
     if(!f)
         f = zu_open((filename+ext).mb_str(), "rb", ZU_COMPRESS_AUTO);
     if(!f) {
-        m_bFailedLoading = true;
-        wxString msg = _("failed to read file: ") + filename;
+        wxString msg = _("failed to read: ") + filename;
         m_sFailedMessage += msg + _T("\n");
         wxLogMessage(climatology_pi + msg);
     }
@@ -2099,6 +2307,18 @@ ZUFILE *ClimatologyOverlayFactory::TryOpenFile(wxString filename)
 
 void ClimatologyOverlayFactory::RenderNumber(wxPoint p, double v, const wxColour &color)
 {
+    wxString text;
+    if(isnan(v))
+        text = _("N/A");
+    else
+        text.Printf(_T("%.0f"), round(v));
+
+    m_dc->SetTextForeground(color);
+
+    wxCoord w, h;
+    m_dc->GetTextExtent(text, &w, &h);
+    m_dc->DrawText(text, p.x-w/2, p.y-h/2);
+#if 0
     if( m_pdc ) {
         m_pdc->SetPen( wxPen(color) );
 
@@ -2127,6 +2347,7 @@ void ClimatologyOverlayFactory::RenderNumber(wxPoint p, double v, const wxColour
 	m_Numbers.RenderString( labels, p.x-w/2, p.y-h/2);
 	glDisable(GL_TEXTURE_2D);
     }
+#endif
 }
 
 void ClimatologyOverlayFactory::RenderIsoBars(int setting, PlugIn_ViewPort &vp)
@@ -2176,7 +2397,7 @@ recompute:
         goto recompute;
     }
 
-    pIsobars->Plot(m_pdc, vp);
+    pIsobars->Plot(m_dc, vp);
 }
 
 void ClimatologyOverlayFactory::RenderNumbers(int setting, PlugIn_ViewPort &vp)
@@ -2486,7 +2707,7 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
         wxDateTime end = wxDateTime::Now();
 
         /* rendering is taking too long, and display lists not used */
-        if(m_pdc && (end - start).GetMilliseconds() >= 1200) {
+        if(m_dc->GetDC() && (end - start).GetMilliseconds() >= 1200) {
             m_dlg.m_cbCyclones->SetValue(false);
 
             wxMessageDialog mdlg(&m_dlg, _("Computer too slow to render cyclones, disabling theater"),
@@ -2548,25 +2769,31 @@ static void QueryGL()
         texture_format = GL_TEXTURE_RECTANGLE_ARB;
     else
         texture_format = 0; // overlays disabled without npot support
+
+#ifdef USE_ANDROID_GLES2
+    s_bnoglrepeat = false; // supported on gles2
+#endif
 }
 
-bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
-{    
-    m_pdc = dc;
+bool ClimatologyOverlayFactory::RenderOverlay( clDC &dc, PlugIn_ViewPort &vp )
+{
+    m_dc = &dc;
 
-    if(!dc) {
+    if(!dc.GetDC()) {
         if(!glQueried) {
             QueryGL();
             glQueried = true;
         }
-       glPushAttrib( GL_LINE_BIT | GL_ENABLE_BIT | GL_HINT_BIT ); //Save state
+#ifndef __OCPN__ANDROID__
+        glPushAttrib( GL_LINE_BIT | GL_ENABLE_BIT | GL_HINT_BIT ); //Save state
 
         //      Enable anti-aliased lines, at best quality
         glEnable( GL_LINE_SMOOTH );
         glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 
-        glEnable( GL_BLEND );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+#endif
+        glEnable( GL_BLEND );
     }
 
     for(int overlay = 1; overlay >= 0; overlay--)
@@ -2584,6 +2811,7 @@ bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
             RenderNumbers(i, vp);
             RenderDirectionArrows(i, vp);
         }
+
     }
 
     if(m_dlg.m_cbWind->GetValue())
@@ -2592,8 +2820,9 @@ bool ClimatologyOverlayFactory::RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp )
     if(m_dlg.m_cbCyclones->GetValue())
         RenderCyclones(vp);
 
+#ifndef __OCPN__ANDROID__
     if(!dc)
         glPopAttrib();
-
+#endif
     return true;
 }

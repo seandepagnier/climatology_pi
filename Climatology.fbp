@@ -14,6 +14,7 @@
         <property name="file">ClimatologyUI</property>
         <property name="first_id">1000</property>
         <property name="help_provider">none</property>
+        <property name="indent_with_spaces"></property>
         <property name="internationalize">1</property>
         <property name="name">climatology_pi</property>
         <property name="namespace"></property>
@@ -110,6 +111,7 @@
                         <property name="minimum_size"></property>
                         <property name="name">sbSizer21</property>
                         <property name="orient">wxVERTICAL</property>
+                        <property name="parent">1</property>
                         <property name="permission">none</property>
                         <event name="OnUpdateUI"></event>
                         <object class="sizeritem" expanded="0">
@@ -607,6 +609,7 @@
                         <property name="minimum_size"></property>
                         <property name="name">sbSizer2</property>
                         <property name="orient">wxVERTICAL</property>
+                        <property name="parent">1</property>
                         <property name="permission">none</property>
                         <event name="OnUpdateUI"></event>
                         <object class="sizeritem" expanded="0">
@@ -3287,7 +3290,7 @@
                                                             <property name="caption"></property>
                                                             <property name="caption_visible">1</property>
                                                             <property name="center_pane">0</property>
-                                                            <property name="choices"></property>
+                                                            <property name="choices">&quot;------------&quot;</property>
                                                             <property name="close_button">1</property>
                                                             <property name="context_help"></property>
                                                             <property name="context_menu">1</property>
@@ -3458,7 +3461,7 @@
                                                             <property name="caption"></property>
                                                             <property name="caption_visible">1</property>
                                                             <property name="center_pane">0</property>
-                                                            <property name="choices"></property>
+                                                            <property name="choices">&quot;------------&quot;</property>
                                                             <property name="close_button">1</property>
                                                             <property name="context_help"></property>
                                                             <property name="context_menu">1</property>
@@ -4756,6 +4759,7 @@
                                                     <property name="minimum_size"></property>
                                                     <property name="name">sbSizer81</property>
                                                     <property name="orient">wxVERTICAL</property>
+                                                    <property name="parent">1</property>
                                                     <property name="permission">none</property>
                                                     <event name="OnUpdateUI"></event>
                                                     <object class="sizeritem" expanded="0">
@@ -6031,6 +6035,7 @@
                                             <property name="minimum_size"></property>
                                             <property name="name">sbSizer9</property>
                                             <property name="orient">wxVERTICAL</property>
+                                            <property name="parent">1</property>
                                             <property name="permission">none</property>
                                             <event name="OnUpdateUI"></event>
                                             <object class="sizeritem" expanded="1">
@@ -6904,6 +6909,7 @@
                                                     <property name="minimum_size"></property>
                                                     <property name="name">sbSizer7</property>
                                                     <property name="orient">wxVERTICAL</property>
+                                                    <property name="parent">1</property>
                                                     <property name="permission">none</property>
                                                     <event name="OnUpdateUI"></event>
                                                     <object class="sizeritem" expanded="0">
@@ -7004,6 +7010,7 @@
                                                     <property name="minimum_size"></property>
                                                     <property name="name">sbSizer8</property>
                                                     <property name="orient">wxVERTICAL</property>
+                                                    <property name="parent">1</property>
                                                     <property name="permission">none</property>
                                                     <event name="OnUpdateUI"></event>
                                                     <object class="sizeritem" expanded="0">
@@ -7120,6 +7127,7 @@
                                                             <property name="minimum_size"></property>
                                                             <property name="name">sbSizer11</property>
                                                             <property name="orient">wxVERTICAL</property>
+                                                            <property name="parent">1</property>
                                                             <property name="permission">none</property>
                                                             <event name="OnUpdateUI"></event>
                                                             <object class="sizeritem" expanded="1">
@@ -7703,6 +7711,7 @@
                                                     <property name="minimum_size"></property>
                                                     <property name="name">sbSizer4</property>
                                                     <property name="orient">wxVERTICAL</property>
+                                                    <property name="parent">1</property>
                                                     <property name="permission">none</property>
                                                     <event name="OnUpdateUI"></event>
                                                     <object class="sizeritem" expanded="0">
@@ -8087,6 +8096,7 @@
                                                     <property name="minimum_size"></property>
                                                     <property name="name">sbSizer5</property>
                                                     <property name="orient">wxVERTICAL</property>
+                                                    <property name="parent">1</property>
                                                     <property name="permission">none</property>
                                                     <event name="OnUpdateUI"></event>
                                                     <object class="sizeritem" expanded="0">
@@ -8471,6 +8481,7 @@
                                                     <property name="minimum_size"></property>
                                                     <property name="name">sbSizer10</property>
                                                     <property name="orient">wxVERTICAL</property>
+                                                    <property name="parent">1</property>
                                                     <property name="permission">none</property>
                                                     <event name="OnUpdateUI"></event>
                                                     <object class="sizeritem" expanded="1">

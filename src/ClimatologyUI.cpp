@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Dec  8 2015)
+// C++ code generated with wxFormBuilder (version May 19 2018)
 // http://www.wxformbuilder.org/
 //
-// PLEASE DO "NOT" EDIT THIS FILE!
+// PLEASE DO *NOT* EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
 #include "ClimatologyUI.h"
@@ -31,23 +31,23 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	wxString m_cMonthChoices[] = { _("January"), _("Febuary"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"), _("September"), _("October"), _("November"), _("December") };
 	int m_cMonthNChoices = sizeof( m_cMonthChoices ) / sizeof( wxString );
-	m_cMonth = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 80,-1 ), m_cMonthNChoices, m_cMonthChoices, 0 );
+	m_cMonth = new wxChoice( sbSizer21->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize( 80,-1 ), m_cMonthNChoices, m_cMonthChoices, 0 );
 	m_cMonth->SetSelection( 0 );
 	fgSizer23->Add( m_cMonth, 0, wxALL|wxEXPAND, 5 );
 	
-	m_sDay = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 1, 31, 1 );
+	m_sDay = new wxSpinCtrl( sbSizer21->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 1, 31, 1 );
 	fgSizer23->Add( m_sDay, 0, wxALL, 5 );
 	
-	m_cbAll = new wxCheckBox( this, wxID_ANY, _("All"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbAll = new wxCheckBox( sbSizer21->GetStaticBox(), wxID_ANY, _("All"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer23->Add( m_cbAll, 0, wxALL, 0 );
 	
-	m_bpNow = new wxBitmapButton( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpNow = new wxBitmapButton( sbSizer21->GetStaticBox(), wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer23->Add( m_bpNow, 0, wxALL, 0 );
 	
 	
 	sbSizer21->Add( fgSizer23, 1, wxEXPAND, 5 );
 	
-	m_sTimeline = new wxSlider( this, wxID_ANY, 0, 1, 500, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	m_sTimeline = new wxSlider( sbSizer21->GetStaticBox(), wxID_ANY, 0, 1, 500, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
 	sbSizer21->Add( m_sTimeline, 0, wxEXPAND, 5 );
 	
 	
@@ -69,34 +69,34 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	fgSizer15->Add( 0, 0, 1, wxEXPAND, 5 );
 	
-	m_stSpeed = new wxStaticText( this, wxID_ANY, _("Speed"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stSpeed = new wxStaticText( sbSizer2->GetStaticBox(), wxID_ANY, _("Speed"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stSpeed->Wrap( -1 );
 	fgSizer15->Add( m_stSpeed, 0, 0, 5 );
 	
-	m_stDirection = new wxStaticText( this, wxID_ANY, _("Direction"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stDirection = new wxStaticText( sbSizer2->GetStaticBox(), wxID_ANY, _("Direction"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stDirection->Wrap( -1 );
 	fgSizer15->Add( m_stDirection, 0, 0, 5 );
 	
-	m_cbWind = new wxCheckBox( this, wxID_ANY, _("Wind"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbWind = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Wind"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbWind->Enable( false );
 	
 	fgSizer15->Add( m_cbWind, 0, wxALL, 5 );
 	
-	m_tWind = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 70,-1 ), 0 );
+	m_tWind = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 70,-1 ), 0 );
 	fgSizer15->Add( m_tWind, 0, wxALL, 5 );
 	
-	m_tWindDir = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 60,-1 ), 0 );
+	m_tWindDir = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 60,-1 ), 0 );
 	fgSizer15->Add( m_tWindDir, 0, wxALL, 5 );
 	
-	m_cbCurrent = new wxCheckBox( this, wxID_ANY, _("Current"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbCurrent = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Current"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbCurrent->Enable( false );
 	
 	fgSizer15->Add( m_cbCurrent, 0, wxALL, 5 );
 	
-	m_tCurrent = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 70,-1 ), 0 );
+	m_tCurrent = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 70,-1 ), 0 );
 	fgSizer15->Add( m_tCurrent, 0, wxALL, 5 );
 	
-	m_tCurrentDir = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 60,-1 ), 0 );
+	m_tCurrentDir = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 60,-1 ), 0 );
 	fgSizer15->Add( m_tCurrentDir, 0, wxALL, 5 );
 	
 	
@@ -107,76 +107,76 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer4->SetFlexibleDirection( wxBOTH );
 	fgSizer4->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_cbPressure = new wxCheckBox( this, wxID_ANY, _("Pressure"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbPressure = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Pressure"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbPressure->Enable( false );
 	
 	fgSizer4->Add( m_cbPressure, 0, wxALL, 5 );
 	
-	m_tPressure = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_tPressure = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer4->Add( m_tPressure, 0, wxALL, 5 );
 	
-	m_cbSeaTemperature = new wxCheckBox( this, wxID_ANY, _("Sea Temperature"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbSeaTemperature = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Sea Temperature"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbSeaTemperature->Enable( false );
 	
 	fgSizer4->Add( m_cbSeaTemperature, 0, wxALL, 5 );
 	
-	m_tSeaTemperature = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_tSeaTemperature = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer4->Add( m_tSeaTemperature, 0, wxALL, 5 );
 	
-	m_cbAirTemperature = new wxCheckBox( this, wxID_ANY, _("Air Temperature"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbAirTemperature = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Air Temperature"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbAirTemperature->Enable( false );
 	
 	fgSizer4->Add( m_cbAirTemperature, 0, wxALL, 5 );
 	
-	m_tAirTemperature = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_tAirTemperature = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer4->Add( m_tAirTemperature, 0, wxALL, 5 );
 	
-	m_cbCloudCover = new wxCheckBox( this, wxID_ANY, _("Cloud Cover"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbCloudCover = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Cloud Cover"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbCloudCover->Enable( false );
 	
 	fgSizer4->Add( m_cbCloudCover, 0, wxALL, 5 );
 	
-	m_tCloudCover = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_tCloudCover = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer4->Add( m_tCloudCover, 0, wxALL, 5 );
 	
-	m_cbPrecipitation = new wxCheckBox( this, wxID_ANY, _("Precipitation"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbPrecipitation = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Precipitation"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbPrecipitation->Enable( false );
 	
 	fgSizer4->Add( m_cbPrecipitation, 0, wxALL, 5 );
 	
-	m_tPrecipitation = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_tPrecipitation = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer4->Add( m_tPrecipitation, 0, wxALL, 5 );
 	
-	m_cbRelativeHumidity = new wxCheckBox( this, wxID_ANY, _("Rel Humidity"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbRelativeHumidity = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Rel Humidity"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbRelativeHumidity->Enable( false );
 	
 	fgSizer4->Add( m_cbRelativeHumidity, 0, wxALL, 5 );
 	
-	m_tRelativeHumidity = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_tRelativeHumidity = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer4->Add( m_tRelativeHumidity, 0, wxALL, 5 );
 	
-	m_cbLightning = new wxCheckBox( this, wxID_ANY, _("Lightning"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbLightning = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Lightning"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbLightning->Enable( false );
 	
 	fgSizer4->Add( m_cbLightning, 0, wxALL, 5 );
 	
-	m_tLightning = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_tLightning = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer4->Add( m_tLightning, 0, wxALL, 5 );
 	
-	m_cbSeaDepth = new wxCheckBox( this, wxID_ANY, _("Sea Depth"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbSeaDepth = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Sea Depth"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbSeaDepth->Enable( false );
 	
 	fgSizer4->Add( m_cbSeaDepth, 0, wxALL, 5 );
 	
-	m_tSeaDepth = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_tSeaDepth = new wxTextCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer4->Add( m_tSeaDepth, 0, wxALL, 5 );
 	
-	m_cbCyclones = new wxCheckBox( this, wxID_ANY, _("Cyclones"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbCyclones = new wxCheckBox( sbSizer2->GetStaticBox(), wxID_ANY, _("Cyclones"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbCyclones->Enable( false );
 	
 	fgSizer4->Add( m_cbCyclones, 0, wxALL, 5 );
 	
-	m_bConfig = new wxButton( this, wxID_ANY, _("Config"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_bConfig = new wxButton( sbSizer2->GetStaticBox(), wxID_ANY, _("Config"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer4->Add( m_bConfig, 0, wxALL, 5 );
 	
 	
@@ -288,8 +288,9 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer18->SetFlexibleDirection( wxBOTH );
 	fgSizer18->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	wxArrayString m_cDataTypeChoices;
-	m_cDataType = new wxChoice( m_panel5, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cDataTypeChoices, 0 );
+	wxString m_cDataTypeChoices[] = { _("------------") };
+	int m_cDataTypeNChoices = sizeof( m_cDataTypeChoices ) / sizeof( wxString );
+	m_cDataType = new wxChoice( m_panel5, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cDataTypeNChoices, m_cDataTypeChoices, 0 );
 	m_cDataType->SetSelection( 0 );
 	fgSizer18->Add( m_cDataType, 0, wxALL, 5 );
 	
@@ -297,8 +298,9 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	m_staticText3->Wrap( -1 );
 	fgSizer18->Add( m_staticText3, 0, wxALL, 5 );
 	
-	wxArrayString m_cDataUnitsChoices;
-	m_cDataUnits = new wxChoice( m_panel5, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cDataUnitsChoices, 0 );
+	wxString m_cDataUnitsChoices[] = { _("------------") };
+	int m_cDataUnitsNChoices = sizeof( m_cDataUnitsChoices ) / sizeof( wxString );
+	m_cDataUnits = new wxChoice( m_panel5, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cDataUnitsNChoices, m_cDataUnitsChoices, 0 );
 	m_cDataUnits->SetSelection( 0 );
 	fgSizer18->Add( m_cDataUnits, 0, wxALL, 5 );
 	
@@ -394,51 +396,51 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer16->SetFlexibleDirection( wxBOTH );
 	fgSizer16->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_cbDirectionArrowsEnable = new wxCheckBox( m_panel5, wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbDirectionArrowsEnable = new wxCheckBox( sbSizer81->GetStaticBox(), wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer16->Add( m_cbDirectionArrowsEnable, 0, wxALL, 5 );
 	
 	
 	fgSizer16->Add( 0, 0, 1, wxEXPAND, 5 );
 	
-	m_rbDirectionArrowsBarbs = new wxRadioButton( m_panel5, wxID_ANY, _("Barbs"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_rbDirectionArrowsBarbs = new wxRadioButton( sbSizer81->GetStaticBox(), wxID_ANY, _("Barbs"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer16->Add( m_rbDirectionArrowsBarbs, 0, wxALL, 5 );
 	
-	m_rbDirectionArrowsLength = new wxRadioButton( m_panel5, wxID_ANY, _("Length"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_rbDirectionArrowsLength = new wxRadioButton( sbSizer81->GetStaticBox(), wxID_ANY, _("Length"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer16->Add( m_rbDirectionArrowsLength, 0, wxALL, 5 );
 	
-	m_staticText7 = new wxStaticText( m_panel5, wxID_ANY, _("Width"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7 = new wxStaticText( sbSizer81->GetStaticBox(), wxID_ANY, _("Width"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( -1 );
 	fgSizer16->Add( m_staticText7, 0, wxALL, 5 );
 	
-	m_sDirectionArrowsWidth = new wxSpinCtrl( m_panel5, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 5, 3 );
+	m_sDirectionArrowsWidth = new wxSpinCtrl( sbSizer81->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 5, 3 );
 	fgSizer16->Add( m_sDirectionArrowsWidth, 0, wxALL, 5 );
 	
-	m_staticText8 = new wxStaticText( m_panel5, wxID_ANY, _("Color"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8 = new wxStaticText( sbSizer81->GetStaticBox(), wxID_ANY, _("Color"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText8->Wrap( -1 );
 	fgSizer16->Add( m_staticText8, 0, wxALL, 5 );
 	
-	m_cpDirectionArrows = new wxColourPickerCtrl( m_panel5, wxID_ANY, wxColour( 0, 221, 0 ), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
+	m_cpDirectionArrows = new wxColourPickerCtrl( sbSizer81->GetStaticBox(), wxID_ANY, wxColour( 0, 221, 0 ), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
 	fgSizer16->Add( m_cpDirectionArrows, 0, wxALL, 5 );
 	
-	m_staticText9 = new wxStaticText( m_panel5, wxID_ANY, _("Opacity"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText9 = new wxStaticText( sbSizer81->GetStaticBox(), wxID_ANY, _("Opacity"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText9->Wrap( -1 );
 	fgSizer16->Add( m_staticText9, 0, wxALL, 5 );
 	
-	m_sDirectionArrowsOpacity = new wxSlider( m_panel5, wxID_ANY, 205, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	m_sDirectionArrowsOpacity = new wxSlider( sbSizer81->GetStaticBox(), wxID_ANY, 205, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
 	fgSizer16->Add( m_sDirectionArrowsOpacity, 0, wxALL|wxEXPAND, 5 );
 	
-	m_staticText11 = new wxStaticText( m_panel5, wxID_ANY, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText11 = new wxStaticText( sbSizer81->GetStaticBox(), wxID_ANY, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText11->Wrap( -1 );
 	fgSizer16->Add( m_staticText11, 0, wxALL, 5 );
 	
-	m_sDirectionArrowsSize = new wxSpinCtrl( m_panel5, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 30 );
+	m_sDirectionArrowsSize = new wxSpinCtrl( sbSizer81->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 30 );
 	fgSizer16->Add( m_sDirectionArrowsSize, 0, wxALL, 5 );
 	
-	m_staticText10 = new wxStaticText( m_panel5, wxID_ANY, _("Spacing"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText10 = new wxStaticText( sbSizer81->GetStaticBox(), wxID_ANY, _("Spacing"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText10->Wrap( -1 );
 	fgSizer16->Add( m_staticText10, 0, wxALL, 5 );
 	
-	m_sDirectionArrowsSpacing = new wxSpinCtrl( m_panel5, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1000, 100 );
+	m_sDirectionArrowsSpacing = new wxSpinCtrl( sbSizer81->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1000, 100 );
 	fgSizer16->Add( m_sDirectionArrowsSpacing, 0, wxALL, 5 );
 	
 	
@@ -476,37 +478,37 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer17->SetFlexibleDirection( wxBOTH );
 	fgSizer17->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_cbWindAtlasEnable = new wxCheckBox( m_panel41, wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbWindAtlasEnable = new wxCheckBox( sbSizer9->GetStaticBox(), wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer17->Add( m_cbWindAtlasEnable, 0, wxALL, 5 );
 	
 	
 	fgSizer17->Add( 0, 0, 1, wxEXPAND, 5 );
 	
-	m_staticText12 = new wxStaticText( m_panel41, wxID_ANY, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText12 = new wxStaticText( sbSizer9->GetStaticBox(), wxID_ANY, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText12->Wrap( -1 );
 	fgSizer17->Add( m_staticText12, 0, wxALL, 5 );
 	
-	m_sWindAtlasSize = new wxSpinCtrl( m_panel41, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 5, 500, 60 );
+	m_sWindAtlasSize = new wxSpinCtrl( sbSizer9->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 5, 500, 60 );
 	fgSizer17->Add( m_sWindAtlasSize, 0, wxALL, 5 );
 	
-	m_staticText13 = new wxStaticText( m_panel41, wxID_ANY, _("Spacing"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText13 = new wxStaticText( sbSizer9->GetStaticBox(), wxID_ANY, _("Spacing"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText13->Wrap( -1 );
 	fgSizer17->Add( m_staticText13, 0, wxALL, 5 );
 	
-	m_sWindAtlasSpacing = new wxSpinCtrl( m_panel41, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 10, 1000, 80 );
+	m_sWindAtlasSpacing = new wxSpinCtrl( sbSizer9->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 10, 1000, 80 );
 	fgSizer17->Add( m_sWindAtlasSpacing, 0, wxALL, 5 );
 	
-	m_staticText14 = new wxStaticText( m_panel41, wxID_ANY, _("Opacity"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText14 = new wxStaticText( sbSizer9->GetStaticBox(), wxID_ANY, _("Opacity"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText14->Wrap( -1 );
 	fgSizer17->Add( m_staticText14, 0, wxALL, 5 );
 	
-	m_sWindAtlasOpacity = new wxSlider( m_panel41, wxID_ANY, 205, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	m_sWindAtlasOpacity = new wxSlider( sbSizer9->GetStaticBox(), wxID_ANY, 205, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
 	fgSizer17->Add( m_sWindAtlasOpacity, 0, wxALL|wxEXPAND, 5 );
 	
 	
 	fgSizer24->Add( fgSizer17, 1, wxEXPAND, 5 );
 	
-	m_staticText19 = new wxStaticText( m_panel41, wxID_ANY, _("The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText19 = new wxStaticText( sbSizer9->GetStaticBox(), wxID_ANY, _("The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\nThe barbs indicate wind speed, each barb being 5 knots.\n\nThe numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText19->Wrap( 240 );
 	fgSizer24->Add( m_staticText19, 0, wxALL|wxEXPAND, 5 );
 	
@@ -535,7 +537,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	wxStaticBoxSizer* sbSizer7;
 	sbSizer7 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Start Date") ), wxVERTICAL );
 	
-	m_dPStart = new wxDatePickerCtrl( m_panel2, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT|wxDP_SHOWCENTURY );
+	m_dPStart = new wxDatePickerCtrl( sbSizer7->GetStaticBox(), wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT|wxDP_SHOWCENTURY );
 	sbSizer7->Add( m_dPStart, 0, wxALL|wxEXPAND, 5 );
 	
 	
@@ -544,7 +546,7 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	wxStaticBoxSizer* sbSizer8;
 	sbSizer8 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("End Date") ), wxVERTICAL );
 	
-	m_dPEnd = new wxDatePickerCtrl( m_panel2, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT );
+	m_dPEnd = new wxDatePickerCtrl( sbSizer8->GetStaticBox(), wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT );
 	sbSizer8->Add( m_dPEnd, 0, wxALL|wxEXPAND, 5 );
 	
 	
@@ -563,10 +565,10 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer291->SetFlexibleDirection( wxBOTH );
 	fgSizer291->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_sCycloneDaySpan = new wxSpinCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 365, 30 );
+	m_sCycloneDaySpan = new wxSpinCtrl( sbSizer11->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 365, 30 );
 	fgSizer291->Add( m_sCycloneDaySpan, 0, wxALL, 5 );
 	
-	m_staticText30 = new wxStaticText( m_panel2, wxID_ANY, _("days"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText30 = new wxStaticText( sbSizer11->GetStaticBox(), wxID_ANY, _("days"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText30->Wrap( -1 );
 	fgSizer291->Add( m_staticText30, 0, wxALL, 5 );
 	
@@ -617,19 +619,19 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer10->SetFlexibleDirection( wxBOTH );
 	fgSizer10->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_cbElNino = new wxCheckBox( m_panel2, wxID_ANY, _("El Nino"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbElNino = new wxCheckBox( sbSizer4->GetStaticBox(), wxID_ANY, _("El Nino"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbElNino->SetValue(true); 
 	fgSizer10->Add( m_cbElNino, 0, wxALL, 5 );
 	
-	m_cbLaNina = new wxCheckBox( m_panel2, wxID_ANY, _("La Nina"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbLaNina = new wxCheckBox( sbSizer4->GetStaticBox(), wxID_ANY, _("La Nina"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbLaNina->SetValue(true); 
 	fgSizer10->Add( m_cbLaNina, 0, wxALL, 5 );
 	
-	m_cbNeutral = new wxCheckBox( m_panel2, wxID_ANY, _("Neutral"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbNeutral = new wxCheckBox( sbSizer4->GetStaticBox(), wxID_ANY, _("Neutral"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbNeutral->SetValue(true); 
 	fgSizer10->Add( m_cbNeutral, 0, wxALL, 5 );
 	
-	m_cbNotAvailable = new wxCheckBox( m_panel2, wxID_ANY, _("N/A"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbNotAvailable = new wxCheckBox( sbSizer4->GetStaticBox(), wxID_ANY, _("N/A"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer10->Add( m_cbNotAvailable, 0, wxALL, 5 );
 	
 	
@@ -646,19 +648,19 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	fgSizer11->SetFlexibleDirection( wxBOTH );
 	fgSizer11->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_cbTropical = new wxCheckBox( m_panel2, wxID_ANY, _("Tropical"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbTropical = new wxCheckBox( sbSizer5->GetStaticBox(), wxID_ANY, _("Tropical"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbTropical->SetValue(true); 
 	fgSizer11->Add( m_cbTropical, 0, wxALL, 5 );
 	
-	m_cbSubTropical = new wxCheckBox( m_panel2, wxID_ANY, _("Sub Tropical"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbSubTropical = new wxCheckBox( sbSizer5->GetStaticBox(), wxID_ANY, _("Sub Tropical"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbSubTropical->SetValue(true); 
 	fgSizer11->Add( m_cbSubTropical, 0, wxALL, 5 );
 	
-	m_cbExtraTropical = new wxCheckBox( m_panel2, wxID_ANY, _("ExtraTropical"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbExtraTropical = new wxCheckBox( sbSizer5->GetStaticBox(), wxID_ANY, _("ExtraTropical"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_cbExtraTropical->SetValue(true); 
 	fgSizer11->Add( m_cbExtraTropical, 0, wxALL, 5 );
 	
-	m_cbRemanent = new wxCheckBox( m_panel2, wxID_ANY, _("Remanent"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbRemanent = new wxCheckBox( sbSizer5->GetStaticBox(), wxID_ANY, _("Remanent"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer11->Add( m_cbRemanent, 0, wxALL, 5 );
 	
 	
@@ -673,66 +675,66 @@ ClimatologyConfigDialogBase::ClimatologyConfigDialogBase( wxWindow* parent, wxWi
 	wxGridSizer* gSizer1;
 	gSizer1 = new wxGridSizer( 0, 6, 0, 0 );
 	
-	m_panel51 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("20") );
+	m_panel51 = new wxPanel( sbSizer10->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("20") );
 	gSizer1->Add( m_panel51, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticText21 = new wxStaticText( m_panel2, wxID_ANY, _("20"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText21 = new wxStaticText( sbSizer10->GetStaticBox(), wxID_ANY, _("20"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText21->Wrap( -1 );
 	gSizer1->Add( m_staticText21, 0, wxALL, 5 );
 	
-	m_panel511 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("40") );
+	m_panel511 = new wxPanel( sbSizer10->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("40") );
 	gSizer1->Add( m_panel511, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticText22 = new wxStaticText( m_panel2, wxID_ANY, _("40"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText22 = new wxStaticText( sbSizer10->GetStaticBox(), wxID_ANY, _("40"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText22->Wrap( -1 );
 	gSizer1->Add( m_staticText22, 0, wxALL, 5 );
 	
-	m_panel5111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("60") );
+	m_panel5111 = new wxPanel( sbSizer10->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("60") );
 	gSizer1->Add( m_panel5111, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticText221 = new wxStaticText( m_panel2, wxID_ANY, _("60"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText221 = new wxStaticText( sbSizer10->GetStaticBox(), wxID_ANY, _("60"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText221->Wrap( -1 );
 	gSizer1->Add( m_staticText221, 0, wxALL, 5 );
 	
-	m_panel51111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("80") );
+	m_panel51111 = new wxPanel( sbSizer10->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("80") );
 	gSizer1->Add( m_panel51111, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticText2211 = new wxStaticText( m_panel2, wxID_ANY, _("80"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText2211 = new wxStaticText( sbSizer10->GetStaticBox(), wxID_ANY, _("80"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2211->Wrap( -1 );
 	gSizer1->Add( m_staticText2211, 0, wxALL, 5 );
 	
-	m_panel511111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("100") );
+	m_panel511111 = new wxPanel( sbSizer10->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("100") );
 	gSizer1->Add( m_panel511111, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticText22111 = new wxStaticText( m_panel2, wxID_ANY, _("100"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText22111 = new wxStaticText( sbSizer10->GetStaticBox(), wxID_ANY, _("100"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText22111->Wrap( -1 );
 	gSizer1->Add( m_staticText22111, 0, wxALL, 5 );
 	
-	m_panel5111111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("120") );
+	m_panel5111111 = new wxPanel( sbSizer10->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("120") );
 	gSizer1->Add( m_panel5111111, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticText221111 = new wxStaticText( m_panel2, wxID_ANY, _("120"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText221111 = new wxStaticText( sbSizer10->GetStaticBox(), wxID_ANY, _("120"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText221111->Wrap( -1 );
 	gSizer1->Add( m_staticText221111, 0, wxALL, 5 );
 	
-	m_panel51111111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("140") );
+	m_panel51111111 = new wxPanel( sbSizer10->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("140") );
 	gSizer1->Add( m_panel51111111, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticText2211111 = new wxStaticText( m_panel2, wxID_ANY, _("140"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText2211111 = new wxStaticText( sbSizer10->GetStaticBox(), wxID_ANY, _("140"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2211111->Wrap( -1 );
 	gSizer1->Add( m_staticText2211111, 0, wxALL, 5 );
 	
-	m_panel511111111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("160") );
+	m_panel511111111 = new wxPanel( sbSizer10->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("160") );
 	gSizer1->Add( m_panel511111111, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticText22111111 = new wxStaticText( m_panel2, wxID_ANY, _("160"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText22111111 = new wxStaticText( sbSizer10->GetStaticBox(), wxID_ANY, _("160"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText22111111->Wrap( -1 );
 	gSizer1->Add( m_staticText22111111, 0, wxALL, 5 );
 	
-	m_panel5111111111 = new wxPanel( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("200") );
+	m_panel5111111111 = new wxPanel( sbSizer10->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("200") );
 	gSizer1->Add( m_panel5111111111, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticText221111111 = new wxStaticText( m_panel2, wxID_ANY, _("200"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText221111111 = new wxStaticText( sbSizer10->GetStaticBox(), wxID_ANY, _("200"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText221111111->Wrap( -1 );
 	gSizer1->Add( m_staticText221111111, 0, wxALL, 5 );
 	

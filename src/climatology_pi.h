@@ -46,8 +46,16 @@
 
 wxString ClimatologyDataDirectory();
 
+#ifndef __OCPN__ANDROID__
+#define GetDateCtrlValue GetValue
+#endif
+
 #include "ClimatologyDialog.h"
 #include "ClimatologyUI.h"
+
+#ifdef __OCPN__ANDROID__
+extern QString qtStyleSheet;
+#endif
 
 //----------------------------------------------------------------------------------------------------------
 //    The PlugIn Class Definition

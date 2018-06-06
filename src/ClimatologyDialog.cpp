@@ -39,6 +39,8 @@
 #include "ClimatologyDialog.h"
 #include "ClimatologyConfigDialog.h"
 
+#include "qdebug.h"
+
 ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 #ifndef __WXOSX__
     : ClimatologyDialogBase(parent),
@@ -47,7 +49,9 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 #endif
     pPlugIn(ppi), pParent(parent)
 {
-
+#ifdef __OCPN__ANDROID__
+    GetHandle()->setStyleSheet( qtStyleSheet);
+#endif
     m_cfgdlg = new ClimatologyConfigDialog(this);
 
     Now();
@@ -58,7 +62,6 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 #include "now.xpm"
     m_bpNow->SetBitmapLabel(now);
     }
-
     DimeWindow( this );
     PopulateTrackingControls();
 

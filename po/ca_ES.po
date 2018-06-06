@@ -516,7 +516,6 @@ msgid "Wind Atlas"
 msgstr "Atlas del vent"
 
 #: src/ClimatologyUI.cpp:509
-#, c-format
 msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\n"
 "The barbs indicate wind speed, each barb being 5 knots.\n\n"
 "The numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."

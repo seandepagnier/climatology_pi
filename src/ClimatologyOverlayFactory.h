@@ -30,6 +30,7 @@
 #include "zuFile.h"
 
 #include "IsoBarMap.h"
+#include "cldc.h"
 #include "TexFont.h"
 
 void DrawGLLine( double x1, double y1, double x2, double y2 );
@@ -41,9 +42,9 @@ struct WindData
 {
     struct WindPolar
     {
-        WindPolar() : directions(NULL), speeds(NULL) {}
-        ~WindPolar() { delete [] directions; delete [] speeds; }
-        wxUint8 gale, calm, *directions, *speeds;
+        WindPolar()  {}
+        ~WindPolar() { /*delete [] directions; delete [] speeds;*/ }
+        wxUint8 gale, calm, directions[8], speeds[8];
         double Value(enum Coord coord, int dir_cnt);
     };
 
@@ -180,6 +181,7 @@ public:
     }
 
 private:
+    
     ClimatologyOverlayFactory &m_factory;
     int m_setting, m_units, m_month, m_day;
 };
@@ -238,17 +240,20 @@ public:
     wxSemaphore m_cyclone_cache_semaphore;
     std::map<int, std::list<CycloneState*> > m_cyclone_cache;
 
-    bool RenderOverlay( wxDC *dc, PlugIn_ViewPort &vp );
+    bool RenderOverlay( clDC &dc, PlugIn_ViewPort &vp );
 
     static wxColour GetGraphicColor(int setting, double val_in);
 
     wxDateTime m_CurrentTimeline;
     bool m_bAllTimes;
 
-    bool m_bFailedLoading; // maybe loaded some data, but some is corrupted or missing
+    std::list<wxString> m_FailedFiles; // maybe loaded some data, but some is corrupted or missing
     bool m_bCompletedLoading; // finished loading climatology data without abort
 
 private:
+    void Load();
+    void Free();
+
     ZUFILE *TryOpenFile(wxString filename);
 
     void RenderNumber(wxPoint p, double v, const wxColour &color);
@@ -272,10 +277,10 @@ private:
 
     ClimatologyOverlay m_pOverlay[13][ClimatologyOverlaySettings::SETTINGS_COUNT];
 
-    wxDC *m_pdc;
+
+    clDC *m_dc;
 
     std::map < double , wxImage > m_labelCache;
-    TexFont m_Numbers;
 
     WindData *m_WindData[13];
     CurrentData *m_CurrentData[13];

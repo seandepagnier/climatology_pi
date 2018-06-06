@@ -15,18 +15,7 @@ SET(VERBOSE_NAME Climatology)
 SET(TITLE_NAME CLIMATOLOGY)
 SET(CPACK_PACKAGE_CONTACT "Sean D'Epagnier ")
 
-SET(BUNDLE_DATA TRUE)
-
-INCLUDE( VERSION.cmake )
-SET(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}" )
-
-OPTION(CLIMATOLOGY_USE_SVG "Use SVG graphics" ON)
-
 INCLUDE("cmake/PluginConfigure.cmake")
-
-IF(CLIMATOLOGY_USE_SVG)
-  ADD_DEFINITIONS(-DCLIMATOLOGY_USE_SVG)
-ENDIF(CLIMATOLOGY_USE_SVG)
 
 SET(SRC_CLIMATOLOGY
             src/ClimatologyOverlayFactory.cpp
@@ -37,7 +26,10 @@ SET(SRC_CLIMATOLOGY
             src/zuFile.cpp
             src/IsoBarMap.cpp
             src/TexFont.cpp
+            src/cldc.cpp
+            src/pi_shaders.cpp
             src/icons.cpp
+            src/qtstylesheet.cpp
 )
 
 IF(WIN32)

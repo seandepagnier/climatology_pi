@@ -27,6 +27,7 @@
 
 #include "wx/wx.h"
 #include "wx/datetime.h"
+#include <wx/dcbuffer.h>
 #include <wx/dir.h>
 #include <wx/debug.h>
 #include <wx/graphics.h>
@@ -37,6 +38,7 @@
 
 #include "climatology_pi.h"
 #include "ClimatologyConfigDialog.h"
+#include "qdebug.h"
 
 static const wxString units0_names[] = {"Knots", "M/S", "MPH", "KPH", wxEmptyString};
 static const wxString units1_names[] = {"MilliBars", "mmHG", wxEmptyString};
@@ -228,10 +230,15 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
 #ifdef WIN32 // windows is too slow for very fine steps
     m_cIsoBarStep->Delete(4);
 #endif
+#ifdef __OCPN__ANDROID__
+    GetHandle()->setStyleSheet( qtStyleSheet);
+#endif
+
 
     m_Settings.Load();
     LoadSettings();
- 
+
+    m_cDataType->Clear();
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++)
         m_cDataType->Append(_(name_from_index[i]));
 
@@ -322,8 +329,8 @@ void ClimatologyConfigDialog::SaveSettings()
     /* cyclone settings */
     pConf->SetPath ( _T( "/PlugIns/Climatology/Cyclones" ) );
 
-    pConf->Write( _T ( "StartDate" ), m_dPStart->GetValue().FormatDate());
-    pConf->Write( _T ( "EndDate" ), m_dPEnd->GetValue().FormatDate());
+    pConf->Write( _T ( "StartDate" ), m_dPStart->GetDateCtrlValue().FormatDate());
+    pConf->Write( _T ( "EndDate" ), m_dPEnd->GetDateCtrlValue().FormatDate());
 
     pConf->Write ( _T ( "CycloneDaySpan" ), m_sCycloneDaySpan->GetValue() );
     pConf->Write ( _T ( "MinWindSpeed" ), m_sMinWindSpeed->GetValue() );
@@ -459,8 +466,17 @@ void ClimatologyConfigDialog::OnUpdateCyclones()
 void ClimatologyConfigDialog::OnPaintKey( wxPaintEvent& event )
 {
     wxWindow *window = dynamic_cast<wxWindow*>(event.GetEventObject());
-    assert( window != 0);
-
+    if(!window) {
+        // broken wxqt hack!!
+        static int panel;
+        wxWindow *panels[] = {m_panel51, m_panel511, m_panel5111, m_panel51111,
+                             m_panel511111, m_panel5111111, m_panel51111111,
+                             m_panel511111111, m_panel5111111111};
+        window = panel[panels];
+        if(++panel==(sizeof panels) / (sizeof *panels))
+            panel = 0;
+    }
+    
     wxPaintDC dc( window );
 
     double knots;

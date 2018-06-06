@@ -38,6 +38,7 @@
 #include "climatology_pi.h"
 #include "icons.h"
 #include "ClimatologyDialog.h"
+#include "qdebug.h"
 
 ClimatologyOverlayFactory *g_pOverlayFactory = NULL;
 
@@ -96,7 +97,7 @@ int climatology_pi::Init(void)
       m_parent_window = GetOCPNCanvasWindow();
 
       //    This PlugIn needs a toolbar icon, so request its insertion if enabled locally
-#ifdef CLIMATOLOGY_USE_SVG
+#ifdef OCPN_USE_SVG
       m_leftclick_tool_id = InsertPlugInToolSVG(_T( "Climatology" ), _svg_climatology, _svg_climatology_rollover, _svg_climatology_toggled,
                                               wxITEM_CHECK, _("Climatology"), _T( "" ), NULL, CLIMATOLOGY_TOOL_POSITION, 0, this);
 #else
@@ -198,7 +199,6 @@ void climatology_pi::CreateOverlayFactory()
     
     if(g_pOverlayFactory->m_bCompletedLoading) {
         SendClimatology(true);
-        
         m_pClimatologyDialog->UpdateTrackingControls();
         m_pClimatologyDialog->FitLater(); // buggy wx
     }
@@ -219,7 +219,7 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
     if(!g_pOverlayFactory)
         s_climatology_pi->CreateOverlayFactory();
 
-    if(!g_pOverlayFactory->m_bCompletedLoading || g_pOverlayFactory->m_bFailedLoading)
+    if(!g_pOverlayFactory->m_bCompletedLoading)
         return false;
 
     speed = g_pOverlayFactory->getValue(MAG, setting, lat, lon, &date);
@@ -259,18 +259,8 @@ static int ClimatologyCycloneTrackCrossings(double lat1, double lon1, double lat
 
 void climatology_pi::OnToolbarToolCallback(int id)
 {
-    if(g_pOverlayFactory &&
-       (!g_pOverlayFactory->m_bCompletedLoading ||
-        (!m_pClimatologyDialog->IsShown() && g_pOverlayFactory->m_bFailedLoading)))
-        FreeData();
-
-    if(!g_pOverlayFactory) {
+    if(!g_pOverlayFactory)
         CreateOverlayFactory();
-        if(!g_pOverlayFactory->m_bCompletedLoading) {
-            FreeData();
-            return;
-        }
-    } 
 
     if(m_pClimatologyDialog->IsShown() && m_pClimatologyDialog->m_cfgdlg)
         m_pClimatologyDialog->m_cfgdlg->Hide();
@@ -292,11 +282,13 @@ void climatology_pi::OnClimatologyDialogClose()
 
 bool climatology_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
 {
+    return true;
     if(!m_pClimatologyDialog || !m_pClimatologyDialog->IsShown() ||
        !g_pOverlayFactory)
         return false;
 
-    g_pOverlayFactory->RenderOverlay ( &dc, *vp );
+    clDC cldc(dc);
+    g_pOverlayFactory->RenderOverlay ( cldc, *vp );
     return true;
 }
 
@@ -306,7 +298,11 @@ bool climatology_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
        !g_pOverlayFactory)
         return false;
 
-    g_pOverlayFactory->RenderOverlay ( NULL, *vp );
+    clDC cldc;
+    glEnable( GL_BLEND );
+    cldc.SetVP(vp);
+    
+    g_pOverlayFactory->RenderOverlay ( cldc, *vp );
     return true;
 }
 
