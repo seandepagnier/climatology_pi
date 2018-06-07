@@ -39,8 +39,6 @@
 #include "ClimatologyDialog.h"
 #include "ClimatologyConfigDialog.h"
 
-#include "qdebug.h"
-
 ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 #ifndef __WXOSX__
     : ClimatologyDialogBase(parent),

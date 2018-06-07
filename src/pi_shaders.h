@@ -29,6 +29,7 @@
 #include "wx/wx.h"
 #endif //precompiled headers
 
+#ifdef ocpn_USE_GLES2
 #include "GLES2/gl2.h"
 
     extern GLint pi_color_tri_shader_program;
@@ -37,6 +38,7 @@
     extern GLint pi_texture_2DA_shader_program;
     extern GLint pi_texture_text_shader_program;
     extern GLint pi_circle_filled_shader_program;
+#endif
     
 
 bool pi_loadShaders();

@@ -38,7 +38,6 @@
 
 #include "climatology_pi.h"
 #include "ClimatologyConfigDialog.h"
-#include "qdebug.h"
 
 static const wxString units0_names[] = {"Knots", "M/S", "MPH", "KPH", wxEmptyString};
 static const wxString units1_names[] = {"MilliBars", "mmHG", wxEmptyString};

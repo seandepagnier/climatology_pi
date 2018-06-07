@@ -38,7 +38,7 @@
 #include "climatology_pi.h"
 #include "icons.h"
 #include "ClimatologyDialog.h"
-#include "qdebug.h"
+
 
 ClimatologyOverlayFactory *g_pOverlayFactory = NULL;
 

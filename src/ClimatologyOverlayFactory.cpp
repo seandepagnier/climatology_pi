@@ -39,7 +39,7 @@
 #include "GL/gl_private.h"
 #endif
 
-#ifdef USE_ANDROID_GLES2
+#ifdef USE_GLES2
 #include "GLES2/gl2.h"
 #endif
 
@@ -48,7 +48,7 @@
 #include "icons.h"
 
 #include "pi_shaders.h"
-#include "qdebug.h"
+
 #define FAILED_FILELIST_MSG_LEN 500
 
 static int s_multitexturing = 0;
@@ -508,7 +508,6 @@ void ClimatologyOverlayFactory::Load()
 
 void ClimatologyOverlayFactory::Free()
 {
-    //    glDeleteLists(m_cyclonelist, 1);
 #if 0
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++)
         for(int m=0; m<13; m++)
@@ -678,7 +677,7 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
 {
     ZUFILE *f;
 #ifdef __OCPN__ANDROID__
-    int div = 1; // less ram usage half resolution
+    int div = 1; // less ram usage half resolution ?
 #else
     int div = 1;
 #endif
@@ -719,9 +718,6 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
                         wp.gale = 0;
                         wp.calm = value;
                     }
-
-//                    wp.directions = new wxUint8[dirs]();
-//                    wp.speeds = new wxUint8[dirs]();
                 } else if(wp.gale != 255) {
                     if(pass < dirs + 1) {
                         if(zu_read(f, &value, 1) != 1)
@@ -820,9 +816,6 @@ havedata:
 
             wp.gale = gale / mcount;
             wp.calm = calm / mcount;
-
-//            wp.directions = new wxUint8[dir_cnt];
-//            wp.speeds = new wxUint8[dir_cnt];
 
             for(int i=0; i<dir_cnt; i++) {
                 wp.directions[i] = directions[i] / mcount;
@@ -1154,23 +1147,6 @@ void ClimatologyOverlayFactory::DrawLine( double x1, double y1, double x2, doubl
     m_dc->SetPen( wxPen(color, width ) );
     m_dc->SetBrush( *wxTRANSPARENT_BRUSH);
     m_dc->DrawLine(x1, y1, x2, y2);
-#if 0
-    if( m_pdc ) {
-        m_pdc->SetPen( wxPen(color, width ) );
-        m_pdc->SetBrush( *wxTRANSPARENT_BRUSH);
-        m_pdc->DrawLine(x1, y1, x2, y2);
-    } else {
-#ifndef __OCPN__ANDROID__
-        glColor4ub(color.Red(), color.Green(), color.Blue(), color.Alpha());
-        glLineWidth( width );
-
-        glBegin( GL_LINES );
-        glVertex2d( x1, y1 );
-        glVertex2d( x2, y2 );
-        glEnd();
-#endif
-    }
-#endif
 }
 
 void ClimatologyOverlayFactory::DrawCircle( double x, double y, double r,
@@ -1179,30 +1155,6 @@ void ClimatologyOverlayFactory::DrawCircle( double x, double y, double r,
     m_dc->SetPen( wxPen(color, width ) );
     m_dc->SetBrush( *wxTRANSPARENT_BRUSH);
     m_dc->DrawCircle(x, y, r);
-#if 0
-    if( m_pdc ) {
-        m_pdc->SetPen( wxPen(color, width ) );
-        m_pdc->SetBrush( *wxTRANSPARENT_BRUSH);
-        m_pdc->DrawCircle(x, y, r);
-    } else {
-#ifdef __OCPN__ANDROID__
-        double lx=x+r, ly = y;
-        for(double t=0; t<2*M_PI; t+=M_PI/8) {
-            double cx = x+r*cos(t), cy = y+r*sin(t);
-            DrawLine(cx, cy, lx, ly, color, width);
-            lx = cx, ly = cy;
-        }
-#else
-        glColor4ub(color.Red(), color.Green(), color.Blue(), color.Alpha());
-        glLineWidth( width );
-
-        glBegin( GL_LINE_LOOP );
-        for(double t=0; t<2*M_PI; t+=M_PI/24)
-            glVertex2d(x+r*cos(t), y+r*sin(t));
-        glEnd();
-#endif
-    }
-#endif
 }
 
 struct ColorMap {
@@ -1328,8 +1280,6 @@ wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in)
         double nmapvalb = map[i].val/cmax;
         if(nmapvalb > val_in || i==maplen-1) {
             wxColour b, c;
-//            c.Set(map[i].text);
-//            b.Set(map[i-1].text);
             c = TextColor(map[i].text);
             b = TextColor(map[i-1].text);
             double d = (val_in-nmapvala)/(nmapvalb-nmapvala);
@@ -1459,7 +1409,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     if(vp.m_projection_type != PI_PROJECTION_MERCATOR)
         return;
 
-#ifdef __OCPN__ANDROID__
+#ifdef USE_GLSL
         int w = vp.pix_width, h = vp.pix_height;
 
         double lat[4], lon[4];
@@ -2247,47 +2197,32 @@ void ClimatologyOverlayFactory::RenderOverlayMap( int setting, PlugIn_ViewPort &
     }
     else
     {
-#if 0  
-        if( !pO.m_pDCBitmap ) {
-            wxImage bl_image = CreateImage( settings, pGRA, vp, porg );
-            if( bl_image.IsOk() ) {
-                //    Create a Bitmap
-                pGO->m_pDCBitmap = new wxBitmap( bl_image );
-                wxMask *gr_mask = new wxMask( *( pGO->m_pDCBitmap ), wxColour( 0, 0, 0 ) );
-                pGO->m_pDCBitmap->SetMask( gr_mask );
-            }
-        }
-      
-        if( pGO->m_pDCBitmap )
-            m_pdc->DrawBitmap( *( pGO->m_pDCBitmap ), porg.x, porg.y, true );
-#else
-    wxString msg = _("Climatology overlay map unsupported unless OpenGL is enabled");
+        wxString msg = _("Climatology overlay map unsupported unless OpenGL is enabled");
 
-    wxMemoryDC mdc;
-    wxBitmap bm( 1000, 1000 );
-    mdc.SelectObject( bm );
-    mdc.Clear();
+        wxMemoryDC mdc;
+        wxBitmap bm( 1000, 1000 );
+        mdc.SelectObject( bm );
+        mdc.Clear();
 
-    wxFont font( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+        wxFont font( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
 
-    mdc.SetFont( font );
-    mdc.SetPen( *wxTRANSPARENT_PEN);
+        mdc.SetFont( font );
+        mdc.SetPen( *wxTRANSPARENT_PEN);
 
-    mdc.SetBrush( wxColour(243, 47, 229 ) );
-    int w, h;
-    mdc.GetMultiLineTextExtent( msg, &w, &h );
-    h += 2;
-    int label_offset = 10;
-    int wdraw = w + ( label_offset * 2 );
-    mdc.DrawRectangle( 0, 0, wdraw, h );
+        mdc.SetBrush( wxColour(243, 47, 229 ) );
+        int w, h;
+        mdc.GetMultiLineTextExtent( msg, &w, &h );
+        h += 2;
+        int label_offset = 10;
+        int wdraw = w + ( label_offset * 2 );
+        mdc.DrawRectangle( 0, 0, wdraw, h );
 
-    mdc.DrawLabel( msg, wxRect( label_offset, 0, wdraw, h ), wxALIGN_LEFT| wxALIGN_CENTRE_VERTICAL);
-    mdc.SelectObject( wxNullBitmap );
+        mdc.DrawLabel( msg, wxRect( label_offset, 0, wdraw, h ), wxALIGN_LEFT| wxALIGN_CENTRE_VERTICAL);
+        mdc.SelectObject( wxNullBitmap );
 
-    wxBitmap sbm = bm.GetSubBitmap( wxRect( 0, 0, wdraw, h ) );
-    int x = vp.pix_width, y = vp.pix_height;
-    m_dc->DrawBitmap( sbm, (x-wdraw)/2, y - ( GetChartbarHeight() + h ), false );
-#endif        
+        wxBitmap sbm = bm.GetSubBitmap( wxRect( 0, 0, wdraw, h ) );
+        int x = vp.pix_width, y = vp.pix_height;
+        m_dc->DrawBitmap( sbm, (x-wdraw)/2, y - ( GetChartbarHeight() + h ), false );
     }
 }
 
@@ -2784,7 +2719,7 @@ bool ClimatologyOverlayFactory::RenderOverlay( clDC &dc, PlugIn_ViewPort &vp )
             QueryGL();
             glQueried = true;
         }
-#ifndef __OCPN__ANDROID__
+#ifndef USE_GLSL
         glPushAttrib( GL_LINE_BIT | GL_ENABLE_BIT | GL_HINT_BIT ); //Save state
 
         //      Enable anti-aliased lines, at best quality
@@ -2820,8 +2755,8 @@ bool ClimatologyOverlayFactory::RenderOverlay( clDC &dc, PlugIn_ViewPort &vp )
     if(m_dlg.m_cbCyclones->GetValue())
         RenderCyclones(vp);
 
-#ifndef __OCPN__ANDROID__
-    if(!dc)
+#ifndef USE_GLSL
+    if(!dc.GetDC())
         glPopAttrib();
 #endif
     return true;
