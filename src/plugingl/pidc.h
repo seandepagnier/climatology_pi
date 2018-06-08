@@ -28,8 +28,8 @@
  */
 
 
-#ifndef __CLDC_H__
-#define __CLDC_H__
+#ifndef __PIDC_H__
+#define __PIDC_H__
 
 #include <vector>
 #include "linmath.h"
@@ -48,19 +48,19 @@ class GLUtesselator;
 void DrawGLThickLine( float x1, float y1, float x2, float y2, wxPen pen, bool b_hiqual );
 
 //----------------------------------------------------------------------------
-// clDC
+// piDC
 //----------------------------------------------------------------------------
 
 class wxGLCanvas;
 
-class clDC
+class piDC
 {
 public:
-    clDC(wxGLCanvas &canvas);
-    clDC(wxDC &pdc);
-    clDC();
+    piDC(wxGLCanvas &canvas);
+    piDC(wxDC &pdc);
+    piDC();
 
-    ~clDC();
+    ~piDC();
 
      void SetBackground( const wxBrush &brush );
      void SetPen( const wxPen &pen);

@@ -30,10 +30,7 @@
 #include "zuFile.h"
 
 #include "IsoBarMap.h"
-#include "cldc.h"
-#include "TexFont.h"
-
-void DrawGLLine( double x1, double y1, double x2, double y2 );
+#include "plugingl/pidc.h"
 
 class PlugIn_ViewPort;
 enum Coord {U, V, MAG, DIRECTION};
@@ -208,21 +205,6 @@ public:
                               double *directions, double *speeds,
                               double &gale, double &calm);
 
-    void ReadWindData(int month, wxString filename);
-    void AverageWindData();
-
-    void ReadCurrentData(int month, wxString filename);
-    void AverageCurrentData();
-    bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
-    void BuildCycloneCache();
-    bool ReadElNinoYears(wxString filename);
-
-    void DrawLine( double x1, double y1, double x2, double y2,
-                   const wxColour &color, double width );
-    void DrawCircle( double x, double y, double r, const wxColour &color, double width );
-
-    wxImage &getLabel(double value);
-
     double GetMin(int setting);
     double GetMax(int setting);
 
@@ -240,7 +222,8 @@ public:
     wxSemaphore m_cyclone_cache_semaphore;
     std::map<int, std::list<CycloneState*> > m_cyclone_cache;
 
-    bool RenderOverlay( clDC &dc, PlugIn_ViewPort &vp );
+    void BuildCycloneCache();
+    bool RenderOverlay( piDC &dc, PlugIn_ViewPort &vp );
 
     static wxColour GetGraphicColor(int setting, double val_in);
 
@@ -253,6 +236,26 @@ public:
 private:
     void Load();
     void Free();
+
+    void ReadWindData(int month, wxString filename);
+    void AverageWindData();
+    void ReadCurrentData(int month, wxString filename);
+    void AverageCurrentData();
+    ZUFILE *OpenClimatologyDataFile(wxString filename);
+    void ReadSeaLevelPressureData(wxString filename);
+    void ReadSeaSurfaceTemperatureData(wxString filename);
+    void ReadAirTemperatureData(wxString filename);
+    void ReadCloudData(wxString filename);
+    void ReadPrecipitationData(wxString filename);
+    void ReadRelativeHumidityData(wxString filename);
+    void ReadLightningData(wxString filename);
+    void ReadSeaDepthData(wxString filename);
+    bool ReadCycloneData(wxString filename, std::list<Cyclone*> &cyclones, bool south=false);
+    bool ReadElNinoYears(wxString filename);
+
+    void DrawLine( double x1, double y1, double x2, double y2,
+                   const wxColour &color, double width );
+    void DrawCircle( double x, double y, double r, const wxColour &color, double width );
 
     ZUFILE *TryOpenFile(wxString filename);
 
@@ -278,7 +281,7 @@ private:
     ClimatologyOverlay m_pOverlay[13][ClimatologyOverlaySettings::SETTINGS_COUNT];
 
 
-    clDC *m_dc;
+    piDC *m_dc;
 
     std::map < double , wxImage > m_labelCache;
 

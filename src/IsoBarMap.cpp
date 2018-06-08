@@ -43,7 +43,7 @@
 #include "IsoBarMap.h"
 #include "defs.h"
 #include "gldefs.h"
-#include "cldc.h"
+#include "plugingl/pidc.h"
 
 /* initialize cache to contain data */
 void ParamCache::Initialize(double step)
@@ -74,68 +74,6 @@ bool ParamCache::Read(double lat, double lon, double &value)
     value = values[(int)div];
     return true;
 }
-
-
-#if 0
-/* set the accuracy of the map */
-void MagneticPlotMap::ConfigureAccuracy(int step, int poleaccuracy)
-{
-    /* keeping m_Step powers of 2 */
-    switch(step) {
-    case 1: m_Step = .0625; break;
-    case 2: m_Step = .125; break;
-    case 3: m_Step = .25; break;
-    case 4: m_Step = .5; break;
-    case 5: m_Step = 1; break;
-    case 6: m_Step = 2; break;
-    case 7: m_Step = 4; break;
-    default: m_Step = 8; break;
-    }
-
-    /* keeping m_PoleAccuracy logarithmic */
-    switch(poleaccuracy) {
-    case 1: m_PoleAccuracy = 5e-1; break;
-    case 2: m_PoleAccuracy = 1e-1; break;
-    case 3: m_PoleAccuracy = 1e-2; break;
-    case 4: m_PoleAccuracy = 1e-3; break;
-    default: m_PoleAccuracy = 1e-4; break;
-    }
-}
-
-/* compute the graphed parameter for one lat/lon location */
-double MagneticPlotMap::CalcParameter(double lat, double lon)
-{
-      WMMtype_CoordSpherical CoordSpherical;
-      WMMtype_CoordGeodetic CoordGeodetic;
-      WMMtype_GeoMagneticElements GeoMagneticElements;
-
-      CoordGeodetic.lambda = lon;
-      CoordGeodetic.phi = lat;
-      CoordGeodetic.HeightAboveEllipsoid = 0;
-      CoordGeodetic.HeightAboveGeoid = 0;
-      CoordGeodetic.UseGeoid = 0;
-
-      /* Convert from geodeitic to Spherical Equations: 17-18, WMM Technical report */
-      WMM_GeodeticToSpherical(*Ellip, CoordGeodetic, &CoordSpherical);
-
-      /* Computes the geoMagnetic field elements and their time change */
-      WMM_Geomag(*Ellip, CoordSpherical, CoordGeodetic, TimedMagneticModel, &GeoMagneticElements);
-      WMM_CalculateGridVariation(CoordGeodetic, &GeoMagneticElements);
-
-      double ret = 0;
-      switch(m_type) {
-      case DECLINATION: ret = GeoMagneticElements.Decl >= 180 ?
-              GeoMagneticElements.Decl - 360 : GeoMagneticElements.Decl;
-          break;
-      case INCLINATION: ret = GeoMagneticElements.Incl;
-          break;
-      case FIELD_STRENGTH: ret = GeoMagneticElements.F;
-          break;
-      }
-
-      return ret;
-}
-#endif
 
 /* build up cache for all longitudes */
 void IsoBarMap::BuildParamCache(ParamCache &cache, double lat)
@@ -468,7 +406,7 @@ bool IsoBarMap::Recompute(wxWindow *parent)
 }
 
 /* draw a line segment in opengl from lat/lon and viewport */
-void DrawLineSeg(clDC *dc, PlugIn_ViewPort &VP, double lat1, double lon1, double lat2, double lon2)
+void DrawLineSeg(piDC *dc, PlugIn_ViewPort &VP, double lat1, double lon1, double lat2, double lon2)
 {
     /* avoid lines which cross over the view port the long way */
     if(lon1+180 < VP.clon && lon2+180 > VP.clon)
@@ -523,7 +461,7 @@ ContourText IsoBarMap::ContourCacheData(double value)
 }
 
 /* draw text of the value of a conptour at a given location */
-void IsoBarMap::DrawContour(clDC *dc, PlugIn_ViewPort &VP, double contour, double lat, double lon)
+void IsoBarMap::DrawContour(piDC *dc, PlugIn_ViewPort &VP, double contour, double lat, double lon)
 {
     int index = (contour - m_MinContour) / m_Spacing;
     if(index < 0 || index >= m_contourcachesize)
@@ -552,7 +490,7 @@ void IsoBarMap::DrawContour(clDC *dc, PlugIn_ViewPort &VP, double contour, doubl
 }
 
 /* plot to dc, or opengl is dc is NULL */
-void IsoBarMap::Plot(clDC *dc, PlugIn_ViewPort &vp)
+void IsoBarMap::Plot(piDC *dc, PlugIn_ViewPort &vp)
 {
     if(dc) {
         dc->SetPen(wxPen(m_Color, 3));

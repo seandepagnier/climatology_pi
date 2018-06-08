@@ -45,6 +45,7 @@
 #include "defs.h"
 
 wxString ClimatologyDataDirectory();
+wxString ClimatologyUserDataDirectory();
 
 #ifndef __OCPN__ANDROID__
 #define GetDateCtrlValue GetValue

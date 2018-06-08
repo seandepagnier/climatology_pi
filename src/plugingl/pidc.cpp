@@ -32,9 +32,6 @@
 #endif
 
 #include "ocpn_plugin.h"
-#include "linmath.h"
-
-#include "pi_shaders.h"
 
 #ifdef __MSVC__
 #include <windows.h>
@@ -49,19 +46,18 @@
 
 #include <vector>
 
-#include "cldc.h"
+#include "pidc.h"
 
 #ifdef __OCPN__ANDROID__
 #include <qopengl.h>
 #include "GL/gl_private.h"
 #else
 #include "GL/gl.h"
+#include "GL/glu.h"
 #endif
 
-#ifdef USE_ANDROID_GLES2
-#include "GLES2/gl2.h"
-#endif
-
+#include "linmath.h"
+#include "plugingl/pi_shaders.h"
 
 #ifdef __OCPN__ANDROID__
 #include "qdebug.h"
@@ -77,7 +73,7 @@ extern GLint pi_circle_filled_shader_program;
 
 //----------------------------------------------------------------------------
 /* pass the dc to the constructor, or NULL to use opengl */
-clDC::clDC( wxGLCanvas &canvas ) :
+piDC::piDC( wxGLCanvas &canvas ) :
         glcanvas( &canvas ), dc( NULL ), m_pen( wxNullPen ), m_brush( wxNullBrush )
 {
 #if wxUSE_GRAPHICS_CONTEXT
@@ -94,7 +90,7 @@ clDC::clDC( wxGLCanvas &canvas ) :
     workBufSize = 0;
     s_odc_tess_work_buf = NULL;
     
-    #ifdef USE_ANDROID_GLES2
+#ifdef USE_ANDROID_GLES2
     s_odc_tess_vertex_idx = 0;
     s_odc_tess_vertex_idx_this = 0;
     s_odc_tess_buf_len = 0;
@@ -108,7 +104,7 @@ clDC::clDC( wxGLCanvas &canvas ) :
     
 }
 
-clDC::clDC( wxDC &pdc ) :
+piDC::piDC( wxDC &pdc ) :
         glcanvas( NULL ), dc( &pdc ), m_pen( wxNullPen ), m_brush( wxNullBrush )
 {
 #if wxUSE_GRAPHICS_CONTEXT
@@ -128,7 +124,7 @@ clDC::clDC( wxDC &pdc ) :
     
 }
 
-clDC::clDC() :
+piDC::piDC() :
         glcanvas( NULL ), dc( NULL ), m_pen( wxNullPen ), m_brush( wxNullBrush )
 {
 #if wxUSE_GRAPHICS_CONTEXT
@@ -149,7 +145,7 @@ clDC::clDC() :
     
 }
 
-clDC::~clDC()
+piDC::~piDC()
 {
 #if wxUSE_GRAPHICS_CONTEXT
     if( pgc ) delete pgc;
@@ -160,14 +156,14 @@ clDC::~clDC()
     
 }
 
-void clDC::SetVP(PlugIn_ViewPort *vp)
+void piDC::SetVP(PlugIn_ViewPort *vp)
 {
     configureShaders(vp->pix_width, vp->pix_height);
     m_vpSize = wxSize(vp->pix_width, vp->pix_height);
 }
 
   
-void clDC::Clear()
+void piDC::Clear()
 {
     if( dc ) dc->Clear();
     else {
@@ -182,7 +178,7 @@ void clDC::Clear()
     }
 }
 
-void clDC::SetBackground( const wxBrush &brush )
+void piDC::SetBackground( const wxBrush &brush )
 {
     if( dc )
         dc->SetBackground( brush );
@@ -193,7 +189,7 @@ void clDC::SetBackground( const wxBrush &brush )
     }
 }
 
-void clDC::SetPen( const wxPen &pen )
+void piDC::SetPen( const wxPen &pen )
 {
     if( dc ) {
         if( pen == wxNullPen ) dc->SetPen( *wxTRANSPARENT_PEN );
@@ -203,53 +199,53 @@ void clDC::SetPen( const wxPen &pen )
         m_pen = pen;
 }
 
-void clDC::SetBrush( const wxBrush &brush )
+void piDC::SetBrush( const wxBrush &brush )
 {
     if( dc ) dc->SetBrush( brush );
     else
         m_brush = brush;
 }
 
-void clDC::SetTextForeground( const wxColour &colour )
+void piDC::SetTextForeground( const wxColour &colour )
 {
     if( dc ) dc->SetTextForeground( colour );
     else
         m_textforegroundcolour = colour;
 }
 
-void clDC::SetTextBackground( const wxColour &colour )
+void piDC::SetTextBackground( const wxColour &colour )
 {
     if( dc ) dc->SetTextBackground( colour );
     else
         m_textbackgroundcolour = colour;
 }
 
-void clDC::SetFont( const wxFont& font )
+void piDC::SetFont( const wxFont& font )
 {
     if( dc ) dc->SetFont( font );
     else
         m_font = font;
 }
 
-const wxPen& clDC::GetPen() const
+const wxPen& piDC::GetPen() const
 {
     if( dc ) return dc->GetPen();
     return m_pen;
 }
 
-const wxBrush& clDC::GetBrush() const
+const wxBrush& piDC::GetBrush() const
 {
     if( dc ) return dc->GetBrush();
     return m_brush;
 }
 
-const wxFont& clDC::GetFont() const
+const wxFont& piDC::GetFont() const
 {
     if( dc ) return dc->GetFont();
     return m_font;
 }
 
-void clDC::GetSize( wxCoord *width, wxCoord *height ) const
+void piDC::GetSize( wxCoord *width, wxCoord *height ) const
 {
     if( dc )
         dc->GetSize( width, height );
@@ -260,7 +256,7 @@ void clDC::GetSize( wxCoord *width, wxCoord *height ) const
     }
 }
 
-void clDC::SetGLAttrs( bool highQuality )
+void piDC::SetGLAttrs( bool highQuality )
 {
 #ifdef ocpnUSE_GL
     glEnable( GL_BLEND );
@@ -276,7 +272,7 @@ void clDC::SetGLAttrs( bool highQuality )
 #endif
 }
 
-void clDC::SetGLStipple() const
+void piDC::SetGLStipple() const
 {
 #ifdef ocpnUSE_GL
 
@@ -402,8 +398,8 @@ void piDrawGLThickLine( float x1, float y1, float x2, float y2, wxPen pen, bool 
         /* wx draws a nice rounded end in dc mode, so replicate
            this for opengl mode, should this be done for the dashed mode case? */
         if(pen.GetCap() == wxCAP_ROUND) {
-            DrawEndCap( x1, y1, t1, angle);
-            DrawEndCap( x2, y2, t1, angle + M_PI);
+            piDrawEndCap( x1, y1, t1, angle);
+            piDrawEndCap( x2, y2, t1, angle + M_PI);
         }
 
     }
@@ -531,7 +527,7 @@ void piDrawGLThickLine( float x1, float y1, float x2, float y2, wxPen pen, bool 
 #endif    
 }
 
-void clDC::DrawLine( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, bool b_hiqual )
+void piDC::DrawLine( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, bool b_hiqual )
 {
    
     if( dc )
@@ -809,8 +805,8 @@ void piDrawGLThickLines( int n, wxPoint points[],wxCoord xoffset,
     }
  
     if(pen.GetCap() == wxCAP_ROUND) {
-        DrawEndCap( x0, y0, t1, a0);
-        DrawEndCap( x0, y0, t1, a0 + M_PI);
+        piDrawEndCap( x0, y0, t1, a0);
+        piDrawEndCap( x0, y0, t1, a0 + M_PI);
      }
 
     glEnd();
@@ -822,7 +818,7 @@ void piDrawGLThickLines( int n, wxPoint points[],wxCoord xoffset,
  #endif    
  }
 
- void clDC::DrawLines( int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset, bool b_hiqual )
+ void piDC::DrawLines( int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset, bool b_hiqual )
 {
     if( dc )
         dc->DrawLines( n, points, xoffset, yoffset );
@@ -926,7 +922,7 @@ void piDrawGLThickLines( int n, wxPoint points[],wxCoord xoffset,
 #endif    
 }
 
-void clDC::StrokeLine( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2 )
+void piDC::StrokeLine( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2 )
 {
 #if wxUSE_GRAPHICS_CONTEXT
     if( pgc ) {
@@ -940,7 +936,7 @@ void clDC::StrokeLine( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2 )
         DrawLine( x1, y1, x2, y2, true );
 }
 
-void clDC::StrokeLines( int n, wxPoint *points) {
+void piDC::StrokeLines( int n, wxPoint *points) {
     if(n < 2) /* optimization and also to avoid assertion in pgc->StrokeLines */
         return;
 
@@ -959,7 +955,7 @@ void clDC::StrokeLines( int n, wxPoint *points) {
         DrawLines( n, points, 0, 0, true );
 }
 
-void clDC::DrawGLLineArray( int n, float *vertex_array, float *color_array,  bool b_hiqual )
+void piDC::DrawGLLineArray( int n, float *vertex_array, float *color_array,  bool b_hiqual )
 {
 #ifdef ocpnUSE_GL
         if( ConfigurePen() ) {
@@ -969,7 +965,7 @@ void clDC::DrawGLLineArray( int n, float *vertex_array, float *color_array,  boo
             #else
             SetGLAttrs( b_hiqual );
             #endif        
-            bool b_draw_thick = false;
+            //bool b_draw_thick = false;
             
             glDisable( GL_LINE_STIPPLE );
             SetGLStipple();
@@ -994,11 +990,11 @@ void clDC::DrawGLLineArray( int n, float *vertex_array, float *color_array,  boo
                     glLineWidth( wxMax(g_GLMinSymbolLineWidth, 1) );
             }
             
-#ifndef USE_ANDROID_GLES2        
+#ifndef ocpnUSE_GLES2        
             
             glBegin( GL_LINE_STRIP );
             for( int i = 0; i < n; i++ )
-                glVertex2i( points[i].x + xoffset, points[i].y + yoffset );
+                glVertex2f( vertex_array[2*i], vertex_array[2*i+1] );
             glEnd();
             
 #else
@@ -1023,7 +1019,7 @@ void clDC::DrawGLLineArray( int n, float *vertex_array, float *color_array,  boo
 }
 
 
-void clDC::DrawRectangle( wxCoord x, wxCoord y, wxCoord w, wxCoord h )
+void piDC::DrawRectangle( wxCoord x, wxCoord y, wxCoord w, wxCoord h )
 {
     if( dc )
         dc->DrawRectangle( x, y, w, h );
@@ -1076,7 +1072,7 @@ static void drawrrhelper( wxCoord x0, wxCoord y0, wxCoord r, int quadrant, int s
 #endif    
 }
 
-void clDC::drawrrhelperGLES2( wxCoord x0, wxCoord y0, wxCoord r, int quadrant, int steps )
+void piDC::drawrrhelperGLES2( wxCoord x0, wxCoord y0, wxCoord r, int quadrant, int steps )
 {
 #ifdef ocpnUSE_GL
     float step = 1.0/steps, rs = 2.0*r*step, rss = rs*step, x, y, dx, dy, ddx, ddy;
@@ -1101,7 +1097,7 @@ void clDC::drawrrhelperGLES2( wxCoord x0, wxCoord y0, wxCoord r, int quadrant, i
 #endif
 }
 
-void clDC::DrawRoundedRectangle( wxCoord x, wxCoord y, wxCoord w, wxCoord h, wxCoord r )
+void piDC::DrawRoundedRectangle( wxCoord x, wxCoord y, wxCoord w, wxCoord h, wxCoord r )
 {
     if( dc )
         dc->DrawRoundedRectangle( x, y, w, h, r );
@@ -1202,7 +1198,7 @@ void clDC::DrawRoundedRectangle( wxCoord x, wxCoord y, wxCoord w, wxCoord h, wxC
 #endif    
 }
 
-void clDC::DrawCircle( wxCoord x, wxCoord y, wxCoord radius )
+void piDC::DrawCircle( wxCoord x, wxCoord y, wxCoord radius )
 {
 #ifdef USE_ANDROID_GLES2
 
@@ -1275,7 +1271,7 @@ void clDC::DrawCircle( wxCoord x, wxCoord y, wxCoord radius )
 #endif    
 }
 
-void clDC::StrokeCircle( wxCoord x, wxCoord y, wxCoord radius )
+void piDC::StrokeCircle( wxCoord x, wxCoord y, wxCoord radius )
 {
 #if wxUSE_GRAPHICS_CONTEXT
     if( pgc ) {
@@ -1294,7 +1290,7 @@ void clDC::StrokeCircle( wxCoord x, wxCoord y, wxCoord radius )
         DrawCircle( x, y, radius );
 }
 
-void clDC::DrawEllipse( wxCoord x, wxCoord y, wxCoord width, wxCoord height )
+void piDC::DrawEllipse( wxCoord x, wxCoord y, wxCoord width, wxCoord height )
 {
     if( dc )
         dc->DrawEllipse( x, y, width, height );
@@ -1331,7 +1327,7 @@ void clDC::DrawEllipse( wxCoord x, wxCoord y, wxCoord width, wxCoord height )
 #endif    
 }
 
-void clDC::DrawPolygon( int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset, float scale, float angle )
+void piDC::DrawPolygon( int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset, float scale, float angle )
 {
     if( dc )
         dc->DrawPolygon( n, points, xoffset, yoffset );
@@ -1477,7 +1473,7 @@ typedef union {
 } GLvertex;
 
 #ifndef USE_ANDROID_GLES2
-void APIENTRY clDCcombineCallback( GLdouble coords[3], GLdouble *vertex_data[4], GLfloat weight[4],
+static void piDCcombineCallback( GLdouble coords[3], GLdouble *vertex_data[4], GLfloat weight[4],
         GLdouble **dataOut )
 {
     GLvertex *vertex;
@@ -1496,26 +1492,26 @@ void APIENTRY clDCcombineCallback( GLdouble coords[3], GLdouble *vertex_data[4],
     *dataOut = &(vertex->data[0]);
 }
 
-void APIENTRY ocpnDCvertexCallback( GLvoid* arg )
+static void piDCvertexCallback( GLvoid* arg )
 {
     GLvertex* vertex;
     vertex = (GLvertex*) arg;
     glVertex2f( (float)vertex->info.x, (float)vertex->info.y );
 }
 
-void APIENTRY ocpnDCerrorCallback( GLenum errorCode )
+static void piDCerrorCallback( GLenum errorCode )
 {
-   const GLubyte *estring;
-   estring = gluErrorString(errorCode);
+//   const GLubyte *estring;
+//   estring = gluErrorString(errorCode);
    //wxLogMessage( _T("OpenGL Tessellation Error: %s"), (char *)estring );
 }
 
-void APIENTRY ocpnDCbeginCallback( GLenum type )
+static void piDCbeginCallback( GLenum type )
 {
     glBegin( type );
 }
 
-void APIENTRY ocpnDCendCallback()
+static void piDCendCallback()
 {
     glEnd();
 }
@@ -1540,7 +1536,7 @@ static void pi_odc_combineCallbackD(GLdouble coords[3],
 
 void pi_odc_vertexCallbackD_GLSL(GLvoid *vertex, void *data)
 {
-    clDC* pDC = (clDC*)data;
+    piDC* pDC = (piDC*)data;
     
     // Grow the work buffer if necessary
     if(pDC->s_odc_tess_vertex_idx > pDC->s_odc_tess_buf_len - 8)
@@ -1568,7 +1564,7 @@ void pi_odc_vertexCallbackD_GLSL(GLvoid *vertex, void *data)
 
 void pi_odc_beginCallbackD_GLSL( GLenum mode, void *data)
 {
-    clDC* pDC = (clDC*)data;
+    piDC* pDC = (piDC*)data;
     pDC->s_odc_tess_vertex_idx_this =  pDC->s_odc_tess_vertex_idx;
     pDC->s_odc_tess_mode = mode;
     pDC->s_odc_nvertex = 0;
@@ -1579,7 +1575,7 @@ void pi_odc_endCallbackD_GLSL(void *data)
     //qDebug() << "End" << s_odc_nvertex << s_odc_tess_buf_len << s_odc_tess_vertex_idx << s_odc_tess_vertex_idx_this;
     //End 5 100 10 0
 #if 1    
-    clDC* pDC = (clDC*)data;
+    piDC* pDC = (piDC*)data;
 
     glUseProgram(pi_color_tri_shader_program);
     
@@ -1614,7 +1610,7 @@ void pi_odc_endCallbackD_GLSL(void *data)
 
 #endif          //#ifdef ocpnUSE_GL
 
-void clDC::DrawPolygonTessellated( int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset )
+void piDC::DrawPolygonTessellated( int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset )
 {
     if( dc )
         dc->DrawPolygon( n, points, xoffset, yoffset );
@@ -1670,11 +1666,11 @@ void clDC::DrawPolygonTessellated( int n, wxPoint points[], wxCoord xoffset, wxC
         static GLUtesselator *tobj = NULL;
         if( ! tobj ) tobj = gluNewTess();
 
-        gluTessCallback( tobj, GLU_TESS_VERTEX, (_GLUfuncptr) &ocpnDCvertexCallback );
-        gluTessCallback( tobj, GLU_TESS_BEGIN, (_GLUfuncptr) &ocpnDCbeginCallback );
-        gluTessCallback( tobj, GLU_TESS_END, (_GLUfuncptr) &ocpnDCendCallback );
-        gluTessCallback( tobj, GLU_TESS_COMBINE, (_GLUfuncptr) &ocpnDCcombineCallback );
-        gluTessCallback( tobj, GLU_TESS_ERROR, (_GLUfuncptr) &ocpnDCerrorCallback );
+        gluTessCallback( tobj, GLU_TESS_VERTEX, (_GLUfuncptr) &piDCvertexCallback );
+        gluTessCallback( tobj, GLU_TESS_BEGIN, (_GLUfuncptr) &piDCbeginCallback );
+        gluTessCallback( tobj, GLU_TESS_END, (_GLUfuncptr) &piDCendCallback );
+        gluTessCallback( tobj, GLU_TESS_COMBINE, (_GLUfuncptr) &piDCcombineCallback );
+        gluTessCallback( tobj, GLU_TESS_ERROR, (_GLUfuncptr) &piDCerrorCallback );
 
         gluTessNormal( tobj, 0, 0, 1);
         gluTessProperty( tobj, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO );
@@ -1709,7 +1705,7 @@ void clDC::DrawPolygonTessellated( int n, wxPoint points[], wxCoord xoffset, wxC
 #endif    
 }
 
-void clDC::StrokePolygon( int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset, float scale )
+void piDC::StrokePolygon( int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset, float scale )
 {
 #if wxUSE_GRAPHICS_CONTEXT
     if( pgc ) {
@@ -1730,7 +1726,7 @@ void clDC::StrokePolygon( int n, wxPoint points[], wxCoord xoffset, wxCoord yoff
         DrawPolygon( n, points, xoffset, yoffset, scale );
 }
 
-void clDC::DrawBitmap( const wxBitmap &bitmap, wxCoord x, wxCoord y, bool usemask )
+void piDC::DrawBitmap( const wxBitmap &bitmap, wxCoord x, wxCoord y, bool usemask )
 {
     wxBitmap bmp;
     if( x < 0 || y < 0 ) {
@@ -1821,7 +1817,7 @@ static int NextPow2(int size)
     return n + 1;
 }
 
-void clDC::DrawText( const wxString &text, wxCoord x, wxCoord y )
+void piDC::DrawText( const wxString &text, wxCoord x, wxCoord y )
 {
     if( dc )
         dc->DrawText( text, x, y );
@@ -1837,15 +1833,15 @@ void clDC::DrawText( const wxString &text, wxCoord x, wxCoord y )
             
             if( w && h ) {
 
-            if(m_textbackgroundcolour != wxTransparentColour) {
-                wxPen p = m_pen;
-                wxBrush b = m_brush;
-                SetPen(*wxTRANSPARENT_PEN);
-                SetBrush(wxBrush(m_textbackgroundcolour));
-                DrawRoundedRectangle(x, y, w, h, 3);
-                SetPen(p);
-                SetBrush(b);
-            }
+                if(m_textbackgroundcolour.Alpha() != 255) {
+                    wxPen p = m_pen;
+                    wxBrush b = m_brush;
+                    SetPen(*wxTRANSPARENT_PEN);
+                    SetBrush(wxBrush(m_textbackgroundcolour));
+                    DrawRoundedRectangle(x, y, w, h, 3);
+                    SetPen(p);
+                    SetBrush(b);
+                }
                 
                 glEnable( GL_BLEND );
                 glEnable( GL_TEXTURE_2D );
@@ -1974,7 +1970,7 @@ void clDC::DrawText( const wxString &text, wxCoord x, wxCoord y )
 #endif    
 }
 
-void clDC::GetTextExtent( const wxString &string, wxCoord *w, wxCoord *h, wxCoord *descent,
+void piDC::GetTextExtent( const wxString &string, wxCoord *w, wxCoord *h, wxCoord *descent,
         wxCoord *externalLeading, wxFont *font )
 {
     //  Give at least reasonable results on failure.
@@ -2008,17 +2004,17 @@ void clDC::GetTextExtent( const wxString &string, wxCoord *w, wxCoord *h, wxCoor
      if( h && (*h > 500) ) *h = 500;
 }
 
-void clDC::ResetBoundingBox()
+void piDC::ResetBoundingBox()
 {
     if( dc ) dc->ResetBoundingBox();
 }
 
-void clDC::CalcBoundingBox( wxCoord x, wxCoord y )
+void piDC::CalcBoundingBox( wxCoord x, wxCoord y )
 {
     if( dc ) dc->CalcBoundingBox( x, y );
 }
 
-bool clDC::ConfigurePen()
+bool piDC::ConfigurePen()
 {
     if( !m_pen.IsOk() ) return false;
     if( m_pen == *wxTRANSPARENT_PEN ) return false;
@@ -2034,7 +2030,7 @@ bool clDC::ConfigurePen()
     return true;
 }
 
-bool clDC::ConfigureBrush()
+bool piDC::ConfigureBrush()
 {
     if( m_brush == wxNullBrush || m_brush.GetStyle() == wxBRUSHSTYLE_TRANSPARENT )
         return false;
@@ -2047,7 +2043,7 @@ bool clDC::ConfigureBrush()
     return true;
 }
 
-void clDC::GLDrawBlendData( wxCoord x, wxCoord y, wxCoord w, wxCoord h, int format,
+void piDC::GLDrawBlendData( wxCoord x, wxCoord y, wxCoord w, wxCoord h, int format,
         const unsigned char *data )
 {
 #ifdef ocpnUSE_GL

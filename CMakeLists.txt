@@ -25,21 +25,8 @@ SET(SRC_CLIMATOLOGY
             src/ClimatologyConfigDialog.cpp
             src/zuFile.cpp
             src/IsoBarMap.cpp
-            src/TexFont.cpp
-            src/cldc.cpp
-            src/pi_shaders.cpp
             src/icons.cpp
-            src/qtstylesheet.cpp
 )
-
-IF(WIN32)
-SET(SRC_JSON
-            src/wxJSON/jsonval.cpp
-            src/wxJSON/jsonreader.cpp
-            src/wxJSON/jsonwriter.cpp)
-ENDIF(WIN32)
-
-ADD_DEFINITIONS(-DTIXML_USE_STL)
 
 ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY} ${SRC_JSON})
 
@@ -64,6 +51,8 @@ IF(MINGW)
     TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "-lwxzlib-2.8")
 ENDIF(MINGW)
 
+INCLUDE("cmake/PluginXML.cmake")
+INCLUDE("cmake/PluginGL.cmake")
 INCLUDE("cmake/PluginInstall.cmake")
 INCLUDE("cmake/PluginLocalization.cmake")
 INCLUDE("cmake/PluginPackage.cmake")

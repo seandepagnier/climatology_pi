@@ -63,6 +63,13 @@ wxString ClimatologyDataDirectory()
         + s + _T("climatology_pi") + s + _T("data") + s;
 }
 
+wxString ClimatologyUserDataDirectory()
+{
+    wxString s = wxFileName::GetPathSeparator();
+    return *GetpPrivateApplicationDataLocation() + s + _T("plugins")
+        + s + _T("climatology_pi") + s + _T("data") + s;
+}
+
 climatology_pi::climatology_pi(void *ppimgr)
       :opencpn_plugin_113(ppimgr)
 {
@@ -287,8 +294,8 @@ bool climatology_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
        !g_pOverlayFactory)
         return false;
 
-    clDC cldc(dc);
-    g_pOverlayFactory->RenderOverlay ( cldc, *vp );
+    piDC pidc(dc);
+    g_pOverlayFactory->RenderOverlay ( pidc, *vp );
     return true;
 }
 
@@ -298,11 +305,11 @@ bool climatology_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
        !g_pOverlayFactory)
         return false;
 
-    clDC cldc;
+    piDC pidc;
     glEnable( GL_BLEND );
-    cldc.SetVP(vp);
+    pidc.SetVP(vp);
     
-    g_pOverlayFactory->RenderOverlay ( cldc, *vp );
+    g_pOverlayFactory->RenderOverlay ( pidc, *vp );
     return true;
 }
 

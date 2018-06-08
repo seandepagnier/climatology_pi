@@ -71,7 +71,7 @@ public:
     int lastx, lasty; /* when rendering to prevent overcluttering */
 };
 
-class clDC;
+class piDC;
 /* main model map suitable for a single plot type */
 class IsoBarMap
 {
@@ -81,7 +81,7 @@ public:
 
     bool Recompute(wxWindow *parent);
 
-    void Plot(clDC *dc, PlugIn_ViewPort &vp);
+    void Plot(piDC *dc, PlugIn_ViewPort &vp);
 
     bool m_bNeedsRecompute, m_bComputing;
 protected:
@@ -101,7 +101,7 @@ private:
 
     void ClearMap();
     ContourText ContourCacheData(double value);
-    void DrawContour(clDC *dc, PlugIn_ViewPort &VP, double contour, double lat, double lon);
+    void DrawContour(piDC *dc, PlugIn_ViewPort &VP, double contour, double lat, double lon);
 
     /* two caches for all longitudes alternate
        places (step over each other) to cover the two latitudes
@@ -156,7 +156,7 @@ class MagneticPlotMap : public IsoBarMap
     bool Recompute(wxDateTime date);
     void ConfigureAccuracy(int step, int poleaccuracy);
 
-    void Plot(clDC *dc, PlugIn_ViewPort &vp)
+    void Plot(piDC *dc, PlugIn_ViewPort &vp)
     {
         if(m_bEnabled)
             IsoBarMap::Plot(dc, vp);
