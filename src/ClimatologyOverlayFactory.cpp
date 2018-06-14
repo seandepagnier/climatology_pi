@@ -201,8 +201,8 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
                     wxString failed_msg = m_sFailedMessage.Left(FAILED_FILELIST_MSG_LEN);
                     wxMessageDialog mdlg(&m_dlg,
                                          _("Some Data Failed to load.") +"\n"
-                                           + failed_msg + "\n"
-                                         _("Climatology data incomplete"),
+                                           + failed_msg + "\n" +
+                                         _("Climatology data incomplete."),
                                          _("Climatology"), wxOK | wxICON_WARNING);
                     mdlg.ShowModal();
                 }
