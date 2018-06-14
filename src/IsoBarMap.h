@@ -61,8 +61,6 @@ ParamCache() : values(NULL), m_step(0) {}
     double m_lat;
 };
 
-/* cache text bitmap data to speed up rendering.  This contains the rgba
-   values in data for opengl, or the image in wxformat */
 class ContourText
 {
 public:

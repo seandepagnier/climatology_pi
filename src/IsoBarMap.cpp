@@ -482,9 +482,7 @@ void IsoBarMap::DrawContour(piDC *dc, PlugIn_ViewPort &VP, double contour, doubl
     ct.lastx = lastx = r.x;
     ct.lasty = lasty = r.y;
 
-    int w = ct.w;
-    int h = ct.h;
-    if(w == 0)
+    if(ct.w == 0)
         dc->GetTextExtent(ct.text, &ct.w, &ct.h);
     dc->DrawText(ct.text, r.x - ct.w/2, r.y - ct.h/2);
 }
