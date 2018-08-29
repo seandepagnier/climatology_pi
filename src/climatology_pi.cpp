@@ -191,6 +191,9 @@ Supported Climatology types include:\n\
 
 void climatology_pi::CreateOverlayFactory()
 {
+    if(m_pClimatologyDialog)
+        return;
+
     //    And load the configuration items
     LoadConfig();
     
@@ -209,6 +212,7 @@ void climatology_pi::CreateOverlayFactory()
         m_pClimatologyDialog->UpdateTrackingControls();
         m_pClimatologyDialog->FitLater(); // buggy wx
     }
+    m_pClimatologyDialog->Hide();
 }
 
 void climatology_pi::SetDefaults(void)
@@ -223,8 +227,7 @@ int climatology_pi::GetToolbarToolCount(void)
 static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lon,
                             double &dir, double &speed)
 {
-    if(!g_pOverlayFactory)
-        s_climatology_pi->CreateOverlayFactory();
+    s_climatology_pi->CreateOverlayFactory();
 
     if(!g_pOverlayFactory->m_bCompletedLoading)
         return false;
@@ -266,8 +269,7 @@ static int ClimatologyCycloneTrackCrossings(double lat1, double lon1, double lat
 
 void climatology_pi::OnToolbarToolCallback(int id)
 {
-    if(!g_pOverlayFactory)
-        CreateOverlayFactory();
+    CreateOverlayFactory();
 
     if(m_pClimatologyDialog->IsShown() && m_pClimatologyDialog->m_cfgdlg)
         m_pClimatologyDialog->m_cfgdlg->Hide();
