@@ -119,63 +119,63 @@ void ClimatologyOverlaySettings::Load()
     /* read settings here */
     wxFileConfig *pConf = GetOCPNConfigObject();
 
-    pConf->SetPath ( _T( "/PlugIns/Climatology" ) );
+    pConf->SetPath("/PlugIns/Climatology");
 
     for(int i=0; i<SETTINGS_COUNT; i++) {
         wxString Name=name_from_index[i];
 
         int units;
-        pConf->Read ( Name + _T ( "Units" ), &units, 0);
+        pConf->Read ( Name +   "Units" , &units, 0);
         Settings[i].m_Units = (SettingsType)units;
 
-        pConf->Read ( Name + _T ( "Enabled" ), &Settings[i].m_bEnabled,
+        pConf->Read ( Name +   "Enabled" , &Settings[i].m_bEnabled,
                       i == WIND || i == CURRENT );
-        pConf->Read ( Name + _T ( "OverlayMap" ), &Settings[i].m_bOverlayMap,
+        pConf->Read ( Name +   "OverlayMap" , &Settings[i].m_bOverlayMap,
                       i == SST || i == AT || i==CLOUD || i == PRECIPITATION
                       || i == RELATIVE_HUMIDITY || i == LIGHTNING || i == SEADEPTH);
-        pConf->Read ( Name + _T ( "OverlayTransparency" ), &Settings[i].m_iOverlayTransparency,
+        pConf->Read ( Name +   "OverlayTransparency" , &Settings[i].m_iOverlayTransparency,
                       0 );
-        pConf->Read ( Name + _T ( "OverlayInterpolation" ), &Settings[i].m_bOverlayInterpolation,
+        pConf->Read ( Name +   "OverlayInterpolation" , &Settings[i].m_bOverlayInterpolation,
                       true );
 
-        pConf->Read ( Name + _T ( "IsoBars" ), &Settings[i].m_bIsoBars, i==SLP);
+        pConf->Read ( Name +   "IsoBars" , &Settings[i].m_bIsoBars, i==SLP);
         double defspacing[SETTINGS_COUNT] = {5, 2, 10, 5, 5, 20, 1, 10, 30, 1000};
-        pConf->Read ( Name + _T ( "IsoBarSpacing" ), &Settings[i].m_iIsoBarSpacing, defspacing[i]);
-        pConf->Read ( Name + _T ( "IsoBarStep" ), &Settings[i].m_iIsoBarStep, 2);
+        pConf->Read ( Name +   "IsoBarSpacing" , &Settings[i].m_iIsoBarSpacing, defspacing[i]);
+        pConf->Read ( Name +   "IsoBarStep" , &Settings[i].m_iIsoBarStep, 2);
 
         for(int m = 0; m<13; m++)
             Settings[i].m_pIsobars[m] = NULL;
 
-        pConf->Read ( Name + _T ( "Numbers" ), &Settings[i].m_bNumbers, 0);
-        pConf->Read ( Name + _T ( "NumbersSpacing" ), &Settings[i].m_iNumbersSpacing, 50);
+        pConf->Read ( Name +   "Numbers" , &Settings[i].m_bNumbers, 0);
+        pConf->Read ( Name +   "NumbersSpacing" , &Settings[i].m_iNumbersSpacing, 50);
 
         if(i > CURRENT) {
             Settings[i].m_bDirectionArrows = false;
             continue;
         }
 
-        pConf->Read ( Name + _T ( "DirectionArrows" ), &Settings[i].m_bDirectionArrows, i==CURRENT);
-        pConf->Read ( Name + _T ( "DirectionArrowsLengthType" ), &Settings[i].m_iDirectionArrowsLengthType, 1);
-        pConf->Read ( Name + _T ( "DirectionArrowsWidth" ), &Settings[i].m_iDirectionArrowsWidth, 2);
+        pConf->Read ( Name +   "DirectionArrows" , &Settings[i].m_bDirectionArrows, i==CURRENT);
+        pConf->Read ( Name +   "DirectionArrowsLengthType" , &Settings[i].m_iDirectionArrowsLengthType, 1);
+        pConf->Read ( Name +   "DirectionArrowsWidth" , &Settings[i].m_iDirectionArrowsWidth, 2);
 
         wxString DirectionArrowsColorStr;
-        wxString defarrowcolor[CURRENT+1] = {_T("#0022ff"), _T("#c51612")};
-        pConf->Read(Name + _T("DirectionArrowsColor"), &DirectionArrowsColorStr, defarrowcolor[i]);
+        wxString defarrowcolor[CURRENT+1] = {"#0022ff", "#c51612"};
+        pConf->Read(Name + "DirectionArrowsColor", &DirectionArrowsColorStr, defarrowcolor[i]);
         Settings[i].m_cDirectionArrowsColor = wxColour(DirectionArrowsColorStr);
 
         int opacity;
-        pConf->Read ( Name + _T ( "DirectionArrowsOpacity" ), &opacity, 205);
+        pConf->Read ( Name +   "DirectionArrowsOpacity" , &opacity, 205);
         Settings[i].m_cDirectionArrowsColor.Set(Settings[i].m_cDirectionArrowsColor.Red(),
                                                 Settings[i].m_cDirectionArrowsColor.Green(),
                                                 Settings[i].m_cDirectionArrowsColor.Blue(),
                                                 opacity);
 
         double defarrowsize[CURRENT+1] = {10, 7};
-        pConf->Read ( Name + _T ( "DirectionArrowsSize" ), &Settings[i].m_iDirectionArrowsSize,
+        pConf->Read ( Name +   "DirectionArrowsSize" , &Settings[i].m_iDirectionArrowsSize,
                       defarrowsize[i]);
 
         double defarrowspacing[CURRENT+1] = {24, 18};
-        pConf->Read ( Name + _T ( "DirectionArrowsSpacing" ), &Settings[i].m_iDirectionArrowsSpacing,
+        pConf->Read ( Name +   "DirectionArrowsSpacing" , &Settings[i].m_iDirectionArrowsSpacing,
                       defarrowspacing[i]);
     }
 }
@@ -185,35 +185,35 @@ void ClimatologyOverlaySettings::Save()
     /* save settings here */
     wxFileConfig *pConf = GetOCPNConfigObject();
 
-    pConf->SetPath ( _T( "/PlugIns/Climatology" ) );
+    pConf->SetPath (  "/PlugIns/Climatology"  );
 
     for(int i=0; i<SETTINGS_COUNT; i++) {
         wxString Name=name_from_index[i];
 
-        pConf->Write ( Name + _T ( "Units" ), (int)Settings[i].m_Units);
-        pConf->Write ( Name + _T ( "Enabled" ), Settings[i].m_bEnabled);
-        pConf->Write ( Name + _T ( "OverlayMap" ), Settings[i].m_bOverlayMap);
-        pConf->Write ( Name + _T ( "OverlayTransparency" ), Settings[i].m_iOverlayTransparency);
-        pConf->Write ( Name + _T ( "OverlayInterpolation" ), Settings[i].m_bOverlayInterpolation);
-        pConf->Write ( Name + _T ( "IsoBars" ), Settings[i].m_bIsoBars);
-        pConf->Write ( Name + _T ( "IsoBarSpacing" ), Settings[i].m_iIsoBarSpacing);
-        pConf->Write ( Name + _T ( "IsoBarStep" ), Settings[i].m_iIsoBarStep);
-        pConf->Write ( Name + _T ( "Numbers" ), Settings[i].m_bNumbers);
-        pConf->Write ( Name + _T ( "NumbersSpacing" ), Settings[i].m_iNumbersSpacing);
+        pConf->Write ( Name +   "Units" , (int)Settings[i].m_Units);
+        pConf->Write ( Name +   "Enabled" , Settings[i].m_bEnabled);
+        pConf->Write ( Name +   "OverlayMap" , Settings[i].m_bOverlayMap);
+        pConf->Write ( Name +   "OverlayTransparency" , Settings[i].m_iOverlayTransparency);
+        pConf->Write ( Name +   "OverlayInterpolation" , Settings[i].m_bOverlayInterpolation);
+        pConf->Write ( Name +   "IsoBars" , Settings[i].m_bIsoBars);
+        pConf->Write ( Name +   "IsoBarSpacing" , Settings[i].m_iIsoBarSpacing);
+        pConf->Write ( Name +   "IsoBarStep" , Settings[i].m_iIsoBarStep);
+        pConf->Write ( Name +   "Numbers" , Settings[i].m_bNumbers);
+        pConf->Write ( Name +   "NumbersSpacing" , Settings[i].m_iNumbersSpacing);
 
         if(i > CURRENT)
             continue;
 
-        pConf->Write ( Name + _T ( "DirectionArrows" ), Settings[i].m_bDirectionArrows);
-        pConf->Write ( Name + _T ( "DirectionArrowsLengthType" ), Settings[i].m_iDirectionArrowsLengthType);
-        pConf->Write ( Name + _T ( "DirectionArrowsWidth" ), Settings[i].m_iDirectionArrowsWidth);
+        pConf->Write ( Name +   "DirectionArrows" , Settings[i].m_bDirectionArrows);
+        pConf->Write ( Name +   "DirectionArrowsLengthType" , Settings[i].m_iDirectionArrowsLengthType);
+        pConf->Write ( Name +   "DirectionArrowsWidth" , Settings[i].m_iDirectionArrowsWidth);
 
         wxString DirectionArrowsColorStr = Settings[i].m_cDirectionArrowsColor.GetAsString();
-        pConf->Write( Name + _T("DirectionArrowsColor"), DirectionArrowsColorStr);
-        pConf->Write ( Name + _T ( "DirectionArrowsOpacity" ),
+        pConf->Write( Name + "DirectionArrowsColor", DirectionArrowsColorStr);
+        pConf->Write ( Name +   "DirectionArrowsOpacity" ,
                        Settings[i].m_cDirectionArrowsColor.Alpha());
-        pConf->Write ( Name + _T ( "DirectionArrowsSize" ), Settings[i].m_iDirectionArrowsSize);
-        pConf->Write ( Name + _T ( "DirectionArrowsSpacing" ), Settings[i].m_iDirectionArrowsSpacing);
+        pConf->Write ( Name +   "DirectionArrowsSize" , Settings[i].m_iDirectionArrowsSize);
+        pConf->Write ( Name +   "DirectionArrowsSpacing" , Settings[i].m_iDirectionArrowsSpacing);
     }
 }
 
@@ -221,13 +221,13 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
 #ifndef __WXOSX__
     : ClimatologyConfigDialogBase(parent)
 #else
-    : ClimatologyConfigDialogBase(parent, wxID_ANY, _("Climatology Configuration"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP)
+    : ClimatologyConfigDialogBase(parent, wxID_ANY, _("Climatology Configuration"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxSTAY_ONOP)
 #endif
 {
     pParent = parent;
 
 #ifdef WIN32 // windows is too slow for very fine steps
-    m_cIsoBarStep->Delete(4);
+    m_cIsoBarStep->Delete4;
 #endif
 #ifdef __OCPN__ANDROID__
     GetHandle()->setStyleSheet( qtStyleSheet);
@@ -245,11 +245,11 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     PopulateUnits(m_lastdatatype);
     ReadDataTypeSettings(m_lastdatatype);
 
-    m_stVersion->SetLabel(wxString::Format(_T("%d.%d"),
+    m_stVersion->SetLabel(wxString::Format("%d.%d",
                                            PLUGIN_VERSION_MAJOR, PLUGIN_VERSION_MINOR));
     m_tDataDirectory->SetValue(ClimatologyDataDirectory());
 
-    m_refreshTimer.Connect(wxEVT_TIMER, wxTimerEventHandler( ClimatologyConfigDialog::OnRefreshTimer ), NULL, this);
+    m_refreshTimer.Connect(wxEVT_TIMER, wxTimerEventHandler(ClimatologyConfigDialog::OnRefreshTimer) , NULL, this);
 
     DimeWindow( this );
 }
@@ -271,41 +271,41 @@ void ClimatologyConfigDialog::DisableIsoBars(int setting)
 void ClimatologyConfigDialog::LoadSettings()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
-    pConf->SetPath ( _T ( "/Settings/Climatology" ) );
+    pConf->SetPath (   "/Settings/Climatology"  );
 
-    pConf->Read ( _T ( "lastdatatype" ), &m_lastdatatype, 0);
+    pConf->Read (   "lastdatatype" , &m_lastdatatype, 0);
 
     /* wind atlas settings */
-    pConf->SetPath ( _T( "/PlugIns/Climatology/WindAtlas" ) );
+    pConf->SetPath (  "/PlugIns/Climatology/WindAtlas"  );
 
-    m_cbWindAtlasEnable->SetValue((bool)pConf->Read ( _T ( "Enabled" ), true));
-    m_sWindAtlasSize->SetValue(pConf->Read ( _T ( "Size1" ), 120L));
-    m_sWindAtlasSpacing->SetValue(pConf->Read ( _T ( "Spacing1" ), 90L));
-    m_sWindAtlasOpacity->SetValue(pConf->Read ( _T ( "Opacity" ), 205L));
+    m_cbWindAtlasEnable->SetValue((bool)pConf->Read (   "Enabled" , true));
+    m_sWindAtlasSize->SetValue(pConf->Read (   "Size1" , 120L));
+    m_sWindAtlasSpacing->SetValue(pConf->Read (   "Spacing1" , 90L));
+    m_sWindAtlasOpacity->SetValue(pConf->Read (   "Opacity" , 205L));
 
     /* cyclone settings */
-    pConf->SetPath ( _T( "/PlugIns/Climatology/Cyclones" ) );
+    pConf->SetPath (  "/PlugIns/Climatology/Cyclones"  );
 
     wxDateTime StartDate = wxDateTime::Now();
     StartDate.SetYear(1972);
 
     wxString StartDateString = StartDate.FormatDate();
-    pConf->Read( _T ( "StartDate" ), &StartDateString, StartDateString);
+    pConf->Read(   "StartDate" , &StartDateString, StartDateString);
     StartDate.ParseDate(StartDateString);
     m_dPStart->SetValue(StartDate);
 
     wxDateTime now = wxDateTime::Now();
     wxString EndDateString = now.FormatDate();
-    pConf->Read( _T ( "EndDate" ), &EndDateString, EndDateString);
+    pConf->Read(   "EndDate" , &EndDateString, EndDateString);
     wxDateTime EndDate;
     EndDate.ParseDate(EndDateString);
     if(EndDate.GetYear() > now.GetYear())
         EndDate = now;
     m_dPEnd->SetValue(EndDate);
 
-    m_sCycloneDaySpan->SetValue(pConf->Read ( _T ( "CycloneDaySpan" ), 30L ));
-    m_sMinWindSpeed->SetValue(pConf->Read ( _T ( "MinWindSpeed" ), 35L ));
-    m_sMaxPressure->SetValue(pConf->Read ( _T ( "MaxPressure" ), 1080L ));
+    m_sCycloneDaySpan->SetValue(pConf->Read (   "CycloneDaySpan" , 30L ));
+    m_sMinWindSpeed->SetValue(pConf->Read (   "MinWindSpeed" , 35L ));
+    m_sMaxPressure->SetValue(pConf->Read (   "MaxPressure" , 1080L ));
 
     /* implement check boxes too? */
 }
@@ -313,27 +313,27 @@ void ClimatologyConfigDialog::LoadSettings()
 void ClimatologyConfigDialog::SaveSettings()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
-    pConf->SetPath ( _T ( "/Settings/Climatology" ) );
+    pConf->SetPath (   "/Settings/Climatology"  );
 
-    pConf->Write ( _T ( "lastdatatype" ), m_lastdatatype);
+    pConf->Write (   "lastdatatype" , m_lastdatatype);
 
-    pConf->SetPath ( _T( "/PlugIns/Climatology/WindAtlas" ) );
+    pConf->SetPath (  "/PlugIns/Climatology/WindAtlas"  );
 
     /* wind atlas settings */
-    pConf->Write ( _T ( "Enabled" ), m_cbWindAtlasEnable->GetValue());
-    pConf->Write ( _T ( "Size1" ), m_sWindAtlasSize->GetValue());
-    pConf->Write ( _T ( "Spacing1" ), m_sWindAtlasSpacing->GetValue());
-    pConf->Write ( _T ( "Opacity" ), m_sWindAtlasOpacity->GetValue());
+    pConf->Write (   "Enabled" , m_cbWindAtlasEnable->GetValue());
+    pConf->Write (   "Size1" , m_sWindAtlasSize->GetValue());
+    pConf->Write (   "Spacing1" , m_sWindAtlasSpacing->GetValue());
+    pConf->Write (   "Opacity" , m_sWindAtlasOpacity->GetValue());
 
     /* cyclone settings */
-    pConf->SetPath ( _T( "/PlugIns/Climatology/Cyclones" ) );
+    pConf->SetPath (  "/PlugIns/Climatology/Cyclones"  );
 
-    pConf->Write( _T ( "StartDate" ), m_dPStart->GetDateCtrlValue().FormatDate());
-    pConf->Write( _T ( "EndDate" ), m_dPEnd->GetDateCtrlValue().FormatDate());
+    pConf->Write(   "StartDate" , m_dPStart->GetDateCtrlValue().FormatDate());
+    pConf->Write(   "EndDate" , m_dPEnd->GetDateCtrlValue().FormatDate());
 
-    pConf->Write ( _T ( "CycloneDaySpan" ), m_sCycloneDaySpan->GetValue() );
-    pConf->Write ( _T ( "MinWindSpeed" ), m_sMinWindSpeed->GetValue() );
-    pConf->Write ( _T ( "MaxPressure" ), m_sMaxPressure->GetValue() );
+    pConf->Write (   "CycloneDaySpan" , m_sCycloneDaySpan->GetValue() );
+    pConf->Write (   "MinWindSpeed" , m_sMinWindSpeed->GetValue() );
+    pConf->Write (   "MaxPressure" , m_sMaxPressure->GetValue() );
 
     /* implement check boxes too? */
 }
@@ -497,7 +497,7 @@ void ClimatologyConfigDialog::OnEnabled( wxCommandEvent& event )
 
 void ClimatologyConfigDialog::OnAboutAuthor( wxCommandEvent& event )
 {
-    wxLaunchDefaultBrowser(_T(ABOUT_AUTHOR_URL));
+    wxLaunchDefaultBrowser(ABOUT_AUTHOR_URL);
 }
 
 void ClimatologyConfigDialog::OnRefreshTimer( wxTimerEvent& event )

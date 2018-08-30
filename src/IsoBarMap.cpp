@@ -453,7 +453,7 @@ void IsoBarMap::ClearMap()
 ContourText IsoBarMap::ContourCacheData(double value)
 {
     ContourText t;
-    t.text.Printf(_T("%.0f"), value);
+    t.text.Printf("%.0f", value);
     t.w = t.h = 0;
     t.lastx = 0;
     t.lasty = 0;

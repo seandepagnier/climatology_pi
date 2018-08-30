@@ -25,14 +25,14 @@ void initialize_images(void)
 #ifdef OCPN_USE_SVG
     wxFileName fn;
     fn.SetPath(*GetpSharedDataLocation());
-    fn.AppendDir(_T("plugins"));
-    fn.AppendDir(_T("climatology_pi"));
-    fn.AppendDir(_T("data"));
-    fn.SetFullName(_T("climatology_pi.svg"));
+    fn.AppendDir("plugins");
+    fn.AppendDir("climatology_pi");
+    fn.AppendDir("data");
+    fn.SetFullName("climatology_pi.svg");
     _svg_climatology = fn.GetFullPath();
-    fn.SetFullName(_T("climatology_pi_rollover.svg"));
+    fn.SetFullName("climatology_pi_rollover.svg");
     _svg_climatology_rollover = fn.GetFullPath();
-    fn.SetFullName(_T("climatology_pi_toggled.svg"));
+    fn.SetFullName("climatology_pi_toggled.svg");
     _svg_climatology_toggled = fn.GetFullPath();
 #endif
 	return;

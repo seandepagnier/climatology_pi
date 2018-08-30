@@ -187,8 +187,8 @@ wxString ClimatologyDialog::GetValue(int index, Coord coord)
     double val = g_pOverlayFactory->getCurCalibratedValue
         (coord, index, m_cursorlat, m_cursorlon);
     if(isnan(val))
-        return _T("");
-    return wxString::Format(_T("%.2f"), val);
+        return "";
+    return wxString::Format("%.2f", val);
 }
 
 void ClimatologyDialog::DayMonthUpdate()

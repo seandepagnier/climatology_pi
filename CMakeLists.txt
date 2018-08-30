@@ -51,6 +51,7 @@ IF(MINGW)
     TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "-lwxzlib-2.8")
 ENDIF(MINGW)
 
+INCLUDE("cmake/PluginJSON.cmake")
 INCLUDE("cmake/PluginXML.cmake")
 INCLUDE("cmake/PluginGL.cmake")
 INCLUDE("cmake/PluginInstall.cmake")

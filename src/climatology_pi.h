@@ -39,8 +39,7 @@
 
 #include "ocpn_plugin.h"
 
-#include "wxJSON/jsonreader.h"
-#include "wxJSON/jsonwriter.h"
+#include "json/json.h"
 
 #include "defs.h"
 

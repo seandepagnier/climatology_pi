@@ -59,15 +59,15 @@ static climatology_pi *s_climatology_pi;
 wxString ClimatologyDataDirectory()
 {
     wxString s =wxFileName::GetPathSeparator();
-    return *GetpSharedDataLocation() + _T("plugins")
-        + s + _T("climatology_pi") + s + _T("data") + s;
+    return *GetpSharedDataLocation() + "plugins"
+        + s + "climatology_pi" + s + "data" + s;
 }
 
 wxString ClimatologyUserDataDirectory()
 {
     wxString s = wxFileName::GetPathSeparator();
-    return *GetpPrivateApplicationDataLocation() + s + _T("plugins")
-        + s + _T("climatology_pi") + s + _T("data") + s;
+    return *GetpPrivateApplicationDataLocation() + s + "plugins"
+        + s + "climatology_pi" + s + "data" + s;
 }
 
 climatology_pi::climatology_pi(void *ppimgr)
@@ -105,11 +105,11 @@ int climatology_pi::Init(void)
 
       //    This PlugIn needs a toolbar icon, so request its insertion if enabled locally
 #ifdef OCPN_USE_SVG
-      m_leftclick_tool_id = InsertPlugInToolSVG(_T( "Climatology" ), _svg_climatology, _svg_climatology_rollover, _svg_climatology_toggled,
-                                              wxITEM_CHECK, _("Climatology"), _T( "" ), NULL, CLIMATOLOGY_TOOL_POSITION, 0, this);
+      m_leftclick_tool_id = InsertPlugInToolSVG( "Climatology" , _svg_climatology, _svg_climatology_rollover, _svg_climatology_toggled,
+                                              wxITEM_CHECK, _("Climatology"),  "" , NULL, CLIMATOLOGY_TOOL_POSITION, 0, this);
 #else
-      m_leftclick_tool_id  = InsertPlugInTool(_T(""), _img_climatology, _img_climatology, wxITEM_NORMAL,
-                                              _("Climatology"), _T(""), NULL,
+      m_leftclick_tool_id  = InsertPlugInTool("", _img_climatology, _img_climatology, wxITEM_NORMAL,
+                                              _("Climatology"), "", NULL,
                                               CLIMATOLOGY_TOOL_POSITION, 0, this);
 #endif
       return (WANTS_OVERLAY_CALLBACK |
@@ -323,58 +323,53 @@ void climatology_pi::SetCursorLatLon(double lat, double lon)
 
 void climatology_pi::SendClimatology(bool valid)
 {
-    wxJSONValue v;
-    v[_T("ClimatologyVersionMajor")] = GetPlugInVersionMajor();
-    v[_T("ClimatologyVersionMinor")] = GetPlugInVersionMinor();
+    Json::Value v;
+    v["ClimatologyVersionMajor"] = GetPlugInVersionMajor();
+    v["ClimatologyVersionMinor"] = GetPlugInVersionMinor();
 
     char ptr[64];
     snprintf(ptr, sizeof ptr, "%p", valid ? ClimatologyData : NULL);
-    v[_T("ClimatologyDataPtr")] = wxString::From8BitData(ptr);
+    v["ClimatologyDataPtr"] = ptr;
 
     snprintf(ptr, sizeof ptr, "%p", valid ? ClimatologyWindAtlasData : NULL);
-    v[_T("ClimatologyWindAtlasDataPtr")] = wxString::From8BitData(ptr);
+    v["ClimatologyWindAtlasDataPtr"] = ptr;
 
     snprintf(ptr, sizeof ptr, "%p", valid ? ClimatologyCycloneTrackCrossings : NULL);
-    v[_T("ClimatologyCycloneTrackCrossingsPtr")] = wxString::From8BitData(ptr);
+    v["ClimatologyCycloneTrackCrossingsPtr"] = ptr;
     
-    wxJSONWriter w;
-    wxString out;
-    w.Write(v, out);
-    SendPluginMessage(wxT("CLIMATOLOGY"), out);
+    Json::FastWriter writer;
+    SendPluginMessage(wxT("CLIMATOLOGY"), writer.write( v ));
 }
 
 void climatology_pi::SetPluginMessage(wxString &message_id, wxString &message_body)
 {
-    if(message_id == _T("CLIMATOLOGY_REQUEST")) {
+    if(message_id == "CLIMATOLOGY_REQUEST") {
         SendClimatology(true);
     }
 }
 
 // -------------------------------------------------------
-// GRIB_TIMELINE is a misnomer
+// GRIBMELINE is a misnomer
 void climatology_pi::SendTimelineMessage(wxDateTime time)
 {
-    wxJSONValue v;
+    Json::Value v;
     if (time.IsValid()) {
-        v[_T("Day")] = time.GetDay();
-        v[_T("Month")] = time.GetMonth();
-        v[_T("Year")] = time.GetYear();
-        v[_T("Hour")] = time.GetHour();
-        v[_T("Minute")] = time.GetMinute();
-        v[_T("Second")] = time.GetSecond();
+        v["Day"] = time.GetDay();
+        v["Month"] = time.GetMonth();
+        v["Year"] = time.GetYear();
+        v["Hour"] = time.GetHour();
+        v["Minute"] = time.GetMinute();
+        v["Second"] = time.GetSecond();
+    } else {
+        v["Day"] = -1;
+        v["Month"] = -1;
+        v["Year"] = -1;
+        v["Hour"] = -1;
+        v["Minute"] = -1;
+        v["Second"] = -1;
     }
-    else {
-        v[_T("Day")] = -1;
-        v[_T("Month")] = -1;
-        v[_T("Year")] = -1;
-        v[_T("Hour")] = -1;
-        v[_T("Minute")] = -1;
-        v[_T("Second")] = -1;
-    }
-    wxJSONWriter w;
-    wxString out;
-    w.Write(v, out);
-    SendPluginMessage(wxString(_T("GRIB_TIMELINE")), out);
+    Json::FastWriter writer;
+    SendPluginMessage("GRIB_TIMELINE", writer.write( v ));
 }
 
 void climatology_pi::FreeData()
@@ -392,12 +387,12 @@ bool climatology_pi::LoadConfig(void)
     if(!pConf)
         return false;
 
-    pConf->SetPath ( _T( "/Settings/Climatology" ) );
+    pConf->SetPath (  "/Settings/Climatology"  );
 
-    m_climatology_dialog_sx = pConf->Read ( _T ( "DialogSizeX" ), 300L );
-    m_climatology_dialog_sy = pConf->Read ( _T ( "DialogSizeY" ), 540L );
-    m_climatology_dialog_x =  pConf->Read ( _T ( "DialogPosX" ), 20L );
-    m_climatology_dialog_y =  pConf->Read ( _T ( "DialogPosY" ), 170L );
+    m_climatology_dialog_sx = pConf->Read ( "DialogSizeX" , 300L );
+    m_climatology_dialog_sy = pConf->Read ( "DialogSizeY" , 540L );
+    m_climatology_dialog_x =  pConf->Read ( "DialogPosX" , 20L );
+    m_climatology_dialog_y =  pConf->Read ( "DialogPosY" , 170L );
 
     return true;
 }
@@ -409,12 +404,12 @@ bool climatology_pi::SaveConfig(void)
     if(!pConf)
         return false;
 
-    pConf->SetPath ( _T ( "/Settings/Climatology" ) );
+    pConf->SetPath ("/Settings/Climatology");
 
-    pConf->Write ( _T ( "DialogSizeX" ), m_climatology_dialog_sx );
-    pConf->Write ( _T ( "DialogSizeY" ), m_climatology_dialog_sy );
-    pConf->Write ( _T ( "DialogPosX" ),  m_climatology_dialog_x );
-    pConf->Write ( _T ( "DialogPosY" ),  m_climatology_dialog_y );
+    pConf->Write("DialogSizeX", m_climatology_dialog_sx );
+    pConf->Write("DialogSizeY", m_climatology_dialog_sy );
+    pConf->Write("DialogPosX",  m_climatology_dialog_x );
+    pConf->Write("DialogPosY",  m_climatology_dialog_y );
     
     return true;
 }
