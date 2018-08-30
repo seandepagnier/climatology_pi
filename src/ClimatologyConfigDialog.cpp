@@ -227,7 +227,7 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     pParent = parent;
 
 #ifdef WIN32 // windows is too slow for very fine steps
-    m_cIsoBarStep->Delete4;
+    m_cIsoBarStep->Delete(4);
 #endif
 #ifdef __OCPN__ANDROID__
     GetHandle()->setStyleSheet( qtStyleSheet);
