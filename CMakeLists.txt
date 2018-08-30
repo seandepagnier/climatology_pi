@@ -28,7 +28,7 @@ SET(SRC_CLIMATOLOGY
             src/icons.cpp
 )
 
-ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY} ${SRC_JSON})
+ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY})
 
 IF(NOT UNIX)
     SET(SRC_BZIP
@@ -54,6 +54,7 @@ ENDIF(MINGW)
 INCLUDE("cmake/PluginJSON.cmake")
 INCLUDE("cmake/PluginXML.cmake")
 INCLUDE("cmake/PluginGL.cmake")
+
 INCLUDE("cmake/PluginInstall.cmake")
 INCLUDE("cmake/PluginLocalization.cmake")
 INCLUDE("cmake/PluginPackage.cmake")

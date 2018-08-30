@@ -63,8 +63,8 @@
 #include "qdebug.h"
 #endif
 
-extern float g_GLMinSymbolLineWidth;
-wxArrayPtrVoid pi_gTesselatorVertices;
+static float GLMinSymbolLineWidth;
+static wxArrayPtrVoid pi_gTesselatorVertices;
 
 #ifdef USE_ANDROID_GLES2
 extern GLint pi_color_tri_shader_program;
@@ -140,6 +140,10 @@ piDC::piDC() :
     workBuf = NULL;
     workBufSize = 0;
     s_odc_tess_work_buf = NULL;
+
+    GLint parms[2];
+    glGetIntegerv( GL_SMOOTH_LINE_WIDTH_RANGE, &parms[0] );
+    GLMinSymbolLineWidth = wxMax(parms[0], 1);
 
     pi_loadShaders();
     
@@ -536,7 +540,7 @@ void piDC::DrawLine( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, bool b_hiqu
     else if( ConfigurePen() ) {
         bool b_draw_thick = false;
 
-        float pen_width = wxMax(g_GLMinSymbolLineWidth, m_pen.GetWidth());
+        float pen_width = wxMax(GLMinSymbolLineWidth, m_pen.GetWidth());
 
         //      Enable anti-aliased lines, at best quality
         if( b_hiqual ) {
@@ -572,7 +576,7 @@ void piDC::DrawLine( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, bool b_hiqu
         
 #ifdef USE_ANDROID_GLES2
         if( b_draw_thick )
-            DrawGLThickLine( x1, y1, x2, y2, m_pen, b_hiqual );
+            piDrawGLThickLine( x1, y1, x2, y2, m_pen, b_hiqual );
         else {
             glUseProgram(pi_color_tri_shader_program);
             
@@ -648,7 +652,7 @@ void piDC::DrawLine( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, bool b_hiqu
         
 #else
         if( b_draw_thick )
-            DrawGLThickLine( x1, y1, x2, y2, m_pen, b_hiqual );
+            piDrawGLThickLine( x1, y1, x2, y2, m_pen, b_hiqual );
         else {
             wxDash *dashes;
             int n_dashes = m_pen.GetDashes( &dashes );
@@ -719,7 +723,7 @@ void piDrawGLThickLines( int n, wxPoint points[],wxCoord xoffset,
 #ifdef USE_ANDROID_GLES2
      wxPoint p0 = points[0];
      for( int i = 1; i < n; i++ ) {
-         DrawGLThickLine( p0.x + xoffset, p0.y + yoffset, points[i].x + xoffset,
+         piDrawGLThickLine( p0.x + xoffset, p0.y + yoffset, points[i].x + xoffset,
                           points[i].y + yoffset, pen, b_hiqual );
          p0 = points[i];
         }
@@ -732,7 +736,7 @@ void piDrawGLThickLines( int n, wxPoint points[],wxCoord xoffset,
     {
         wxPoint p0 = points[0];
         for( int i = 1; i < n; i++ ) {
-            DrawGLThickLine( p0.x + xoffset, p0.y + yoffset, points[i].x + xoffset,
+            piDrawGLThickLine( p0.x + xoffset, p0.y + yoffset, points[i].x + xoffset,
                              points[i].y + yoffset, pen, b_hiqual );
             p0 = points[i];
         }
@@ -846,18 +850,18 @@ void piDrawGLThickLines( int n, wxPoint points[],wxCoord xoffset,
                 if( m_pen.GetWidth() > parms[1] )
                     b_draw_thick = true;
                 else
-                    glLineWidth( wxMax(g_GLMinSymbolLineWidth, m_pen.GetWidth()) );
+                    glLineWidth( wxMax(GLMinSymbolLineWidth, m_pen.GetWidth()) );
             } else
-                glLineWidth( wxMax(g_GLMinSymbolLineWidth, 1) );
+                glLineWidth( wxMax(GLMinSymbolLineWidth, 1) );
         } else {
             if( m_pen.GetWidth() > 1 ) {
                 GLint parms[2];
                 glGetIntegerv( GL_ALIASED_LINE_WIDTH_RANGE, &parms[0] );
                 if( m_pen.GetWidth() > parms[1] ) b_draw_thick = true;
                 else
-                    glLineWidth( wxMax(g_GLMinSymbolLineWidth, m_pen.GetWidth()) );
+                    glLineWidth( wxMax(GLMinSymbolLineWidth, m_pen.GetWidth()) );
             } else
-                glLineWidth( wxMax(g_GLMinSymbolLineWidth, 1) );
+                glLineWidth( wxMax(GLMinSymbolLineWidth, 1) );
         }
 
         if( b_draw_thick) {
@@ -978,16 +982,16 @@ void piDC::DrawGLLineArray( int n, float *vertex_array, float *color_array,  boo
                     //if(glGetError())
                         //glGetIntegerv( GL_ALIASED_LINE_WIDTH_RANGE, &parms[0] );
                     
-                    glLineWidth( wxMax(g_GLMinSymbolLineWidth, m_pen.GetWidth()) );
+                    glLineWidth( wxMax(GLMinSymbolLineWidth, m_pen.GetWidth()) );
                 } else
-                    glLineWidth( wxMax(g_GLMinSymbolLineWidth, 1) );
+                    glLineWidth( wxMax(GLMinSymbolLineWidth, 1) );
             } else {
                 if( m_pen.GetWidth() > 1 ) {
                     //GLint parms[2];
                     //glGetIntegerv( GL_ALIASED_LINE_WIDTH_RANGE, &parms[0] );
-                    glLineWidth( wxMax(g_GLMinSymbolLineWidth, m_pen.GetWidth()) );
+                    glLineWidth( wxMax(GLMinSymbolLineWidth, m_pen.GetWidth()) );
                 } else
-                    glLineWidth( wxMax(g_GLMinSymbolLineWidth, 1) );
+                    glLineWidth( wxMax(GLMinSymbolLineWidth, 1) );
             }
             
 #ifndef ocpnUSE_GLES2        
@@ -2024,7 +2028,7 @@ bool piDC::ConfigurePen()
 #ifdef ocpnUSE_GL
 #ifndef USE_ANDROID_GLES2    
     glColor4ub( c.Red(), c.Green(), c.Blue(), c.Alpha() );
-    glLineWidth( wxMax(g_GLMinSymbolLineWidth, width) );
+    glLineWidth( wxMax(GLMinSymbolLineWidth, width) );
 #endif    
 #endif    
     return true;
