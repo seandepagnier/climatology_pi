@@ -291,7 +291,6 @@ void climatology_pi::OnClimatologyDialogClose()
 
 bool climatology_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
 {
-    return true;
     if(!m_pClimatologyDialog || !m_pClimatologyDialog->IsShown() ||
        !g_pOverlayFactory)
         return false;
