@@ -1837,7 +1837,7 @@ void piDC::DrawText( const wxString &text, wxCoord x, wxCoord y )
             
             if( w && h ) {
 
-                if(m_textbackgroundcolour.Alpha() != 255) {
+                if(m_textbackgroundcolour.Alpha() != 0) {
                     wxPen p = m_pen;
                     wxBrush b = m_brush;
                     SetPen(*wxTRANSPARENT_PEN);
@@ -1856,7 +1856,8 @@ void piDC::DrawText( const wxString &text, wxCoord x, wxCoord y )
                 glPushMatrix();
                 glTranslatef(x, y, 0);
                 
-                glColor3ub( m_textforegroundcolour.Red(), m_textforegroundcolour.Green(),
+                glColor3ub( m_textforegroundcolour.Red(),
+                            m_textforegroundcolour.Green(),
                             m_textforegroundcolour.Blue() );
                 
 
