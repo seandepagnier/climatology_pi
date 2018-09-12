@@ -1260,11 +1260,11 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
     return true;
 
 corrupted:
-    zu_close(f);
     delete cyclone;
     m_sFailedMessage += _("corrupt file: ") + filename + "\n";
     wxLogMessage(climatology_pi + _("cyclone data corrupt: ") + filename
                  + wxString::Format(" at %ld", zu_tell(f)));
+    zu_close(f);
 missing:
     m_FailedFiles.push_back(filename);
     return false;
