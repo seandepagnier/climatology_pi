@@ -712,10 +712,10 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
 
                         wp.directions[pass - 1] = value;
                     } else {
-                        if(wp.directions[pass-dirs-1] == 0)
-                            continue;
-
-                        if(zu_read(f, &value, 1) != 1)
+                        if(wp.directions[pass-dirs-1] == 0) {
+                            value = 0;
+                        }
+                        else if(zu_read(f, &value, 1) != 1)
                             goto corrupt;
 
                         wp.speeds[pass-dirs-1] = value;
