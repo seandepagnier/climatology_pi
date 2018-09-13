@@ -1981,6 +1981,9 @@ static double InterpTable(double ind, const double table[], int tablesize)
 double ClimatologyOverlayFactory::getValueMonth(enum Coord coord, int setting,
                                                 double lat, double lon, int month)
 {
+    if(!m_bCompletedLoading)
+        return NAN;
+
     if(coord != MAG &&
        setting != ClimatologyOverlaySettings::WIND &&
        setting != ClimatologyOverlaySettings::CURRENT)
