@@ -118,6 +118,8 @@ void ClimatologyOverlaySettings::Load()
 {
     /* read settings here */
     wxFileConfig *pConf = GetOCPNConfigObject();
+    if (!pConf)
+        return;
 
     pConf->SetPath("/PlugIns/Climatology");
 
@@ -184,6 +186,8 @@ void ClimatologyOverlaySettings::Save()
 {
     /* save settings here */
     wxFileConfig *pConf = GetOCPNConfigObject();
+    if (!pConf)
+        return;
 
     pConf->SetPath (  "/PlugIns/Climatology"  );
 
@@ -271,6 +275,8 @@ void ClimatologyConfigDialog::DisableIsoBars(int setting)
 void ClimatologyConfigDialog::LoadSettings()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
+    assert(pConf != NULL);
+
     pConf->SetPath (   "/Settings/Climatology"  );
 
     pConf->Read (   "lastdatatype" , &m_lastdatatype, 0);
@@ -313,6 +319,9 @@ void ClimatologyConfigDialog::LoadSettings()
 void ClimatologyConfigDialog::SaveSettings()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
+    if (!pConf)
+        return;
+
     pConf->SetPath (   "/Settings/Climatology"  );
 
     pConf->Write (   "lastdatatype" , m_lastdatatype);
