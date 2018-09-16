@@ -41,14 +41,14 @@ struct WindData
     {
         WindPolar()  {}
         ~WindPolar() { /*delete [] directions; delete [] speeds;*/ }
-        wxUint8 gale, calm, directions[8], speeds[8];
+        wxUint8 gale, calm, directions[8] /*{}*/, speeds[8] /*{}*/;
         double Value(enum Coord coord, int dir_cnt);
     };
 
     WindData(int lats, int lons, int dirs, float dir_res, float spd_mul)
     : latitudes(lats), longitudes(lons), dir_cnt(dirs),
         direction_resolution(dir_res), speed_multiplier(spd_mul),
-        data(new WindPolar[lats*lons]) {}
+        data(new WindPolar[lats*lons]/*()*/) {}
     ~WindData() { delete [] data; }
 
     double InterpWind(enum Coord coord, double lat, double lon);

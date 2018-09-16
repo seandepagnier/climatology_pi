@@ -378,7 +378,7 @@ struct ColorMap {
     wxUint8 transp;
 };
 
-ColorMap WindMap[] =
+static ColorMap WindMap[] =
 {{0,  "#ffffff", 0}, {2, "#00ffff", 0},  {4,  "#00e4e4", 0}, {5,  "#00d9e4", 0},
  {6,  "#00d9d4", 0}, {7, "#00d9b2", 0},  {8,  "#00d96e", 0}, {9,  "#00d92a", 0},
  {10, "#00d900", 0}, {11, "#2ad900", 0}, {12, "#6ed900", 0}, {13, "#b2d900", 0},
@@ -387,14 +387,14 @@ ColorMap WindMap[] =
  {25, "#0000d0", 0}, {30, "#0000f0", 0}, {35, "#00a0ff", 0}, {40, "#a0a0ff", 0},
  {50, "#ffffff", 0}};
 
-ColorMap CurrentMap[] =
+static ColorMap CurrentMap[] =
 {{0,   "#0000d9", 255}, {.1,  "#002ad9", 196},  {.2, "#006ed9", 128},  {.3, "#00b2d9", 64},
  {.4,  "#04d4d4", 0}, {.5,  "#06d9a6", 0},  {.7, "#a0d906", 0},  {.9, "#b0d900", 0},
  {1.2, "#c0d900", 0}, {1.5, "#d0ae00", 0}, {1.8, "#e08300", 0}, {2.1, "#e05700", 0},
  {2.4, "#f00000", 0}, {2.7, "#f00004", 0}, {3.0, "#f0001c", 0}, {3.6, "#f00048", 0},
  {4.2, "#f00069", 0}, {4.8, "#f000a0", 0}, {5.6, "#f000f0", 0}};
 
-ColorMap PressureMap[] =
+static ColorMap PressureMap[] =
 {{900,  "#283282", 0}, {980,  "#273c8c", 0}, {990,  "#264696", 0}, {1000,  "#2350a0", 0},
  {1001, "#1f5aaa", 0}, {1002, "#1a64b4", 0}, {1003, "#136ec8", 0}, {1004, "#0c78e1", 0},
  {1005, "#0382e6", 0}, {1006, "#0091e6", 0}, {1007, "#009ee1", 0}, {1008, "#00a6dc", 0},
@@ -404,37 +404,37 @@ ColorMap PressureMap[] =
  {1021, "#ff8100", 0}, {1022, "#f1780c", 0}, {1024, "#e26a23", 0}, {1028, "#d5453c", 0},
  {1040, "#b53c59", 0}};
 
-ColorMap SeaTempMap[] =
+static ColorMap SeaTempMap[] =
 {{0, "#0000d9", 0},  {3, "#002ad9", 0},  {6, "#006ed9", 0},  {9, "#00b2d9", 0},
  {12, "#00d4d4", 0}, {15, "#00d9a6", 0}, {18, "#00d900", 0}, {20, "#95d900", 0},
  {22, "#d9d900", 0}, {23, "#d9ae00", 0}, {24, "#d98300", 0}, {25, "#d95700", 0},
  {26, "#d90000", 0}, {27, "#ae0000", 0}, {28, "#8c0000", 0}, {29, "#870000", 0},
  {30, "#690000", 0}, {32, "#550000", 0}, {35, "#410000", 0}};
 
-ColorMap AirTempMap[] =
+static ColorMap AirTempMap[] =
 {{-50, "#0000d9", 0},  {-40, "#002ad9", 0},  {-30, "#006ed9", 0},  {-20, "#00b2d9", 0},
  {-10, "#00d4d4", 0}, {0, "#00d9a6", 0}, {5, "#00d900", 0}, {8, "#95d900", 0},
  {12, "#d9d900", 0}, {15, "#d9ae00", 0}, {18, "#d98300", 0}, {21, "#d95700", 0},
  {24, "#d90000", 0}, {27, "#ae0000", 0}, {30, "#8c0000", 0}, {35, "#870000", 0},
  {40, "#690000", 0}, {45, "#550000", 0}, {50, "#410000", 0}};
 
-ColorMap CloudMap[] =
+static ColorMap CloudMap[] =
 {{0, "#f0f0e6", 255},  {10, "#e6e6dc", 224}, {20, "#dcdcd2", 192},
  {30, "#c8c8b4", 160}, {40, "#aaaa8c", 128}, {50, "#969678", 96}, {60, "#787864", 64},
  {70, "#646450", 32},  {80, "#5a5a46", 0},   {90, "#505036", 0}, {100, "#404036", 0}};
 
-ColorMap PrecipitationMap[] =
+static ColorMap PrecipitationMap[] =
 {{0, "#000080", 255}, {1, "#0000a0", 208}, {2, "#4040f0", 164},
  {3, "#8080f0", 128}, {4, "#f0f0f0", 64}, {5, "#f0a0f0", 32}, {8, "#f080f0", 0},
  {10, "#f04080", 0}, {13, "#f00040", 0}, {16, "#f00000", 0}, {19, "#800000", 0}};
 
-ColorMap RelativeHumidityMap[] =
+static ColorMap RelativeHumidityMap[] =
 {{0,  "#000000", 0}, {30, "#303030", 0}, {60, "#606060", 0},
  {65, "#a06060", 0}, {70, "#ff6060", 0}, {75, "#ffc080", 0},
  {80, "#a0f0a0", 0}, {85, "#60f0f0", 0}, {95, "#40a0f0", 0},
  {100, "#2080f0", 0}};
 
-ColorMap LightningMap[] =
+static ColorMap LightningMap[] =
 {{0, "#490000", 255},  {64, "#890000", 128}, {128, "#a98900", 64},
  {192, "#ffd900", 0}, {255, "#ffff00", 0}};
 
@@ -445,14 +445,14 @@ ColorMap SeaDepthMap[] =
  {2000, "#a9c040", 0}, {3000, "#a0a040", 0}, {4000, "#808060", 0}, {5000, "#606060", 0},
  {6000, "#404040", 0}, {8000, "#202020", 0}, {10000, "#000000", 0}};
 
-ColorMap CycloneMap[] =
+static ColorMap CycloneMap[] =
 {{0, "#0000d9", 255}, {10, "#002ad9", 200}, {20, "#006ed9", 128}, {30, "#00b2d9", 96},
  {40, "#00d4d4", 64},  {50, "#00d9a6", 64}, {60, "#00d900", 64}, {70, "#75d900", 64},
  {80, "#a9d900", 32},  {90, "#a9ae00", 32}, {100, "#d98000", 32}, {110, "#d94000", 32},
  {120, "#d90000", 0}, {130, "#ff0000", 0}, {140, "#ff0080", 0}, {150, "#ff00ff", 0},
  {160, "#ff40ff", 0}, {180, "#ff80ff", 0}, {200, "#ffffff", 0}};
 
-int color255(char a, char b)
+static int color255(char a, char b)
 {
     char str[3] = {a, b, 0};
     return strtol(str, 0, 16);
@@ -467,7 +467,7 @@ ColorMap *ColorMaps[] = {WindMap, CurrentMap, PressureMap, SeaTempMap, AirTempMa
                          CloudMap, PrecipitationMap, RelativeHumidityMap, LightningMap,
                          SeaDepthMap, CycloneMap};
 
-const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
+static const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
                              (sizeof CurrentMap) / (sizeof *CurrentMap),
                              (sizeof PressureMap) / (sizeof *PressureMap),
                              (sizeof SeaTempMap) / (sizeof *SeaTempMap),
@@ -712,10 +712,10 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
 
                         wp.directions[pass - 1] = value;
                     } else {
-                        if(wp.directions[pass-dirs-1] == 0)
-                            continue;
-
-                        if(zu_read(f, &value, 1) != 1)
+                        if(wp.directions[pass-dirs-1] == 0) {
+                            value = 0;
+                        }
+                        else if(zu_read(f, &value, 1) != 1)
                             goto corrupt;
 
                         wp.speeds[pass-dirs-1] = value;
@@ -735,15 +735,6 @@ corrupt:
 missing:
     m_FailedFiles.push_back(filename);
     wxLogMessage(climatology_pi + _("wind data file corrupt: ") + filename);
-}
-
-float max_value(float *values, int cnt)
-{
-    float max = 0;
-    for(int i=0; i<cnt; i++)
-        if(values[i] > max)
-            max = values[i];
-    return max;
 }
 
 void ClimatologyOverlayFactory::AverageWindData()
@@ -1260,11 +1251,11 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
     return true;
 
 corrupted:
-    zu_close(f);
     delete cyclone;
     m_sFailedMessage += _("corrupt file: ") + filename + "\n";
     wxLogMessage(climatology_pi + _("cyclone data corrupt: ") + filename
                  + wxString::Format(" at %ld", zu_tell(f)));
+    zu_close(f);
 missing:
     m_FailedFiles.push_back(filename);
     return false;
@@ -1832,7 +1823,7 @@ static double interp_angle(double a0, double a1, double d)
     return a;
 }
 
-double ArrayValue(wxInt16 *a, int index)
+static double ArrayValue(wxInt16 *a, int index)
 {
     int v = a[index];
     if(v == 32767)
@@ -1840,7 +1831,7 @@ double ArrayValue(wxInt16 *a, int index)
     return v;
 }
 
-double InterpArray(double x, double y, wxInt16 *a, int h)
+static double InterpArray(double x, double y, wxInt16 *a, int h)
 {
     if(y<0) y+=h;
     int x0 = floor(x), x1 = x0+1;
@@ -1981,6 +1972,9 @@ static double InterpTable(double ind, const double table[], int tablesize)
 double ClimatologyOverlayFactory::getValueMonth(enum Coord coord, int setting,
                                                 double lat, double lon, int month)
 {
+    if(!m_bCompletedLoading)
+        return NAN;
+
     if(coord != MAG &&
        setting != ClimatologyOverlaySettings::WIND &&
        setting != ClimatologyOverlaySettings::CURRENT)
@@ -2109,7 +2103,7 @@ double ClimatologyOverlayFactory::GetMax(int setting)
 #define EPS 2e-14
 #define EPS2 2e-7
 
-inline int TestIntersectionXY(double x1, double y1, double x2, double y2,
+static inline int TestIntersectionXY(double x1, double y1, double x2, double y2,
                               double x3, double y3, double x4, double y4)
 {
     double ax = x2 - x1, ay = y2 - y1;
