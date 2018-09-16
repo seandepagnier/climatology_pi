@@ -1482,17 +1482,9 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
         glTexParameteri( texture_format, GL_TEXTURE_WRAP_S, GL_REPEAT );
     glTexParameteri( texture_format, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-    //glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
-
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, width);
-
     glTexImage2D(texture_format, 0, GL_RGBA, width, height,
                  0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-    //glPopClientAttrib();
 
     delete [] data;
 
