@@ -1613,6 +1613,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
+    glDisable(texture_format);
 #else
     int multitexturing;
     if(&O1 == &O2)

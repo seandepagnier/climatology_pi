@@ -66,6 +66,13 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
     // run fit delayed (buggy wxwidgets)
     m_fittimer.Connect(wxEVT_TIMER, wxTimerEventHandler
                        ( ClimatologyDialog::OnFitTimer ), NULL, this);
+#ifdef __OCPN__ANDROID__ 
+    GetHandle()->setAttribute(Qt::WA_AcceptTouchEvents);
+    GetHandle()->grabGesture(Qt::PanGesture);
+    GetHandle()->setStyleSheet( qtStyleSheet);
+    Connect( wxEVT_QT_PANGESTURE,
+                       (wxObjectEventFunction) (wxEventFunction) &ClimatologyDialog::OnEvtPanGesture, NULL, this );
+#endif
 }
 
 bool ClimatologyDialog::Show(bool show)
@@ -85,6 +92,30 @@ ClimatologyDialog::~ClimatologyDialog()
 {
     delete m_cfgdlg;
 }
+
+#ifdef __OCPN__ANDROID__ 
+void ClimatologyDialog::OnEvtPanGesture( wxQT_PanGestureEvent &event)
+{
+    switch(event.GetState()){
+        case GestureStarted:
+            m_startPos = GetPosition();
+            m_startMouse = event.GetCursorPos(); //g_mouse_pos_screen;
+            break;
+        default:
+        {
+            wxPoint pos = event.GetCursorPos();
+            int x = wxMax(0, pos.x + m_startPos.x - m_startMouse.x);
+            int y = wxMax(0, pos.y + m_startPos.y - m_startMouse.y);
+            int xmax = ::wxGetDisplaySize().x - GetSize().x;
+            x = wxMin(x, xmax);
+            int ymax = ::wxGetDisplaySize().y - GetSize().y;          // Some fluff at the bottom
+            y = wxMin(y, ymax);
+            
+            Move(x, y);
+        } break;
+    }
+}
+#endif
 
 void ClimatologyDialog::UpdateTrackingControls()
 {

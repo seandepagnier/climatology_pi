@@ -35,6 +35,10 @@
 #include <wx/fileconf.h>
 #include <wx/glcanvas.h>
 
+#ifdef __OCPN__ANDROID__
+#include <wx/qt/private/wxQtGesture.h>
+#endif
+
 #include "ClimatologyConfigDialog.h"
 #include "ClimatologyOverlayFactory.h"
 #include "ClimatologyUI.h"
@@ -52,6 +56,7 @@ public:
     ClimatologyDialog(wxWindow *parent, climatology_pi *ppi);
     ~ClimatologyDialog();
 
+    void OnEvtPanGesture( wxQT_PanGestureEvent &event);
     void Init();
     void UpdateTrackingControls();
     void PopulateTrackingControls();
@@ -93,6 +98,7 @@ private:
     
     wxWindow *pParent;
 
+    wxPoint m_startPos, m_startMouse;
     double m_cursorlat, m_cursorlon;
 
     wxTimer m_fittimer;
