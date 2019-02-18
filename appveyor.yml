@@ -1,6 +1,5 @@
 version: 0.9.{build}
-# clone_folder: c:\project\climatology_pi
-clone_folder: C:\Users\Frederick\Documents\GitHub\climatology_pi
+clone_folder: c:\project\climatology_pi
 shallow_clone: true
 image:
 - Visual Studio 2017
