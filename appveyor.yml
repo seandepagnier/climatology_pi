@@ -1,5 +1,6 @@
 version: 0.9.{build}
-clone_folder: c:\project\climatology_pi
+# clone_folder: c:\project\climatology_pi
+clone_folder: C:\Users\Frederick\Documents\GitHub\climatology_pi
 shallow_clone: true
 image:
 - Visual Studio 2017
@@ -32,7 +33,7 @@ install:
 
    #- set #Use only while debugging - it reveals the deploy token set on Appveyor
 before_build:
-  - cd c:\project\climatology_pi
+#  - cd c:\project\climatology_pi
   - cd ..
   - mkdir build
   - cd build
