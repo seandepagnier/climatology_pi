@@ -32,7 +32,7 @@ install:
 
    #- set #Use only while debugging - it reveals the deploy token set on Appveyor
 before_build:
-#  - cd c:\project\climatology_pi
+  - cd c:\project\climatology_pi
 #  - cd ..
   - mkdir build
   - cd build
