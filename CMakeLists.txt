@@ -47,8 +47,42 @@ IF(NOT UNIX)
     INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/bzip2)
 ENDIF(NOT UNIX)
 
-IF(MINGW)
-    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "-lwxzlib-2.8")
+
+IF(QT_ANDROID)
+    SET(SRC_BZIP_ANDROID
+            src/bzip2/bzlib.c
+            src/bzip2/blocksort.c
+            src/bzip2/compress.c
+            src/bzip2/crctable.c
+            src/bzip2/decompress.c
+            src/bzip2/huffman.c
+            src/bzip2/randtable.c
+    )
+    SET(SRC_GRIB ${SRC_GRIB} ${SRC_BZIP_ANDROID})
+
+    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/buildwin/include)
+    INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/bzip2)
+
+    MESSAGE (STATUS ${SRC_GRIB})
+ENDIF(QT_ANDROID)
+
+IF(WIN32)
+  IF(MSVC)
+    SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
+    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib1.lib")
+  ELSE(MSVC)
+    SET(OPENCPN_IMPORT_LIB "${PARENT}.dll")
+    SET( CMAKE_SHARED_LINKER_FLAGS "-L../../" )
+    TARGET_LINK_LIBRARIES( ${PACKAGE_NAME}
+      "${CMAKE_SOURCE_DIR}/buildwin/zlib.lib}
+  ENDIF(MSVC)
+  TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} LIB_BZIP ${OPENCPN_IMPORT_LIB})
+  ADD_DEPENDENCIES(${PACKAGE_NAME} ${PARENT})
+ENDIF(WIN32)
+
+
+ IF(MINGW)
+    TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib.lib}
 ENDIF(MINGW)
 
 INCLUDE("cmake/PluginJSON.cmake")
