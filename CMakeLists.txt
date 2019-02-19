@@ -82,7 +82,7 @@ ENDIF(WIN32)
 
 
  IF(MINGW)
-    TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib.lib}
+    TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib.lib")
 ENDIF(MINGW)
 
 INCLUDE("cmake/PluginJSON.cmake")
