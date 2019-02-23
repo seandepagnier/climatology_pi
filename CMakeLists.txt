@@ -5,7 +5,7 @@
 ##---------------------------------------------------------------------------
 
 # define minimum cmake version
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 cmake_policy(SET CMP0012 NEW)
 
 PROJECT(climatology_pi)
@@ -14,6 +14,10 @@ SET(PACKAGE_NAME climatology_pi)
 SET(VERBOSE_NAME Climatology)
 SET(TITLE_NAME CLIMATOLOGY)
 SET(CPACK_PACKAGE_CONTACT "Sean D'Epagnier ")
+
+SET(CMAKE_MACOSX_RPATH "ON")
+
+SET(CMAKE_CXX_STANDARD 11)
 
 INCLUDE("cmake/PluginConfigure.cmake")
 
