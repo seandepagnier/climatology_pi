@@ -323,7 +323,7 @@ bool IsoBarMap::Recompute(wxWindow *parent)
 
   m_bComputing = true;
 
-  wxProgressDialog *progressdialog = NULL;
+  wxProgressDialog *progressdialog = nullptr;
   wxDateTime start = wxDateTime::Now();
 
   int cachepage = 0;
@@ -336,7 +336,7 @@ bool IsoBarMap::Recompute(wxWindow *parent)
 
   for(double lat = min; lat + m_Step <= max; lat += m_Step) {
       if(m_bNeedsRecompute) {
-          delete progressdialog;
+          if (progressdialog) progressdialog->Destroy();
           return false;
       }
 
@@ -344,7 +344,7 @@ bool IsoBarMap::Recompute(wxWindow *parent)
       if(progressdialog) {
           if((now-start).GetMilliseconds() > 1200) {
               if(!progressdialog->Update(lat - min)) {
-                  delete progressdialog;
+                  progressdialog->Destroy();
                   return false;
               }
               start = now;
@@ -381,7 +381,7 @@ bool IsoBarMap::Recompute(wxWindow *parent)
       }
   }
 
-  delete progressdialog;
+  if (progressdialog) progressdialog->Destroy();
 
   m_bComputing = false;
 
