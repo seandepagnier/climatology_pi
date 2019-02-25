@@ -235,6 +235,7 @@ public:
 
 private:
     void Load();
+    void LoadInternal(wxProgressDialog *progressdialog);
     void Free();
 
     void ReadWindData(int month, wxString filename);

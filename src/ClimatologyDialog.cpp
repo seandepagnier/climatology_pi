@@ -43,7 +43,7 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
 #ifndef __WXOSX__
     : ClimatologyDialogBase(parent),
 #else
-    : ClimatologyDialogBase(parent, wxID_ANY, _("Climatology Display Control"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxCLOSE_BOX|wxDIALOG_NO_PARENT|wxRESIZE_BORDER|wxSYSTEM_MENU|wxSTAY_ON_TOP),
+    : ClimatologyDialogBase(parent, wxID_ANY, _("Climatology Display Control"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxCLOSE_BOX|wxRESIZE_BORDER|wxSYSTEM_MENU|wxSTAY_ON_TOP),
 #endif
     pPlugIn(ppi), pParent(parent)
 {
@@ -83,7 +83,8 @@ bool ClimatologyDialog::Show(bool show)
 
 ClimatologyDialog::~ClimatologyDialog()
 {
-    delete m_cfgdlg;
+    if (m_cfgdlg) m_cfgdlg->Destroy();
+    m_cfgdlg = nullptr;
 }
 
 void ClimatologyDialog::UpdateTrackingControls()

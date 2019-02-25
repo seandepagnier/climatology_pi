@@ -5,7 +5,7 @@
 ##---------------------------------------------------------------------------
 
 # define minimum cmake version
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 cmake_policy(SET CMP0012 NEW)
 
 PROJECT(climatology_pi)
@@ -14,6 +14,10 @@ SET(PACKAGE_NAME climatology_pi)
 SET(VERBOSE_NAME Climatology)
 SET(TITLE_NAME CLIMATOLOGY)
 SET(CPACK_PACKAGE_CONTACT "Sean D'Epagnier ")
+
+SET(CMAKE_MACOSX_RPATH "ON")
+
+SET(CMAKE_CXX_STANDARD 11)
 
 INCLUDE("cmake/PluginConfigure.cmake")
 
@@ -40,8 +44,9 @@ IF(NOT UNIX)
             src/bzip2/huffman.c 
             src/bzip2/randtable.c
     )
-    ADD_LIBRARY(LIB_BZIP STATIC ${SRC_BZIP})
-    TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} LIB_BZIP )
+    ADD_LIBRARY(LIB_BZIP_CL STATIC ${SRC_BZIP})
+    TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} LIB_BZIP_CL )
+
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/buildwin/include)
     INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/bzip2)
 ENDIF(NOT UNIX)
@@ -57,10 +62,6 @@ IF(WIN32)
   ENDIF()
 ENDIF(WIN32)
 
-
- IF(MINGW)
-    TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib.lib")
-ENDIF(MINGW)
 
 INCLUDE("cmake/PluginJSON.cmake")
 INCLUDE("cmake/PluginXML.cmake")

@@ -75,7 +75,7 @@ climatology_pi::climatology_pi(void *ppimgr)
 {
       // Create the PlugIn icons
       initialize_images();
-      m_pClimatologyDialog = NULL;
+      m_pClimatologyDialog = nullptr;
       s_climatology_pi = this;
 }
 
@@ -126,9 +126,8 @@ bool climatology_pi::DeInit(void)
 {
     SendClimatology(false);
     if(m_pClimatologyDialog) {
-        m_pClimatologyDialog->Close();
-        delete m_pClimatologyDialog;
-        m_pClimatologyDialog = NULL;
+        m_pClimatologyDialog->Destroy();
+        m_pClimatologyDialog = nullptr;
     }
 
     RemovePlugInTool(m_leftclick_tool_id);
@@ -372,8 +371,8 @@ void climatology_pi::FreeData()
 {
     delete g_pOverlayFactory;
     g_pOverlayFactory = NULL;
-    delete m_pClimatologyDialog;
-    m_pClimatologyDialog = NULL;
+    if (m_pClimatologyDialog) m_pClimatologyDialog->Destroy();
+    m_pClimatologyDialog = nullptr;
 }
 
 bool climatology_pi::LoadConfig(void)
