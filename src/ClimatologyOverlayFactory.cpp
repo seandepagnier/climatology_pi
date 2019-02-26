@@ -507,7 +507,7 @@ wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in)
     return *wxBLACK; /* unreachable */
 }
 
-void ClimatologyOverlayFactory::LoadInternal(wxProgressDialog *progressdialog)
+void ClimatologyOverlayFactory::LoadInternal(wxGenericProgressDialog *progressdialog)
 {
     wxString fmt = "%02d";
 
@@ -625,8 +625,8 @@ void ClimatologyOverlayFactory::Load()
     Free();
     m_FailedFiles.clear();
     
-    wxProgressDialog *progressdialog = nullptr;
-    progressdialog = new wxProgressDialog( _("Climatology"), wxString(), 38, &m_dlg,
+    wxGenericProgressDialog *progressdialog = nullptr;
+    progressdialog = new wxGenericProgressDialog( _("Climatology"), wxString(), 38, &m_dlg,
                                      wxPD_CAN_ABORT | wxPD_ELAPSED_TIME );
     LoadInternal(progressdialog);
     progressdialog->Destroy();
