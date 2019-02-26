@@ -62,6 +62,7 @@ public:
     void DisableSetting(int setting);
 
     void FitLater() { m_fittimer.Start(100, true); }
+    void Save();
 
     ClimatologyConfigDialog *m_cfgdlg;
     climatology_pi *pPlugIn;

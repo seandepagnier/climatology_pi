@@ -81,10 +81,14 @@ bool ClimatologyDialog::Show(bool show)
     return ClimatologyDialogBase::Show(show);
 }
 
+void ClimatologyDialog::Save()
+{
+    if (m_cfgdlg) m_cfgdlg->Save();
+}
+
+
 ClimatologyDialog::~ClimatologyDialog()
 {
-    if (m_cfgdlg) m_cfgdlg->Destroy();
-    m_cfgdlg = nullptr;
 }
 
 void ClimatologyDialog::UpdateTrackingControls()
