@@ -176,9 +176,11 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
                     _OCPN_DLStatus status = OCPN_downloadFile(
                         urlpath + fn,
                         path+fn, _("downloading climatology data file"),
-                        wxString::Format("File %d of %d ", ++i, m_FailedFiles.size()),
+                        wxString::Format("File %d of %d ", ++i, static_cast<int>(m_FailedFiles.size())),
                         *_img_climatology, GetOCPNCanvasWindow(),
-                        OCPN_DLDS_CAN_ABORT|OCPN_DLDS_SHOW_ALL|OCPN_DLDS_AUTO_CLOSE, 20);
+                        OCPN_DLDS_ELAPSED_TIME|OCPN_DLDS_ESTIMATED_TIME|OCPN_DLDS_REMAINING_TIME|
+                        OCPN_DLDS_SPEED|OCPN_DLDS_SIZE|OCPN_DLDS_URL|
+                        OCPN_DLDS_CAN_ABORT|OCPN_DLDS_AUTO_CLOSE, 20);
                     if(status == OCPN_DL_NO_ERROR)
                         break;
                     if(status == OCPN_DL_ABORTED)
@@ -623,6 +625,7 @@ void ClimatologyOverlayFactory::LoadInternal(wxGenericProgressDialog *progressdi
 void ClimatologyOverlayFactory::Load()
 {
     Free();
+    m_sFailedMessage = "";
     m_FailedFiles.clear();
     
     wxGenericProgressDialog *progressdialog = nullptr;
@@ -685,7 +688,7 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
         goto corrupt;
 
     if(header[0] != 0xfefe ||
-       header[1] > 180*16 || header[2] > 360*16 || header[3] != 8)
+       header[1] > 180*16 || header[2] > 360*16 || header[3] != 8 || header[6] == 0)
         goto corrupt;
 
     m_WindData[month] = new WindData(header[1]/div, header[2]/div, header[3], header[4], (float)header[5] / header[6]);

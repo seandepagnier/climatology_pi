@@ -258,7 +258,13 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     DimeWindow( this );
 }
 
+
+
 ClimatologyConfigDialog::~ClimatologyConfigDialog()
+{
+}
+
+void ClimatologyConfigDialog::Save()
 {
     m_Settings.Save();
     SaveSettings();

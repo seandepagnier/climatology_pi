@@ -1,12 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version May 19 2018)
+// C++ code generated with wxFormBuilder (version Feb 26 2019)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __CLIMATOLOGYUI_H__
-#define __CLIMATOLOGYUI_H__
+#pragma once
 
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
@@ -19,10 +18,10 @@
 #include <wx/settings.h>
 #include <wx/spinctrl.h>
 #include <wx/checkbox.h>
+#include <wx/bmpbuttn.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
-#include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/slider.h>
@@ -44,10 +43,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ClimatologyDialogBase
 ///////////////////////////////////////////////////////////////////////////////
-class ClimatologyDialogBase : public wxDialog 
+class ClimatologyDialogBase : public wxDialog
 {
 	private:
-	
+
 	protected:
 		wxSpinCtrl* m_sDay;
 		wxBitmapButton* m_bpNow;
@@ -62,7 +61,7 @@ class ClimatologyDialogBase : public wxDialog
 		wxTextCtrl* m_tAirTemperature;
 		wxTextCtrl* m_tCloudCover;
 		wxButton* m_bConfig;
-		
+
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnMonth( wxCommandEvent& event ) { event.Skip(); }
@@ -74,8 +73,8 @@ class ClimatologyDialogBase : public wxDialog
 		virtual void OnTimelineUp( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnUpdateDisplay( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfig( wxCommandEvent& event ) { event.Skip(); }
-		
-	
+
+
 	public:
 		wxChoice* m_cMonth;
 		wxCheckBox* m_cbAll;
@@ -95,19 +94,19 @@ class ClimatologyDialogBase : public wxDialog
 		wxCheckBox* m_cbSeaDepth;
 		wxTextCtrl* m_tSeaDepth;
 		wxCheckBox* m_cbCyclones;
-		
-		ClimatologyDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Display Control"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxCLOSE_BOX|wxRESIZE_BORDER|wxSYSTEM_MENU ); 
+
+		ClimatologyDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Display Control"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxCLOSE_BOX|wxRESIZE_BORDER|wxSYSTEM_MENU );
 		~ClimatologyDialogBase();
-	
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ClimatologyConfigDialogBase
 ///////////////////////////////////////////////////////////////////////////////
-class ClimatologyConfigDialogBase : public wxDialog 
+class ClimatologyConfigDialogBase : public wxDialog
 {
 	private:
-	
+
 	protected:
 		wxNotebook* m_notebook1;
 		wxPanel* m_panel5;
@@ -175,7 +174,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxHtmlWindow* m_htmlInformation;
 		wxButton* m_bAboutAuthor;
 		wxButton* m_bClose;
-		
+
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnPageChanged( wxNotebookEvent& event ) { event.Skip(); }
 		virtual void OnDataTypeChoice( wxCommandEvent& event ) { event.Skip(); }
@@ -193,8 +192,8 @@ class ClimatologyConfigDialogBase : public wxDialog
 		virtual void OnPaintKey( wxPaintEvent& event ) { event.Skip(); }
 		virtual void OnAboutAuthor( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
-		
-	
+
+
 	public:
 		wxChoice* m_cDataType;
 		wxCheckBox* m_cbWindAtlasEnable;
@@ -214,10 +213,9 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxCheckBox* m_cbSubTropical;
 		wxCheckBox* m_cbExtraTropical;
 		wxCheckBox* m_cbRemanent;
-		
-		ClimatologyConfigDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Configuration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE ); 
+
+		ClimatologyConfigDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Configuration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE );
 		~ClimatologyConfigDialogBase();
-	
+
 };
 
-#endif //__CLIMATOLOGYUI_H__

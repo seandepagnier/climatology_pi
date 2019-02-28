@@ -95,6 +95,8 @@ public:
 
     ClimatologyOverlaySettings m_Settings;
 
+    void Save();
+
 private:
     void LoadSettings();
     void SaveSettings();
