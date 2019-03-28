@@ -1,0 +1,195 @@
+===========================================================
+Climate Data Process for creating new climatogy data files.
+===========================================================
+Confirm Directory Link to Windows Drive C:\Data-Dart
+
+NOW VIRTUALBOX SHARED DRIVE is working  /media/sf_Data-Dart
+1. Remember to shutdown and reboot if it is not working, then resetup stuff.
+2. If shared drive  /media/sf_Data-Dart is not working, best to reboot.
+3. Then reload the iso driver and drivers, and reboot.
+
+ALTERNATIVE SHARED DRIVE USING SAMBA (older technique)
+Linux Mapped Drives -Network drive mapped to new Directory in "Media"
+I don't know why the Vbox shared folders dont work!
+~$ cd ~/.gvfs
+~/.gvfs$ dir
+Result: data-dart\ on \dart   <--- Hooray I found it.
+rgleason@rgleason-VirtualBox:~/.gvfs$
+
+Create dir /media/CL-DATA for the share in /media
+mkdir -v /media/CL-DATA
+  
+sudo mount -t cifs -o username=rgleason //dart/data-dart/ /media/CL-DATA
+Result: Command couldn't be found...go ahead and use smbfs:
+sudo apt-get install smbfs
+
+sudo mount -t cifs -o username=rgleason //dart/data-dart/ /media/CL-DATA
+Result: Now can navigate to the directory with cd.
+cd /media/CL-DATA
+
+man mount.cifs
+mount.cifs {service} {mount-point} [-o options]
+
+sudo mount.cifs -t  //dart/data-dart/ /media/CL-DATA -o username=rgleason
+
+mount.cifs causes the cifs vfs to launch a thread named cifsd. After mounting it keeps running until the mounted resource is unmounted  (usually via the umount utility).
+
+=====================
+BUILD THE PLUGIN
+
+Update the Program and Climatology_pi plugin* from opencpn-git*
+1. cd opencpn-git
+2. git fetch --all
+3. git branch -v   (shows *origin)
+4. git branch -a   (notes about changes)
+5. git pull origin
+6. cd plugins
+7. rm  -r climatology_pi
+8. git clone git://github.com/seandepagnier/climatology_pi.git
+
+Compile and Build the program**from opencpn-git/build
+1. cd opencpn-git
+2. cd build
+3. cmake ../
+4. make
+5. sudo make install
+6. This builds all the other plugins and opencpn, but not climatology_pi, it needs data to be setup.
+
+====================
+BUILD THE DATA
+
+Build the ../plugins/climatology_pi/GENDATA makefile
+1. cd opencpn-git/plugins/climatology_pi/gendata
+2. Issue: ./configure
+3. This creates a makefile that then needs to be modified to reference Wind and Current Data
+4. Next modify the  GENDATA  makefile   around line 103 to provide Data Source directories.
+    	CURRENT_DATA_DIR = /media/sf_Data-Dart/Climate-Current-Extracted
+    	PARTS_PER_FILE = 4# 1 for daily data, for 6hrly change to 4
+    	WIND_DATA_DIR = /media/sf_Data-Dart/Climate-Winds-6hr
+5 . Execute  $ sudo apt-get install libnetcdf-dev   if you have not done so.
+6.  Skip this step - no longer needed. Sean has changed make file. 
+Next Collect Gendata Climatology data. This data should be placed in the  opencpn-git/climatology_pi/GENDATA  Directory.  Download  the cyclone-data.tar.bz2 file, extract successfully, and  copy these cyclone data files to gendata directory:
+        tracks.atl,
+        tracks.bio,
+        tracks.bsh,
+        tracks.bwp,
+        tracks.epa,
+        tracks.nio,
+        tracks.she,
+        tracks.spa.dat   (don't copy over Sean's!)
+7. Then when all data is ready, start the compression process.
+8. Issue: make -k   from ..plugins/climatology_pi/gendata directory, which processes the data files for wind, current, seatemp, pressure, etc. downloading cloud, sea temp and sea pressure  data from the internet. 
+Note 1: If results shows fatal error:netcdfcpp.h: No such file or directory  errors then you need to install this program    $ sudo apt-get install libnetcdf-dev  and start over.
+Note 2: Make -k cannot extract gz files. The files in Currents have to be extracted first!
+Note 3: When this is done properly, the Makefile will compress the Wind and Current Data and  store it in  opencpn-git/plugins/climatology_pi/DATA  directory as 12 files current01.gz and wind01.gz files
+Note 4: To parse the data or some of the data use
+     make ../data/airtemperature.gz   from the gendata directory.
+     for example.
+    OR copy the file and delete the ones you don't want.
+
+9. While creating Climatology Data, the makefile will be changing in order to access the various types of data. This gendata/Makefile is bringing together all kinds of data, reorganizing it into files useful to the plugin, and compressing those files.
+10. Some data is downloaded from sources (cloud, sea temp &  pressure), other data is hand placed in GENDATA  (Cyclone data), and other data is downloaded separately and then referenced (Wind and Currents).
+11. Because of the variable nature of this operation, the process needs to be done each time.
+12. After the data is good and everything works, the ../plugins/climatology_pi/DATA directory will contain the processed Climate files. These files be uploaded to a site and stored for download, so that users can just compile Climatology_pi normally.
+13. When the data is changed for purposes of improving results etc, it will have to be recompiled.
+
+Copy the resultant DATA directory to the operating DATA directory.
+Copy  /home/rgleason/opencpn-git//plugins/climatology_pi/DATA
+to  /usr/local/share/opencpn/plugins/climatology_pi/data/
+The linux ubuntu commands for this are:
+sudo rm -v /usr/local/share/opencpn/plugins/climatology/data/*
+sudo cp -v opencpn-git/plugins/climatology_pi/data/* /usr/local/share/opencpn/plugins/climatology/data
+
+Then Compile and Build the program from opencpn-git/build
+1. cd ..
+2. cd build
+3. cmake ../
+4. make
+5. sudo make install   from opencpn--git/build
+
+If the data in usr/local/share/opencpn/plugins/climatology/data has not changed
+remove that data and copy it over. (See above)
+
+==============================================================
+Sources of Climatology Data
+==============================================================
+Raw Data is compiled from the following sources:
+
+Wind: ftp://eclipse.ncdc.noaa.gov/pub/seawinds/SI/uv/
+Current: http://podaac.jpl.nasa.gov/dataset/OSCAR_L4_OC_third-deg
+Surface Air Temperature: ftp://ftp.cdc.noaa.gov/Datasets/ncep.marine/air.mean.nc
+Precipitation: ftp://ftp.cdc.noaa.gov/Datasets/cmap/std/precip.mon.mean.nc
+Relative Humidity: ftp://ftp.cdc.noaa.gov/Datasets/icoads/1degree/global/enh/rhum.mean.nc
+Cloud: http://www.jisao.washington.edu/data/coads_climatologies/cldccoadsclim5079.nc
+Sea Level Pressure: http://www.jisao.washington.edu/data/coads_climatologies/slpcoadsclim5079.nc
+Sea Surface Temperature: http://www.jisao.washington.edu/data/coads_climatologies/sstcoadsclim6079.1deg.nc
+Sea Depth: http://www.esrl.noaa.gov/psd/data/data.nodc.woa98.html
+Cyclone Tracks: http://unisys.com
+
+===============
+Working List
+
+Tropical Cyclones  - Best Track Database
+http://www.ncdc.noaa.gov/oa/ibtracs/index.php?name=ibtracs-data
+
+Sea Temperature
+sstcoadsclim6079.1deg.nc (Make -k downloads it)
+http://www.jisao.washington.edu/data/coads_climatologies/sstcoadsclim6079.1deg.nc
+
+Clouds
+cldccoadsclim5079.nc (Make -k downloads it)
+http://www.jisao.washington.edu/data/coads_climatologies/cldccoadsclim5079.nc
+
+Currents - Small files
+C:\Data-Dart\Climate-Current-Small
+102 files  about 9449kb each, running
+From: oscar_vel7001.nc.gz   to  oscar_vel7514.nc.gz
+ftp://podaac-ftp.jpl.nasa.gov/allData/oscar/preview/L4/oscar_third_deg/oscar_vel7001.nc.gz    and down.
+Note: These files must be extracted. GZ files cannot be read by  Gendata/Makefile!!  (make -k)
+
+Currents - 2009,2010,2011,2012,2013 yearly files
+C:\Data-Dart\Climate-Current
+2009,2010,2011,2012,2013  in single large files
+From: ftp://podaac-ftp.jpl.nasa.gov/allData/oscar/preview/L4/oscar_third_deg/oscar_vel2009.nc.gz
+To:  ftp://podaac-ftp.jpl.nasa.gov/allData/oscar/preview/L4/oscar_third_deg/oscar_vel2013.nc.gz
+
+Wind Daily  1980s - 200s
+C:\Data-Dart\Climate-winds-Daily
+ftp://eclipse.ncdc.noaa.gov/pub/seawinds/SI/uv/daily/ieee/
+
+Winds 6hr  1980s-200s
+C:\Data-Dart\Cllimate-winds-6hr
+ftp://eclipse.ncdc.noaa.gov/pub/seawinds/SI/uv/6hrly/ieee/2000s/
+ftp://eclipse.ncdc.noaa.gov/pub/seawinds/SI/uv/6hrly/ieee/1990s/
+ftp://eclipse.ncdc.noaa.gov/pub/seawinds/SI/uv/6hrly/ieee/1980s/
+
+slpcoadsclim5079.nc   http://www.jisao.washington.edu/data/coads_climatologies/sstcoadsclim6079.1deg.nc
+
+sstcoadsclim6079.1deg.nc  ftp://ftp.cdc.noaa.gov/Datasets/ncep.marine/air.mean.nc
+air.mean.nc  http://www.jisao.washington.edu/data/coads_climatologies/cldccoadsclim5079.nc
+  
+cldccoadsclim5079.nc  ftp://ftp.cdc.noaa.gov/Datasets/cmap/std/precip.mon.mean.nc
+
+precip.mon.mean.nc  ftp://ftp.cdc.noaa.gov/Datasets/cmap/std/precip.mon.mean.nc
+precip.mon.mean.nc  
+rhum.mean.nc    ftp://ftp.cdc.noaa.gov/Datasets/icoads/1degree/global/enh/rhum.mean.nc
+`landseadepth.nc'  http://www.esrl.noaa.gov/psd/repository/entry/get/PSD Climate Data Repository/Public/PSD Datasets/PSD Gridded Datasets/nodc.woa98/masks/landseadepth.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL25vZGMud29hOTgvbWFza3MvbGFuZHNlYWRlcHRoLm5j"
+
+Landseadepth
+http://www.esrl.noaa.gov/psd/repository/entry/get/PSD Climate Data Repository/Public/PSD Datasets/PSD Gridded Datasets/nodc.woa98/masks/landseadepth.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL25vZGMud29hOTgvbWFza3MvbGFuZHNlYWRlcHRoLm5j"
+
+Relative Humidity  ftp://ftp.cdc.noaa.gov/Datasets/icoads/1degree/global/enh/rhum.mean.nc
+Precip  ftp://ftp.cdc.noaa.gov/Datasets/cmap/std/precip.mon.mean.nc
+        http://www.jisao.washington.edu/data/coads_climatologies/cldccoadsclim5079.nc
+       ftp://ftp.cdc.noaa.gov/Datasets/ncep.marine/air.mean.nc
+
+
+Fog ?
+Visibility?
+Wave Height ?
+Swell ?
+Marine Distress Alerts?
+Shipping density?
+
+====
+

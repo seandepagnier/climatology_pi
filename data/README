@@ -1,0 +1,5 @@
+The data files needed for the program are obtained from various sources, and compiled
+into smaller binary files which can be compressed to reduce size still.
+
+I can only distribute the elnino_years data in git, the rest must be downloaded separately,
+see gendata folder
