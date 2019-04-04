@@ -2727,7 +2727,7 @@ bool ClimatologyOverlayFactory::RenderOverlay( piDC &dc, PlugIn_ViewPort &vp )
     }
 
 wxFont font( 8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
-+    m_dc->SetFont( font );
+m_dc->SetFont( font );
 
     for(int overlay = 1; overlay >= 0; overlay--)
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
