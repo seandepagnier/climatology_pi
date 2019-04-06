@@ -32,6 +32,7 @@
 #ifndef  WX_PRECOMP
 #include "wx/wx.h"
 #endif //precompiled headers
+#include <wx/progdlg.h>
 #include <wx/fileconf.h>
 #include <wx/glcanvas.h>
 
@@ -68,6 +69,7 @@ public:
     void DisableSetting(int setting);
 
     void FitLater() { m_fittimer.Start(100, true); }
+    void Save();
 
     ClimatologyConfigDialog *m_cfgdlg;
     climatology_pi *pPlugIn;

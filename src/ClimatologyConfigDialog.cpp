@@ -225,7 +225,7 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
 #ifndef __WXOSX__
     : ClimatologyConfigDialogBase(parent)
 #else
-    : ClimatologyConfigDialogBase(parent, wxID_ANY, _("Climatology Configuration"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxSTAY_ONOP)
+    : ClimatologyConfigDialogBase(parent, wxID_ANY, _("Climatology Configuration"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP)
 #endif
 {
     pParent = parent;
@@ -258,7 +258,13 @@ ClimatologyConfigDialog::ClimatologyConfigDialog(ClimatologyDialog *parent)
     DimeWindow( this );
 }
 
+
+
 ClimatologyConfigDialog::~ClimatologyConfigDialog()
+{
+}
+
+void ClimatologyConfigDialog::Save()
 {
     m_Settings.Save();
     SaveSettings();

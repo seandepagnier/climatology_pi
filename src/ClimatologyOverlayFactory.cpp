@@ -27,7 +27,6 @@
 
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
-#include <wx/progdlg.h>
 
 #ifdef __WXOSX__
 # include <OpenGL/OpenGL.h>
@@ -177,9 +176,11 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
                     _OCPN_DLStatus status = OCPN_downloadFile(
                         urlpath + fn,
                         path+fn, _("downloading climatology data file"),
-                        wxString::Format("File %d of %d ", ++i, m_FailedFiles.size()),
+                        wxString::Format("File %d of %d ", ++i, static_cast<int>(m_FailedFiles.size())),
                         *_img_climatology, GetOCPNCanvasWindow(),
-                        OCPN_DLDS_CAN_ABORT|OCPN_DLDS_SHOW_ALL|OCPN_DLDS_AUTO_CLOSE, 20);
+                        OCPN_DLDS_ELAPSED_TIME|OCPN_DLDS_ESTIMATED_TIME|OCPN_DLDS_REMAINING_TIME|
+                        OCPN_DLDS_SPEED|OCPN_DLDS_SIZE|OCPN_DLDS_URL|
+                        OCPN_DLDS_CAN_ABORT|OCPN_DLDS_AUTO_CLOSE, 20);
                     if(status == OCPN_DL_NO_ERROR)
                         break;
                     if(status == OCPN_DL_ABORTED)
@@ -508,103 +509,98 @@ wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in)
     return *wxBLACK; /* unreachable */
 }
 
-void ClimatologyOverlayFactory::Load()
+void ClimatologyOverlayFactory::LoadInternal(wxGenericProgressDialog *progressdialog)
 {
-    Free();
-    m_FailedFiles.clear();
-    
-    wxProgressDialog progressdialog( _("Climatology"), wxString(), 38, &m_dlg,
-                                     wxPD_CAN_ABORT | wxPD_ELAPSED_TIME);
     wxString fmt = "%02d";
 
     /* load wind */
     for(int month = 0; month < 12; month++) {
         wxString filename = wxString::Format("wind"+fmt, month+1);
-        if(!progressdialog.Update(month, filename))
+        if(progressdialog && !progressdialog->Update(month, filename))
             return;
         ReadWindData(month, filename);
     }
 
-    if(!progressdialog.Update(12, _("averaging wind")))
+    if(progressdialog && !progressdialog->Update(12, _("averaging wind")))
         return;
     AverageWindData();
 
     /* load current */
     for(int month = 0; month < 12; month++) {
         wxString filename = wxString::Format("current"+fmt, month+1);
-        if(!progressdialog.Update(month+13, filename))
+        if(progressdialog && !progressdialog->Update(month+13, filename))
             return;
         ReadCurrentData(month, filename);
     }
 
-    if(!progressdialog.Update(25, _("averaging current")))
+    if(progressdialog && !progressdialog->Update(25, _("averaging current")))
         return;
 
     AverageCurrentData();
 
     /* load sea level pressure and sea surface temperature */
-    if(!progressdialog.Update(26, _("sea level presure")))
+    if(progressdialog && !progressdialog->Update(26, _("sea level presure")))
         return;
     ReadSeaLevelPressureData("sealevelpressure");
     
-    if(!progressdialog.Update(27, _("sea surface tempertature")))
+    if(progressdialog && !progressdialog->Update(27, _("sea surface tempertature")))
         return;
     ReadSeaSurfaceTemperatureData("seasurfacetemperature");
 
-    if(!progressdialog.Update(28, _("air tempertature")))
+    if(progressdialog && !progressdialog->Update(28, _("air tempertature")))
         return;
     ReadAirTemperatureData("airtemperature");
 
-    if(!progressdialog.Update(28, _("cloud cover")))
+    if(progressdialog && !progressdialog->Update(28, _("cloud cover")))
         return;
     ReadCloudData("cloud");
 
-    if(!progressdialog.Update(29, _("precipitation")))
+    if(progressdialog && !progressdialog->Update(29, _("precipitation")))
         return;
     ReadPrecipitationData("precipitation");
 
-    if(!progressdialog.Update(30, _("relative humidity")))
+    if(progressdialog && !progressdialog->Update(30, _("relative humidity")))
         return;
     ReadRelativeHumidityData("relativehumidity");
 
     /* load lightning */
-    if(!progressdialog.Update(30, _("lightning")))
+    if(progressdialog && !progressdialog->Update(30, _("lightning")))
         return;
     ReadLightningData("lightning");
 
     /* load sea depth */
-    if(!progressdialog.Update(30, _("sea depth")))
+    if(progressdialog && !progressdialog->Update(30, _("sea depth")))
         return;
     ReadSeaDepthData("seadepth");
 
     /* load cyclone tracks */
     bool allcyclone = true;
-    if(!progressdialog.Update(30, _("cyclone (east pacific)")))
+    if(progressdialog && !progressdialog->Update(30, _("cyclone (east pacific)")))
         return;
     if(!ReadCycloneData("cyclone-epa", m_epa))
         allcyclone = false;
 
-    if(!progressdialog.Update(31, _("cyclone (west pacific)")))
+    if(progressdialog && !progressdialog->Update(31, _("cyclone (west pacific)")))
         return;
     if(!ReadCycloneData("cyclone-wpa", m_wpa))
         allcyclone = false;
 
-    if(!progressdialog.Update(32, _("cyclone (south pacific)")))
+    if(progressdialog && !progressdialog->Update(32, _("cyclone (south pacific)")))
         return;
     if(!ReadCycloneData("cyclone-spa", m_spa, true))
         allcyclone = false;
 
-    if(!progressdialog.Update(33, _("cyclone (atlantic)")))
+    if(progressdialog && !progressdialog->Update(33, _("cyclone (atlantic)")))
         return;
     if(!ReadCycloneData("cyclone-atl", m_atl))
         allcyclone = false;
 
-    if(!progressdialog.Update(34, _("cyclone (north indian)")))
+    if(progressdialog && !progressdialog->Update(34, _("cyclone (north indian)")))
         return;
     if(!ReadCycloneData("cyclone-nio", m_nio))
         allcyclone = false;
 
-    if(!progressdialog.Update(35, _("cyclone (south indian)")))
+    if(progressdialog && !progressdialog->Update(35, _("cyclone (south indian)")))
         return;
     if(!ReadCycloneData("cyclone-she", m_she, true))
         allcyclone = false;
@@ -612,7 +608,7 @@ void ClimatologyOverlayFactory::Load()
     if(allcyclone)
         m_dlg.m_cbCyclones->Enable();
 
-    if(!progressdialog.Update(36, _("el nino years")))
+    if(progressdialog && !progressdialog->Update(36, _("el nino years")))
         return;
 
     if(!ReadElNinoYears("elnino_years.txt")) {
@@ -621,9 +617,22 @@ void ClimatologyOverlayFactory::Load()
         m_dlg.m_cfgdlg->m_cbNeutral->Disable();
     }
 
-    if(!progressdialog.Update(37, _("cyclone cache")))
+    if(progressdialog && !progressdialog->Update(37, _("cyclone cache")))
         return;
     BuildCycloneCache();
+}
+
+void ClimatologyOverlayFactory::Load()
+{
+    Free();
+    m_sFailedMessage = "";
+    m_FailedFiles.clear();
+    
+    wxGenericProgressDialog *progressdialog = nullptr;
+    progressdialog = new wxGenericProgressDialog( _("Climatology"), wxString(), 38, &m_dlg,
+                                     wxPD_CAN_ABORT | wxPD_ELAPSED_TIME );
+    LoadInternal(progressdialog);
+    progressdialog->Destroy();
 }
 
 void ClimatologyOverlayFactory::Free()
@@ -679,7 +688,7 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
         goto corrupt;
 
     if(header[0] != 0xfefe ||
-       header[1] > 180*16 || header[2] > 360*16 || header[3] != 8)
+       header[1] > 180*16 || header[2] > 360*16 || header[3] != 8 || header[6] == 0)
         goto corrupt;
 
     m_WindData[month] = new WindData(header[1]/div, header[2]/div, header[3], header[4], (float)header[5] / header[6]);
@@ -1420,7 +1429,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
     default: s=1;
     }
 
-    wxProgressDialog *progressdialog = NULL;
+    wxProgressDialog *progressdialog = nullptr;
     wxDateTime start = wxDateTime::Now();
 
     int width = s*360+1;
@@ -1458,7 +1467,7 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
             data[doff + 3] = c.Alpha();
         }
     }
-    delete progressdialog;
+    if (progressdialog) progressdialog->Destroy();
 
     GLuint texture;
     glGenTextures(1, &texture);
@@ -2726,6 +2735,9 @@ bool ClimatologyOverlayFactory::RenderOverlay( piDC &dc, PlugIn_ViewPort &vp )
 #endif
         glEnable( GL_BLEND );
     }
+
+wxFont font( 8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+m_dc->SetFont( font );
 
     for(int overlay = 1; overlay >= 0; overlay--)
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {

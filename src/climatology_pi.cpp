@@ -73,9 +73,9 @@ wxString ClimatologyUserDataDirectory()
 climatology_pi::climatology_pi(void *ppimgr)
       :opencpn_plugin_113(ppimgr)
 {
+      m_pClimatologyDialog = nullptr;
       // Create the PlugIn icons
       initialize_images();
-      m_pClimatologyDialog = NULL;
       s_climatology_pi = this;
 }
 
@@ -125,12 +125,7 @@ int climatology_pi::Init(void)
 bool climatology_pi::DeInit(void)
 {
     SendClimatology(false);
-    if(m_pClimatologyDialog) {
-        m_pClimatologyDialog->Close();
-        delete m_pClimatologyDialog;
-        m_pClimatologyDialog = NULL;
-    }
-
+    FreeData();
     RemovePlugInTool(m_leftclick_tool_id);
 
     return true;
@@ -372,8 +367,11 @@ void climatology_pi::FreeData()
 {
     delete g_pOverlayFactory;
     g_pOverlayFactory = NULL;
-    delete m_pClimatologyDialog;
-    m_pClimatologyDialog = NULL;
+    if(m_pClimatologyDialog) {
+        m_pClimatologyDialog->Save();
+        m_pClimatologyDialog->Destroy();
+        m_pClimatologyDialog = nullptr;
+    }
 }
 
 bool climatology_pi::LoadConfig(void)

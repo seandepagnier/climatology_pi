@@ -90,12 +90,12 @@ include  ("VERSION.cmake")
 #  thereby allowing building from a read-only source tree.
 IF(NOT SKIP_VERSION_CONFIG)
     configure_file(${PROJECT_SOURCE_DIR}/cmake/version.h.in ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/include/version.h)
-    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/include)
+    INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/include)
 ENDIF(NOT SKIP_VERSION_CONFIG)
 
 SET(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}" )
 
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
+INCLUDE_DIRECTORIES(BEFORE ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
 
 # SET(PROFILING 1)
 
@@ -162,7 +162,7 @@ ENDIF(QT_ANDROID)
 
 IF(MSYS)
 # this is just a hack. I think the bug is in FindwxWidgets.cmake
-STRING( REGEX REPLACE "/usr/local" "\\\\;C:/MinGW/msys/1.0/usr/local" wxWidgets_INCLUDE_DIRS ${wxWidgets_INCLUDE_DIRS} )
+STRING( REGEX REPLACE "/usr/local" "\\\\;C:/MinGW/msys/1.0/usr/local" wxWidgets_INCLUDE_DIRS "${wxWidgets_INCLUDE_DIRS}" )
 ENDIF(MSYS)
 
 #  QT_ANDROID is a cross-build, so the native FIND_PACKAGE(OpenGL) is not useful.
@@ -276,12 +276,6 @@ IF(NOT WIN32)
 
 ENDIF(NOT WIN32)
 
-
-# Add some definitions to satisfy MS
-IF(WIN32)
-    ADD_DEFINITIONS(-D__MSVC__)
-    ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_DEPRECATE)
-ENDIF(WIN32)
 
 # Let cmake find additional modules private
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})

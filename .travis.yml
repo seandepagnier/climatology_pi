@@ -1,9 +1,31 @@
 language: cpp
+
+matrix:
+  include:
+    - dist: trusty
+      compiler: gcc
+    - os: osx
+      compiler: clang
+
 install:
-    - sudo apt-get -qq update
-    - sudo apt-get install libwxgtk3.0-dev libwxgtk3.0-0 libgps-dev libglu1-mesa-dev libgtk2.0-dev libbz2-dev libtinyxml-dev 
-    - sudo apt-get install libportaudio2 portaudio19-dev libcurl4-openssl-dev libexpat1-dev libcairo2-dev librtlsdr-dev
-    - sudo apt-get install rpm
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]];
+      then
+        sudo apt-get -qq update;
+        sudo apt-get install libwxgtk3.0-dev libwxgtk3.0-0 libgps-dev libglu1-mesa-dev libgtk2.0-dev libbz2-dev libtinyxml-dev;
+        sudo apt-get install rpm;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]];
+      then
+        brew install cairo libexif xz libarchive;
+        wget http://opencpn.navnux.org/build_deps/wx312_opencpn50_macos109.tar.xz;
+        tar xJf wx312_opencpn50_macos109.tar.xz -C /tmp;
+        export PATH="/usr/local/opt/gettext/bin:$PATH";
+        echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.bash_profile;
+        wget http://opencpn.navnux.org/build_deps/Packages.dmg;
+        hdiutil attach Packages.dmg;
+        sudo installer -pkg "/Volumes/Packages 1.2.5/Install Packages.pkg" -target "/";
+      fi
+
 script:
   - if [[ "${COVERITY_SCAN_BRANCH}" == 1 ]];
     then
@@ -11,8 +33,15 @@ script:
       exit 0;
     fi
   - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release ../
-  - make -j2 package
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];
+    then
+       cmake -DCMAKE_BUILD_TYPE=Release ../ && make -sj2 && sudo make package;
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]];
+    then
+        cmake -DwxWidgets_CONFIG_EXECUTABLE=/tmp/wx312_opencpn50_macos109/bin/wx-config -DwxWidgets_CONFIG_OPTIONS="--prefix=/tmp/wx312_opencpn50_macos109" -DCMAKE_INSTALL_PREFIX=/tmp/opencpn -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9 .. && make -sj2 && make create-pkg;
+     fi
+  - ls -l;
 
 notifications:
     email: false
