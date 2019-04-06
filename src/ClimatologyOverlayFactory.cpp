@@ -2735,6 +2735,11 @@ bool ClimatologyOverlayFactory::RenderOverlay( piDC &dc, PlugIn_ViewPort &vp )
         glEnable( GL_BLEND );
     }
 
+ 
+//added to reduce wind rose center font size for windows and linux
+wxFont font( 8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+m_dc->SetFont( font );
+//end of font size fix
     for(int overlay = 1; overlay >= 0; overlay--)
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {
         if(!m_dlg.SettingEnabled(i))
