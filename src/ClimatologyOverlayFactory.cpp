@@ -160,9 +160,11 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
             int i = 0;
             bool failed = false;
             wxString path = ClimatologyUserDataDirectory();
-            wxString servers[] = {"https://ayera", "https://cytranet", "https://svwh", "https://cfhcable"};
+        
+            wxString servers[] = {"https://github.com"};
             int servercount = ((sizeof servers) / (sizeof *servers));
-            wxString url = ".dl.sourceforge.net/project/opencpnplugins/climatology_pi/CL-DATA-1.0/";
+            wxString url = "/seandepagnier/climatology_pi_data/blob/master/";
+
             for(std::list<wxString>::iterator it = m_FailedFiles.begin();
                 it != m_FailedFiles.end(); it++ ) {
                 wxString fn = *it;
@@ -174,7 +176,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
                     wxString urlpath = servers[ind] + url;
                 
                     _OCPN_DLStatus status = OCPN_downloadFile(
-                        urlpath + fn,
+                        urlpath + fn + "?raw=true",
                         path+fn, _("downloading climatology data file"),
                         wxString::Format("File %d of %d ", ++i, static_cast<int>(m_FailedFiles.size())),
                         *_img_climatology, GetOCPNCanvasWindow(),
@@ -202,7 +204,7 @@ ClimatologyOverlayFactory::ClimatologyOverlayFactory( ClimatologyDialog &dlg )
                     wxString failed_msg = m_sFailedMessage.Left(FAILED_FILELIST_MSG_LEN);
                     wxMessageDialog mdlg(&m_dlg,
                                          _("Some Data Failed to load.") +"\n"
-                                           + failed_msg + "\n" +
+                                           + failed_msg + "...\n" +
                                          _("Climatology data incomplete."),
                                          _("Climatology"), wxOK | wxICON_WARNING);
                     mdlg.ShowModal();
@@ -673,9 +675,9 @@ void ClimatologyOverlayFactory::ReadWindData(int month, wxString filename)
 #else
     int div = 1;
 #endif
-    wxString path = ClimatologyDataDirectory();
+    wxString path = ClimatologyUserDataDirectory();
     if(!(f = TryOpenFile(path + filename))) {
-        path = ClimatologyUserDataDirectory();
+        path = ClimatologyDataDirectory();
         if(!(f = TryOpenFile(path + filename)))
             goto missing;
     }
@@ -1308,6 +1310,7 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
                 /* rebuild cache for these? */
 #ifndef __OCPN__ANDROID__                
                 wxDateTime dt = (*it2)->datetime.DateTime();
+                //wxLogMessage(climatology_pi + "   " + dt.Format() + ", " + m_dlg.m_cfgdlg->m_dPStart->GetValue().Format());
                 if((dt < m_dlg.m_cfgdlg->m_dPStart->GetValue()) ||
                    (dt > m_dlg.m_cfgdlg->m_dPEnd->GetValue()))
                     continue;
@@ -1356,7 +1359,7 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
         }
     }
 
-    wxLogMessage(climatology_pi + _("cyclone cache: ") + wxString::Format("%ld", sw.Time()));
+    wxLogMessage(climatology_pi + _("cyclone cache time ") + wxString::Format("%ld ms", sw.Time()));
     
     for(int i=0; i<CYCLONE_CACHE_SEMAPHORE_COUNT; i++)
         m_cyclone_cache_semaphore.Post();
@@ -2269,10 +2272,15 @@ ZUFILE *ClimatologyOverlayFactory::TryOpenFile(wxString filename)
 {
     const wxString ext = ".gz";
     ZUFILE *f = zu_open(filename.mb_str(), "rb", ZU_COMPRESS_AUTO);
-    if(!f)
+    if(!f) {
         f = zu_open((filename+ext).mb_str(), "rb", ZU_COMPRESS_AUTO);
+        if(f)
+            wxLogMessage("climatology found compressed data: " + filename+ext);
+    }
+
     if(!f)
         wxLogMessage("climatology failed to read: " + filename);
+
 
     return f;
 }
@@ -2736,8 +2744,8 @@ bool ClimatologyOverlayFactory::RenderOverlay( piDC &dc, PlugIn_ViewPort &vp )
         glEnable( GL_BLEND );
     }
 
-wxFont font( 8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
-m_dc->SetFont( font );
+    wxFont font( 12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+    m_dc->SetFont( font );
 
     for(int overlay = 1; overlay >= 0; overlay--)
     for(int i=0; i<ClimatologyOverlaySettings::SETTINGS_COUNT; i++) {

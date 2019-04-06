@@ -292,7 +292,7 @@ void ClimatologyConfigDialog::LoadSettings()
 
     m_cbWindAtlasEnable->SetValue((bool)pConf->Read (   "Enabled" , true));
     m_sWindAtlasSize->SetValue(pConf->Read (   "Size1" , 120L));
-    m_sWindAtlasSpacing->SetValue(pConf->Read (   "Spacing1" , 90L));
+    m_sWindAtlasSpacing->SetValue(pConf->Read (   "Spacing1" , 80L));
     m_sWindAtlasOpacity->SetValue(pConf->Read (   "Opacity" , 205L));
 
     /* cyclone settings */
@@ -301,23 +301,23 @@ void ClimatologyConfigDialog::LoadSettings()
     wxDateTime StartDate = wxDateTime::Now();
     StartDate.SetYear(1972);
 
-    wxString StartDateString = StartDate.FormatDate();
-    pConf->Read(   "StartDate" , &StartDateString, StartDateString);
+    wxString StartDateString = StartDate.FormatISODate();
+    pConf->Read("StartDate" , &StartDateString, StartDateString);
     StartDate.ParseDate(StartDateString);
     m_dPStart->SetValue(StartDate);
 
     wxDateTime now = wxDateTime::Now();
-    wxString EndDateString = now.FormatDate();
-    pConf->Read(   "EndDate" , &EndDateString, EndDateString);
+    wxString EndDateString = now.FormatISODate();
+    pConf->Read("EndDate" , &EndDateString, EndDateString);
     wxDateTime EndDate;
     EndDate.ParseDate(EndDateString);
     if(EndDate.GetYear() > now.GetYear())
         EndDate = now;
     m_dPEnd->SetValue(EndDate);
 
-    m_sCycloneDaySpan->SetValue(pConf->Read (   "CycloneDaySpan" , 30L ));
-    m_sMinWindSpeed->SetValue(pConf->Read (   "MinWindSpeed" , 35L ));
-    m_sMaxPressure->SetValue(pConf->Read (   "MaxPressure" , 1080L ));
+    m_sCycloneDaySpan->SetValue(pConf->Read("CycloneDaySpan" , 30L ));
+    m_sMinWindSpeed->SetValue(pConf->Read("MinWindSpeed" , 35L ));
+    m_sMaxPressure->SetValue(pConf->Read("MaxPressure" , 1080L ));
 
     /* implement check boxes too? */
 }
@@ -328,27 +328,27 @@ void ClimatologyConfigDialog::SaveSettings()
     if (!pConf)
         return;
 
-    pConf->SetPath (   "/Settings/Climatology"  );
+    pConf->SetPath("/Settings/Climatology"  );
 
-    pConf->Write (   "lastdatatype" , m_lastdatatype);
+    pConf->Write("lastdatatype" , m_lastdatatype);
 
     pConf->SetPath (  "/PlugIns/Climatology/WindAtlas"  );
 
     /* wind atlas settings */
-    pConf->Write (   "Enabled" , m_cbWindAtlasEnable->GetValue());
-    pConf->Write (   "Size1" , m_sWindAtlasSize->GetValue());
-    pConf->Write (   "Spacing1" , m_sWindAtlasSpacing->GetValue());
-    pConf->Write (   "Opacity" , m_sWindAtlasOpacity->GetValue());
+    pConf->Write("Enabled" , m_cbWindAtlasEnable->GetValue());
+    pConf->Write("Size1" , m_sWindAtlasSize->GetValue());
+    pConf->Write("Spacing1" , m_sWindAtlasSpacing->GetValue());
+    pConf->Write("Opacity" , m_sWindAtlasOpacity->GetValue());
 
     /* cyclone settings */
-    pConf->SetPath (  "/PlugIns/Climatology/Cyclones"  );
+    pConf->SetPath("/PlugIns/Climatology/Cyclones");
 
-    pConf->Write(   "StartDate" , m_dPStart->GetDateCtrlValue().FormatDate());
-    pConf->Write(   "EndDate" , m_dPEnd->GetDateCtrlValue().FormatDate());
+    pConf->Write("StartDate" , m_dPStart->GetDateCtrlValue().FormatISODate());
+    pConf->Write("EndDate" , m_dPEnd->GetDateCtrlValue().FormatISODate());
 
-    pConf->Write (   "CycloneDaySpan" , m_sCycloneDaySpan->GetValue() );
-    pConf->Write (   "MinWindSpeed" , m_sMinWindSpeed->GetValue() );
-    pConf->Write (   "MaxPressure" , m_sMaxPressure->GetValue() );
+    pConf->Write("CycloneDaySpan" , m_sCycloneDaySpan->GetValue() );
+    pConf->Write("MinWindSpeed" , m_sMinWindSpeed->GetValue() );
+    pConf->Write("MaxPressure" , m_sMaxPressure->GetValue() );
 
     /* implement check boxes too? */
 }
