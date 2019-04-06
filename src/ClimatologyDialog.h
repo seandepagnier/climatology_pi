@@ -56,7 +56,9 @@ public:
     ClimatologyDialog(wxWindow *parent, climatology_pi *ppi);
     ~ClimatologyDialog();
 
+#ifdef __OCPN__ANDROID__
     void OnEvtPanGesture( wxQT_PanGestureEvent &event);
+#endif
     void Init();
     void UpdateTrackingControls();
     void PopulateTrackingControls();
