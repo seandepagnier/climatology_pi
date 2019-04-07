@@ -1,6 +1,6 @@
 version: 0.9.{build}
 clone_folder: c:\project\climatology_pi
-shallow_clone: true
+#shallow_clone: true
 image:
 - Visual Studio 2017
 
@@ -34,7 +34,7 @@ install:
 
 before_build:
   - cd c:\project\climatology_pi
-#  - cd ..
+  - git submodule update --init --recursive
   - mkdir build
   - cd build
   - ps: Start-FileDownload https://downloads.sourceforge.net/project/opencpnplugins/opencpn_lib/4.99.1405-vc141_xp/opencpn.lib
