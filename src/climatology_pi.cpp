@@ -225,6 +225,9 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
                             double &dir, double &speed)
 {
     s_climatology_pi->CreateOverlayFactory();
+    // if ClimatologyData is called again while loading data in CreateOverlayFactory
+    if (!g_pOverlayFactory)
+        return false;
 
     speed = g_pOverlayFactory->getValue(MAG, setting, lat, lon, &date);
     if(isnan(speed))
