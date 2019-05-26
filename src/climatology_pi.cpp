@@ -79,13 +79,13 @@ climatology_pi::climatology_pi(void *ppimgr)
       s_climatology_pi = this;
 }
 
-climatology_pi::~climatology_pi(void)
+climatology_pi::~climatology_pi()
 {
       FreeData();
       delete _img_climatology;
 }
 
-int climatology_pi::Init(void)
+int climatology_pi::Init()
 {
       AddLocaleCatalog( _T("opencpn-climatology_pi") );
 
@@ -112,6 +112,8 @@ int climatology_pi::Init(void)
                                               _("Climatology"), "", NULL,
                                               CLIMATOLOGY_TOOL_POSITION, 0, this);
 #endif
+      SendClimatology(true);
+
       return (WANTS_OVERLAY_CALLBACK |
            WANTS_OPENGL_OVERLAY_CALLBACK |
            WANTS_CURSOR_LATLON       |
@@ -122,7 +124,7 @@ int climatology_pi::Init(void)
             );
 }
 
-bool climatology_pi::DeInit(void)
+bool climatology_pi::DeInit()
 {
     SendClimatology(false);
     FreeData();
@@ -223,6 +225,9 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
                             double &dir, double &speed)
 {
     s_climatology_pi->CreateOverlayFactory();
+    // if ClimatologyData is called again while loading data in CreateOverlayFactory
+    if (!g_pOverlayFactory)
+        return false;
 
     speed = g_pOverlayFactory->getValue(MAG, setting, lat, lon, &date);
     if(isnan(speed))
