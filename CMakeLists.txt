@@ -119,11 +119,7 @@ project(${PACKAGE})
 #===========================================================
 INCLUDE("cmake/PluginSetup.cmake")
 #===========================================================
-##
 ## ----- The above is used to setup standard variables that are required by the CMAKE process - do not remove ----- ##
-##
-
-##
 ## ----- Modify section below if there are special requirements for the plugin ----- ##
 ##
 
