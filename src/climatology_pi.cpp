@@ -160,7 +160,7 @@ wxBitmap *climatology_pi::GetPlugInBitmap()
 
 wxString climatology_pi::GetCommonName()
 {
-      return _("Climatology");
+     return _T(PLUGIN_COMMON_NAME);
 }
 
 
