@@ -146,7 +146,7 @@ INCLUDE("cmake/PluginConfigure.cmake")
 #
 
 # Used in textplugin. Just added.
-add_definitions(-DUSE_S57)
+# add_definitions(-DUSE_S57)
 
 SET(SRC_CLIMATOLOGY
             src/ClimatologyOverlayFactory.cpp

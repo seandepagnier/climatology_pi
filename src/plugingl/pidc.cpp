@@ -88,9 +88,10 @@ piDC::piDC( wxGLCanvas &canvas ) :
     m_buseTex = GetLocaleCanonicalName().IsSameAs(_T("en_US"));
     workBuf = NULL;
     workBufSize = 0;
+
+#ifdef USE_ANDROID_GLES2
     s_odc_tess_work_buf = NULL;
     
-#ifdef USE_ANDROID_GLES2
     s_odc_tess_vertex_idx = 0;
     s_odc_tess_vertex_idx_this = 0;
     s_odc_tess_buf_len = 0;
@@ -100,7 +101,7 @@ piDC::piDC( wxGLCanvas &canvas ) :
     
     pi_loadShaders();
 
-    #endif
+#endif
     
 }
 
@@ -120,8 +121,9 @@ piDC::piDC( wxDC &pdc ) :
     m_buseTex = GetLocaleCanonicalName().IsSameAs(_T("en_US"));
     workBuf = NULL;
     workBufSize = 0;
+#ifdef USE_ANDROID_GLES2
     s_odc_tess_work_buf = NULL;
-    
+#endif
 }
 
 piDC::piDC() :
@@ -139,8 +141,9 @@ piDC::piDC() :
     m_buseTex = GetLocaleCanonicalName().IsSameAs(_T("en_US"));
     workBuf = NULL;
     workBufSize = 0;
+#ifdef USE_ANDROID_GLES2
     s_odc_tess_work_buf = NULL;
-
+#endif
     GLint parms[2];
     glGetIntegerv( GL_SMOOTH_LINE_WIDTH_RANGE, &parms[0] );
     GLMinSymbolLineWidth = wxMax(parms[0], 1);
@@ -155,9 +158,10 @@ piDC::~piDC()
     if( pgc ) delete pgc;
 #endif
     free(workBuf);
-    
+
+#ifdef USE_ANDROID_GLES2
     free(s_odc_tess_work_buf);
-    
+#endif
 }
 
 void piDC::SetVP(PlugIn_ViewPort *vp)
