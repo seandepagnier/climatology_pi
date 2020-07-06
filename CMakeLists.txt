@@ -160,7 +160,41 @@ SET(SRC_CLIMATOLOGY
             src/icons.cpp
 )
 
-ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY})
+SET(HDRS
+            src/climatology_pi.h
+			src/ClimatologyConfigDialog.h
+			src/ClimatologyDialog.h
+			src/ClimatologyOverlayFactory.h
+			src/ClimatologyUI.h
+			src/gldefs.h
+			src/icons.h
+			src/IsoBarMap.h
+			src/linmath.h
+			src/zuFile.h
+)
+
+SET(LIBSRC
+            src/jsoncpp/json_reader.cpp
+			src/jsoncpp/json_value.cpp
+			src/jsoncpp/json_writer.cpp
+)
+
+SET(LIBHDRS			
+			src/jsoncpp/json_batchallocator.h
+			src/jsoncpp/json_tool.h
+			src/jsoncpp/json/assertions.h
+			src/jsoncpp/json/autolink.h
+			src/jsoncpp/json/config.h
+			src/jsoncpp/json/features.h
+			src/jsoncpp/json/forwards.h
+			src/jsoncpp/json/json.h
+			src/jsoncpp/json/reader.h
+			src/jsoncpp/json/value.h
+			src/jsoncpp/json/writer.h
+)
+
+
+ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
 
 IF(NOT UNIX)
     SET(SRC_BZIP
@@ -210,6 +244,7 @@ ENDIF(WIN32)
 #    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "-lz")
 #  ENDIF()
 #ENDIF()
+
 INCLUDE("cmake/PluginJSON.cmake")
 INCLUDE("cmake/PluginXML.cmake")
 INCLUDE("cmake/PluginGL.cmake")
