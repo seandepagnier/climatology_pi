@@ -171,12 +171,20 @@ SET(HDRS
 			src/IsoBarMap.h
 			src/linmath.h
 			src/zuFile.h
+
 )
 
 SET(LIBSRC
             src/jsoncpp/json_reader.cpp
 			src/jsoncpp/json_value.cpp
 			src/jsoncpp/json_writer.cpp
+			src/plugingl/pi_shaders.cpp
+			src/plugingl/pidc.cpp
+			src/plugingl/qtstylesheet.cpp
+			src/plugingl/TexFont.cpp
+			src/tinyxml/tinyxml.cpp
+			src/tinyxml/tinyxmlerror.cpp
+			src/tinyxml/tinyxmlparser.cpp
 )
 
 SET(LIBHDRS			
@@ -191,7 +199,39 @@ SET(LIBHDRS
 			src/jsoncpp/json/reader.h
 			src/jsoncpp/json/value.h
 			src/jsoncpp/json/writer.h
+			src/plugingl/linmath.h
+			src/plugingl/pi_shaders.h
+			src/plugingl/pidc.h
+			src/plugingl/qtstylesheet.h
+			src/plugingl/TexFont.h
+			src/tinyxml/tinyxml.h
+			include/GL/gl.h
+			include/GL/gl_private.h
+			include/GL/glext.h
+			include/GL/glu.h
+            api-16/ocpn_plugin.h			
 )
+
+
+##=============================================================
+# Modify/configure 'Include' Directories below for the Plugin
+##=============================================================
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/extinclude)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wx/include)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude/wxcurl)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude/wxcurl/include)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/lz4)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/bitmaps)
+#INCLUDE_DIRECTORIES(BEFORE ${PROJECT_SOURCE_DIR}/src/libaudiofile)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/plugingl)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/tinyxml)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jasoncpp)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jsoncpp/json)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/GL)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16)
+#INCLUDE_DIRECTORIES(api-16)
 
 
 ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
@@ -244,6 +284,8 @@ ENDIF(WIN32)
 #    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "-lz")
 #  ENDIF()
 #ENDIF()
+
+
 
 INCLUDE("cmake/PluginJSON.cmake")
 INCLUDE("cmake/PluginXML.cmake")

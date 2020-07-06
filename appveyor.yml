@@ -72,4 +72,3 @@ artifacts:
 #  on:
 #    appveyor_repo_tag: true # deploy on tag push only
 #    configuration: Release  # Debug contains non-redist MS DLLs
-    secure: A7rMxzUbQoDkwCjKK/EuiN86GuwtObhIhdyg2cR0AJHogoIn2wepvUgrI4Pmd9It
