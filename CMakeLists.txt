@@ -227,9 +227,9 @@ SET(LIBHDRS
 #INCLUDE_DIRECTORIES(BEFORE ${PROJECT_SOURCE_DIR}/src/libaudiofile)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/plugingl)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/tinyxml)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jasoncpp)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jsoncpp)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jsoncpp/json)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/GL)
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16)
 #INCLUDE_DIRECTORIES(api-16)
 
