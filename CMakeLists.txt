@@ -3,7 +3,7 @@
 ## Copyright:   
 ## License:     GPLv3+
 # Frontend2 Author: Jon Gough  
-# Frontend2: v1.0.125
+# Frontend2: v1.0.127
 # ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
@@ -28,19 +28,32 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 # define plugin name, owner and versions
-
-#PROJECT(climatology_pi)
 set(VERBOSE_NAME Climatology)
 set(COMMON_NAME "climatology")
 set(TITLE_NAME "climatology")
 set(PACKAGE_CONTACT "Sean D'Epagnier ")
 set(PACKAGE "climatology")
+set(SHORT_DESCRIPTION "Climatology PlugIn: 32 years of monthly NOAA Data")
+set(LONG_DESCRIPTION "Climatology PlugIn for OpenCPN")
+
+# Temporary fix
+#\n\
+#Provides overlay capabilities for historic weather data.\n\n\
+#Supported Climatology types include:\n\
+#- Average wind directions and speed\n\
+#- Percentage of gale and calm conditions\n\
+#- Sea Surface Currents\n\
+#- Average swell and sea state (not yet implemented)\n\
+#- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n\
+#- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n\
+#- Tropical Cyclone tracks\
+#")
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
-set(VERSION_PATCH "3")
+set(VERSION_PATCH "4")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "2020-7-05")
+set(VERSION_DATE "07/16/2020")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -58,31 +71,19 @@ set(GIT_REPOSITORY_SERVER "github.com")
 set(PROD "prod") # Standard Repos
 set(BETA "beta") # Standard Repos
 set(ALPHA "alpha") # Standard Repos
-
 # Set if your cloudsmith repository name does not match your git repository name 
-#set(CLOUDSMITH_USER "jon-gough")
 #set(CLOUDSMITH_USER "rick-gleason")
 set(CLOUDSMITH_USER "opencpn")
 
 # Set if Cloudsmith Base Repository name does not match your Git Repository name.
 #set(CLOUDSMITH_BASE_REPOSITORY "${GIT_REPOSITORY_NAME}")
-#set(CLOUDSMITH_BASE_REPOSITORY "opencpn-plugins")  #Ricks's customization
 set(CLOUDSMITH_BASE_REPOSITORY "climatology")  #without the _pi
 
 # Set Plugin info-url, summary and description									 
 set(XML_INFO_URL "https://opencpn.org/wiki/dokuwiki/doku.php?id=opencpn:opencpn_user_manual:plugins:safety:odraw1.6_pi")
-set(XML_SUMMARY "Climatology PlugIn: 32 years of monthly NOAA Data")
-set(XML_DESCRIPTION "Climatology PlugIn for OpenCPN\n\
-Provides overlay capabilities for historic weather data.\n\n\
-Supported Climatology types include:\n\
-- Average wind directions and speed\n\
-- Percentage of gale and calm conditions\n\
-- Sea Surface Currents\n\
-- Average swell and seastate (not yet implemented)\n\
-- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n\
-- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n\
-- Tropical Cyclone tracks\
-")
+set(XML_SUMMARY ${SHORT_DESCRIPTION})
+set(XML_DESCRIPTION ${LONG_DESCRIPTION})
+											
 ##
 ## ----- Modify section above to include all the details for your plugin ----- ##
 ##
@@ -90,10 +91,12 @@ Supported Climatology types include:\n\
 ##
 ## ----- Modify section below if there are special requirements for the plugin ----- ##
 ##
-SET(CMAKE_MACOSX_RPATH "ON")
 
-SET(CMAKE_CXX_STANDARD 11)
+# SET(CMAKE_MACOSX_RPATH "ON")
 
+option(PLUGIN_USE_SVG "Use SVG graphics" ON)
+
+set(CMAKE_CXX_STANDARD 11)
 
 # Prefer libGL.so to libOpenGL.so, see CMP0072
 set(OpenGL_GL_PREFERENCE "LEGACY")
@@ -109,15 +112,15 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif("${CMAKE_BUILD_TYPE}" STREQUAL "")
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "" "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
 message(STATUS "${CMLOC}Build type: ${CMAKE_BUILD_TYPE}")
-
 ##
 ## ----- The statements below are used to setup standard variables that are required by the CMAKE process - do not remove ----- ##
 ##
 
 project(${PACKAGE})
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;")
 
 #========================================================
-include("cmake/PluginSetup.cmake")
+include("PluginSetup")
 #========================================================
 ## ----- The above is used to setup standard variables that are required by the CMAKE process - do not remove ----- ##
 ## ----- Modify section below if there are special requirements for the plugin ----- ##
@@ -131,7 +134,7 @@ option(Plugin_CXX11 "Use c++11" OFF)
 ## ----- Modify section above if there are special requirements for the plugin ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
 #========================================================
-include("cmake/PluginConfigure.cmake")
+include("PluginConfigure")
 #========================================================
 ## ----- do not change section above - needed to configure build process ----- ##
 ## ---- Change below to match project requirements for source, headers, etc. ----- ##
@@ -139,7 +142,7 @@ include("cmake/PluginConfigure.cmake")
 
 add_definitions(-DUSE_S57)
 
-# From master branch - is this workiing? necessary?
+# From master branch - is this working? necessary?
 IF(PLUGIN_USE_SVG)
     MESSAGE(STATUS "${CMLOC}SVG support enabled...")
     IF(NOT QT_ANDROID)
@@ -285,23 +288,21 @@ ENDIF(WIN32)
 #  ENDIF()
 #ENDIF()
 
-
-
-INCLUDE("cmake/PluginJSON.cmake")
-INCLUDE("cmake/PluginXML.cmake")
-INCLUDE("cmake/PluginGL.cmake")
+INCLUDE("PluginJSON")
+INCLUDE("PluginXML")
+INCLUDE("PluginGL")
 
 ##
 ## ----- Change above to match project requirements ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
 ##
-INCLUDE("cmake/PluginInstall.cmake")
-INCLUDE("cmake/PluginLocalization.cmake")
-INCLUDE("cmake/PluginPackage.cmake")
+INCLUDE("PluginInstall")
+INCLUDE("PluginLocalization")
+INCLUDE("PluginPackage")
 
 #from wxroute
-#get_target_property(OUT ${PACKAGE_NAME} LINK_LIBRARIES)
-#message(STATUS "${CMLOC}Libraries: ${OUT}")
+get_target_property(OUT ${PACKAGE_NAME} LINK_LIBRARIES)
+message(STATUS "${CMLOC}Libraries: ${OUT}")
 ##
 ## ----- do not change section above - needed to configure build process ----- ##
 ##			 

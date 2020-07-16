@@ -71,7 +71,7 @@ wxString ClimatologyUserDataDirectory()
 }
 
 climatology_pi::climatology_pi(void *ppimgr)
-      :opencpn_plugin_113(ppimgr)
+      :opencpn_plugin_116(ppimgr)
 {
       m_pClimatologyDialog = nullptr;
       // Create the PlugIn icons
@@ -160,30 +160,18 @@ wxBitmap *climatology_pi::GetPlugInBitmap()
 
 wxString climatology_pi::GetCommonName()
 {
-//      return _("Climatology");
 	      return _T(PLUGIN_COMMON_NAME);
 }
 
-
 wxString climatology_pi::GetShortDescription()
 {
-      return _("Climatology PlugIn for OpenCPN");
+    return _(PLUGIN_SHORT_DESCRIPTION);
 }
 
 
 wxString climatology_pi::GetLongDescription()
 {
-      return _("Climatology PlugIn for OpenCPN\n\
-Provides overlay capabilities for historic weather data.\n\n\
-Supported Climatology types include:\n\
-- Average wind directions and speed\n\
-- Percentage of gale and calm conditions\n\
-- Sea Surface Currents\n\
-- Average swell and seastate (not yet implemented)\n\
-- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n\
-- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n\
-- Tropical Cyclone tracks\
-");
+    return _(PLUGIN_LONG_DESCRIPTION);
 
 }
 
