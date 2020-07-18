@@ -248,8 +248,6 @@ set(wxWidgets_USE_LIBS
     adv
     aui)
 
-option(USE_GL "Enable OpenGL support" ON)
-
 # Search for opengles, short of running a program to test the speed of acceleration, I simply use gles on "native linux" arm systems
 if(ARCH MATCHES "arm*"
    AND (NOT QT_ANDROID)
