@@ -9,13 +9,13 @@ if(TINYXML_INCLUDE_DIR)
 endif(TINYXML_INCLUDE_DIR)
 
 find_path(TINYXML_INCLUDE_DIR "tinyxml.h" PATH_SUFFIXES "tinyxml")
-
 find_library(
     TINYXML_LIBRARIES
     NAMES "tinyxml"
     PATH_SUFFIXES "tinyxml")
 
 # handle the QUIETLY and REQUIRED arguments and set TINYXML_FOUND to TRUE if all listed variables are TRUE
+
 include("FindPackageHandleStandardArgs")
 find_package_handle_standard_args("TinyXML" DEFAULT_MSG TINYXML_INCLUDE_DIR TINYXML_LIBRARIES)
 

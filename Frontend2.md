@@ -1,3 +1,4 @@
+
 # FRONTEND 2  v1.0.124
 
 GOAL: Assist plugin developers to convert their plugins to the Plugin Manager system which:
@@ -45,7 +46,7 @@ Copy the following directories and files from testplugin_pi to the same location
 - testplugin_pi/api-16
 - testplugin_pi/ci
 - testplugin_pi/cmake
-- testplugin_pi/buildosx
+- testplugin_pi/buildo
 - testplugin_pi/mingw
 - testplugin_pi/extinclude  (JSON Validation - only Ocpn_draw, watchdog, weather_routing)
 - testplugin_pi/extsrc  (JSON Validation - only Ocpn_draw, watchdog, weather_routing)
@@ -66,7 +67,6 @@ The following directories and files are not needed from testplugin_pi
 - testplugin_pi/ocpninclude
 - testplugin_pi/ocpnsrc
 - testplugin_pi/src
-
 
 ## CHANGES REQUIRED
 _________________________________
@@ -185,3 +185,4 @@ Weatherfax_pi needs to have sound support for Windows and Mingw, additionally us
    - "USE_GL ON" for weatherfax,
    - plugin name is different,
    - libraries and includes all different.
+

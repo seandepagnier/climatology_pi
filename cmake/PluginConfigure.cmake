@@ -143,7 +143,6 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/in-files/pkg_version.sh.in ${CMAKE_CURR
 configure_file(${CMAKE_SOURCE_DIR}/cmake/in-files/cloudsmith-upload.sh.in ${CMAKE_CURRENT_BINARY_DIR}/cloudsmith-upload.sh @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/in-files/PluginCPackOptions.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/PluginCPackOptions.cmake @ONLY)
 
-
 message(STATUS "${CMLOC}Checking OCPN_FLATPAK_CONFIG: ${OCPN_FLATPAK_CONFIG}")
 if(OCPN_FLATPAK_CONFIG)
     configure_file(${CMAKE_SOURCE_DIR}/cmake/in-files/org.opencpn.OpenCPN.Plugin.yaml.in ${CMAKE_CURRENT_BINARY_DIR}/flatpak/org.opencpn.OpenCPN.Plugin.${PACKAGE}.yaml)
