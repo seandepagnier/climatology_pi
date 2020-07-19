@@ -485,7 +485,7 @@ static const int ColorMapLens[] = { (sizeof WindMap) / (sizeof *WindMap),
 
 wxColour ClimatologyOverlayFactory::GetGraphicColor(int setting, double val_in)
 {
-    if(std::isnan(val_in))
+    if(isnan(val_in))
         return wxColour(0, 0, 0, 0); /* transparent */
 
     int colormap_index = setting;
@@ -1326,7 +1326,7 @@ void ClimatologyOverlayFactory::BuildCycloneCache()
                     int month = (*it2)->datetime.month;
                     double value = elninoyear.months[month];
         
-                    if(std::isnan(value)) {
+                    if(isnan(value)) {
                         if(!m_dlg.m_cfgdlg->m_cbNotAvailable->GetValue())
                             continue;
                     } else {
@@ -1819,8 +1819,8 @@ static double interp_value(double v0, double v1, double d)
 // interpolate two angles in range +- PI, with resulting angle in the same range
 static double interp_angle(double a0, double a1, double d)
 {
-    if(std::isnan(a0)) return a1;
-    if(std::isnan(a1)) return a0;
+    if(isnan(a0)) return a1;
+    if(isnan(a1)) return a0;
     if(a0 - a1 > M_PI) a0 -= 2*M_PI;
     else if(a1 - a0 > M_PI) a1 -= 2*M_PI;
     double a = (1-d)*a0 + d*a1;
@@ -1985,7 +1985,7 @@ double ClimatologyOverlayFactory::getValueMonth(enum Coord coord, int setting,
        setting != ClimatologyOverlaySettings::CURRENT)
         return NAN;
 
-    if(std::isnan(lat) || std::isnan(lon))
+    if(isnan(lat) || isnan(lon))
         return NAN;
 
     switch(setting) {
@@ -2288,7 +2288,7 @@ ZUFILE *ClimatologyOverlayFactory::TryOpenFile(wxString filename)
 void ClimatologyOverlayFactory::RenderNumber(wxPoint p, double v, const wxColour &color)
 {
     wxString text;
-    if(std::isnan(v))
+    if(isnan(v))
         text = _("N/A");
     else
         text.Printf("%.0f", round(v));

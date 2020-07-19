@@ -39,6 +39,7 @@ install:
 
 before_build:
   - cd c:\project\ocpn_project
+  - git submodule update --init --recursive
   - cd buildwin
   - ps: Start-FileDownload https://downloads.sourceforge.net/project/opencpnplugins/opencpn_packaging_data/PVW32Con.exe
   - cd ..
