@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     for(int i = 0; i<12; i++)
         for(int j = 0; j<LATS; j++)
             for(int k = 0; k<LONS; k++)
-                if(isnan(atdmon[i][j][k]) || fabs(atdmon[i][j][k]) > 42)
+                if(std::isnan(atdmon[i][j][k]) || fabs(atdmon[i][j][k]) > 42)
                     atbyte[i][j][k] = -128;
                 else
                     atbyte[i][j][k] = atdmon[i][j][k]*3.0;

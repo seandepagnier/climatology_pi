@@ -61,6 +61,9 @@ inline double round(double n) { return n < 0.0 ? ceil(n - 0.5) : floor(n + 0.5);
 
 #define strtok_r strtok_s
 
+#else
+#undef isnan
+#define isnan std::isnan
 #endif
 
 static inline double square(double x) { return x*x; }

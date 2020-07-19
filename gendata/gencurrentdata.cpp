@@ -63,7 +63,7 @@ int8_t encode_value(float value)
 
     value = value*MULTIPLIER * 3.6 / 1.852; /* in knots */
 
-    if(isnan(value) || fabs(value) > 127)
+    if(std::isnan(value) || fabs(value) > 127)
         return -128;
     else
         return value;
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
                         inlon += OUTPUT_LONGITUDES;
                     int ind = (y*LATITUDES+lat)*LONGITUDES + inlon;
                     int indout = lat*OUTPUT_LONGITUDES + lon;
-                    if(!isnan(u_data[ind]) && !isnan(v_data[ind])) {
+                    if(!std::isnan(u_data[ind]) && !std::isnan(v_data[ind])) {
                         utotal[12*indout+m] += u_data[ind];
                         vtotal[12*indout+m] += v_data[ind];
                         count[12*indout+m] ++;
