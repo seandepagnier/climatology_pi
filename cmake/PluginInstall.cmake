@@ -3,7 +3,6 @@
 # ---------------------------------------------------------------------------
 
 set(SAVE_CMLOC ${CMLOC})
-
 set(CMLOC "PluginInstall: ")
 
 if(OCPN_FLATPAK_CONFIG)
@@ -161,4 +160,3 @@ if(APPLE)
 endif(APPLE)
 
 set(CMLOC ${SAVE_CMLOC})
-

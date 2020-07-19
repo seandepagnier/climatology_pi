@@ -1,6 +1,3 @@
-# ---------------------------------------------------------------------------
-# Frontend2 Author: jongough aka. Jon Gough    License:wxWidgets License
-# ---------------------------------------------------------------------------
 ##---------------------------------------------------------------------------
 ## Author:      Sean D'Epagnier
 ## Copyright:   
@@ -60,6 +57,7 @@ set(VERSION_DATE "07/16/2020")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
+
 set(PARENT "opencpn")
 
 #Used to set up a local webserver with git loaded, for testing purposes.
@@ -131,6 +129,7 @@ include("PluginSetup")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 option(Plugin_CXX11 "Use c++11" OFF)
+
 ##
 ## ----- Modify section above if there are special requirements for the plugin ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
@@ -220,7 +219,6 @@ SET(LIBHDRS
 ##=============================================================
 # Modify/configure 'Include' Directories below for the Plugin
 ##=============================================================
-
 # include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
 # include_directories(BEFORE ${PROJECT_SOURCE_DIR}/extinclude)
 # include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
@@ -240,9 +238,6 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16)
 
 
 ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
-
-# Used in textplugin. Just added.
-# add_definitions(-DTIXML_USE_STL)
 
 IF(NOT UNIX)
     SET(SRC_BZIP
@@ -269,7 +264,6 @@ ENDIF(NOT UNIX)
 #    INCLUDE_DIRECTORIES(src/bzip2)
 #	INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src/jsoncpp)
 #ENDIF(NOT UNIX)
-
 IF(WIN32)
   IF(MSVC)
     SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
@@ -312,4 +306,3 @@ message(STATUS "${CMLOC}Libraries: ${OUT}")
 ##
 ## ----- do not change section above - needed to configure build process ----- ##
 ##			 
-

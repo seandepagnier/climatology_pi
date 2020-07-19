@@ -14,7 +14,6 @@ message(STATUS "${CMLOC}Starting POTFILE generation")
 
 set(POTFILE ${CMAKE_CURRENT_SOURCE_DIR}/po/POTFILES.in)
 file(REMOVE ${POTFILE}.test)
-
 file(WRITE ${POTFILE}.test "")
 message(STATUS "${CMLOC}Checking file: ${CMAKE_CURRENT_SOURCE_DIR}/po/${PACKAGE_NAME}.pot")
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/po/${PACKAGE_NAME}.pot)
@@ -23,7 +22,6 @@ else()
     file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/po/${PACKAGE_NAME}.pot "")
     message(STATUS "${CMLOC}Creating empty ${CMAKE_CURRENT_SOURCE_DIR}/po/${PACKAGE_NAME}.pot")
 endif()
-
 foreach(POTLINE IN ITEMS ${SRCS})
     file(APPEND ${POTFILE}.test "${POTLINE}\n")
 endforeach(POTLINE)
@@ -31,7 +29,6 @@ foreach(POTLINE IN ITEMS ${HDRS})
     file(APPEND ${POTFILE}.test "${POTLINE}\n")
 endforeach(POTLINE)
 # convert crlf to lf for consistency and make copy_if_different work correctly
-
 configure_file(${POTFILE}.test ${POTFILE}.test NEWLINE_STYLE UNIX)
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${POTFILE}.test ${POTFILE} OUTPUT_QUIET ERROR_QUIET)
 
@@ -103,7 +100,6 @@ macro(GETTEXT_BUILD_MO)
                 DESTINATION OpenCPN.app/Contents/Resources/${_poBasename}.lproj
                 RENAME opencpn-${PACKAGE_NAME}.mo)
                 message(STATUS "${CMLOC}Install language files to: OpenCPN.app/Contents/Resources/${_poBasename}.lproj renamed to: opencpn-${PACKAGE_NAME}.mo")
-
         else(APPLE)
             install(
                 FILES ${_gmoFile}
