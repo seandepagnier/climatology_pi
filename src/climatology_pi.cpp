@@ -219,11 +219,11 @@ static bool ClimatologyData(int setting, wxDateTime &date, double lat, double lo
         return false;
 
     speed = g_pOverlayFactory->getValue(MAG, setting, lat, lon, &date);
-    if(isnan(speed))
+    if(std::isnan(speed))
         return false;
 
     dir = g_pOverlayFactory->getValue(DIRECTION, setting, lat, lon, &date);
-    if(isnan(dir))
+    if(std::isnan(dir))
         return false;
 
     return true;

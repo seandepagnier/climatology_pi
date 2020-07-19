@@ -110,9 +110,9 @@ double IsoBarMap::CachedParameter(double lat, double lon)
 double IsoBarMap::Parameter(double lat, double lon)
 {
     double ret = CalcParameter(lat, lon);
-    if(isnan(m_MinContour) || ret < m_MinContour)
+    if(std::isnan(m_MinContour) || ret < m_MinContour)
         m_MinContour = ret;
-    if(isnan(m_MaxContour) || ret > m_MaxContour)
+    if(std::isnan(m_MaxContour) || ret > m_MaxContour)
         m_MaxContour = ret;
     return ret;
 }
@@ -183,7 +183,7 @@ bool IsoBarMap::Interpolate(double x1, double x2, double y1, double y2, bool lat
         else
             p = Parameter(lonval, rx);
 
-        if(isnan(p)) /* is this actually correct? */
+        if(std::isnan(p)) /* is this actually correct? */
             return true;
 
         if(m_bPolar && p-ry*m_Spacing < -180) /* way off, try other way around */
@@ -246,7 +246,7 @@ void IsoBarMap::PlotRegion(std::list<PlotLineSeg> &region,
     double p3 = CachedParameter(lat2, lon1);
     double p4 = CachedParameter(lat2, lon2);
 
-    if(isnan(p1) || isnan(p2) || isnan(p3) || isnan(p4))
+    if(std::isnan(p1) || std::isnan(p2) || std::isnan(p3) || std::isnan(p4))
         return;
 
     double ry1, ry2, ry3, ry4;
@@ -274,7 +274,7 @@ void IsoBarMap::PlotRegion(std::list<PlotLineSeg> &region,
     ry1*=m_Spacing, ry2*=m_Spacing, ry3*=m_Spacing, ry4*=m_Spacing;
 
     /* determine which interpolations need line segments */
-    switch(((isnan(lat4)*2 + isnan(lat3))*2 + isnan(lon4))*2 + isnan(lon3)) {
+    switch(((std::isnan(lat4)*2 + std::isnan(lat3))*2 + std::isnan(lon4))*2 + std::isnan(lon3)) {
     case 0: /* all 4 sides? need to recurse to get better resolution */
         lon3 = (lon1+lon2)/2;
         lat3 = (lat1+lat2)/2;
@@ -393,7 +393,7 @@ bool IsoBarMap::Recompute(wxWindow *parent)
   m_MaxContour = ceil(m_MaxContour);
   m_MaxContour *= m_Spacing;
 
-  if(isnan(m_MaxContour) || isnan(m_MinContour))
+  if(std::isnan(m_MaxContour) || std::isnan(m_MinContour))
       m_contourcachesize = 0;
   else
       m_contourcachesize = (m_MaxContour - m_MinContour) / m_Spacing + 1;
