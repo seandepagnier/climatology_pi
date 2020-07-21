@@ -34,7 +34,7 @@ set(TITLE_NAME "climatology")
 set(PACKAGE_CONTACT "Sean D'Epagnier ")
 set(PACKAGE "climatology")
 set(SHORT_DESCRIPTION "Climatology PlugIn: 32 years of monthly NOAA Data")
-set(LONG_DESCRIPTION "Climatology PlugIn for OpenCPN")
+set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic weather data. Supported Climatology types include: - Average wind directions and speed- Percentage of gale and calm conditions - Sea Surface Currents - Average swell and sea state (not yet implemented) - Precipitation, Humidity, Cloud Cover, and Lightning Strikes - Monthly average Sea Level pressure and Sea Temperature, Air Temperature - Tropical Cyclone tracks")
 
 # Temporary fix
 #\n\
@@ -52,7 +52,7 @@ set(LONG_DESCRIPTION "Climatology PlugIn for OpenCPN")
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "7")
-set(VERSION_TWEAK "0")
+set(VERSION_TWEAK "3")
 set(VERSION_DATE "07/21/2020")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
@@ -61,7 +61,7 @@ set(OCPN_API_VERSION_MINOR "16")
 set(PARENT "opencpn")
 
 #Used to set up a local webserver with git loaded, for testing purposes.
-#set(GIT_REPOSITORY_SERVER "github.com")
+set(GIT_REPOSITORY_SERVER "github.com")
 
 #No longer needed, queried.
 #set(GIT_USER "rgleason")
