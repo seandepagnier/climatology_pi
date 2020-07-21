@@ -61,7 +61,7 @@ set(OCPN_API_VERSION_MINOR "16")
 set(PARENT "opencpn")
 
 #Used to set up a local webserver with git loaded, for testing purposes.
-set(GIT_REPOSITORY_SERVER "github.com")
+#set(GIT_REPOSITORY_SERVER "github.com")
 
 #No longer needed, queried.
 #set(GIT_USER "rgleason")
