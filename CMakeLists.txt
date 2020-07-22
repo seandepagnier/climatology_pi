@@ -60,8 +60,8 @@ set(OCPN_API_VERSION_MINOR "16")
 
 set(PARENT "opencpn")
 
-#Used to set up a local webserver with git loaded, for testing purposes.
-set(GIT_REPOSITORY_SERVER "github.com")
+# Used to set up a local webserver with git loaded, for testing purposes.
+# set(GIT_REPOSITORY_SERVER "github.com")
 
 #No longer needed, queried.
 set(GIT_USER "rgleason")
@@ -83,7 +83,7 @@ set(CLOUDSMITH_BASE_REPOSITORY "climatology")  #without the _pi
 set(XML_INFO_URL "https://opencpn.org/wiki/dokuwiki/doku.php?id=opencpn:opencpn_user_manual:plugins:safety:odraw1.6_pi")
 set(XML_SUMMARY ${SHORT_DESCRIPTION})
 set(XML_DESCRIPTION ${LONG_DESCRIPTION})
-											
+
 ##
 ## ----- Modify section above to include all the details for your plugin ----- ##
 ##
@@ -303,6 +303,7 @@ INCLUDE("PluginPackage")
 #from wxroute
 get_target_property(OUT ${PACKAGE_NAME} LINK_LIBRARIES)
 message(STATUS "${CMLOC}Libraries: ${OUT}")
+
 ##
 ## ----- do not change section above - needed to configure build process ----- ##
 ##			 
