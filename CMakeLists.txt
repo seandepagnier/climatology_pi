@@ -65,7 +65,7 @@ set(PARENT "opencpn")
 
 #No longer needed, queried.
 set(GIT_USER "rgleason")
-set(GIT_REPOSITORY_NAME "climatology_pi"
+set(GIT_REPOSITORY_NAME "climatology_pi")
 
 # Specifies cloudsmith repository sufficies
 set(PROD "prod") # Standard Repos
