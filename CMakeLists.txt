@@ -64,8 +64,8 @@ set(PARENT "opencpn")
 # set(GIT_REPOSITORY_SERVER "github.com")
 
 #No longer needed, queried.
-# set(GIT_USER "rgleason")
-# set(GIT_REPOSITORY_NAME "climatology_pi")
+set(GIT_USER "rgleason")
+set(GIT_REPOSITORY_NAME "climatology_pi")
 
 # Specifies cloudsmith repository sufficies
 set(PROD "prod") # Standard Repos
@@ -80,7 +80,7 @@ set(CLOUDSMITH_USER "opencpn")
 set(CLOUDSMITH_BASE_REPOSITORY "climatology")  #without the _pi
 
 # Set Plugin info-url, summary and description									 
-set(XML_INFO_URL "https://opencpn.org/wiki/dokuwiki/doku.php?id=opencpn:opencpn_user_manual:plugins:safety:odraw1.6_pi")
+set(XML_INFO_URL "https://opencpn.org/OpenCPN/plugins/climatology.html")
 set(XML_SUMMARY ${SHORT_DESCRIPTION})
 set(XML_DESCRIPTION ${LONG_DESCRIPTION})
 
