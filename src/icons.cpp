@@ -8,7 +8,7 @@
 
 wxBitmap *_img_climatology;
 
-#ifdef OCPN_USE_SVG
+#ifdef PLUGIN_USE_SVG
 #include "ocpn_plugin.h"
 wxString _svg_climatology;
 wxString _svg_climatology_rollover;
@@ -22,7 +22,7 @@ void initialize_images(void)
 		_img_climatology = new wxBitmap(wxImage(sm));
 	}
 
-#ifdef OCPN_USE_SVG
+#ifdef PLUGIN_USE_SVG
     wxFileName fn;
     fn.SetPath(*GetpSharedDataLocation());
     fn.AppendDir("plugins");

@@ -104,7 +104,7 @@ int climatology_pi::Init()
       m_parent_window = GetOCPNCanvasWindow();
 
       //    This PlugIn needs a toolbar icon, so request its insertion if enabled locally
-#ifdef OCPN_USE_SVG
+#ifdef PLUGIN_USE_SVG
       m_leftclick_tool_id = InsertPlugInToolSVG( "Climatology" , _svg_climatology, _svg_climatology_rollover, _svg_climatology_toggled,
                                               wxITEM_CHECK, _("Climatology"),  "" , NULL, CLIMATOLOGY_TOOL_POSITION, 0, this);
 #else

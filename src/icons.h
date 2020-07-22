@@ -14,7 +14,7 @@ extern void initialize_images(void);
 
 extern wxBitmap *_img_climatology;
 
-#ifdef OCPN_USE_SVG
+#ifdef PLUGIN_USE_SVG
 extern wxString _svg_climatology;
 extern wxString _svg_climatology_rollover;
 extern wxString _svg_climatology_toggled;
