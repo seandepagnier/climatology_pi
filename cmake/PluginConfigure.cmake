@@ -44,30 +44,34 @@ else()
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         OUTPUT_VARIABLE GIT_REPOSITORY_TAG OUTPUT_STRIP_TRAILING_WHITESPACE)
     execute_process(
-        COMMAND git status --porcelain=1 -b
+        COMMAND git status --porcelain -b
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         OUTPUT_VARIABLE GIT_STATUS OUTPUT_STRIP_TRAILING_WHITESPACE)
     string(FIND ${GIT_STATUS} "..." START_TRACKED)
-    string(FIND ${GIT_STATUS} "/" END_TRACKED)
-    math(EXPR START_TRACKED "${START_TRACKED}+3")
-    math(EXPR END_TRACKED "${END_TRACKED}-${START_TRACKED}")
-    string(SUBSTRING ${GIT_STATUS} ${START_TRACKED} ${END_TRACKED} GIT_REPOSITORY_REMOTE)
-    message(STATUS "${CMLOC}GIT_REPOSITORY_REMOTE: ${GIT_REPOSITORY_REMOTE}")
-    execute_process(
-        COMMAND git remote get-url ${GIT_REPOSITORY_REMOTE}
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE GIT_REPOSITORY_URL OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_VARIABLE GIT_REMOTE_ERROR)
-    if(NOT GIT_REMOTE_ERROR STREQUAL "")
-        message(STATUS "${CMLOC}Command error: ${GIT_REMOTE_ERROR}")
-        message(STATUS "${CMLOC}Using default repository")
+    if(NOT START_TRACKED EQUAL -1)
+        string(FIND ${GIT_STATUS} "/" END_TRACKED)
+        math(EXPR START_TRACKED "${START_TRACKED}+3")
+        math(EXPR END_TRACKED "${END_TRACKED}-${START_TRACKED}")
+        string(SUBSTRING ${GIT_STATUS} ${START_TRACKED} ${END_TRACKED} GIT_REPOSITORY_REMOTE)
+        message(STATUS "${CMLOC}GIT_REPOSITORY_REMOTE: ${GIT_REPOSITORY_REMOTE}")
+        execute_process(
+            COMMAND git remote get-url ${GIT_REPOSITORY_REMOTE}
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            OUTPUT_VARIABLE GIT_REPOSITORY_URL OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_VARIABLE GIT_REMOTE_ERROR)
+        if(NOT GIT_REMOTE_ERROR STREQUAL "")
+            message(STATUS "${CMLOC}Command error: ${GIT_REMOTE_ERROR}")
+            message(STATUS "${CMLOC}Using default repository")
+        else()
+            string(FIND ${GIT_REPOSITORY_URL} ${GIT_REPOSITORY_SERVER} START_URL REVERSE)
+            string(LENGTH ${GIT_REPOSITORY_SERVER} STRING_LENGTH)
+            math(EXPR START_URL "${START_URL}+1+${STRING_LENGTH}")
+            string(LENGTH ${GIT_REPOSITORY_URL} STRING_LENGTH)
+            message(STATUS "${CMLOC}START_URL: ${START_URL}, STRING_LENGTH: ${STRING_LENGTH}")
+            string(SUBSTRING ${GIT_REPOSITORY_URL} ${START_URL} ${STRING_LENGTH} GIT_REPOSITORY)
+        endif()
     else()
-        string(FIND ${GIT_REPOSITORY_URL} ${GIT_REPOSITORY_SERVER} START_URL REVERSE)
-        string(LENGTH ${GIT_REPOSITORY_SERVER} STRING_LENGTH)
-        math(EXPR START_URL "${START_URL}+1+${STRING_LENGTH}")
-        string(LENGTH ${GIT_REPOSITORY_URL} STRING_LENGTH)
-        message(STATUS "${CMLOC}START_URL: ${START_URL}, STRING_LENGTH: ${STRING_LENGTH}")
-        string(SUBSTRING ${GIT_REPOSITORY_URL} ${START_URL} ${STRING_LENGTH} GIT_REPOSITORY)
+        message(STATUS "${CMLOC}Branch is not tracking a remote branch")
     endif()
 endif()
 message(STATUS "${CMLOC}GIT_REPOSITORY: ${GIT_REPOSITORY}")
@@ -247,8 +251,6 @@ set(wxWidgets_USE_LIBS
     html
     adv
     aui)
-
-option(USE_GL "Enable OpenGL support" ON)
 
 # Search for opengles, short of running a program to test the speed of acceleration, I simply use gles on "native linux" arm systems
 if(ARCH MATCHES "arm*"

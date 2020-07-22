@@ -3,7 +3,7 @@
 ## Copyright:   
 ## License:     GPLv3+
 # Frontend2 Author: Jon Gough  
-# Frontend2: v1.0.127
+# Frontend2: v1.0.129
 # ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
@@ -52,7 +52,7 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "12")
-set(VERSION_TWEAK "0")
+set(VERSION_TWEAK "1")
 set(VERSION_DATE "07/21/2020")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
@@ -64,8 +64,8 @@ set(PARENT "opencpn")
 # set(GIT_REPOSITORY_SERVER "github.com")
 
 #No longer needed, queried.
-set(GIT_USER "rgleason")
-set(GIT_REPOSITORY_NAME "climatology_pi")
+#set(GIT_USER "rgleason")
+#set(GIT_REPOSITORY_NAME "climatology_pi")
 
 # Specifies cloudsmith repository sufficies
 set(PROD "prod") # Standard Repos
