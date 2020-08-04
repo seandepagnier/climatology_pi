@@ -3,7 +3,7 @@
 ## Copyright:   
 ## License:     GPLv3+
 # Frontend2 Author: Jon Gough  
-# Frontend2: v1.0.129
+# Frontend2: v1.0.132
 # ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
@@ -36,7 +36,7 @@ set(PACKAGE "climatology")
 set(SHORT_DESCRIPTION "Climatology PlugIn: 32 years of monthly NOAA Data")
 set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic weather data. Supported Climatology types include: - Average wind directions and speed- Percentage of gale and calm conditions - Sea Surface Currents - Average swell and sea state (not yet implemented) - Precipitation, Humidity, Cloud Cover, and Lightning Strikes - Monthly average Sea Level pressure and Sea Temperature, Air Temperature - Tropical Cyclone tracks")
 
-# Temporary fix
+# Temporary fix for \n\
 #\n\
 #Provides overlay capabilities for historic weather data.\n\n\
 #Supported Climatology types include:\n\
@@ -52,8 +52,8 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "13")
-set(VERSION_TWEAK "0")
-set(VERSION_DATE "07/22/2020")
+set(VERSION_TWEAK "1")
+set(VERSION_DATE "08/04/2020")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -61,7 +61,8 @@ set(OCPN_API_VERSION_MINOR "16")
 set(PARENT "opencpn")
 
 # The next line allows for setting up your own local webserver with git on it for testing purposes, the default is github.com
-set(GIT_REPOSITORY_SERVER "github.com")
+# This line is turned on in pluginconfigure.cmake because the flatpak build and building locally depends on it.
+# set(GIT_REPOSITORY_SERVER "github.com")
 
 #No longer needed, queried.
 #set(GIT_USER "rgleason")
@@ -71,6 +72,7 @@ set(GIT_REPOSITORY_SERVER "github.com")
 set(PROD "prod") # Standard Repos
 set(BETA "beta") # Standard Repos
 set(ALPHA "alpha") # Standard Repos
+
 # Set if your cloudsmith repository name does not match your git repository name 
 #set(CLOUDSMITH_USER "rick-gleason")
 set(CLOUDSMITH_USER "opencpn")
@@ -86,9 +88,6 @@ set(XML_DESCRIPTION ${LONG_DESCRIPTION})
 
 ##
 ## ----- Modify section above to include all the details for your plugin ----- ##
-##
-
-##
 ## ----- Modify section below if there are special requirements for the plugin ----- ##
 ##
 
@@ -133,13 +132,14 @@ option(Plugin_CXX11 "Use c++11" OFF)
 ##
 ## ----- Modify section above if there are special requirements for the plugin ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
+
 #========================================================
 include("PluginConfigure")
 #========================================================
+
 ## ----- do not change section above - needed to configure build process ----- ##
 ## ---- Change below to match project requirements for source, headers, etc. ----- ##
 ##
-
 add_definitions(-DUSE_S57)
 
 # From master branch - is this working? necessary?
@@ -215,7 +215,6 @@ SET(LIBHDRS
             api-16/ocpn_plugin.h			
 )
 
-
 ##=============================================================
 # Modify/configure 'Include' Directories below for the Plugin
 ##=============================================================
@@ -234,8 +233,6 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jsoncpp)
 #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jsoncpp/json)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16)
-#INCLUDE_DIRECTORIES(api-16)
-
 
 ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
 
@@ -254,8 +251,8 @@ IF(NOT UNIX)
     ADD_LIBRARY(LIB_BZIP_CL STATIC ${SRC_BZIP})
     TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} LIB_BZIP_CL )
 
-    INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/buildwin/include)
-    INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src/bzip2)
+    include_directories(${PROJECT_SOURCE_DIR}/buildwin/include)
+    include_directories(${PROJECT_SOURCE_DIR}/src/bzip2)
 ENDIF(NOT UNIX)
 
 #added but not used, from wxroute
@@ -288,17 +285,21 @@ ENDIF(WIN32)
 #  ENDIF()
 #ENDIF()
 
-INCLUDE("PluginJSON")
-INCLUDE("PluginXML")
-INCLUDE("PluginGL")
-
+#========================================================
+include("PluginJSON")
+include("PluginXML")
+include("PluginGL")
+#========================================================							
+			   
 ##
 ## ----- Change above to match project requirements ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
 ##
-INCLUDE("PluginInstall")
-INCLUDE("PluginLocalization")
-INCLUDE("PluginPackage")
+#========================================================
+include("PluginInstall")
+include("PluginLocalization")
+include("PluginPackage")
+#========================================================
 
 #from wxroute
 get_target_property(OUT ${PACKAGE_NAME} LINK_LIBRARIES)

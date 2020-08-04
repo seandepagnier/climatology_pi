@@ -153,7 +153,14 @@ When you are notified your PR has been accepted, we need to clean up our git plu
 1. git branch origin -d  [or -D] rg-master   Delete local rg-master
 1. git push --delete origin rg-master        Delete remote origin rg-master 
 Create an identical local copy of upstream/master as a new branch "rg-master"
-1. git checkout -b rg-master upstream/master
+1. git checkout -b rg-master upstream/master  Make a new branch based on copy of upstream/master
+1. Using git-gui bash prompt from plugins dir  ./download_xml_bash.sh weather-routing 1.4.13.0 opencpn beta
+1. The tarballs are uploaded to your local plugins/metadata folder.  Check them. Then
+1. git add /metadata/[pluginname]*
+1. git commit -am "[pluginname] v[version number]"
+1. git push origin rg-master
+1. Go to github on line your plugins remote and make a PR to opencpn/plugins
+1. Make sure the Action checking completes satisfactorily.
 
 ### Windows Specific Libraries
 _________________________________
@@ -165,6 +172,7 @@ The Windows compilation of weatherfax_pi is dependent on these files
    1. http://sourceforge.net/projects/opencpnplugins/files/opencpn_packaging_data/portaudio-vc12.7z/download
    1. http://sourceforge.net/projects/opencpnplugins/files/opencpn_packaging_data/PVW32Con.exe/download (not an archive, this one just copy to buildwin)
    1. Unpack all these files into the buildwin directory as the compile is dependent on these.
+   
 
 ### OSX Specific Libraries
 _________________________________
