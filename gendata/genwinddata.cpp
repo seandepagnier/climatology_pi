@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
                     double u = u_data[lati*LONGITUDES*INPUT_DEGREE_STEP + loni];
                     double v = v_data[lati*LONGITUDES*INPUT_DEGREE_STEP + loni];
 
-                    if(!isnan(u) && !isnan(v)) {
+                    if(!std::isnan(u) && !std::isnan(v)) {
                         int lato = lati*OUTPUT_DEGREE_STEP/INPUT_DEGREE_STEP;
                         int lono = loni*OUTPUT_DEGREE_STEP/INPUT_DEGREE_STEP;
                         struct atlas *wp = &map[lato*LONGITUDES*OUTPUT_DEGREE_STEP + lono];

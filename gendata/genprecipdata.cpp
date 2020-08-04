@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     for(int i = 0; i<12; i++)
         for(int j = 0; j<LATS; j++)
             for(int k = 0; k<LONS; k++)
-                if(isnan(precipdmon[i][j][k]))
+                if(std::isnan(precipdmon[i][j][k]))
                     precipbyte[i][j][k] = 255;
                 else
                     precipbyte[i][j][k] = precipdmon[i][j][k]*5.0;

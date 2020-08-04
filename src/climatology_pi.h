@@ -32,9 +32,6 @@
 
 #include "version.h"
 
-#define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    13
-
 #define ABOUT_AUTHOR_URL "http://seandepagnier.users.sourceforge.net"
 
 #include "ocpn_plugin.h"
@@ -63,7 +60,7 @@ extern QString qtStyleSheet;
 
 #define CLIMATOLOGY_TOOL_POSITION    -1          // Request default positioning of toolbar tool
 
-class climatology_pi : public opencpn_plugin_113
+class climatology_pi : public opencpn_plugin_116
 {
 public:
       climatology_pi(void *ppimgr);

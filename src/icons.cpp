@@ -8,7 +8,7 @@
 
 wxBitmap *_img_climatology;
 
-#ifdef OCPN_USE_SVG
+#ifdef PLUGIN_USE_SVG
 #include "ocpn_plugin.h"
 wxString _svg_climatology;
 wxString _svg_climatology_rollover;
@@ -22,18 +22,18 @@ void initialize_images(void)
 		_img_climatology = new wxBitmap(wxImage(sm));
 	}
 
-#ifdef OCPN_USE_SVG
+#ifdef PLUGIN_USE_SVG
     wxFileName fn;
-    fn.SetPath(*GetpSharedDataLocation());
-    fn.AppendDir("plugins");
-    fn.AppendDir("climatology_pi");
-    fn.AppendDir("data");
-    fn.SetFullName("climatology_pi.svg");
+    fn.SetPath(GetPluginDataDir("climatoloogy_pi"));
+    fn.AppendDir(_T("data"));
+    fn.SetFullName(_T("climatology_pi.svg"));
     _svg_climatology = fn.GetFullPath();
-    fn.SetFullName("climatology_pi_rollover.svg");
+    wxLogMessage(_T("Loading toolbar icon: ") + _svg_climatology); 
+    fn.SetFullName(_T("climatology_pi_rollover.svg"));
     _svg_climatology_rollover = fn.GetFullPath();
-    fn.SetFullName("climatology_pi_toggled.svg");
+    fn.SetFullName(_T("climatology_pi_toggled.svg"));
     _svg_climatology_toggled = fn.GetFullPath();
 #endif
+
 	return;
 }

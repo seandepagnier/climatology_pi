@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     for(int i = 0; i<12; i++)
         for(int j = 0; j<LATS; j++)
             for(int k = 0; k<LONS; k++)
-                if(isnan(rhumdmon[i][j][k]) || fabs(rhumdmon[i][j][k]) > 100)
+                if(std::isnan(rhumdmon[i][j][k]) || fabs(rhumdmon[i][j][k]) > 100)
                     rhumbyte[i][j][k] = 255;
                 else
                     rhumbyte[i][j][k] = rhumdmon[i][j][k]*2.0;
