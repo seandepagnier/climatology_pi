@@ -31,8 +31,10 @@ void initialize_images(void)
     wxLogMessage(_T("Loading toolbar icon: ") + _svg_climatology); 
     fn.SetFullName(_T("climatology_pi_rollover.svg"));
     _svg_climatology_rollover = fn.GetFullPath();
+    wxLogMessage(_T("Loading toolbar icon: ") + _svg_climatology_rollover); 
     fn.SetFullName(_T("climatology_pi_toggled.svg"));
     _svg_climatology_toggled = fn.GetFullPath();
+    wxLogMessage(_T("Loading toolbar icon: ") + _svg_climatology_toggled); 
 #endif
 
 	return;
