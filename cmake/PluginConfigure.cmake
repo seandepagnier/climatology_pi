@@ -265,7 +265,8 @@ if(ARCH MATCHES "arm*"
    AND (NOT QT_ANDROID)
    AND USE_GL MATCHES "ON")
     find_path(OPENGLESv1_INCLUDE_DIR GLES/gl.h)
-    if(OPENGLESv1_INCLUDE_DIR)
+    if(OPENGLESv1_INCLUDE_DIR 
+       AND ARCH MATCHES "armhf")
         message(STATUS "${CMLOC}Found OpenGLESv1")
         add_definitions(-DocpnUSE_GLES)
         add_definitions(-DocpnUSE_GL)
