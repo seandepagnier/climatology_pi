@@ -24,7 +24,7 @@ void initialize_images(void)
 
 #ifdef PLUGIN_USE_SVG
     wxFileName fn;
-    fn.SetPath(GetPluginDataDir("climatology_pi"));
+    fn.SetPath(GetPluginDataDir("climatoloogy_pi"));
     fn.AppendDir(_T("data"));
     fn.SetFullName(_T("climatology_pi.svg"));
     _svg_climatology = fn.GetFullPath();
