@@ -91,6 +91,11 @@ if(WIN32)
         set(INSTALL_DIRECTORY "plugins\\\\${PACKAGE_NAME}")
     endif(CMAKE_CROSSCOMPILING)
 
+    if(EXISTS ${PROJECT_SOURCE_DIR}/icons)
+        install(DIRECTORY icons DESTINATION "${INSTALL_DIRECTORY}")
+        message(STATUS "${CMLOC}Install Icons: ${INSTALL_DIRECTORY}")
+    endif(EXISTS ${PROJECT_SOURCE_DIR}/icons)
+
     if(EXISTS ${PROJECT_SOURCE_DIR}/data)
         install(DIRECTORY data DESTINATION "${INSTALL_DIRECTORY}")
         message(STATUS "${CMLOC}Install Data: ${INSTALL_DIRECTORY}")
@@ -112,7 +117,11 @@ if(UNIX AND NOT APPLE)
 
     if(EXISTS ${PROJECT_SOURCE_DIR}/data)
         install(DIRECTORY data DESTINATION ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME})
-        message(STATUS "${CMLOC}Install data: ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME}")
+        message(STATUS "${CMLOC}Install Data: ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME}")
+    endif()
+    if(EXISTS ${PROJECT_SOURCE_DIR}/icons)
+        install(DIRECTORY icons DESTINATION ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME})
+        message(STATUS "${CMLOC}Install Icons: ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME}")
     endif()
     if(EXISTS ${PROJECT_SOURCE_DIR}/UserIcons)
         install(DIRECTORY UserIcons DESTINATION ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME})
@@ -139,6 +148,21 @@ if(APPLE)
         file(COPY ${_currentDataFile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data)
     endforeach(_currentDataFile)
 
+    if(NOT EXISTS "${PROJECT_BINARY_DIR}/icons/")
+        file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/icons/")
+        message("Generating icons directory")
+    endif()
+
+    file(
+        GLOB_RECURSE PACKAGE_ICON_FILES
+        LIST_DIRECTORIES true
+        ${CMAKE_SOURCE_DIR}/icons/*)
+
+    foreach(_currentDataFile ${PACKAGE_ICON_FILES})
+        message(STATUS "${CMLOC}copying: ${_currentDataFile}")
+        file(COPY ${_currentDataFile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/icons)
+    endforeach(_currentDataFile)
+    
     if(EXISTS ${PROJECT_SOURCE_DIR}/UserIcons)
         file(
             GLOB_RECURSE PACKAGE_DATA_FILES
