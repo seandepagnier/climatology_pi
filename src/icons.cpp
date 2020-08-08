@@ -25,7 +25,7 @@ void initialize_images(void)
 #ifdef PLUGIN_USE_SVG
     wxFileName fn;
     fn.SetPath(GetPluginDataDir("climatology_pi"));
-    fn.AppendDir(_T("data"));
+    fn.AppendDir(_T("icons"));
     fn.SetFullName(_T("climatology_pi.svg"));
     _svg_climatology = fn.GetFullPath();
     wxLogMessage(_T("Loading toolbar icon: ") + _svg_climatology); 
