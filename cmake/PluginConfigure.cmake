@@ -99,13 +99,15 @@ message(STATUS "${CMLOC}CLOUDSMITH_BASE_REPOSITORY: ${CLOUDSMITH_BASE_REPOSITORY
 # Do the version.h & wxWTranslateCatalog configuration into the build output directory, thereby allowing building from a read-only source tree.
 if(NOT SKIP_VERSION_CONFIG)
     set(BUILD_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY})
-    find_file(PLUGIN_EXTRA_VERSION_VARS version.h.extra ${CMAKE_CURRENT_SOURCE_DIR}/cmake/in-files )
-    message(STATUS "${CMLOC}PLUGIN_EXTRA_VERSION_VARS: ${PLUGIN_EXTRA_VERSION_VARS}")
-    if("${PLUGIN_EXTRA_VERSION_VARS}" STREQUAL "PLUGIN_EXTRA_VERSION_VARS-NOTFOUND")
+    unset(PLUGIN_EXTRA_VERSION_VARS CACHE)
+    find_file(PLUGIN_EXTRA_VERSION_VARS NAMES version.h.extra PATHS cmake/in-files NO_DEFAULT_PATH )
+    if(${PLUGIN_EXTRA_VERSION_VARS} STREQUAL "PLUGIN_EXTRA_VERSION_VARS-NOTFOUND")
+        message(STATUS "${CMLOC}PLUGIN_EXTRA_VERSION_VARS: Not Found")
         set(EXTRA_VERSION_INFO "")
     else()
+        message(STATUS "${CMLOC}PLUGIN_EXTRA_VERSION_VARS: Found")
         configure_file(${PLUGIN_EXTRA_VERSION_VARS} ${BUILD_INCLUDE_PATH}/include/version_extra.h)
-        set(EXTRA_VERSION_INFO "#include version_extra.h")
+        set(EXTRA_VERSION_INFO "#include \"version_extra.h\"")
     endif()
     configure_file(cmake/in-files/version.h.in ${BUILD_INCLUDE_PATH}/include/version.h)
     configure_file(cmake/in-files/wxWTranslateCatalog.h.in ${BUILD_INCLUDE_PATH}/include/wxWTranslateCatalog.h)
@@ -143,7 +145,11 @@ if(UNIX AND NOT APPLE)
         set(PKG_TARGET_ARCH "-x86_64")
     endif()
 else()
-    set(PKG_TARGET_ARCH "")
+    if(MINGW)
+        set(PKG_TARGET_ARCH "-x86_64")
+    else(MINGW)
+        set(PKG_TARGET_ARCH "")
+    endif(MINGW)
 endif()
 
 set(PKG_TARGET_FULL "${PKG_TARGET}${PKG_TARGET_GTK}${PKG_TARGET_ARCH}")
@@ -152,7 +158,11 @@ message(STATUS "${CMLOC}*.in files generated in ${CMAKE_CURRENT_BINARY_DIR}")
 message(STATUS "${CMLOC}PACKAGING_NAME_XML: ${PACKAGING_NAME_XML}")
 configure_file(${CMAKE_SOURCE_DIR}/cmake/in-files/plugin.xml.in ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGING_NAME_XML}.xml)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/in-files/pkg_version.sh.in ${CMAKE_CURRENT_BINARY_DIR}/pkg_version.sh)
-configure_file(${CMAKE_SOURCE_DIR}/cmake/in-files/cloudsmith-upload.sh.in ${CMAKE_CURRENT_BINARY_DIR}/cloudsmith-upload.sh @ONLY)
+#if(QT_ANDROID)
+#    configure_file(${CMAKE_SOURCE_DIR}/cmake/in-files/cloudsmith-upload-android.sh.in ${CMAKE_CURRENT_BINARY_DIR}/cloudsmith-upload.sh @ONLY)
+#else(QT_ANDROID)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/in-files/cloudsmith-upload.sh.in ${CMAKE_CURRENT_BINARY_DIR}/cloudsmith-upload.sh @ONLY)
+#endif(QT_ANDROID)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/in-files/PluginCPackOptions.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/PluginCPackOptions.cmake @ONLY)
 
 
@@ -172,6 +182,9 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
 
+set(CMAKE_SHARED_LINKER_FLAGS "")
+set(CMAKE_EXE_LINKER_FLAGS "")
+
 # SET(PROFILING 1)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     add_definitions("-DDEBUG_BUILD")
@@ -188,14 +201,14 @@ if(NOT WIN32 AND NOT APPLE)
         add_definitions(" -O0 -g")
         message(STATUS "${CMLOC}Optimisation: -O0 -g")
     elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-        add_definitions(" -O2 ")
-        message(STATUS "${CMLOC}Optimisation: -O2")
+        add_definitions(" -O2 -s")
+        message(STATUS "${CMLOC}Optimisation: -O2 -s")
     elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
         add_definitions(" -O2 -g")
         message(STATUS "${CMLOC}Optimisation: -O2 -g")
-    else(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-        add_definitions(" -O2")
-        message(STATUS "${CMLOC}Optimisation: -O2")
+    else(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
+        add_definitions(" -O2 -s")
+        message(STATUS "${CMLOC}Optimisation: -O2 -s")
     endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     add_definitions(" -DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\"")
@@ -205,6 +218,9 @@ endif(NOT WIN32 AND NOT APPLE)
 if(MINGW)
     add_definitions("-Wall -Wno-unused -Wno-cpp -fexceptions")
     add_definitions(" -g -fno-strict-aliasing")
+    if(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
+        add_link_options(-Wl,--exclude-all-symbols)
+    endif(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
 endif(MINGW)
 
 if(APPLE)
@@ -222,9 +238,9 @@ if(MSVC)
     message(STATUS "${CMLOC}Set SNPRINTF")
 else(MSVC)
     if(NOT APPLE)
-        set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic")
+        set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-Bsymbolic")
     else(NOT APPLE)
-        set(CMAKE_SHARED_LINKER_FLAGS "-Wl -undefined dynamic_lookup")
+        set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl -undefined dynamic_lookup")
     endif(NOT APPLE)
 endif(MSVC)
 
@@ -247,7 +263,7 @@ if(WIN32)
         set(CMAKE_CXX_FLAGS_MINSIZEREL "/MP /MD  /O1  /Ob1 /D NDEBUG /EHa")
         set(CMAKE_CXX_FLAGS_RELEASE "/MP /MD  /O2  /Ob2 /D NDEBUG /Zi /EHa")
         set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/MP /MD  /O2  /Ob1 /D NDEBUG /Zi /EHa")
-        set(CMAKE_EXE_LINKER_FLAGS /DEBUG)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
     endif(MSVC)
 endif(WIN32)
 
@@ -265,8 +281,7 @@ if(ARCH MATCHES "arm*"
    AND (NOT QT_ANDROID)
    AND USE_GL MATCHES "ON")
     find_path(OPENGLESv1_INCLUDE_DIR GLES/gl.h)
-    if(OPENGLESv1_INCLUDE_DIR 
-       AND ARCH MATCHES "armhf")
+    if(OPENGLESv1_INCLUDE_DIR)
         message(STATUS "${CMLOC}Found OpenGLESv1")
         add_definitions(-DocpnUSE_GLES)
         add_definitions(-DocpnUSE_GL)
@@ -282,11 +297,37 @@ if(ARCH MATCHES "arm*"
 endif()
 
 # Building for QT_ANDROID involves a cross-building environment, So the include directories, flags, etc must be stated explicitly without trying to locate them on the host build system.
+IF(QT_ANDROID)
+    ADD_DEFINITIONS(-D__WXQT__)
+    ADD_DEFINITIONS(-D__OCPN__ANDROID__)
+    ADD_DEFINITIONS(-DOCPN_USE_WRAPPER)
+    ADD_DEFINITIONS(-DANDROID)
+
+    SET(CMAKE_CXX_FLAGS "-pthread -fPIC -O2 -g")
+
+    ## Compiler flags
+    add_definitions( " -s")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")  ## Strip binary
+
+    ADD_DEFINITIONS("-Wno-inconsistent-missing-override -Wno-potentially-evaluated-expression")
+    SET(QT_LINUX "OFF")
+    SET(QT "ON")
+    SET(CMAKE_SKIP_BUILD_RPATH  TRUE)
+    ADD_DEFINITIONS(-DQT_WIDGETS_LIB)
+    ADD_DEFINITIONS(-DARMHF)
+
+    SET(OPENGLES_FOUND "YES")
+    SET(OPENGL_FOUND "YES")
+
+    #MESSAGE (STATUS "Using GLESv2 for Android")
+    #ADD_DEFINITIONS(-DUSE_ANDROID_GLES2)
+    #ADD_DEFINITIONS(-DUSE_GLSL)
+ENDIF(QT_ANDROID)
+
 if(QT_ANDROID AND USE_GL MATCHES "ON")
     message(STATUS "${CMLOC}Using GLESv1 for Android")
     add_definitions(-DocpnUSE_GLES)
     add_definitions(-DocpnUSE_GL)
-    add_definitions(-DARMHF)
 
     set(OPENGLES_FOUND "YES")
     set(OPENGL_FOUND "YES")
@@ -358,17 +399,12 @@ if(NOT QT_ANDROID)
         set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
     endif(MSVC)
 
-    if(WIN32
-       OR APPLE
-       OR QT_ANDROID)
+    if(WIN32 OR APPLE OR QT_ANDROID)
         if(MSYS)
             # this is to convert msys to windows paths, and handle the missing /usr
             string(REGEX REPLACE "/usr/local" ";C:/MinGW/msys/1.0/local" wxWidgets_INCLUDE_DIRS ${wxWidgets_INCLUDE_DIRS})
         endif(MSYS)
-    endif(
-        WIN32
-        OR APPLE
-        OR QT_ANDROID)
+    endif(WIN32 OR APPLE OR QT_ANDROID)
 
     include(${wxWidgets_USE_FILE})
 
@@ -387,11 +423,63 @@ if(NOT QT_ANDROID)
     set(wxWidgets_LIBRARIES ${REVISED_wxWidgets_LIBRARIES})
 
     message(STATUS "${CMLOC} Revised wxWidgets Libraries: ${wxWidgets_LIBRARIES}")
+else(NOT QT_ANDROID)
+    IF(_wx_selected_config MATCHES "androideabi-qt-arm64")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/include")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/include/QtCore")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/include/QtWidgets")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/include/QtGui")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/include/QtOpenGL")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/include/QtTest")
+
+        INCLUDE_DIRECTORIES( "${OCPN_Android_Common}/wxWidgets/libarm64/wx/include/arm-linux-androideabi-qt-unicode-static-3.1")
+        INCLUDE_DIRECTORIES( "${OCPN_Android_Common}/wxWidgets/include")
+
+        SET(wxWidgets_LIBRARIES
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/lib/libQt5Core.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/lib/libQt5OpenGL.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/lib/libQt5Widgets.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/lib/libQt5Gui.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/lib/libQt5AndroidExtras.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/opencpn/API-117/libarm64/libgorp.so
+
+        -lc++_shared
+        -lz
+        libGLESv2.so
+        libEGL.so
+          )
+
+    ELSE(_wx_selected_config MATCHES "androideabi-qt-arm64")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/include")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/include/QtCore")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/include/QtWidgets")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/include/QtGui")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/include/QtOpenGL")
+        INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/include/QtTest")
+
+        INCLUDE_DIRECTORIES( "${OCPN_Android_Common}/wxWidgets/libarmhf/wx/include/arm-linux-androideabi-qt-unicode-static-3.1")
+        INCLUDE_DIRECTORIES( "${OCPN_Android_Common}/wxWidgets/include")
+
+        ADD_DEFINITIONS( -DOCPN_ARMHF )
+
+        SET(wxWidgets_LIBRARIES
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/lib/libQt5Core.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/lib/libQt5OpenGL.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/lib/libQt5Widgets.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/lib/libQt5Gui.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm32_19_O3/qtbase/lib/libQt5AndroidExtras.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/opencpn/API-117/libarmhf/libgorp.so
+
+        -lc++_shared
+        -lz
+        libGLESv2.so
+        libEGL.so
+          )
+
+    ENDIF(_wx_selected_config MATCHES "androideabi-qt-arm64")
 endif(NOT QT_ANDROID)
 
-if(NOT WIN32
-   AND NOT APPLE
-   AND NOT QT_ANDROID)
+if(NOT WIN32 AND NOT APPLE AND NOT QT_ANDROID)
     option(OCPN_FORCE_GTK3 "Force the build to use GTK3" OFF)
 
     if(NOT OCPN_FORCE_GTK3)
@@ -412,38 +500,7 @@ if(NOT WIN32
         message(STATUS "${CMLOC}Building against GTK3...")
     endif(GTK2_FOUND)
     set(EXTRA_LIBS ${EXTRA_LIBS} ${GTK_LIBRARIES})
-endif(
-    NOT WIN32
-    AND NOT APPLE
-    AND NOT QT_ANDROID)
-
-# On Android, PlugIns need a specific linkage set....
-if(QT_ANDROID)
-    # These libraries are needed to create PlugIns on Android.
-
-    set(OCPN_Core_LIBRARIES
-        # Presently, Android Plugins are built in the core tree, so the variables {wxQT_BASE}, etc.
-        # flow to this module from above.  If we want to build Android plugins out-of-core, this will need improvement.
-        # TODO This is pretty ugly, but there seems no way to avoid specifying a full path in a cross build....
-        /home/dsr/Projects/opencpn_sf/opencpn/build-opencpn-Android_for_armeabi_v7a_GCC_4_8_Qt_5_5_0-Debug/libopencpn.so
-        ${wxQt_Base}/${wxQt_Build}/lib/libwx_baseu-3.1-arm-linux-androideabi.a
-        ${wxQt_Base}/${wxQt_Build}/lib/libwx_qtu_core-3.1-arm-linux-androideabi.a
-        ${wxQt_Base}/${wxQt_Build}/lib/libwx_qtu_html-3.1-arm-linux-androideabi.a
-        ${wxQt_Base}/${wxQt_Build}/lib/libwx_baseu_xml-3.1-arm-linux-androideabi.a
-        ${wxQt_Base}/${wxQt_Build}/lib/libwx_qtu_qa-3.1-arm-linux-androideabi.a
-        ${wxQt_Base}/${wxQt_Build}/lib/libwx_qtu_adv-3.1-arm-linux-androideabi.a
-        ${wxQt_Base}/${wxQt_Build}/lib/libwx_qtu_aui-3.1-arm-linux-androideabi.a
-        ${wxQt_Base}/${wxQt_Build}/lib/libwx_baseu_net-3.1-arm-linux-androideabi.a
-        ${wxQt_Base}/${wxQt_Build}/lib/libwx_qtu_gl-3.1-arm-linux-androideabi.a
-        ${Qt_Base}/android_armv7/lib/libQt5Core.so
-        ${Qt_Base}/android_armv7/lib/libQt5OpenGL.so
-        ${Qt_Base}/android_armv7/lib/libQt5Widgets.so
-        ${Qt_Base}/android_armv7/lib/libQt5Gui.so
-        ${Qt_Base}/android_armv7/lib/libQt5AndroidExtras.so
-        # ${NDK_Base}/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a/libgnustl_shared.so
-    )
-
-endif(QT_ANDROID)
+endif(NOT WIN32 AND NOT APPLE AND NOT QT_ANDROID)
 
 find_package(Gettext REQUIRED)
 

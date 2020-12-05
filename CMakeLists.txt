@@ -3,14 +3,13 @@
 ## Copyright:   
 ## License:     GPLv3+
 # Frontend2 Author: Jon Gough  
-# Frontend2: v1.0.132
+# Frontend2: v1.0.143.0
 # ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
 ## ----- these changes should be. The whole configuration process relies on this        ----- ##
 ## ----- sequence to be successful                                                      ----- ##
-##
-## ----- Modify section below to include all the details for your plugin ----- ##
+#### ----- Modify section below to include all the details for your plugin ----- ##
 ##
 
 set(CMLOC "CMakeLists: ")
@@ -36,24 +35,12 @@ set(PACKAGE "climatology")
 set(SHORT_DESCRIPTION "Climatology PlugIn: 32 years of monthly NOAA Data")
 set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic weather data. Supported Climatology types include: - Average wind directions and speed- Percentage of gale and calm conditions - Sea Surface Currents - Average swell and sea state (not yet implemented) - Precipitation, Humidity, Cloud Cover, and Lightning Strikes - Monthly average Sea Level pressure and Sea Temperature, Air Temperature - Tropical Cyclone tracks")
 
-# Temporary fix for \n\
-#\n\
-#Provides overlay capabilities for historic weather data.\n\n\
-#Supported Climatology types include:\n\
-#- Average wind directions and speed\n\
-#- Percentage of gale and calm conditions\n\
-#- Sea Surface Currents\n\
-#- Average swell and sea state (not yet implemented)\n\
-#- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n\
-#- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n\
-#- Tropical Cyclone tracks\
-#")
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
-set(VERSION_PATCH "15")
+set(VERSION_PATCH "16")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "08/10/2020")
+set(VERSION_DATE "12/04/2020")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -73,13 +60,14 @@ set(PROD "prod") # Standard Repos
 set(BETA "beta") # Standard Repos
 set(ALPHA "alpha") # Standard Repos
 
-# Set if your cloudsmith repository name does not match your git repository name 
-#set(CLOUDSMITH_USER "rick-gleason")
-set(CLOUDSMITH_USER "opencpn")
-
 # Set if Cloudsmith Base Repository name does not match your Git Repository name.
 #set(CLOUDSMITH_BASE_REPOSITORY "${GIT_REPOSITORY_NAME}")
 set(CLOUDSMITH_BASE_REPOSITORY "climatology")  #without the _pi
+
+# Set the following to use OpenCPN cloudsmith repositories instead of own repositories
+set(CLOUDSMITH_USER "opencpn")
+#set(CLOUDSMITH_USER "rick-gleason")								 
+
 
 # Set Plugin info-url, summary and description									 
 set(XML_INFO_URL "https://opencpn.org/OpenCPN/plugins/climatology.html")
@@ -91,7 +79,7 @@ set(XML_DESCRIPTION ${LONG_DESCRIPTION})
 ## ----- Modify section below if there are special requirements for the plugin ----- ##
 ##
 
-# SET(CMAKE_MACOSX_RPATH "ON")
+
 
 option(PLUGIN_USE_SVG "Use SVG graphics" ON)
 
@@ -101,16 +89,16 @@ set(CMAKE_CXX_STANDARD 11)
 set(OpenGL_GL_PREFERENCE "LEGACY")
 # Don't use local version of GLU library
 set(USE_LOCAL_GLU FALSE)
+
 option(USE_GL "Enable OpenGL support" ON)
 message(STATUS "${CMLOC}USE_GL: ${USE_GL}")
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
-    set(CMAKE_BUILD_TYPE
-        "Release"
-        CACHE STRING "Choose the type of build" FORCE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build" FORCE)
 endif("${CMAKE_BUILD_TYPE}" STREQUAL "")
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "" "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
 message(STATUS "${CMLOC}Build type: ${CMAKE_BUILD_TYPE}")
+
 ##
 ## ----- The statements below are used to setup standard variables that are required by the CMAKE process - do not remove ----- ##
 ##
@@ -121,6 +109,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;")
 #========================================================
 include("PluginSetup")
 #========================================================
+
 ## ----- The above is used to setup standard variables that are required by the CMAKE process - do not remove ----- ##
 ## ----- Modify section below if there are special requirements for the plugin ----- ##
 ##
@@ -140,6 +129,7 @@ include("PluginConfigure")
 ## ----- do not change section above - needed to configure build process ----- ##
 ## ---- Change below to match project requirements for source, headers, etc. ----- ##
 ##
+
 add_definitions(-DUSE_S57)
 
 # From master branch - is this working? necessary?
@@ -174,7 +164,6 @@ SET(HDRS
 			src/IsoBarMap.h
 			src/linmath.h
 			src/zuFile.h
-
 )
 
 SET(LIBSRC
@@ -218,14 +207,6 @@ SET(LIBHDRS
 ##=============================================================
 # Modify/configure 'Include' Directories below for the Plugin
 ##=============================================================
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/extinclude)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wx/include)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude/wxcurl)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude/wxcurl/include)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/lz4)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/bitmaps)
 #INCLUDE_DIRECTORIES(BEFORE ${PROJECT_SOURCE_DIR}/src/libaudiofile)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/plugingl)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/tinyxml)
@@ -255,12 +236,6 @@ IF(NOT UNIX)
     include_directories(${PROJECT_SOURCE_DIR}/src/bzip2)
 ENDIF(NOT UNIX)
 
-#added but not used, from wxroute
-#IF(NOT UNIX)
-#    INCLUDE_DIRECTORIES(src/zlib-1.2.3)
-#    INCLUDE_DIRECTORIES(src/bzip2)
-#	INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src/jsoncpp)
-#ENDIF(NOT UNIX)
 IF(WIN32)
   IF(MSVC)
     SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
@@ -271,26 +246,12 @@ IF(WIN32)
   ENDIF()
 ENDIF(WIN32)
 
-# aded but not used from wx-route
-#IF(WIN32)
-#  IF(MSVC)
-#    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/buildwin/include)
-#	INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src/jsoncpp)
-#    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib1.lib")
-#  ELSE()
-#    # MINGW
-##    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "-lwxzlib-2.8")
-#	INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src/jsoncpp)
-#    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "-lz")
-#  ENDIF()
-#ENDIF()
-
 #========================================================
 include("PluginJSON")
 include("PluginXML")
 include("PluginGL")
 #========================================================							
-			   
+
 ##
 ## ----- Change above to match project requirements ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
@@ -307,4 +268,4 @@ message(STATUS "${CMLOC}Libraries: ${OUT}")
 
 ##
 ## ----- do not change section above - needed to configure build process ----- ##
-##			 
+##

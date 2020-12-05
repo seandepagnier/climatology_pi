@@ -39,7 +39,6 @@ install:
 
 before_build:
   - cd c:\project\ocpn_project
-  - git submodule update --init --recursive
   - cd buildwin
   - ps: Start-FileDownload https://downloads.sourceforge.net/project/opencpnplugins/opencpn_packaging_data/PVW32Con.exe
   - cd ..
@@ -66,7 +65,6 @@ artifacts:
 #  provider: GitHub
 #  #auth_token: '%GitHub_auth_token%'
 #  auth_token: '%GIT-PTOKEN-testplugin_pi-INTO-APPVEYOR%'
-#    secure: A7rMxzUbQoDkwCjKK/EuiN86GuwtObhIhdyg2cR0AJHogoIn2wepvUgrI4Pmd9It
 #  artifact: installer,portable
 #  draft: true
 #  prerelease: true
