@@ -36,8 +36,8 @@
 #include <wx/dateevt.h>
 #include <wx/html/htmlwin.h>
 #include <wx/notebook.h>
+#include "android/wx/datectrl.h"
 
-class wxDatePickerCtrl;
 
 ///////////////////////////////////////////////////////////////////////////
 
