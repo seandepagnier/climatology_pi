@@ -36,7 +36,12 @@
 #include <wx/dateevt.h>
 #include <wx/html/htmlwin.h>
 #include <wx/notebook.h>
+
+#ifdef __OCPN__ANDROID__
 #include "android/wx/datectrl.h"
+#else
+class wxDatePickerCtrl;
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////
