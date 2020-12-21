@@ -38,8 +38,8 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
-set(VERSION_PATCH "16")
-set(VERSION_TWEAK "1")
+set(VERSION_PATCH "17")
+set(VERSION_TWEAK "0")
 set(VERSION_DATE "21/12/2020") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
