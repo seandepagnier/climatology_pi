@@ -29,22 +29,6 @@ if(WIN32)
         set(CMAKE_SHARED_LINKER_FLAGS "-L../buildwin")
         # target_link_libraries(${PACKAGE_NAME} ${OPENGL_LIBRARIES})
         set(OPENCPN_IMPORT_LIB "${CMAKE_SOURCE_DIR}/api-16/libopencpn.dll.a")
-        if(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-            message(STATUS "${CMLOC}Will ensure library is stripped of all symbols")
-            set(MINGW_LIBRARY_NAME "lib${PACKAGE_NAME}.dll")
-            message(STATUS "${CMLOC}Library name: ${MINGW_LIBRARY_NAME}")
-            find_program(STRIP_UTIL NAMES strip REQUIRED)
-            add_custom_command(
-                TARGET ${PACKAGE_NAME}
-                POST_BUILD
-                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                DEPENDS ${PACKAGE_NAME}
-                COMMENT " Running post build action on ${lib_name}."
-                COMMAND ls -la ${MINGW_LIBRARY_NAME}
-                COMMAND sh -c 'strip ${MINGW_LIBRARY_NAME}'
-                COMMAND ls -la ${MINGW_LIBRARY_NAME}
-            )
-        endif(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
     endif(MINGW)
 
     target_link_libraries(${PACKAGE_NAME} ${OPENCPN_IMPORT_LIB})
@@ -107,13 +91,6 @@ if(WIN32)
         set(INSTALL_DIRECTORY "plugins\\\\${PACKAGE_NAME}")
     endif(CMAKE_CROSSCOMPILING)
 
-# For Climatology MUST use the ${PROJECT_SOURCE_DIR}/icons directory
-    if(EXISTS ${PROJECT_SOURCE_DIR}/icons)
-        install(DIRECTORY icons DESTINATION "${INSTALL_DIRECTORY}")
-        message(STATUS "${CMLOC}Install Icons: ${INSTALL_DIRECTORY}")
-    endif(EXISTS ${PROJECT_SOURCE_DIR}/icons)
-# end of addition for Climatology
-
     if(EXISTS ${PROJECT_SOURCE_DIR}/data)
         install(DIRECTORY data DESTINATION "${INSTALL_DIRECTORY}")
         message(STATUS "${CMLOC}Install Data: ${INSTALL_DIRECTORY}")
@@ -135,13 +112,7 @@ if(UNIX AND NOT APPLE)
 
     if(EXISTS ${PROJECT_SOURCE_DIR}/data)
         install(DIRECTORY data DESTINATION ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME})
-        message(STATUS "${CMLOC}Install Data: ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME}")
-# Added for Climatology  Icons directory
-    endif()
-    if(EXISTS ${PROJECT_SOURCE_DIR}/icons)
-        install(DIRECTORY icons DESTINATION ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME})
-        message(STATUS "${CMLOC}Install Icons: ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME}")
-# End of added for climatology 		
+        message(STATUS "${CMLOC}Install data: ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME}")
     endif()
     if(EXISTS ${PROJECT_SOURCE_DIR}/UserIcons)
         install(DIRECTORY UserIcons DESTINATION ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME})
@@ -167,23 +138,6 @@ if(APPLE)
         message(STATUS "${CMLOC}copying: ${_currentDataFile}")
         file(COPY ${_currentDataFile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data)
     endforeach(_currentDataFile)
-
-# Added for Climatology  Icons directory
-    if(NOT EXISTS "${PROJECT_BINARY_DIR}/icons/")
-        file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/icons/")
-        message("Generating icons directory")
-    endif()
-
-    file(
-        GLOB_RECURSE PACKAGE_ICON_FILES
-        LIST_DIRECTORIES true
-        ${CMAKE_SOURCE_DIR}/icons/*)
-
-    foreach(_currentDataFile ${PACKAGE_ICON_FILES})
-        message(STATUS "${CMLOC}copying: ${_currentDataFile}")
-        file(COPY ${_currentDataFile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/icons)
-    endforeach(_currentDataFile)
-# End of change for climatology 
 
     if(EXISTS ${PROJECT_SOURCE_DIR}/UserIcons)
         file(

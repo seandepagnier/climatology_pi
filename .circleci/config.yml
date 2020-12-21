@@ -266,7 +266,7 @@ jobs:
             - run: ci/cloudsmith-upload.sh
     build-fedora:
         docker:
-        - image: fedora:29
+        - image: fedora:33
         environment:
         - OCPN_TARGET:  fedora
         steps:
@@ -280,7 +280,7 @@ jobs:
             - run: ci/cloudsmith-upload.sh
     build-mingw:
         docker:
-        - image: fedora:29
+        - image: fedora:33
         environment:
         - OCPN_TARGET:  mingw
         - CLOUDSMITH_PKG_EXT: exe

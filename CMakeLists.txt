@@ -3,7 +3,7 @@
 ## Copyright:   
 ## License:     GPLv3+
 # Frontend2 Author: Jon Gough  
-# Frontend2: v1.0.143.0
+# Frontend2: v1.0.146.0
 # ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
@@ -39,8 +39,8 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "16")
-set(VERSION_TWEAK "0")
-set(VERSION_DATE "12/04/2020")
+set(VERSION_TWEAK "1")
+set(VERSION_DATE "21/12/2020") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -50,7 +50,6 @@ set(PARENT "opencpn")
 # The next line allows for setting up your own local webserver with git on it for testing purposes, the default is github.com
 # This line is turned on in pluginconfigure.cmake because the flatpak build and building locally depends on it.
 # set(GIT_REPOSITORY_SERVER "github.com")
-
 #No longer needed, queried.
 #set(GIT_USER "rgleason")
 #set(GIT_REPOSITORY_NAME "climatology_pi")
@@ -66,10 +65,9 @@ set(CLOUDSMITH_BASE_REPOSITORY "climatology")  #without the _pi
 
 # Set the following to use OpenCPN cloudsmith repositories instead of own repositories
 set(CLOUDSMITH_USER "opencpn")
-#set(CLOUDSMITH_USER "rick-gleason")								 
+#set(CLOUDSMITH_USER "rick-gleason")
 
-
-# Set Plugin info-url, summary and description									 
+# Set Plugin info-url, summary and description
 set(XML_INFO_URL "https://opencpn.org/OpenCPN/plugins/climatology.html")
 set(XML_SUMMARY ${SHORT_DESCRIPTION})
 set(XML_DESCRIPTION ${LONG_DESCRIPTION})
