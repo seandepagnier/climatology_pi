@@ -3,7 +3,7 @@
 ## Copyright:   
 ## License:     GPLv3+
 # Frontend2 Author: Jon Gough  
-# Frontend2: v1.0.146.0
+# Frontend2: v1.0.146.4
 # ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
@@ -35,12 +35,11 @@ set(PACKAGE "climatology")
 set(SHORT_DESCRIPTION "Climatology PlugIn: 32 years of monthly NOAA Data")
 set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic weather data. Supported Climatology types include: - Average wind directions and speed- Percentage of gale and calm conditions - Sea Surface Currents - Average swell and sea state (not yet implemented) - Precipitation, Humidity, Cloud Cover, and Lightning Strikes - Monthly average Sea Level pressure and Sea Temperature, Air Temperature - Tropical Cyclone tracks")
 
-
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "18")
-set(VERSION_TWEAK "0")
-set(VERSION_DATE "21/12/2020") # DD/MM/YYYY format
+set(VERSION_TWEAK "4")
+set(VERSION_DATE "24/12/2020") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -76,8 +75,6 @@ set(XML_DESCRIPTION ${LONG_DESCRIPTION})
 ## ----- Modify section above to include all the details for your plugin ----- ##
 ## ----- Modify section below if there are special requirements for the plugin ----- ##
 ##
-
-
 
 option(PLUGIN_USE_SVG "Use SVG graphics" ON)
 

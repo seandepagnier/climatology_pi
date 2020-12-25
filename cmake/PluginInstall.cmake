@@ -91,6 +91,11 @@ if(WIN32)
         set(INSTALL_DIRECTORY "plugins\\\\${PACKAGE_NAME}")
     endif(CMAKE_CROSSCOMPILING)
 
+    if(EXISTS ${PROJECT_SOURCE_DIR}/UserIcons)
+        install(DIRECTORY UserIcons DESTINATION "${INSTALL_DIRECTORY}")
+        message(STATUS "${CMLOC}Install UserIcons: ${INSTALL_DIRECTORY}")
+    endif(EXISTS ${PROJECT_SOURCE_DIR}/UserIcons)
+
     if(EXISTS ${PROJECT_SOURCE_DIR}/data)
         install(DIRECTORY data DESTINATION "${INSTALL_DIRECTORY}")
         message(STATUS "${CMLOC}Install Data: ${INSTALL_DIRECTORY}")
@@ -109,7 +114,6 @@ if(UNIX AND NOT APPLE)
         TARGETS ${PACKAGE_NAME}
         RUNTIME
         LIBRARY DESTINATION ${PREFIX_PARENTLIB})
-
     if(EXISTS ${PROJECT_SOURCE_DIR}/data)
         install(DIRECTORY data DESTINATION ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME})
         message(STATUS "${CMLOC}Install data: ${PREFIX_PARENTDATA}/plugins/${PACKAGE_NAME}")
