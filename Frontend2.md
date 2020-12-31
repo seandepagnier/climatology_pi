@@ -121,7 +121,6 @@ The following directories and files are not needed from testplugin_pi
    - For custom Cloudsmith repository destinations, modify if needed.
 
 
-
 ## DEPLOYMENT
 
 The current setup for Frontend2 plugins does this:
@@ -146,10 +145,10 @@ Example:
 1. git commit -am "v1.9.5.10"
 1. git tag v1.9.5.10
 1. git push origin refs/tags/v1.9.5.10
-  - Enumerating objects: 5, done.
-  - remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
-  - To https://github.com/xxxx/weatherfax_pi.git  
-  - * [new tag]           v1.9.5.10 -> v1.9.5.10
+  -  Enumerating objects: 5, done.
+  -  remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+  -  To https://github.com/xxxx/weatherfax_pi.git  
+  -  * [new tag]           v1.9.5.10 -> v1.9.5.10
 1. git push origin master 
 
 For information about building locally for local deployment refer to Read-Build.md
@@ -158,30 +157,34 @@ For information about building locally for local deployment refer to Read-Build.
 
 Add your new Metadata xml to Plugin Manager Catalog Make Pull Request to github.com/OpenCPN/Plugiins
 
-After Circleci, Travis and Appveyor have built the environments and deployed to one of the Cloudsmith Repositories, the resultant metadata files (.xml) must be copied and pushed up too the plugins master branch github.com/OpenCPN/plugins to become part of the the master catalog. Jon Gough has provided some bash/python scripts that accomplish copy to your local branch to assist or you can simply do this part manually.
+After Circleci, Travis and Appveyor have built the environments and deployed to one of the Cloudsmith Repositories, 
+the resultant metadata files (.xml) must be copied and pushed up too the plugins master branch github.com/OpenCPN/plugins
+to become part of the the master catalog. 
+Jon Gough has provided some bash/python scripts that accomplish copy to your local branch to assist or you can simply do this part manually.
 
-Generally try not to use raw git commands unless really needed, In Linux & Windows install the 'beta' testing version (for free opensource work) SmartGit (sometimes it hasn't had all the capabilities of git).
+Generally try not to use raw git commands unless really needed, 
+In Linux & Windows install the 'beta' testing version (for free opensource work) SmartGit (sometimes it hasn't had all the capabilities of git).
 
-#Use a Manual process and script to move metadata.xml to github.com/plugins.
+# Use a Manual process and script to move metadata.xml to github.com/plugins.
 
-After completing (Refer to Read-Build.md)
+After completing the above (Refer to Read-Build.md for more detail for this section)
 
-1.Initial Setup of Remote Fork and Local Repository
-1.Set remote upstream and origin
-1.Create a new local branch, i.e. master or beta or alpha using upstream/master
+1. Initial Setup of Remote Fork and Local Repository
+1. Set remote upstream and origin
+1. Create a new local branch, i.e. master or beta or alpha using upstream/master
 
 # Use the Git-Gui (bash prompt) from your local github/plugins' folder, to run Jon's bash script.
 
-1.Run: 'download_xml_bash.sh' with the correct parameters for your cloudsmith repository and build.
-1.Examples
-      1../download_xml_bash.sh <cloudsmith_repository> <plugin_version> <cloudsmith_user> <cloudsmith_level>
-      1../download_xml_bash.sh testplugin_pi 1.0.114.0 jon-gough prod
-      1../download_xml_bash.sh weather-routing 1.13.8.0 opencpn prod
+1. Run: 'download_xml_bash.sh' with the correct parameters for your cloudsmith repository and build.
+1. Examples
+      1. ./download_xml_bash.sh <cloudsmith_repository> <plugin_version> <cloudsmith_user> <cloudsmith_level>
+      1. ./download_xml_bash.sh testplugin_pi 1.0.114.0 jon-gough prod
+      1. ./download_xml_bash.sh weather-routing 1.13.8.0 opencpn prod
 
 Then add the changed files, commit and push to remote origin rg-master branch
-1.git add metadata/ To add the metadata files
-1.git commit -am "[pluginname] v[version number]" Commit the metadata files
-1.git push -u origin rg-master (Does the same as two commands 'git branch --set-upstream-to=origin/jg_master' and 'git push')
+1. git add metadata/ To add the metadata files
+1. git commit -am "[pluginname] v[version number]" Commit the metadata files
+1. git push -u origin rg-master (Does the same as two commands 'git branch --set-upstream-to=origin/jg_master' and 'git push')
 
 Goto upstream/master in a web browser and create pull request to OpenCPN/plugins master <---- from [gitusername]/plugins rg-master We can leave the local rg-master branch in place until the next job (see above)
 
