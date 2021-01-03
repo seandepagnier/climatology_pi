@@ -29,49 +29,62 @@ elseif($ENV{APPVEYOR})
     set(GIT_REPOSITORY_BRANCH "$ENV{APPVEYOR_REPO_BRANCH}")
     set(GIT_REPOSITORY_TAG "$ENV{APPVEYOR_REPO_TAG_NAME}")
 else()
-    # Get the current working branch
+    # check to make sure we have a git repository
     execute_process(
-        COMMAND git rev-parse --abbrev-ref HEAD
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE GIT_REPOSITORY_BRANCH
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
-    if("${GIT_REPOSITORY_BRANCH}" STREQUAL "")
-        message(STATUS "${CMLOC}Setting default GIT repository branch - master")
-        set(GIT_REPOSITORY_BRANCH "master")
-    endif()
-    execute_process(
-        COMMAND git tag --contains
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE GIT_REPOSITORY_TAG OUTPUT_STRIP_TRAILING_WHITESPACE)
-    execute_process(
-        COMMAND git status --porcelain -b
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE GIT_STATUS OUTPUT_STRIP_TRAILING_WHITESPACE)
-    string(FIND ${GIT_STATUS} "..." START_TRACKED)
-    if(NOT START_TRACKED EQUAL -1)
-        string(FIND ${GIT_STATUS} "/" END_TRACKED)
-        math(EXPR START_TRACKED "${START_TRACKED}+3")
-        math(EXPR END_TRACKED "${END_TRACKED}-${START_TRACKED}")
-        string(SUBSTRING ${GIT_STATUS} ${START_TRACKED} ${END_TRACKED} GIT_REPOSITORY_REMOTE)
-        message(STATUS "${CMLOC}GIT_REPOSITORY_REMOTE: ${GIT_REPOSITORY_REMOTE}")
+        COMMAND git status $>/dev/null
+        RESULT_VARIABLE GIT_REPOSITORY_EXISTS
+        OUTPUT_QUIET
+        ERROR_QUIET)
+    if("${GIT_REPOSITORY_EXISTS}" STREQUAL "0")
+        # Get the current working branch
         execute_process(
-            COMMAND git remote get-url ${GIT_REPOSITORY_REMOTE}
+            COMMAND git rev-parse --abbrev-ref HEAD
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            OUTPUT_VARIABLE GIT_REPOSITORY_URL OUTPUT_STRIP_TRAILING_WHITESPACE
-            ERROR_VARIABLE GIT_REMOTE_ERROR)
-        if(NOT GIT_REMOTE_ERROR STREQUAL "")
-            message(STATUS "${CMLOC}Command error: ${GIT_REMOTE_ERROR}")
-            message(STATUS "${CMLOC}Using default repository")
+            OUTPUT_VARIABLE GIT_REPOSITORY_BRANCH
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+        if("${GIT_REPOSITORY_BRANCH}" STREQUAL "")
+            message(STATUS "${CMLOC}Setting default GIT repository branch - master")
+            set(GIT_REPOSITORY_BRANCH "master")
+        endif()
+        execute_process(
+            COMMAND git tag --contains
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            OUTPUT_VARIABLE GIT_REPOSITORY_TAG OUTPUT_STRIP_TRAILING_WHITESPACE)
+        execute_process(
+            COMMAND git status --porcelain -b
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            OUTPUT_VARIABLE GIT_STATUS OUTPUT_STRIP_TRAILING_WHITESPACE)
+        string(FIND ${GIT_STATUS} "..." START_TRACKED)
+        if(NOT START_TRACKED EQUAL -1)
+            string(FIND ${GIT_STATUS} "/" END_TRACKED)
+            math(EXPR START_TRACKED "${START_TRACKED}+3")
+            math(EXPR END_TRACKED "${END_TRACKED}-${START_TRACKED}")
+            string(SUBSTRING ${GIT_STATUS} ${START_TRACKED} ${END_TRACKED} GIT_REPOSITORY_REMOTE)
+            message(STATUS "${CMLOC}GIT_REPOSITORY_REMOTE: ${GIT_REPOSITORY_REMOTE}")
+            execute_process(
+                COMMAND git remote get-url ${GIT_REPOSITORY_REMOTE}
+                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                OUTPUT_VARIABLE GIT_REPOSITORY_URL OUTPUT_STRIP_TRAILING_WHITESPACE
+                ERROR_VARIABLE GIT_REMOTE_ERROR)
+            if(NOT GIT_REMOTE_ERROR STREQUAL "")
+                message(STATUS "${CMLOC}Command error: ${GIT_REMOTE_ERROR}")
+                message(STATUS "${CMLOC}Using default repository")
+            else()
+                string(FIND ${GIT_REPOSITORY_URL} ${GIT_REPOSITORY_SERVER} START_URL REVERSE)
+                string(LENGTH ${GIT_REPOSITORY_SERVER} STRING_LENGTH)
+                math(EXPR START_URL "${START_URL}+1+${STRING_LENGTH}")
+                string(LENGTH ${GIT_REPOSITORY_URL} STRING_LENGTH)
+                message(STATUS "${CMLOC}START_URL: ${START_URL}, STRING_LENGTH: ${STRING_LENGTH}")
+                string(SUBSTRING ${GIT_REPOSITORY_URL} ${START_URL} ${STRING_LENGTH} GIT_REPOSITORY)
+            endif()
         else()
-            string(FIND ${GIT_REPOSITORY_URL} ${GIT_REPOSITORY_SERVER} START_URL REVERSE)
-            string(LENGTH ${GIT_REPOSITORY_SERVER} STRING_LENGTH)
-            math(EXPR START_URL "${START_URL}+1+${STRING_LENGTH}")
-            string(LENGTH ${GIT_REPOSITORY_URL} STRING_LENGTH)
-            message(STATUS "${CMLOC}START_URL: ${START_URL}, STRING_LENGTH: ${STRING_LENGTH}")
-            string(SUBSTRING ${GIT_REPOSITORY_URL} ${START_URL} ${STRING_LENGTH} GIT_REPOSITORY)
+            message(STATUS "${CMLOC}Branch is not tracking a remote branch")
         endif()
     else()
-        message(STATUS "${CMLOC}Branch is not tracking a remote branch")
+        message(STATUS "${CMLOC}This directory does not contain git")
+        set(GIT_REPOSITORY "")
+        set(GIT_REPOSITORY_BRANCH "")
+        set(GIT_REPOSITORY_TAG "")
     endif()
 endif()
 message(STATUS "${CMLOC}GIT_REPOSITORY: ${GIT_REPOSITORY}")
@@ -390,29 +403,6 @@ IF(QT_ANDROID)
 
 ENDIF(QT_ANDROID)
 
-#if(QT_ANDROID AND USE_GL MATCHES ON")
-#   message(STATUS "${CMLOC}Using GLESv1 for Android")
-#   add_definitions(-DocpnUSE_GLES)
-#   add_definitions(-DocpnUSE_GL)
-#
-#   set(OPENGLES_FOUND "YES")
-#   set(OPENGL_FOUND "YES")
-#
-#   set(wxWidgets_USE_LIBS ${wxWidgets_USE_LIBS} gl)
-#   if(EXISTS "src/glshim")
-#       message(STATUS "${CMLOC}Using src/glshim")
-#       add_subdirectory(src/glshim)
-#   elseif(EXISTS "extsrc/glshim")
-#       message(STATUS "${CMLOC}Using extsrc/glshim")
-#       add_subdirectory(extsrc/glshim)
-#   endif()
-#   set(EXTINCLUDE ${EXTINCLUDE} extinclude/android)
-#   set(EXTINCLUDE ${EXTINCLUDE} extsrc/glshim/include)
-#
-#endif(QT_ANDROID AND USE_GL MATCHES "ON")
-#message(STATUS "${CMLOC}    Adding local GLU")
-#add_subdirectory(libs/glu)
-
 if((NOT OPENGLES_FOUND) AND (NOT QT_ANDROID))
 
     if(USE_GL MATCHES "ON")
@@ -422,7 +412,12 @@ if((NOT OPENGLES_FOUND) AND (NOT QT_ANDROID))
         message(STATUS "${CMLOC}OpenGL disabled by option...")
     endif(USE_GL MATCHES "ON")
 
-    if(OPENGL_FOUND)
+    if(USE_LOCAL_GLU)
+        message(STATUS "${CMLOC}    Adding local GLU")
+        add_subdirectory(ocpnsrc/glu)
+        set(OPENGL_LIBRARIES "GLU_static" ${OPENGL_LIBRARIES})
+        message(STATUS "${CMLOC}    Revised GL Lib (with local): " ${OPENGL_LIBRARIES})
+    elseif(OPENGL_FOUND)
 
         set(wxWidgets_USE_LIBS ${wxWidgets_USE_LIBS} gl)
         include_directories(${OPENGL_INCLUDE_DIR})
@@ -444,17 +439,10 @@ if((NOT OPENGLES_FOUND) AND (NOT QT_ANDROID))
         set(OPENGL_LIBRARIES ${REVISED_OPENGL_LIBRARIES})
         message(STATUS "${CMLOC}    Revised GL Lib: " ${OPENGL_LIBRARIES})
 
-    else(OPENGL_FOUND)
+    else()
         message(STATUS "${CMLOC}OpenGL not found...")
-    endif(OPENGL_FOUND)
+    endif()
 endif()
-
-#if(USE_LOCAL_GLU)
-#    message(STATUS "${CMLOC}    Adding local GLU")
-#    add_subdirectory(ocpnsrc/glu)
-#    set(OPENGL_LIBRARIES "GLU_static" ${OPENGL_LIBRARIES})
-#    message(STATUS "${CMLOC}    Revised GL Lib (with local): " ${OPENGL_LIBRARIES})
-#endif(USE_LOCAL_GLU)
 
 if(NOT QT_ANDROID)
     # Find wxWidgets here, and the setting get inherited by all plugins. These options can be used to set the linux widgets build type
