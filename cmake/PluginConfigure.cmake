@@ -29,12 +29,6 @@ elseif($ENV{APPVEYOR})
     set(GIT_REPOSITORY_BRANCH "$ENV{APPVEYOR_REPO_BRANCH}")
     set(GIT_REPOSITORY_TAG "$ENV{APPVEYOR_REPO_TAG_NAME}")
 else()
-    # check to make sure we have a git repository
-    execute_process(
-        COMMAND git status $>/dev/null
-        RESULT_VARIABLE GIT_REPOSITORY_EXISTS
-        OUTPUT_QUIET
-        ERROR_QUIET)
     if("${GIT_REPOSITORY_EXISTS}" STREQUAL "0")
         # Get the current working branch
         execute_process(
@@ -81,7 +75,7 @@ else()
             message(STATUS "${CMLOC}Branch is not tracking a remote branch")
         endif()
     else()
-        message(STATUS "${CMLOC}This directory does not contain git")
+        message(STATUS "${CMLOC}This directory does not contain git or git is not available")
         set(GIT_REPOSITORY "")
         set(GIT_REPOSITORY_BRANCH "")
         set(GIT_REPOSITORY_TAG "")
@@ -111,6 +105,11 @@ message(STATUS "${CMLOC}CLOUDSMITH_BASE_REPOSITORY: ${CLOUDSMITH_BASE_REPOSITORY
 
 # Process files in in-files sub directory into the build output directory, thereby allowing building from a read-only source tree.
 if(NOT SKIP_VERSION_CONFIG)
+    if(MINGW)
+        message(STATUS "${CMLOC}Temporarily allowing different search path for MINGW")
+        set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE_SAVE ${CMAKE_FIND_ROOT_PATH_MODE_INCLUDE})
+        set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
+    endif()
     set(BUILD_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY})
     unset(PLUGIN_EXTRA_VERSION_VARS CACHE)
     find_file(PLUGIN_EXTRA_VERSION_VARS NAMES version.h.extra PATHS cmake/in-files NO_DEFAULT_PATH )
@@ -123,6 +122,7 @@ if(NOT SKIP_VERSION_CONFIG)
         set(EXTRA_VERSION_INFO "#include \"version_extra.h\"")
     endif()
     find_file(PLUGIN_EXTRA_FORMBUILDER_HEADERS NAMES extra_formbuilder_headers.h.in PATHS cmake/in-files NO_DEFAULT_PATH)
+    message(STATUS "${CMLOC}PLUGIN_EXTRA_FORMBUILDER_HEADERS: ${PLUGIN_EXTRA_FORMBUILDER_HEADERS}")
     if(${PLUGIN_EXTRA_FORMBUILDER_HEADERS} STREQUAL "PLUGIN_EXTRA_FORMBUILDER_HEADERS-NOTFOUND")
         message(STATUS "${CMLOC}PLUGIN_EXTRA_FORMBUILDER_HEADERS: Not found")
     else()
@@ -132,13 +132,16 @@ if(NOT SKIP_VERSION_CONFIG)
     configure_file(cmake/in-files/version.h.in ${BUILD_INCLUDE_PATH}/include/version.h)
     configure_file(cmake/in-files/wxWTranslateCatalog.h.in ${BUILD_INCLUDE_PATH}/include/wxWTranslateCatalog.h)
     include_directories(${BUILD_INCLUDE_PATH}/include)
+    if(MINGW)
+        set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ${CMAKE_FIND_ROOT_PATH_MODE_INCLUDE_SAVE})
+    endif()
 endif(NOT SKIP_VERSION_CONFIG)
 
 # configure xml file for circleci
 message(STATUS "${CMLOC}OCPN_TARGET: $ENV{OCPN_TARGET}")
 if(NOT DEFINED $ENV{OCPN_TARGET})
     set($ENV{OCPN_TARGET} ${PKG_TARGET})
-    message(STATUS "${CMLOC}Setting OCPN_TARGET")
+    message(STATUS "${CMLOC}Setting OCPN_TARGET: ${PKG_TARGET}")
 endif()
 
 if("$ENV{BUILD_GTK3}" STREQUAL "true")
@@ -338,12 +341,12 @@ endif()
 #    ENDIF(_wx_selected_config MATCHES "androideabi-qt")
 #ENDIF(DEFINED _wx_selected_config)
 IF(DEFINED _wx_selected_config)
+    MESSAGE(STATUS "${CMLOC}_wx_select_config defined as $ENV{_wx_select_config}")
     IF(_wx_selected_config MATCHES "androideabi-qt")
         MESSAGE (STATUS "${CMLOC}Qt_Base: " ${Qt_Base})
         MESSAGE (STATUS "${CMLOC}wxQt_Base/Build: " ${wxQt_Base} "/" ${wxQt_Build})
         ADD_DEFINITIONS(-DocpnUSE_GLES)
         ADD_DEFINITIONS(-DocpnUSE_GL)
-        ADD_DEFINITIONS(-DARMHF)
 
         SET(OPENGLES_FOUND "YES")
         SET(OPENGL_FOUND "YES")
@@ -363,6 +366,7 @@ ENDIF(DEFINED _wx_selected_config)
 
 # Building for QT_ANDROID involves a cross-building environment, So the include directories, flags, etc must be stated explicitly without trying to locate them on the host build system.
 IF(QT_ANDROID)
+    MESSAGE(STATUS "${CMLOC}Processing QT_ANDROID")
     ADD_DEFINITIONS(-D__WXQT__)
     ADD_DEFINITIONS(-D__OCPN__ANDROID__)
     ADD_DEFINITIONS(-DOCPN_USE_WRAPPER)
@@ -370,38 +374,56 @@ IF(QT_ANDROID)
 
     set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-soname,libgorp.so ")
 
-    SET(CMAKE_CXX_FLAGS "-pthread -fPIC -O2 -g")
+    SET(CMAKE_CXX_FLAGS "-pthread -fPIC")
 
     ## Compiler flags
-    add_definitions( " -s")
     add_compile_options("-Wno-inconsistent-missing-override"
     "-Wno-potentially-evaluated-expression"
     "-Wno-overloaded-virtual"
     "-Wno-unused-command-line-argument"
     "-Wno-unknown-pragmas"
-    "-O3"
-    "-fPIC"
       )
 
     message(STATUS "${CMLOC}Adding libgorp.o shared library")
     set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-soname,libgorp.so ")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")  ## Strip binary
 
-    ADD_DEFINITIONS("-Wno-inconsistent-missing-override -Wno-potentially-evaluated-expression")
     SET(QT_LINUX "OFF")
     SET(QT "ON")
     SET(CMAKE_SKIP_BUILD_RPATH  TRUE)
     ADD_DEFINITIONS(-DQT_WIDGETS_LIB)
-    ADD_DEFINITIONS(-DARMHF)
-
-    SET(OPENGLES_FOUND "YES")
-    SET(OPENGL_FOUND "YES")
-
-    #MESSAGE (STATUS "Using GLESv2 for Android")
-    #ADD_DEFINITIONS(-DUSE_ANDROID_GLES2)
-    #ADD_DEFINITIONS(-DUSE_GLSL)
+    if("$ENV{OCPN_TARGET}" STREQUAL "android-arm64")
+        MESSAGE(STATUS "${CMLOC}Adding definition -DARM64")
+        ADD_DEFINITIONS(-DARM64)
+    else()
+        MESSAGE(STATUS "${CMLOC}Adding definition -DARMHF")
+        ADD_DEFINITIONS(-DARMHF)
+    endif()
 
 ENDIF(QT_ANDROID)
+
+#if(QT_ANDROID AND USE_GL MATCHES ON")
+#   message(STATUS "${CMLOC}Using GLESv1 for Android")
+#   add_definitions(-DocpnUSE_GLES)
+#   add_definitions(-DocpnUSE_GL)
+#
+#   set(OPENGLES_FOUND "YES")
+#   set(OPENGL_FOUND "YES")
+#
+#   set(wxWidgets_USE_LIBS ${wxWidgets_USE_LIBS} gl)
+#   if(EXISTS "src/glshim")
+#       message(STATUS "${CMLOC}Using src/glshim")
+#       add_subdirectory(src/glshim)
+#   elseif(EXISTS "extsrc/glshim")
+#       message(STATUS "${CMLOC}Using extsrc/glshim")
+#       add_subdirectory(extsrc/glshim)
+#   endif()
+#   set(EXTINCLUDE ${EXTINCLUDE} extinclude/android)
+#   set(EXTINCLUDE ${EXTINCLUDE} extsrc/glshim/include)
+#
+#endif(QT_ANDROID AND USE_GL MATCHES "ON")
+#message(STATUS "${CMLOC}    Adding local GLU")
+#add_subdirectory(libs/glu)
 
 if((NOT OPENGLES_FOUND) AND (NOT QT_ANDROID))
 
@@ -443,6 +465,13 @@ if((NOT OPENGLES_FOUND) AND (NOT QT_ANDROID))
         message(STATUS "${CMLOC}OpenGL not found...")
     endif()
 endif()
+
+#if(USE_LOCAL_GLU)
+#    message(STATUS "${CMLOC}    Adding local GLU")
+#    add_subdirectory(ocpnsrc/glu)
+#    set(OPENGL_LIBRARIES "GLU_static" ${OPENGL_LIBRARIES})
+#    message(STATUS "${CMLOC}    Revised GL Lib (with local): " ${OPENGL_LIBRARIES})
+#endif(USE_LOCAL_GLU)
 
 if(NOT QT_ANDROID)
     # Find wxWidgets here, and the setting get inherited by all plugins. These options can be used to set the linux widgets build type
@@ -498,7 +527,7 @@ else(NOT QT_ANDROID)
         INCLUDE_DIRECTORIES("${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/include/QtTest")
 
         INCLUDE_DIRECTORIES( "${OCPN_Android_Common}/wxWidgets/libarm64/wx/include/arm-linux-androideabi-qt-unicode-static-3.1")
-        INCLUDE_DIRECTORIES( BEFORE "${OCPN_Android_Common}/wxWidgets/include")
+        INCLUDE_DIRECTORIES( "${OCPN_Android_Common}/wxWidgets/include")
 
         SET(wxWidgets_LIBRARIES
         ${CMAKE_CURRENT_SOURCE_DIR}/${OCPN_Android_Common}/qt5/build_arm64_O3/qtbase/lib/libQt5Core.so

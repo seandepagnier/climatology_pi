@@ -50,7 +50,6 @@ cmake  \
   -DPREFIX=/ \
   ..
 
-
 make
 make package
 

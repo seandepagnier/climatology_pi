@@ -1,4 +1,5 @@
-#### Weather Fax Plugin for OpenCPN
+v1.0.146.4
+## Weather Fax Plugin for OpenCPN
 
 Implement weather fax ability for opencpn.  
 This includes retrieval via sound card (radio fax) as well as the internet, or local image files.
@@ -83,7 +84,7 @@ If this script is used on CIRCLECI, TRAVIS or APPVEYOR it will upload the correc
 If this script is used locally it will build the correct artifacts but will not do the upload
 
 
-### Add Plugin to the Plugin Manager Catalog
+### Add Plugin xml files to the Plugin Manager Catalog
 
 Add your new Metadata xml to Plugin Manager Catalog
 Make Pull Request to github.com/OpenCPN/Plugiins 

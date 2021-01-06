@@ -19,7 +19,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2: v1.0.148.0    Frontend2 Author: Jon Gough  
+# Frontend2: v1.0.149.0    Frontend2 Author: Jon Gough  
 # ---------------------------------------------------------------------------
 
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
@@ -54,9 +54,9 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
-set(VERSION_PATCH "21")
+set(VERSION_PATCH "22")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "3/1/2021") # DD/MM/YYYY format
+set(VERSION_DATE "3/6/2021") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -221,11 +221,13 @@ SET(LIBHDRS
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/plugingl)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/tinyxml)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jsoncpp)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jsoncpp/json)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jsoncpp/json)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16)
 
+##=============================================================
 ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
+##=============================================================
 
 IF(NOT UNIX)
     SET(SRC_BZIP
