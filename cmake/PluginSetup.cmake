@@ -31,16 +31,27 @@ message(STATUS "${CMLOC}OPCN_FLATPAK: ${OCPN_FLATPAK}")
 set(PKG_NVR ${PACKAGE_NAME}-${PROJECT_VERSION})
 set(PKG_URL "https://dl.cloudsmith.io/public/--pkg_repo--/raw/names/--name--/versions/--version--/--filename--")
 
+# check to make sure we have a git repository
 execute_process(
-    COMMAND git log -1 --format=%h
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_HASH
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    COMMAND git status $>/dev/null
+    RESULT_VARIABLE GIT_REPOSITORY_EXISTS
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if("${GIT_REPOSITORY_EXISTS}" STREQUAL "0")
+    execute_process(
+        COMMAND git log -1 --format=%h
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_HASH
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-execute_process(
-    COMMAND git log -1 --format=%ci
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_COMMIT_DATE OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(
+        COMMAND git log -1 --format=%ci
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_DATE OUTPUT_STRIP_TRAILING_WHITESPACE)
+else()
+    set(GIT_HASH "")
+    set(GIT_COMMIT_DATE "")
+endif()
 
 message(STATUS "${CMLOC}OCPN_FLATPAK_CONFIG: ${OCPN_FLATPAK_CONFIG}, UNIX: ${UNIX}")
 if(OCPN_FLATPAK_CONFIG OR OCPN_FLATPAK_BUILD)
