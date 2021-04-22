@@ -36,7 +36,7 @@
 
 #include "ocpn_plugin.h"
 
-#include "json.h"
+#include "json/json.h"
 
 #include "defs.h"
 

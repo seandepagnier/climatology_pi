@@ -167,7 +167,7 @@ SET(HDRS
 )
 
 #SET(LIBSRC
-#            src/jsoncpp/json_reader.cpp
+#           src/jsoncpp/json_reader.cpp
 #			src/jsoncpp/json_value.cpp
 #			src/jsoncpp/json_writer.cpp
 #			src/plugingl/pi_shaders.cpp
@@ -215,14 +215,12 @@ SET(SRC  ${SRC_CLIMATOLOGY} ${HDRS} )
 # Modify/configure 'Include' Directories below for the Plugin
 ##=============================================================
 
-##include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
-##include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/tinyxml)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jsoncpp)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/jsoncpp/json)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)  #why is this needed when has cmakelists.txt
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include) # to find json.h  -why? same as above
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)  # does not find gl.h when on, need as the next line 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
-
-
 
 if(QT_ANDROID)
     include_directories(BEFORE ${qt_android_include})
@@ -242,31 +240,17 @@ add_definitions(-DTIXML_USE_STL)
 add_subdirectory(libs/tinyxml)
 target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
 
-
 IF(NOT UNIX)
-    SET(SRC_BZIP
-#			src/bzip2/bzlib.h
-            src/bzip2/bzlib.c
-            src/bzip2/blocksort.c
-            src/bzip2/compress.c
-            src/bzip2/crctable.c
-            src/bzip2/decompress.c
-            src/bzip2/huffman.c
-            src/bzip2/randtable.c
-#			src/bzip2/bzlib_private.h
-    )
-
-    ADD_LIBRARY(LIB_BZIP_CL STATIC ${SRC_BZIP})
-    TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} LIB_BZIP_CL )
-
-    include_directories(${PROJECT_SOURCE_DIR}/buildwin/include)
-    include_directories(${PROJECT_SOURCE_DIR}/src/bzip2)
+    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/zlib-1.2.3)
+    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/bzip2)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/libs/bzip2)
+    target_link_libraries(${PACKAGE_NAME} ocpn::bzip2)
 ENDIF(NOT UNIX)
 
 IF(WIN32)
   IF(MSVC)
     SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
-    include_directories(${CMAKE_SOURCE_DIR}/buildwin/include)
+    include_directories(BEFORE ${CMAKE_SOURCE_DIR}/buildwin/include)
     target_link_libraries(${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib1.lib")
   ELSE()
     # MINGW

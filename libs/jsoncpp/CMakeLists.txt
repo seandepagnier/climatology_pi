@@ -21,6 +21,8 @@ SET(SRC_JSON
     src/json_reader.cpp
     src/json_value.cpp
     src/json_writer.cpp
+	include/json/json.h
+#	include/json_batchallocator.h
 )
 
 message(STATUS "${CMLOC}About to look for widgets, wxWidgets_INCLUDE_DIRS: ${wxWidgets_INCLUDE_DIRS}")
