@@ -49,8 +49,14 @@ cmake  \
   -DPREFIX=/ \
   ..
 
-#sudo make clean
-make
+# Get number of processors and use this on make to speed up build
+if type nproc &> /dev/null
+then
+    make_cmd="make -j"$(nproc)
+else
+    make_cmd="make"
+fi
+eval $make_cmd
 make package
 
 #  All below for local docker build

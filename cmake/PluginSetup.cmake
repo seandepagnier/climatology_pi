@@ -5,6 +5,9 @@
 set(SAVE_CMLOC ${CMLOC})
 set(CMLOC "PluginSetup: ")
 
+# Make sure cmake sub directory files can be found by cmake
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
 if(NOT DEFINED GIT_REPOSITORY_SERVER)
     set(GIT_REPOSITORY_SERVER "github.com")
     message(STATUS "${CMLOC}GIT_REPOSITORY_SERVER not found setting to: ${GIT_REPOSITORY_SERVER}")
@@ -19,6 +22,9 @@ else(NOT ${PACKAGE} MATCHES "(.*)_pi")
     set(PACKAGE_FILE_NAME "${PACKAGE}")
 endif(NOT ${PACKAGE} MATCHES "(.*)_pi")
 string(TOUPPER "${PACKAGE}" TITLE_NAME)
+
+# add library for use later
+add_library(${PACKAGE_NAME} SHARED)
 
 project(${PACKAGE} VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}.${VERSION_TWEAK})
 message(STATUS "${CMLOC}PROJECT_VERSION: ${PROJECT_VERSION}")
@@ -93,6 +99,11 @@ else()
     set(PKG_TARGET_VERSION 1)
 endif()
 
+if(${BUILD_GTK3})
+    message(STATUS "${CMLOC}set CMAKE defined BUILD_GTK3: ${BUILD_GTK3}")
+    set(ENV{BUILD_GTK3} ${BUILD_GTK3})
+endif()
+
 if(NOT WIN32 AND NOT QT_ANDROID)
     # default
     set(ARCH "i386")
@@ -156,7 +167,7 @@ if(NOT WIN32 AND NOT QT_ANDROID)
                 set(PACKAGE_DEPS "opencpn")
                 if(CMAKE_SIZEOF_VOID_P MATCHES "8")
                     set(ARCH "x86_64")
-                    set(LIB_INSTALL_DIR "lib")
+                    set(LIB_INSTALL_DIR "lib64")
                 else(CMAKE_SIZEOF_VOID_P MATCHES "8")
                     set(ARCH "i386")
                     set(LIB_INSTALL_DIR "lib")
@@ -178,9 +189,13 @@ else(NOT WIN32 AND NOT QT_ANDROID)
     set(ARCH "x86_64")
     if(_wx_selected_config MATCHES "androideabi-qt-arm64")
         set(ARCH "arm64")
+        # android cannot used graphics context is wxWidgets as it does not exist
+        set(wxUSE_GRAPHICS_CONTEXT 0)
     endif(_wx_selected_config MATCHES "androideabi-qt-arm64")
     if(_wx_selected_config MATCHES "androideabi-qt-armhf")
         set(ARCH "armhf")
+        # android cannot used graphics context is wxWidgets as it does not exist
+        set(wxUSE_GRAPHICS_CONTEXT 0)
     endif(_wx_selected_config MATCHES "androideabi-qt-armhf")
 endif(NOT WIN32 AND NOT QT_ANDROID)
 
@@ -193,7 +208,19 @@ string(TOLOWER ${PKG_TARGET_VERSION} PKG_TARGET_VERSION)
 set(PKG_TARGET_NVR ${PKG_TARGET}-${PKG_TARGET_VERSION})
 message(STATUS "${CMLOC}PluginSetup: PKG_TARGET: ${PKG_TARGET}, PKG_TARGET_VERSION: ${PKG_TARGET_VERSION}")
 
+# Allow OCPN_TARGET to be used on the cmake command line
+message(STATUS "${CMLOC}OCPN_TARGET: $ENV{OCPN_TARGET}")
+if(NOT DEFINED ENV{OCPN_TARGET})
+    if(DEFINED OCPN_TARGET)
+        message(STATUS "${CMLOC}OCPN_TARGET: ${OCPN_TARGET}")
+        set(ENV{OCPN_TARGET} ${OCPN_TARGET})
+    else()
+        message(STATUS "${CMLOC}PKG_TARGET: ${PKG_TARGET}")
+    endif()
+endif()
+
 if(DEFINED ENV{OCPN_TARGET})
+    message(STATUS "${CMLOC}OCPN_TARGET defined: $ENV{OCPN_TARGET}")
     if(OCPN_FLATPAK_CONFIG OR OCPN_FLATPAK_BUILD OR MINGW)
         set(PACKAGING_NAME "${PKG_NVR}-${PKG_TARGET}-${ARCH}-${PKG_TARGET_VERSION}-$ENV{OCPN_TARGET}")
         set(PACKAGING_NAME_XML "${PKG_NVR}-${PKG_TARGET}-${ARCH}-${PKG_TARGET_VERSION}-$ENV{OCPN_TARGET}")

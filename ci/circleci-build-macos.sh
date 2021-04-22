@@ -4,11 +4,6 @@
 # Build the  MacOS artifacts
 #
 
-# Fix broken ruby on the CircleCI image:
-if [ -n "$CIRCLECI" ]; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-fi
-
 set -xe
 
 set -o pipefail
@@ -55,3 +50,4 @@ make package
 
 # removed as fails to build
 # make create-pkg
+
