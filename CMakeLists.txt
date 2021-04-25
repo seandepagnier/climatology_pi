@@ -260,13 +260,6 @@ if(QT_ANDROID)
     include_directories(BEFORE ${qt_android_include})
 endif(QT_ANDROID)
 
-# Commented out, but not removed yet
-#========================================================
-#include("PluginJSON")
-#include("PluginXML")
-#include("PluginGL")
-#========================================================
-
 ## ----- Change above to match project requirements ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
 ## ========================================================
