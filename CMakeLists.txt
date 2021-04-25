@@ -18,7 +18,7 @@
 ## *   Free Software Foundation, Inc.,                                       *
 ## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
 ## ---------------------------------------------------------------------------
-## Frontend2 Author: Jon Gough   v1.0.160.3  + Change for Android
+## Frontend2 Author: Jon Gough   v1.0.161
 ## ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur   ----- ##
 ## ----- Changes should only be made between the section blocks that identify where ---- ##
@@ -142,14 +142,15 @@ ENDIF(PLUGIN_USE_SVG)
 
 #======== Below from cmakelists.txt  climatology_pi
 # ----Remember to Add your project Set(SRCS and set(HDRS  etc..
+
 SET(SRC_CLIMATOLOGY
-            src/ClimatologyOverlayFactory.cpp
             src/climatology_pi.cpp
-            src/ClimatologyUI.cpp
-            src/ClimatologyDialog.cpp
             src/ClimatologyConfigDialog.cpp
-            src/IsoBarMap.cpp
+            src/ClimatologyDialog.cpp
+            src/ClimatologyOverlayFactory.cpp
+            src/ClimatologyUI.cpp
             src/icons.cpp
+            src/IsoBarMap.cpp
             src/zuFile.cpp
 )
 
@@ -159,6 +160,7 @@ SET(HDRS
 			include/ClimatologyDialog.h
 			include/ClimatologyOverlayFactory.h
 			include/ClimatologyUI.h
+			include/defs.h
 			include/gldefs.h
 			include/icons.h
 			include/IsoBarMap.h
@@ -166,72 +168,56 @@ SET(HDRS
 			include/zuFile.h
 )
 
-#SET(LIBSRC
-#           src/jsoncpp/json_reader.cpp
-#			src/jsoncpp/json_value.cpp
-#			src/jsoncpp/json_writer.cpp
-#			src/plugingl/pi_shaders.cpp
-#			src/plugingl/pidc.cpp
-#			src/plugingl/qtstylesheet.cpp
-#			src/plugingl/TexFont.cpp
-#			src/tinyxml/tinyxml.cpp
-#			src/tinyxml/tinyxmlerror.cpp
-#			src/tinyxml/tinyxmlparser.cpp
-#)
+set(LIBSRC
+    libs/jasoncpp/src/json_reader.cpp
+    libs/jasoncpp/src/json_value.cpp
+    libs/jasoncpp/src/json_writer.cpp
+)
 
-#SET(LIBHDRS
-#			src/jsoncpp/json_batchallocator.h
-#			src/jsoncpp/json_tool.h
-#			src/jsoncpp/json/assertions.h
-#			src/jsoncpp/json/autolink.h
-#			src/jsoncpp/json/config.h
-#			src/jsoncpp/json/features.h
-#			src/jsoncpp/json/forwards.h
-#			src/jsoncpp/json/json.h
-#			src/jsoncpp/json/reader.h
-#			src/jsoncpp/json/value.h
-#			src/jsoncpp/json/writer.h
-#			src/plugingl/linmath.h
-#			src/plugingl/pi_shaders.h
-#			src/plugingl/pidc.h
-#			src/plugingl/qtstylesheet.h
-#			src/plugingl/TexFont.h
-#			src/tinyxml/tinyxml.h
-#			include/GL/gl.h
-#			include/GL/gl_private.h
-#			include/GL/glext.h
-#			include/GL/glu.h
-#            api-16/ocpn_plugin.h
-#)
+set(LIBHDRS
+    libs/GL/gl.h
+    libs/GL/gl_private.h
+    libs/GL/glext.h
+    libs/GL/glu.h
+    libs/jasoncpp/include/json/json.h
+    libs/jasoncpp/include/json/reader.h
+    libs/jasoncpp/include/json/value.h
+    libs/jasoncpp/include/json/writer.h
+    libs/jasoncpp/include/json/forwards.h
+    libs/jasoncpp/include/json/features.h
+    libs/jasoncpp/include/json/config.h
+    libs/jasoncpp/include/json/autolink.h
+    libs/jasoncpp/include/json/assertions.h
+)
 
 add_definitions(-DPLUGIN_USE_SVG)
 
-# =================================================
-SET(SRC  ${SRC_CLIMATOLOGY} ${HDRS} )
-# =================================================
+# =============================================================
+SET(SRC  ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS})
+# =============================================================
 # SET(SRC  ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
 
 ##=============================================================
 # Modify/configure 'Include' Directories below for the Plugin
 ##=============================================================
 
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)  # does not find gl.h when on, need as the next line 
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/GL)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)  #why is the no
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)  #why is this needed when has cmakelists.txt
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include) # to find json.h  -why? same as above
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)  # does not find gl.h when on, need as the next line 
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
 
 if(QT_ANDROID)
     include_directories(BEFORE ${qt_android_include})
 endif(QT_ANDROID)
 
-
-# ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
-
 ##=================================================
 target_sources(${PACKAGE_NAME} PUBLIC ${SRC})
 ##=================================================
+## ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
 
 add_definitions(-DTIXML_USE_STL)
 
@@ -259,7 +245,6 @@ IF(WIN32)
 ENDIF(WIN32)
 
 
-
 #------- Change below to match project requirements --------------
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
@@ -275,24 +260,22 @@ if(QT_ANDROID)
     include_directories(BEFORE ${qt_android_include})
 endif(QT_ANDROID)
 
+# Commented out, but not removed yet
 #========================================================
 #include("PluginJSON")
 #include("PluginXML")
 #include("PluginGL")
 #========================================================
 
-##
 ## ----- Change above to match project requirements ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
-##
-#========================================================
+## ========================================================
 include("PluginInstall")
 include("PluginLocalization")
 include("PluginPackage")
-# ========================================================
-
+## ========================================================
 ## ----- do not change section above - needed to configure build process ----- ##
-##
+
 message(STATUS "${CMLOC}include directories: ")
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 foreach(dir ${dirs})
