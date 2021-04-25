@@ -46,7 +46,7 @@
 #include "gldefs.h"
 #include "icons.h"
 
-#include "plugingl/pi_shaders.h"
+#include "pi_shaders.h"
 
 #define FAILED_FILELIST_MSG_LEN 150
 

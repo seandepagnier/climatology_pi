@@ -249,7 +249,7 @@ ENDIF(WIN32)
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
 add_subdirectory(libs/jsoncpp)
-target_link_libraries(${PACKAGE_NAME} ${PACKAGE_NAME}_LIB_PLUGINJSON)
+target_link_libraries(${PACKAGE_NAME} ocpn::jsoncpp)
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl/include)
 add_subdirectory(libs/plugingl)

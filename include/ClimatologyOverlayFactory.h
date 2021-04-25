@@ -30,7 +30,7 @@
 #include "zuFile.h"
 
 #include "IsoBarMap.h"
-#include "plugingl/pidc.h"
+#include "pidc.h"
 
 class PlugIn_ViewPort;
 enum Coord {U, V, MAG, DIRECTION};
