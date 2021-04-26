@@ -3,7 +3,6 @@ include/ClimatologyConfigDialog.h
 include/ClimatologyDialog.h
 include/ClimatologyOverlayFactory.h
 include/ClimatologyUI.h
-include/defs.h
 include/gldefs.h
 include/icons.h
 include/IsoBarMap.h
