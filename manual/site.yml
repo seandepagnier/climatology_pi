@@ -5,8 +5,8 @@ site:
 
 content:
   sources:
-    - url: ../..
-      start_path: manual/climatology
+    - url: ..
+      start_path: manual
       branches: HEAD
       edit_url: https://github.com/opencpn-manuals/climatology_pi/edit/master/{path}
 
