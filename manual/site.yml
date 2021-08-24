@@ -1,7 +1,7 @@
 site:
   title: Climatology Plugin Manual
   url:  https://nowhere.net
-  start_page: climatology:ROOT:climatology.adoc
+  start_page: climatology::index.adoc
 
 content:
   sources:
