@@ -1,6 +1,6 @@
-== Climatology
+= Climatology
 
-=== Links
+== Links
 
 * Source: https://github.com/seandepagnier/climatology_pi +
 * Download: https://opencpn.org/OpenCPN/plugins/climatology.html +
@@ -14,7 +14,7 @@ DataBase Thread] +
 https://sourceforge.net/p/opencpnplugins/activity/?page=0&limit=100#5b116dfcf0d34709635c2374[CL-DATA
 separated by type is located in Sourceforge] This 30 years of NOAA Data is included with the plugin.
 
-=== Climatology Plugin
+== Climatology Plugin
 
 Intended to aid in planning sailing voyages, to help visualize weather patterns, and to integrate with weather routing plugin to compute optimal sailing routes. Weather_routing plugin will use Climatology to make long voyaging routes. This plugin goes well beyond what a Pilot chart provides.
 
@@ -28,7 +28,7 @@ image::climatology1thumb.jpeg[]
 
 July Wind with Current overlay. (Click for enlarged view)
 
-==== How do I set the Wind and Wind Rose settings to work right?
+=== How do I set the Wind and Wind Rose settings to work right?
 
 See xref:#_faq[FAQ] below.
 
@@ -40,12 +40,12 @@ percentage of average speed as calm (3 knots or less) or in red at least gale fo
 
 image::tapatalk_15.jpeg[]
 
-=== Weather_routing plugin uses Climatology Data
+== Weather_routing plugin uses Climatology Data
 
 Weather_routing_pi can utilize the 30 year wind averages and current date from Climatology_pi. This is a unique and useful application. For more information see
 xref:weather_routing::index.adoc[Weather_routing_pi].
 
-=== Climatology Data types
+== Climatology Data types
 
 
 image::climatologyctr_0.jpeg[]
@@ -148,7 +148,7 @@ download from http://opencpn.org/ocpn/downloadplugins[opencpn.org/ocpn/downloadp
 
 You must also get the data files, the plugin will inform you where to install them.
 
-=== FAQ
+== FAQ
 
 How do I set the Wind Rose settings so that they work right? Set the two settings somewhere around Size:100 and Spacing:100 or Size:125 and
 Spacing:60.
@@ -167,7 +167,7 @@ Wind set at Size:125 and Spacing:60 (Size:140 and Spacing:100 also might work)
 
 Also Enable in the Wind Tab.
 
-=== Warning about use of Data:
+== Warning about use of Data:
 
 https://sourceforge.net/p/opencpnplugins/activity/?page=0&limit=100#5b116dfcf0d34709635c2374[CL-DATA separated by type is located in Sourceforge]
 
@@ -180,6 +180,6 @@ and the Climatology plugin.
 healthy “grain of salt” as any good sailor (who looks out to the
 horizon) should know. -Rick Gleason
 
-=== About the Author
+== About the Author
 
 The Climatology Plugin was written by Sean Depagnier who has written many Opencpn plugins. There is a strong likelihood you have already used one of his plugins. The plugin is over 1000 lines of code written with care and skill. Sean has a voyage fund and would appreciate any contribution large or small, please see the Donate button under the Configuration > About Tab. -Thank you Sean for this excellent plugin!
