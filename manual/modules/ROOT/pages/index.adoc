@@ -1,22 +1,20 @@
-== Climatology
+= Climatology
 
-=== Links
+== Links
 
 * Source: https://github.com/seandepagnier/climatology_pi +
+* Maintenance Source: https://github.com/rgleason/climatology_pi.git +
 * Download: https://opencpn.org/OpenCPN/plugins/climatology.html +
-* Forum:
-http://www.cruisersforum.com/forums/f134/climatology-102281.html +
-* Forum:
-http://www.cruisersforum.com/forums/showthread.php?p=1319396[Climatology
-DataBase Thread] +
+* Forum: http://www.cruisersforum.com/forums/f134/climatology-102281.html +
+* Forum: http://www.cruisersforum.com/forums/showthread.php?p=1319396[Climatology DataBase Thread] +
 * YouTube Sean: https://www.youtube.com/watch?v=6Ku9lQFFd6M[Climatology]
 
 https://sourceforge.net/p/opencpnplugins/activity/?page=0&limit=100#5b116dfcf0d34709635c2374[CL-DATA
 separated by type is located in Sourceforge] This 30 years of NOAA Data is included with the plugin.
 
-=== Climatology Plugin
+== Climatology Plugin
 
-Intended to aid in planning sailing voyages, to help visualize weather patterns, and to integrate with weather routing plugin to compute optimal sailing routes. Weather_routing plugin will use Climatology to make long voyaging routes. This plugin goes well beyond what a Pilot chart provides.
+Intended to aid in planning longer sailing voyages, to help visualize weather patterns, and to integrate with weather routing plugin to compute optimal sailing routes. Weather_routing plugin will use Climatology to make long voyaging routes. This plugin goes well beyond what a Pilot chart provides.
 
 Manage and view monthly gridded Climate data compiled from various
 sources. Satellite weather data from the last 30 years is averaged, then represented using only useful bits, then compressed to produce a much smaller database used by the plugin.
@@ -28,7 +26,7 @@ image::climatology1thumb.jpeg[]
 
 July Wind with Current overlay. (Click for enlarged view)
 
-==== How do I set the Wind and Wind Rose settings to work right?
+=== How do I set the Wind and Wind Rose settings to work right?
 
 See link:climatology.html#faq[FAQ] below.
 
@@ -40,12 +38,12 @@ percentage of average speed as calm (3 knots or less) or in red at least gale fo
 
 image::tapatalk_15.jpeg[]
 
-=== Weather_routing plugin uses Climatology Data
+== Weather_routing plugin uses Climatology Data
 
 link:weather_routing.html[Weather_routing_pi] can utilize the 30 year wind averages and current date from Climatology_pi. This is a unique and useful application. For more information see
 link:weather_routing.html[Weather_routing_pi].
 
-=== Climatology Data types
+== Climatology Data types
 
 
 image::climatologyctr_0.jpeg[]
@@ -148,7 +146,7 @@ download from http://opencpn.org/ocpn/downloadplugins[opencpn.org/ocpn/downloadp
 
 You must also get the data files, the plugin will inform you where to install them.
 
-=== FAQ
+== FAQ
 
 How do I set the Wind Rose settings so that they work right? Set the two settings somewhere around Size:100 and Spacing:100 or Size:125 and
 Spacing:60.
@@ -167,19 +165,19 @@ Wind set at Size:125 and Spacing:60 (Size:140 and Spacing:100 also might work)
 
 Also Enable in the Wind Tab.
 
-=== Warning about use of Data:
+== Warning about use of Data:
 
 https://sourceforge.net/p/opencpnplugins/activity/?page=0&limit=100#5b116dfcf0d34709635c2374[CL-DATA separated by type is located in Sourceforge]
 
  
-Weather_routing is only as good as the data provided by the Grib plugin
-and the Climatology plugin.
+Weather_routing is only as good as the data provided by the Grib plugin, the Climatology plugin, and your Boat Polars.
 
-. *Climatology plugin:* Depends on a separate set of files that must be downloaded, extracted and placed in the proper directory. Climatology data is generally averaged since the 1980's depending on data type and sources available (for example, Wind data is averaged 6 hr data since 1987). The entire source data set is over 180 gb, however after averaging and compression it becomes about 7mb. There are various macro factors which affect weather over a given season which should be considered, including El Nino, Gulf stream, etc. Climatology has averaged these effects.
-. These planning tools may be helpful, but should be taken with a
-healthy “grain of salt” as any good sailor (who looks out to the
-horizon) should know. -Rick Gleason
+Note: The plugin has been modified to automatically download these files.
 
-=== About the Author
+. *Climatology plugin:* Previously depended on a separate set of files that must be downloaded, extracted and placed in the proper directory. Climatology data is generally averaged since the 1980's depending on data type and sources available (for example, Wind data is averaged 6 hr data since 1987). The entire source data set is over 180 gb, however after averaging and compression it becomes about 7mb. There are various macro factors which affect weather over a given season which should be considered, including El Nino, Gulf stream, etc. Climatology has averaged these effects. These planning tools may be helpful, but should be taken with a healthy “grain of salt” as any good sailor (who looks out to the horizon) should know. -Rick Gleason
 
-The Climatology Plugin was written by Sean Depagnier who has written many Opencpn plugins. There is a strong likelihood you have already used one of his plugins. The plugin is over 1000 lines of code written with care and skill. Sean has a voyage fund and would appreciate any contribution large or small, please see the Donate button under the Configuration > About Tab. -Thank you Sean for this excellent plugin!
+== About the Author
+
+The Climatology Plugin was written by Sean Depagnier who has written many Opencpn plugins. There is a strong likelihood you have already used one of his plugins. The plugin is over 1000 lines of code written with care and skill. Sean has a voyage fund and would appreciate any contribution large or small, please see the Donate button under the Configuration > About Tab. 
+
+-Thank you Sean for this excellent plugin!
