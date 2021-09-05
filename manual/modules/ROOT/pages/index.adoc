@@ -28,7 +28,7 @@ July Wind with Current overlay. (Click for enlarged view)
 
 === How do I set the Wind and Wind Rose settings to work right?
 
-See link:climatology.html#faq[FAQ] below.
+See xref:#_faq[FAQ] below.
 
 The wind atlas time shows the percentage of time the wind is in each of
 eight directions as a length of the arrow or in the case it is over 29%
@@ -40,8 +40,8 @@ image::tapatalk_15.jpeg[]
 
 == Weather_routing plugin uses Climatology Data
 
-link:weather_routing.html[Weather_routing_pi] can utilize the 30 year wind averages and current date from Climatology_pi. This is a unique and useful application. For more information see
-link:weather_routing.html[Weather_routing_pi].
+Weather_routing_pi can utilize the 30 year wind averages and current date from Climatology_pi. This is a unique and useful application. For more information see
+xref:weather_routing::index.adoc[Weather_routing_pi].
 
 == Climatology Data types
 
@@ -151,13 +151,13 @@ You must also get the data files, the plugin will inform you where to install th
 How do I set the Wind Rose settings so that they work right? Set the two settings somewhere around Size:100 and Spacing:100 or Size:125 and
 Spacing:60.
 
-image::climatology-wind-setting-100-100.jpg[]
+image::climatology-wind-setting-100-100.jpeg[]
 
 image::climatology-wind-setting-100-100.jpeg[]
 
 Wind set at Size:100 and Spacing:100
 
-image::climatology-wind-rose-settings-125-60.jpg[]
+image::climatology-wind-rose-settings-125-60.jpeg[]
 
 image::climatology-wind-rose-settings-125-60.jpeg[]
 
