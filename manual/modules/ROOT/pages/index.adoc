@@ -3,7 +3,7 @@
 == Links
 
 * Source: https://github.com/seandepagnier/climatology_pi +
-* Maintenance Source: https://github.com/rgleason/climatology_pi.git +
+* Maintenance Source: https://github.com/rgleason/climatology_pi +
 * Download: https://opencpn.org/OpenCPN/plugins/climatology.html +
 * Forum: http://www.cruisersforum.com/forums/f134/climatology-102281.html +
 * Forum: http://www.cruisersforum.com/forums/showthread.php?p=1319396[Climatology DataBase Thread] +
