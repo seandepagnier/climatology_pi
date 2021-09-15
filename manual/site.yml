@@ -1,5 +1,5 @@
 site:
-  title: Climatology Plugin Manual
+  title: Climatology
   url:  https://nowhere.net
   start_page: climatology::index.adoc
 
