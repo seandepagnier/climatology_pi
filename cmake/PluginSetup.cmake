@@ -6,7 +6,7 @@ set(SAVE_CMLOC ${CMLOC})
 set(CMLOC "PluginSetup: ")
 
 # Make sure cmake sub directory files can be found by cmake
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 if(NOT DEFINED GIT_REPOSITORY_SERVER)
     set(GIT_REPOSITORY_SERVER "github.com")
@@ -46,23 +46,24 @@ execute_process(
 if("${GIT_REPOSITORY_EXISTS}" STREQUAL "0")
     execute_process(
         COMMAND git log -1 --format=%h
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         OUTPUT_VARIABLE GIT_HASH
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     execute_process(
         COMMAND git log -1 --format=%ci
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         OUTPUT_VARIABLE GIT_COMMIT_DATE OUTPUT_STRIP_TRAILING_WHITESPACE)
 else()
     set(GIT_HASH "")
     set(GIT_COMMIT_DATE "")
 endif()
 
-message(STATUS "${CMLOC}OCPN_FLATPAK_CONFIG: ${OCPN_FLATPAK_CONFIG}, UNIX: ${UNIX}")
+message(STATUS "${CMLOC}OCPN_FLATPAK_CONFIG: ${OCPN_FLATPAK_CONFIG}, OCPN_FLATPAK_BUILD: ${OCPN_FLATPAK_BUILD}, UNIX: ${UNIX}")
 if(OCPN_FLATPAK_CONFIG OR OCPN_FLATPAK_BUILD)
     set(PKG_TARGET "flatpak")
-    set(PKG_TARGET_VERSION "18.08") # As of flatpak/*yaml
+    set(PKG_TARGET_VERSION "${SDK_VER}") # As of flatpak/*yaml
+    message(STATUS "${CMLOC}PKG_TARGET_VERSION: ${PKG_TARGET_VERSION}")
 elseif(MINGW)
     set(PKG_TARGET "mingw")
     if(CMAKE_SYSTEM_VERSION)
@@ -80,7 +81,11 @@ elseif(MSVC)
         set(PKG_TARGET_VERSION 10)
     endif()
 elseif(APPLE)
-    set(PKG_TARGET "darwin")
+    if("$ENV{WXVERSION}" STREQUAL "315")
+        set(PKG_TARGET "darwin-wx$ENV{WXVERSION}")
+    else()
+        set(PKG_TARGET "darwin")
+    endif()
     execute_process(COMMAND "sw_vers" "-productVersion" OUTPUT_VARIABLE PKG_TARGET_VERSION)
 elseif(_wx_selected_config MATCHES "androideabi-qt-arm64")
     set(PKG_TARGET "Android")
@@ -119,7 +124,7 @@ if(NOT WIN32 AND NOT QT_ANDROID)
             set(LIB_INSTALL_DIR "lib")
             if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
                 if(CMAKE_SIZEOF_VOID_P MATCHES "8")
-                    set(ARCH "arm64")
+                    set(ARCH "aarch64")
                     add_definitions(-DOCPN_ARM64)
                 else(CMAKE_SIZEOF_VOID_P MATCHES "8")
                     set(ARCH "armhf")
@@ -134,12 +139,12 @@ if(NOT WIN32 AND NOT QT_ANDROID)
             endif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
         endif(EXISTS /etc/debian_version)
         if(NOT DEFINED PACKAGE_FORMAT)
-            if(EXISTS /app)
+            if("$ENV{OCPN_TARGET}" MATCHES "flatpak")
                 message(STATUS "*** Flatpak detected  ***")
                 set(PACKAGE_FORMAT "TGZ")
-                set(ARCH "x86_64")
+                set(ARCH "aarch64")
                 set(LIB_INSTALL_DIR "lib")
-            endif(EXISTS /app)
+            endif("$ENV{OCPN_TARGET}" MATCHES "flatpak")
         endif(NOT DEFINED PACKAGE_FORMAT)
 
         if(NOT DEFINED PACKAGE_FORMAT)
@@ -147,13 +152,25 @@ if(NOT WIN32 AND NOT QT_ANDROID)
                 message(STATUS "${CMLOC}*** Redhat detected  ***")
                 set(PACKAGE_FORMAT "RPM")
                 set(PACKAGE_DEPS "opencpn")
-                if(CMAKE_SIZEOF_VOID_P MATCHES "8")
-                    set(ARCH "x86_64")
-                    set(LIB_INSTALL_DIR "lib64")
-                else(CMAKE_SIZEOF_VOID_P MATCHES "8")
-                    set(ARCH "i386")
-                    set(LIB_INSTALL_DIR "lib")
-                endif(CMAKE_SIZEOF_VOID_P MATCHES "8")
+
+                if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
+                    if(CMAKE_SIZEOF_VOID_P MATCHES "8")
+                        set(ARCH "aarch64")
+                        add_definitions(-DOCPN_ARM64)
+                    else(CMAKE_SIZEOF_VOID_P MATCHES "8")
+                        set(ARCH "armhf")
+                        add_definitions(-DOCPN_ARMHF)
+                    endif(CMAKE_SIZEOF_VOID_P MATCHES "8")
+                else(CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
+                    if(CMAKE_SIZEOF_VOID_P MATCHES "8")
+                        set(ARCH "x86_64")
+                        set(LIB_INSTALL_DIR "lib64")
+                    else(CMAKE_SIZEOF_VOID_P MATCHES "8")
+                        set(ARCH "i386")
+                        set(LIB_INSTALL_DIR "lib")
+                    endif(CMAKE_SIZEOF_VOID_P MATCHES "8")
+                endif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
+
             endif(EXISTS /etc/redhat-release)
         endif(NOT DEFINED PACKAGE_FORMAT)
 
@@ -206,7 +223,7 @@ string(TOLOWER ${PKG_TARGET} PKG_TARGET)
 string(STRIP ${PKG_TARGET_VERSION} PKG_TARGET_VERSION)
 string(TOLOWER ${PKG_TARGET_VERSION} PKG_TARGET_VERSION)
 set(PKG_TARGET_NVR ${PKG_TARGET}-${PKG_TARGET_VERSION})
-message(STATUS "${CMLOC}PluginSetup: PKG_TARGET: ${PKG_TARGET}, PKG_TARGET_VERSION: ${PKG_TARGET_VERSION}")
+message(STATUS "${CMLOC}PKG_TARGET: ${PKG_TARGET}, PKG_TARGET_VERSION: ${PKG_TARGET_VERSION}")
 
 # Allow OCPN_TARGET to be used on the cmake command line
 message(STATUS "${CMLOC}OCPN_TARGET: $ENV{OCPN_TARGET}")
@@ -280,7 +297,7 @@ if(CMAKE_VERSION VERSION_GREATER 3.4)
             # For more, see http://clang.llvm.org/extra/clang-tidy/ set(CLANG_TIDY_CHECKS "-*,modernize-*")
             set(CLANG_TIDY_CHECKS "-*,performance-*")
             set(CMAKE_CXX_CLANG_TIDY
-                "${CLANG_TIDY_EXE};-checks=${CLANG_TIDY_CHECKS};-header-filter='${CMAKE_SOURCE_DIR}/*'"
+                "${CLANG_TIDY_EXE};-checks=${CLANG_TIDY_CHECKS};-header-filter='${PROJECT_SOURCE_DIR}/*'"
                 CACHE STRING "" FORCE)
         else()
             message(AUTHOR_WARNING "clang-tidy not found!")

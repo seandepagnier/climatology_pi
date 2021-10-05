@@ -134,7 +134,7 @@ if(APPLE)
     file(
         GLOB_RECURSE PACKAGE_DATA_FILES
         LIST_DIRECTORIES true
-        ${CMAKE_SOURCE_DIR}/data/*)
+        ${PROJECT_SOURCE_DIR}/data/*)
 
     foreach(_currentDataFile ${PACKAGE_DATA_FILES})
         message(STATUS "${CMLOC}copying: ${_currentDataFile}")
@@ -145,7 +145,7 @@ if(APPLE)
         file(
             GLOB_RECURSE PACKAGE_DATA_FILES
             LIST_DIRECTORIES true
-            ${CMAKE_SOURCE_DIR}/UserIcons/*)
+            ${PROJECT_SOURCE_DIR}/UserIcons/*)
 
         foreach(_currentDataFile ${PACKAGE_DATA_FILES})
             message(STATUS "${CMLOC}copying: ${_currentDataFile}")

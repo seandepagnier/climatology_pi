@@ -18,7 +18,7 @@
 ## *   Free Software Foundation, Inc.,                                       *
 ## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
 ## ---------------------------------------------------------------------------
-## Frontend2 Author: Jon Gough   v1.0.160.3  + Change for Android
+## Frontend2 Author: Jon Gough   v1.0.175.4 04/10/2021 + Change for Android
 ## ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur   ----- ##
 ## ----- Changes should only be made between the section blocks that identify where ---- ##
@@ -54,8 +54,8 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "23")
-set(VERSION_TWEAK "3")
-set(VERSION_DATE "25/04/2021") # DD/MM/YYYY format
+set(VERSION_TWEAK "4")
+set(VERSION_DATE "04/10/2021") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -111,7 +111,7 @@ message(STATUS "${CMLOC}Build type: ${CMAKE_BUILD_TYPE}")
 ## ----- The statements below are used to setup standard variables that are required by the CMAKE process - do not remove ----- ##
 
 project(${PACKAGE})
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # =======================================================
 include("PluginSetup")
@@ -237,6 +237,8 @@ SET(SRC  ${SRC_CLIMATOLOGY} ${HDRS} )
 # =================================================
 # SET(SRC  ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
 
+# Not doing JSON Schema Validator
+
 ##=============================================================
 # Modify/configure 'Include' Directories below for the Plugin
 ##=============================================================
@@ -250,6 +252,9 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
 
 if(QT_ANDROID)
     include_directories(BEFORE ${qt_android_include})
+    include_directories( ${CMAKE_SOURCE_DIR}/extinclude/GLES2)
+
+    #    #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/glshim/include/GLES)
 endif(QT_ANDROID)
 
 
@@ -259,9 +264,20 @@ endif(QT_ANDROID)
 target_sources(${PACKAGE_NAME} PUBLIC ${SRC})
 ##=================================================
 
+if(NOT OCPN_FLATPAK_CONFIG)
+    # Build environment not available when flatpak is being configured so following statements will not work
+    message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
+
+#    add_subdirectory(libs/tinyxml)
+
+#    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
+endif(NOT OCPN_FLATPAK_CONFIG)
+
+
 add_definitions(-DTIXML_USE_STL)
 
-## ----- Change above to match project requirements ----- ##
+# Not doing JSON Schema Validation
+
 
 add_subdirectory(libs/tinyxml)
 target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
@@ -284,9 +300,9 @@ IF(WIN32)
   ENDIF()
 ENDIF(WIN32)
 
+## ----- Change above to match project requirements ----- ##
 
-
-#------- Change below to match project requirements --------------
+##------- Change below to match project requirements --------------
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
 add_subdirectory(libs/jsoncpp)
@@ -296,7 +312,11 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl/include)
 add_subdirectory(libs/plugingl)
 target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
 
-# Added for android builds
+## ----- Change above to match project requirements ----- ##
+## ----- do not change next section - needed to configure build process ----- ##
+
+
+# Needed for android builds
 if(QT_ANDROID)
     include_directories(BEFORE ${qt_android_include})
 endif(QT_ANDROID)
@@ -313,6 +333,7 @@ endif(QT_ANDROID)
 ## ----- do not change next section - needed to configure build process ----- ##
 ##
 #========================================================
+# Needed for all builds
 include("PluginInstall")
 include("PluginLocalization")
 include("PluginPackage")
