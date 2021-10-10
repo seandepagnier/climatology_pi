@@ -1,8 +1,8 @@
 site:
-  title: Climatology Manual
+  title: Climatology
   url:  https://nowhere.net
   start_page: climatology::index.adoc
- 
+
 content:
   sources:
     - url: ..
