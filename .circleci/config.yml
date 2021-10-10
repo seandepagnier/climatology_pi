@@ -62,10 +62,10 @@ parameters:
         default: true
     run_build_android_arm64:
         type: boolean
-        default: false
+        default: true
     run_build_android_armhf:
         type: boolean
-        default: false
+        default: true
 
 orbs:
     cloudsmith: cloudsmith/cloudsmith@1.0.4
