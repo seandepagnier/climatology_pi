@@ -4,7 +4,7 @@
    width="32"
    height="32"
    id="svg4588"
-   sodipodi:docname="climatology - Copy.svg"
+   sodipodi:docname="climatology_toggled.svg"
    inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
    inkscape:label="Lightning"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -28,12 +28,12 @@
      id="namedview1129"
      showgrid="false"
      inkscape:zoom="13.269438"
-     inkscape:cx="5.7274468"
+     inkscape:cx="18.538841"
      inkscape:cy="14.356298"
-     inkscape:window-x="298"
-     inkscape:window-y="92"
+     inkscape:window-x="259"
+     inkscape:window-y="197"
      inkscape:window-maximized="0"
-     inkscape:current-layer="g4276"
+     inkscape:current-layer="svg4588"
      inkscape:pagecheckerboard="0" />
   <defs
      id="defs4590">
@@ -84,6 +84,14 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
+  <rect
+     style="fill:#4d4d4d;stroke-width:0;fill-opacity:1"
+     id="rect914"
+     width="32.556015"
+     height="32.179207"
+     x="-0.22608343"
+     y="-0.07536114"
+     inkscape:label="Background Square" />
   <g
      transform="matrix(0.99998437,0,0,0.99998437,2.4999906e-4,-2.5004095e-4)"
      style="display:inline;enable-background:new"
@@ -91,7 +99,7 @@
      inkscape:label="BorderBackground">
     <g
        id="g4276"
-       style="display:inline;fill:#333333">
+       style="display:none;fill:#333333">
       <rect
          height="32"
          x="0"
@@ -99,7 +107,7 @@
          width="32"
          ry="3.878"
          transform="scale(1,-1)"
-         style="display:inline;fill:#808080;enable-background:new"
+         style="display:inline;fill:#333333;enable-background:new"
          id="rect4364" />
       <rect
          x="0"
@@ -107,7 +115,7 @@
          width="32"
          height="32"
          ry="3.878"
-         style="display:inline;fill:#808080;enable-background:new"
+         style="display:none;fill:#333333;enable-background:new"
          id="rect4366" />
       <rect
          x="0.51099998"
@@ -131,7 +139,7 @@
        transform="scale(1,-1)"
        cy="-838.763"
        cx="1232.646"
-       style="display:inline;fill:#1163ea;fill-opacity:0.849398;stroke:#fdfdfd;stroke-width:2.48414;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="display:inline;fill:#b3b3b3;fill-opacity:0.84939802;stroke:#fdfdfd;stroke-width:2.48414;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
        id="path930"
        d="m 1237.733,843.786 6.182,6.053 m -11.333,-3.477 0.13,8.37 m -5.152,-10.688 -8.372,8.242 m 6.44,-14.038 -5.023,0.258 m 11.977,-6.954 v -9.402 m 5.022,11.205 18.288,-18.288 m -16.098,23.31 29.75,0.258 m -1.456,2.705 -1.545,-2.705 1.416,-2.834 m 2.871,5.409 -1.287,-2.575 1.803,-3.09 m -28.719,17.642 1.288,-3.348 3.09,-0.645 m -6.567,1.804 1.03,-3.606 m -11.591,8.758 2.834,-1.417 2.705,1.803 m -19.061,-5.152 2.833,0.902 0.902,2.962 m -1.803,-6.053 3.22,0.773 m -2.577,-8.758 1.675,-2.704 -1.545,-3.09 m 3.22,-0.001 1.416,3.22 m -3.22,-8.242 3.477,-1.16 0.773,-2.704 m 2.189,2.189 -1.16,2.962 2.19,1.546 m 1.805,-12.621 2.832,1.545 3.09,-1.802 m -0.128,3.477 -3.09,1.674 m 19.832,-10.947 1.16,3.09 3.218,0.645 m -1.804,-6.182 1.032,2.962 3.09,0.516"
@@ -142,10 +150,10 @@
      id="path1286"
      d="m 12.895156,22.214581 c -0.123411,-0.271502 -0.394913,-0.444276 -0.666415,-0.444276 h -1.949882 l 2.492886,-3.480168 c 0.172775,-0.222138 0.172775,-0.518323 0.04936,-0.765143 -0.123406,-0.246821 -0.370228,-0.394912 -0.666412,-0.394912 H 7.0948766 c -0.2961847,0 -0.5923689,0.197456 -0.6910975,0.468958 L 3.614709,24.929605 c -0.098728,0.222139 -0.049367,0.493642 0.074046,0.691098 0.1480924,0.197457 0.3702305,0.320867 0.617051,0.320867 v 0 h 1.4315585 l -1.9005172,5.010453 c -0.1234102,0.34555 0,0.715779 0.2961847,0.888553 0.1234101,0.07404 0.2468204,0.09873 0.3949121,0.09873 0.1974567,0 0.4195949,-0.07404 0.5430051,-0.24682 l 7.7007958,-8.688077 c 0.197456,-0.22214 0.246821,-0.518324 0.123411,-0.789827 z m -6.2445565,5.479413 0.8391892,-2.221383 c 0.098728,-0.222139 0.049366,-0.49364 -0.074046,-0.691097 C 7.2676503,24.584057 7.045512,24.460648 6.7986917,24.460648 v 0 H 5.3671338 l 2.246065,-5.849644 h 3.0852562 l -2.4928865,3.480168 c -0.1727748,0.222137 -0.1727748,0.518323 -0.049366,0.765143 0.1234105,0.246821 0.3702308,0.394913 0.6664156,0.394913 h 1.7524249 z"
      inkscape:connector-curvature="0"
-     style="display:inline;fill:#fdfafa;fill-opacity:0.987988;stroke-width:0.24682"
+     style="display:none;fill:#fdfafa;fill-opacity:0.987988;stroke-width:0.24682"
      inkscape:label="Lightning" />
   <path
-     style="display:inline;opacity:1;fill:#ea4111;fill-opacity:0.849398;stroke:#dd2a2b;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     style="display:none;opacity:1;fill:#ea4111;fill-opacity:0.849398;stroke:#dd2a2b;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      d="m 7.6130058,18.609735 -2.2460589,5.849518 h 1.4316176 c 0.2468201,0 0.4690867,0.124804 0.6171784,0.322261 0.123418,0.197457 0.1729463,0.469256 0.074219,0.691395 L 6.6520838,27.693577 10.575851,23.250288 H 8.8239248 c -0.2961843,0 -0.5425945,-0.147704 -0.6660045,-0.394525 -0.1234061,-0.24682 -0.1239471,-0.543476 0.048829,-0.765613 l 2.4921487,-3.480415 z"
      id="rect1298"
      inkscape:connector-curvature="0"
@@ -155,7 +163,7 @@
      id="g1511"
      transform="translate(6.7010194,3.2672888)"
      inkscape:groupmode="layer"
-     style="display:inline"
+     style="display:none"
      inkscape:label="Cloud">
     <g
        transform="matrix(0.03310205,0,0,0.03863076,23.266696,2.2416343)"
