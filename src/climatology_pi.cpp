@@ -64,10 +64,7 @@ wxString ClimatologyDataDirectory()
 
     wxString s =wxFileName::GetPathSeparator();
     return GetPluginDataDir("climatology_pi") + s + "data" + s;
-
 }
-
-
 
 wxString ClimatologyUserDataDirectory()
 {
@@ -82,7 +79,34 @@ climatology_pi::climatology_pi(void *ppimgr)
       m_pClimatologyDialog = nullptr;
       // Create the PlugIn icons
       initialize_images();
-      s_climatology_pi = this;
+
+	 //original way usingimages in file  icon.cpp
+     // s_climatology_pi = this;
+
+// Create the PlugIn icons  -from shipdriver
+// loads png file for the listing panel icon
+    wxFileName fn;
+    auto path = GetPluginDataDir("climatology_pi");
+    fn.SetPath(path);
+    fn.AppendDir("UserIcons");
+    fn.SetFullName("climatology_panel.png");
+
+    path = fn.GetFullPath();
+
+    wxInitAllImageHandlers();
+
+    wxLogDebug(wxString("Using icon path: ") + path);
+    if (!wxImage::CanRead(path)) {
+        wxLogDebug("Initiating image handlers.");
+        wxInitAllImageHandlers();
+    }
+    wxImage panelIcon(path);
+    if (panelIcon.IsOk())
+        m_panelBitmap = wxBitmap(panelIcon);
+    else
+        wxLogWarning("Climatology panel icon has NOT been loaded");
+// End of from Shipdriver
+
 }
 
 climatology_pi::~climatology_pi()
@@ -110,15 +134,17 @@ int climatology_pi::Init()
       m_parent_window = GetOCPNCanvasWindow();
 
       //    This PlugIn needs a toolbar icon, so request its insertion if enabled locally
-	 
-	 
+
+
 #ifdef PLUGIN_USE_SVG
-      m_leftclick_tool_id = InsertPlugInToolSVG( "Climatology" , _svg_climatology, _svg_climatology_rollover, _svg_climatology_toggled,
-                                              wxITEM_CHECK, _("Climatology"),  "" , NULL, CLIMATOLOGY_TOOL_POSITION, 0, this);
+      m_leftclick_tool_id = InsertPlugInToolSVG( _T( "Climatology" ),
+	  _svg_climatology, _svg_climatology, _svg_climatology_toggled,
+	  wxITEM_CHECK, _("Climatology"), _T( "") , NULL,
+	  CLIMATOLOGY_TOOL_POSITION, 0, this);
 #else
-      m_leftclick_tool_id  = InsertPlugInTool("", _img_climatology, _img_climatology, wxITEM_NORMAL,
-                                              _("Climatology"), "", NULL,
-                                              CLIMATOLOGY_TOOL_POSITION, 0, this);
+      m_leftclick_tool_id  = InsertPlugInTool( _T(""), _img_climatology,
+      _img_climatology, wxITEM_NORMAL, _("Climatology"), _T(""), NULL,
+	  CLIMATOLOGY_TOOL_POSITION, 0, this);
 #endif
       SendClimatology(true);
 
@@ -161,10 +187,16 @@ int climatology_pi::GetPlugInVersionMinor()
       return PLUGIN_VERSION_MINOR;
 }
 
+/*  Converts  icon.cpp file to an image. Original process
 wxBitmap *climatology_pi::GetPlugInBitmap()
 {
       return new wxBitmap(_img_climatology->ConvertToImage().Copy());
 }
+*/
+
+// Shipdriver uses the climatology_panel.png file to make the bitmap.
+wxBitmap *climatology_pi::GetPlugInBitmap()  { return &m_panelBitmap; }
+// End of shipdriver process
 
 wxString climatology_pi::GetCommonName()
 {
@@ -190,17 +222,17 @@ void climatology_pi::CreateOverlayFactory()
 
     //    And load the configuration items
     LoadConfig();
-    
+
     m_pClimatologyDialog = new ClimatologyDialog(m_parent_window, this);
     m_pClimatologyDialog->Move(wxPoint(m_climatology_dialog_x, m_climatology_dialog_y));
-    
+
     wxIcon icon;
     icon.CopyFromBitmap(*_img_climatology);
     m_pClimatologyDialog->SetIcon(icon);
-    
+
     // Create the drawing factory
     g_pOverlayFactory = new ClimatologyOverlayFactory( *m_pClimatologyDialog );
-    
+
     if(g_pOverlayFactory->m_bCompletedLoading) {
         SendClimatology(true);
         m_pClimatologyDialog->UpdateTrackingControls();
@@ -246,7 +278,7 @@ static bool ClimatologyWindAtlasData(wxDateTime &date, double lat, double lon,
 
     if(count != 8)
         return false;
-    
+
     return g_pOverlayFactory->InterpolateWindAtlas
         (date, lat, lon, directions, speeds, storm, calm);
 }
@@ -303,7 +335,7 @@ bool climatology_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
     piDC pidc;
     glEnable( GL_BLEND );
     pidc.SetVP(vp);
-    
+
     g_pOverlayFactory->RenderOverlay ( pidc, *vp );
     return true;
 }
@@ -329,7 +361,7 @@ void climatology_pi::SendClimatology(bool valid)
 
     snprintf(ptr, sizeof ptr, "%p", valid ? ClimatologyCycloneTrackCrossings : NULL);
     v["ClimatologyCycloneTrackCrossingsPtr"] = ptr;
-    
+
     Json::FastWriter writer;
     SendPluginMessage(wxT("CLIMATOLOGY"), writer.write( v ));
 }
@@ -371,7 +403,8 @@ void climatology_pi::FreeData()
     g_pOverlayFactory = NULL;
     if(m_pClimatologyDialog) {
         m_pClimatologyDialog->Save();
-        m_pClimatologyDialog->Destroy();
+        //m_pClimatologyDialog->Destroy();
+        delete m_pClimatologyDialog;
         m_pClimatologyDialog = nullptr;
     }
 }
@@ -406,7 +439,7 @@ bool climatology_pi::SaveConfig(void)
     pConf->Write("DialogSizeY", m_climatology_dialog_sy );
     pConf->Write("DialogPosX",  m_climatology_dialog_x );
     pConf->Write("DialogPosY",  m_climatology_dialog_y );
-    
+
     return true;
 }
 

@@ -24,15 +24,21 @@ void initialize_images(void)
 
 #ifdef PLUGIN_USE_SVG
     wxFileName fn;
-    fn.SetPath(GetPluginDataDir("climatology_pi"));
-    fn.AppendDir(_T("icons"));
+    wxString tmp_path;
+	
+    tmp_path = GetPluginDataDir("climatology_pi");
+    fn.SetPath(tmp_path);
+    fn.AppendDir(_T("UserIcons"));
+ 
     fn.SetFullName(_T("climatology_pi.svg"));
     _svg_climatology = fn.GetFullPath();
     wxLogMessage(_T("Loading toolbar icon: ") + _svg_climatology); 
-    fn.SetFullName(_T("climatology_pi_rollover.svg"));
+
+    fn.SetFullName(_T("climatology_rollover.svg"));
     _svg_climatology_rollover = fn.GetFullPath();
     wxLogMessage(_T("Loading toolbar icon: ") + _svg_climatology_rollover); 
-    fn.SetFullName(_T("climatology_pi_toggled.svg"));
+
+    fn.SetFullName(_T("climatology_toggled.svg"));
     _svg_climatology_toggled = fn.GetFullPath();
     wxLogMessage(_T("Loading toolbar icon: ") + _svg_climatology_toggled); 
 #endif

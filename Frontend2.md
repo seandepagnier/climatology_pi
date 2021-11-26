@@ -1,4 +1,4 @@
-# FRONTEND 2  v1.0.124
+##### FRONTEND 2  v1.0.146.4
 
 GOAL: Assist plugin developers to convert their plugins to the Plugin Manager system which:
 1. Uses tarballs and metadata.xml files to store the necessary files and provide information.
@@ -11,8 +11,7 @@ This "Frontend2" configuration is found in jongough/testplugin_pi and is easier 
 "Frontend1" can be found in the current versions of bdbcat/Oesenc_pi and rgleason/Vdr_pi. 
 
 
-## KEEP EXISTING DIRECTORIES AND FILES
-_________________________________
+## RENAME EXISTING DIRECTORIES AND FILES
 
 #### Important:
 1. Make these changes on a new branch "frontend2" or "ci" (if possible).
@@ -35,8 +34,7 @@ _________________________________
 - Any other specific plugin directories essential to your plugin.
 
 
-## LIST of FOLDERS & FILES copied from TESTPLUGIN_PI
-_________________________________
+## FOLDERS & FILES copied from TESTPLUGIN_PI
 
 #### Add these Directories + Sub-directories + Files
 
@@ -69,7 +67,6 @@ The following directories and files are not needed from testplugin_pi
 
 
 ## CHANGES REQUIRED
-_________________________________
 
 1. Rename CMakeLists.txt, appveyor.yml, .travis.yml adding  .save for reference.
 1. Modify CMakeLists.txt file, following the in-line notes
@@ -125,7 +122,6 @@ _________________________________
 
 
 ## DEPLOYMENT
-_________________________________
 
 The current setup for Frontend2 plugins does this:
 - Non-Master branch - Push with no tag -> Alpha repository
@@ -155,9 +151,51 @@ Example:
   - * [new tag]           v1.9.5.10 -> v1.9.5.10
 1. git push origin master 
 
+For information about building locally for local deployment refer to Read-Build.md
+
+## Add Plugin xml files to the Plugin Manager Catalog
+
+Add your new Metadata xml to Plugin Manager Catalog 
+Make Pull Request to github.com/OpenCPN/Plugiins
+
+After Circleci, Travis and Appveyor have built the environments and deployed to one of the Cloudsmith Repositories, 
+the resultant metadata files (.xml) must be copied and pushed up too the plugins master branch github.com/OpenCPN/plugins
+to become part of the the master catalog. 
+Jon Gough has provided some bash/python scripts that accomplish copy to your local branch to assist or you can simply do this part manually.
+
+Generally try not to use raw git commands unless really needed, 
+In Linux & Windows install the 'beta' testing version (for free opensource work) SmartGit (sometimes it hasn't had all the capabilities of git).
+
+#### Use a Manual process and script to move metadata.xml to github.com/plugins.
+After completing  (Ewdwe ro Read-Build.md)
+1. Initial Setup of Remote Fork and Local Repository
+1. Set remote upstream and origin
+1. Create a new local branch, i.e. master or beta or alpha using upstream/master
+
+Update your local github/plugins  (master, beta, alpha branches)
+1. git pull upstream master  <---need our local repos to match opencpn/plugins (master branch)
+1. git push origin master  <---just updating our remote repository.
+
+Next copy the metadata.xml files from Cloudsmith to your local github/plugins metadirectory (master branch)
+Use the Git-Gui (bash prompt) from your local github/plugins' folder, to run Jon's bash script.
+Note if you used an "_" in the name, try using "-" to get it to work!
+1. Run: 'download_xml_bash.sh' with the correct parameters for your cloudsmith repository and build.
+1. Examples
+      1. ./download_xml_bash.sh <cloudsmith_repository> <plugin_version> <cloudsmith_user> <cloudsmith_level>
+      1. ./download_xml_bash.sh testplugin_pi 1.0.114.0 jon-gough prod
+      1. ./download_xml_bash.sh weather-routing 1.13.8.0 opencpn prod
+
+Next remove only your own OLD metadata.xml files from your local github/plugins/metadata directory. Leave the other xml files alone!
+
+Then add the changed files, commit and push to remote origin master branch
+1. git add metadata/    To add the metadata files
+1. git commit -am "[pluginname] v[version number]" Commit the metadata files
+1. git push -u origin rg-master    (Does the same as two commands 'git branch --set-upstream-to=origin/jg_master'  and 'git push')
+
+Goto upstream/master in a web browser and create pull request to OpenCPN/plugins master  <---- from [gitusername]/plugins rg-master 
+We can leave the local rg-master branch in place until the next job (see above) 	
 
 ### Weatherfax_pi specific differences from testplugin_pi "Frontend2"
-_________________________________
    
 Weatherfax_pi needs to have sound support for Windows and Mingw, additionally use with rtlsdr requires additional files. 
 

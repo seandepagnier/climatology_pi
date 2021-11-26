@@ -43,7 +43,7 @@
 #include "IsoBarMap.h"
 #include "defs.h"
 #include "gldefs.h"
-#include "plugingl/pidc.h"
+#include "pidc.h"
 
 /* initialize cache to contain data */
 void ParamCache::Initialize(double step)
