@@ -233,10 +233,11 @@ void ClimatologyDialog::DayMonthUpdate()
     m_sDay->SetRange(1, wxDateTime::GetNumberOfDays((wxDateTime::Month)m_cMonth->GetSelection(),
                                                     1999)); // not a leap year
 
+    timeline.SetDay(0);
     timeline.SetMonth((wxDateTime::Month)m_cMonth->GetSelection());
     timeline.SetDay(m_sDay->GetValue());
 
-    int yearday = g_pOverlayFactory->m_CurrentTimeline.GetDayOfYear();
+    int yearday = timeline.GetDayOfYear();
     if(yearday < 67) {
         yearday += 365;
     }
