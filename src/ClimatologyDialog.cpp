@@ -237,7 +237,7 @@ void ClimatologyDialog::DayMonthUpdate()
     timeline.SetMonth((wxDateTime::Month)m_cMonth->GetSelection());
     timeline.SetDay(m_sDay->GetValue());
 
-    int yearday = timeline.GetDayOfYear();	
+    int yearday = timeline.GetDayOfYear();
     if(yearday < 67) {
         yearday += 365;
     }
