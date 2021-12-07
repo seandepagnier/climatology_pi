@@ -80,8 +80,8 @@ climatology_pi::climatology_pi(void *ppimgr)
       // Create the PlugIn icons
       initialize_images();
 
-	 //original way usingimages in file  icon.cpp
-     // s_climatology_pi = this;
+      //original way usingimages in file  icon.cpp
+        s_climatology_pi = this;
 
 // Create the PlugIn icons  -from shipdriver
 // loads png file for the listing panel icon

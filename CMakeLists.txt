@@ -18,7 +18,7 @@
 ## *   Free Software Foundation, Inc.,                                       *
 ## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
 ## ---------------------------------------------------------------------------
-## Frontend2 Author: Jon Gough   v1.0.176.1 07/10/2021 + Change for Android
+## Frontend2 Author: Jon Gough   v1.0.183.1 26/11/2021 + Change for Android
 ## ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur   ----- ##
 ## ----- Changes should only be made between the section blocks that identify where ---- ##
@@ -55,9 +55,9 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
-set(VERSION_PATCH "32")
-set(VERSION_TWEAK "2")
-set(VERSION_DATE "17/11/2021") # DD/MM/YYYY format
+set(VERSION_PATCH "36")
+set(VERSION_TWEAK "0")
+set(VERSION_DATE "4/12/2021") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -135,15 +135,10 @@ include("PluginConfigure")
 
 add_definitions(-DUSE_S57)
 
-IF(PLUGIN_USE_SVG)
-    MESSAGE(STATUS "${CMLOC}SVG support enabled...")
-    IF(NOT QT_ANDROID)
-        ADD_DEFINITIONS(-DPLUGIN_USE_SVG)
-    ENDIF(NOT QT_ANDROID)
-ENDIF(PLUGIN_USE_SVG)
 
 #======== Below from cmakelists.txt  climatology_pi
 # ----Remember to Add your project Set(SRCS and set(HDRS  etc..
+
 SET(SRC_CLIMATOLOGY
             src/ClimatologyOverlayFactory.cpp
             src/climatology_pi.cpp
@@ -154,6 +149,7 @@ SET(SRC_CLIMATOLOGY
             src/icons.cpp
             src/zuFile.cpp
 )
+
 
 SET(HDRS
             include/climatology_pi.h
@@ -168,100 +164,90 @@ SET(HDRS
 			include/zuFile.h
 )
 
-# Newer version (not used)
 
-# set(LIBSRC
-#    libs/jasoncpp/src/json_value.cpp
-#    libs/jasoncpp/src/json_writer.cpp
-#    libs/jasoncpp/src/json_reader.cpp	
+#set(OCPNSRC
+#    ocpnsrc/cutil.cpp
+#    ocpnsrc/TexFont.cpp
 #)
 
-## set(LIBHDRS
+#set(OCPNHDRS
+#    ocpninclude/cutil.h
+#    ocpninclude/ocpn_plugin.h
+#    ocpninclude/pluginmanager.h
+#    ocpninclude/shaders.h
+#    ocpninclude/TexFont.h
+#    ocpninclude/vector2D.h
+#    libs/ocpn-api/ocpn_plugin.h
+#)
+
+#set(EXTSRC
+#)
+
+#set(EXTINCLUDE
+#    extinclude/ODAPI.h
+#    extinclude/ODJSONSchemas.h
+#)
+
+#set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
+
+#set(LIBHDRS
 #    libs/GL/gl.h
 #    libs/GL/gl_private.h
 #    libs/GL/glext.h
 #    libs/GL/glu.h
-#    libs/jasoncpp/include/json/json.h
-#    libs/jasoncpp/include/json/reader.h
-#    libs/jasoncpp/include/json/value.h
-#    libs/jasoncpp/include/json/writer.h
-#    libs/jasoncpp/include/json/forwards.h
-#    libs/jasoncpp/include/json/features.h
-#    libs/jasoncpp/include/json/config.h
-#    libs/jasoncpp/include/json/autolink.h
-#    libs/jasoncpp/include/json/assertions.h
-#)
-
-## Older version
-
-#SET(LIBSRC
-#           src/jsoncpp/json_reader.cpp
-#			src/jsoncpp/json_value.cpp
-#			src/jsoncpp/json_writer.cpp
-#			src/plugingl/pi_shaders.cpp
-#			src/plugingl/pidc.cpp
-#			src/plugingl/qtstylesheet.cpp
-#			src/plugingl/TexFont.cpp
-#			src/tinyxml/tinyxml.cpp
-#			src/tinyxml/tinyxmlerror.cpp
-#			src/tinyxml/tinyxmlparser.cpp
-#)
-
-#SET(LIBHDRS
-#			src/jsoncpp/json_batchallocator.h
-#			src/jsoncpp/json_tool.h
-#			src/jsoncpp/json/assertions.h
-#			src/jsoncpp/json/autolink.h
-#			src/jsoncpp/json/config.h
-#			src/jsoncpp/json/features.h
-#			src/jsoncpp/json/forwards.h
-#			src/jsoncpp/json/json.h
-#			src/jsoncpp/json/reader.h
-#			src/jsoncpp/json/value.h
-#			src/jsoncpp/json/writer.h
-#			src/plugingl/linmath.h
-#			src/plugingl/pi_shaders.h
-#			src/plugingl/pidc.h
-#			src/plugingl/qtstylesheet.h
-#			src/plugingl/TexFont.h
-#			src/tinyxml/tinyxml.h
-#			include/GL/gl.h
-#			include/GL/gl_private.h
-#			include/GL/glext.h
-#			include/GL/glu.h
-#            api-16/ocpn_plugin.h
-#)
+#    libs/wx/include/json_defs.h
+#    libs/wx/include/jsonreader.h
+#    libs/wx/include/jsonval.h
+#    libs/wx/include/jsonwriter.h)
 
 add_definitions(-DPLUGIN_USE_SVG)
 
+set(EXTINCLUDE_DIR ${EXTINCLUDE_DIR} extinclude libs/ocpn-api/)
+
 # =================================================
 SET(SRC  ${SRC_CLIMATOLOGY} ${HDRS} )
-# =================================================
-# SET(SRC  ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
+# =================================================	
+
+#
+# ----- If using JSON validation in plugin section below is needed ----- ##
+#
 
 # Not doing JSON Schema Validator
+
+
+#
+# ----- If using JSON validation in plugin section above is needed ----- ##
+#
 
 ##=============================================================
 # Modify/configure 'Include' Directories below for the Plugin
 ##=============================================================
 
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)  #why is this needed when has cmakelists.txt
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include) # to find json.h  -why? same as above
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)  # does not find gl.h when on, need as the next line 
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/GL)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/${EXTINCLUDE_DIR})
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp) 
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include) # to find json.h 
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
+
+#
+# ----- Change below to match project requirements for android build ----- ##
+#
 
 if(QT_ANDROID)
-    include_directories(BEFORE ${qt_android_include})
-    include_directories( ${CMAKE_SOURCE_DIR}/extinclude/GLES2)
-
-    #    #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/glshim/include/GLES)
+    include_directories( ${PROJECT_SOURCE_DIR}/extinclude/GLES2)
 endif(QT_ANDROID)
 
+##
+## ----- Change above to match project requirements for android build ----- ##
+##
 
-# ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_CLIMATOLOGY} ${HDRS} ${LIBSRC} ${LIBHDRS} )
-
+# target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIBSSRC})
 ##=================================================
 target_sources(${PACKAGE_NAME} PUBLIC ${SRC})
 ##=================================================
@@ -278,8 +264,16 @@ endif(NOT OCPN_FLATPAK_CONFIG)
 
 add_definitions(-DTIXML_USE_STL)
 
+
+#
+# ----- If using JSON validation in plugin section below is needed ----- ##
+#
+
 # Not doing JSON Schema Validation
 
+#
+# ----- If using JSON validation in plugin section above is needed ----- ##
+#
 
 add_subdirectory(libs/tinyxml)
 target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
@@ -294,7 +288,7 @@ ENDIF(NOT UNIX)
 IF(WIN32)
   IF(MSVC)
     SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
-    include_directories(BEFORE ${CMAKE_SOURCE_DIR}/buildwin/include)
+    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/buildwin/include)
     target_link_libraries(${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib1.lib")
   ELSE()
     # MINGW
@@ -305,6 +299,11 @@ ENDIF(WIN32)
 ## ----- Change above to match project requirements ----- ##
 
 ##------- Change below to match project requirements --------------
+
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/tinyxml)
+#add_subdirectory(libs/tinyxml)
+#target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
+
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
 add_subdirectory(libs/jsoncpp)
@@ -323,17 +322,6 @@ if(QT_ANDROID)
     include_directories(BEFORE ${qt_android_include})
 endif(QT_ANDROID)
 
-
-#========================================================
-#include("PluginJSON")
-#include("PluginXML")
-#include("PluginGL")
-#========================================================
-
-##
-## ----- Change above to match project requirements ----- ##
-## ----- do not change next section - needed to configure build process ----- ##
-##
 #========================================================
 # Needed for all builds
 include("PluginInstall")
