@@ -62,13 +62,13 @@ wxString ClimatologyDataDirectory()
 //    return *GetpSharedDataLocation() + "plugins"
 //        + s + "climatology_pi" + s + "data" + s;
 
-    wxString s =wxFileName::GetPathSeparator();
+    wxChar s =wxFileName::GetPathSeparator();
     return GetPluginDataDir("climatology_pi") + s + "data" + s;
 }
 
 wxString ClimatologyUserDataDirectory()
 {
-    wxString s = wxFileName::GetPathSeparator();
+    wxChar s = wxFileName::GetPathSeparator();
     return *GetpPrivateApplicationDataLocation() + s + "plugins"
         + s + "climatology_pi" + s + "data" + s;
 }
