@@ -46,9 +46,9 @@ workflows:
         - build-macos-wx315:
             <<: *std-filters
 #        - build-android-arm64:
-            <<: *std-filters
+#            <<: *std-filters
 #        - build-android-armhf:
-            <<: *std-filters
+#            <<: *std-filters
 
 orbs:
     cloudsmith: cloudsmith/cloudsmith@1.0.4
