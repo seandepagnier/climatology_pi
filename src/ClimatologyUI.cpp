@@ -29,7 +29,7 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer23->SetFlexibleDirection( wxBOTH );
 	fgSizer23->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	wxString m_cMonthChoices[] = { _("January"), _("Febuary"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"), _("September"), _("October"), _("November"), _("December") };
+	wxString m_cMonthChoices[] = { _("January"), _("February"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"), _("September"), _("October"), _("November"), _("December") };
 	int m_cMonthNChoices = sizeof( m_cMonthChoices ) / sizeof( wxString );
 	m_cMonth = new wxChoice( sbSizer21->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize( 80,-1 ), m_cMonthNChoices, m_cMonthChoices, 0 );
 	m_cMonth->SetSelection( 0 );

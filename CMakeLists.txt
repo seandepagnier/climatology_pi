@@ -18,7 +18,7 @@
 ## *   Free Software Foundation, Inc.,                                       *
 ## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
 ## ---------------------------------------------------------------------------
-## Frontend2 Author: Jon Gough   v1.0.184.3 08/12/2021 + uses bdbcat ci scripts for macos
+## Frontend2 Author: Jon Gough   v1.0.193.3 07/02/2022
 ## ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur   ----- ##
 ## ----- Changes should only be made between the section blocks that identify where ---- ##
@@ -56,8 +56,8 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "39")
-set(VERSION_TWEAK "0")
-set(VERSION_DATE "13/12/2021") # DD/MM/YYYY format
+set(VERSION_TWEAK "10")
+set(VERSION_DATE "25/02/2021") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -96,10 +96,11 @@ option(PLUGIN_USE_SVG "Use SVG graphics" ON)
 
 set(CMAKE_CXX_STANDARD 11)
 
+# Use local version of GLU library
+# requires libs/glu directory
+set(USE_LOCAL_GLU TRUE)
 # Prefer libGL.so to libOpenGL.so, see CMP0072
 # set(OpenGL_GL_PREFERENCE "LEGACY")
-# Don't use local version of GLU library
-# set(USE_LOCAL_GLU FALSE)
 
 option(USE_GL "Enable OpenGL support" ON)
 message(STATUS "${CMLOC}USE_GL: ${USE_GL}")

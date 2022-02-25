@@ -232,12 +232,19 @@ void ClimatologyDialog::DayMonthUpdate()
     wxDateTime &timeline = g_pOverlayFactory->m_CurrentTimeline;
     m_sDay->SetRange(1, wxDateTime::GetNumberOfDays((wxDateTime::Month)m_cMonth->GetSelection(),
                                                     1999)); // not a leap year
-
-   // timeline.SetDay(0);
+//   bdbcat removed line below  commit 6c4980f
+// //    timeline.SetDay(0);
     timeline.SetMonth((wxDateTime::Month)m_cMonth->GetSelection());
     timeline.SetDay(m_sDay->GetValue());
+    int yearday = g_pOverlayFactory->m_CurrentTimeline.GetDayOfYear();
 
-    int yearday = timeline.GetDayOfYear();
+//  OR
+//  Sean add line just below back and changed int yearday commit 15d4101
+//    timeline.SetDay(0);
+//    timeline.SetMonth((wxDateTime::Month)m_cMonth->GetSelection());
+//    timeline.SetDay(m_sDay->GetValue());
+//    int yearday = timeline.GetDayOfYear();
+
     if(yearday < 67) {
         yearday += 365;
     }
