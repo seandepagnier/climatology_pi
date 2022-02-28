@@ -18,7 +18,7 @@
 ## *   Free Software Foundation, Inc.,                                       *
 ## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
 ## ---------------------------------------------------------------------------
-## Frontend2 Author: Jon Gough   v1.0.193.3 07/02/2022
+## Frontend2 Author: Jon Gough   v1.0.193.3 02/07/2022
 ## ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur   ----- ##
 ## ----- Changes should only be made between the section blocks that identify where ---- ##
@@ -56,7 +56,7 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "39")
-set(VERSION_TWEAK "10")
+set(VERSION_TWEAK "12")
 set(VERSION_DATE "25/02/2021") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
@@ -165,41 +165,46 @@ SET(HDRS
 			include/zuFile.h
 )
 
+# was off
+set(OCPNSRC
+    ocpnsrc/cutil.cpp
+    ocpnsrc/TexFont.cpp
+)
 
-#set(OCPNSRC
-#    ocpnsrc/cutil.cpp
-#    ocpnsrc/TexFont.cpp
-#)
+# was off
+set(OCPNHDRS
+    ocpninclude/cutil.h
+    ocpninclude/ocpn_plugin.h
+    ocpninclude/pluginmanager.h
+    ocpninclude/shaders.h
+    ocpninclude/TexFont.h
+    ocpninclude/vector2D.h
+    libs/ocpn-api/ocpn_plugin.h
+)
 
-#set(OCPNHDRS
-#    ocpninclude/cutil.h
-#    ocpninclude/ocpn_plugin.h
-#    ocpninclude/pluginmanager.h
-#    ocpninclude/shaders.h
-#    ocpninclude/TexFont.h
-#    ocpninclude/vector2D.h
-#    libs/ocpn-api/ocpn_plugin.h
-#)
+# was off
+set(EXTSRC
+)
 
-#set(EXTSRC
-#)
+# was off
+set(EXTINCLUDE
+    extinclude/ODAPI.h
+    extinclude/ODJSONSchemas.h
+)
 
-#set(EXTINCLUDE
-#    extinclude/ODAPI.h
-#    extinclude/ODJSONSchemas.h
-#)
+# was off
+set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
 
-#set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
-
-#set(LIBHDRS
-#    libs/GL/gl.h
-#    libs/GL/gl_private.h
-#    libs/GL/glext.h
-#    libs/GL/glu.h
-#    libs/wx/include/json_defs.h
-#    libs/wx/include/jsonreader.h
-#    libs/wx/include/jsonval.h
-#    libs/wx/include/jsonwriter.h)
+# was off
+set(LIBHDRS
+    libs/GL/gl.h
+    libs/GL/gl_private.h
+    libs/GL/glext.h
+    libs/GL/glu.h
+    libs/wx/include/json_defs.h
+    libs/wx/include/jsonreader.h
+    libs/wx/include/jsonval.h
+    libs/wx/include/jsonwriter.h)
 
 add_definitions(-DPLUGIN_USE_SVG)
 
@@ -225,14 +230,18 @@ SET(SRC  ${SRC_CLIMATOLOGY} ${HDRS} )
 ##=============================================================
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
+# was off
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/${EXTINCLUDE_DIR})
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp) 
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include) # to find json.h 
+# was on
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
+# was on
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp) 
+# to find json.h 
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
 #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
 
