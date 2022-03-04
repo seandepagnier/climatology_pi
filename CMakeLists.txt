@@ -56,8 +56,8 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "39")
-set(VERSION_TWEAK "12")
-set(VERSION_DATE "25/02/2021") # DD/MM/YYYY format
+set(VERSION_TWEAK "13")
+set(VERSION_DATE "04/03/2022) # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -172,15 +172,15 @@ SET(HDRS
 #)
 
 # was off
-set(OCPNHDRS
-    ocpninclude/cutil.h
-    ocpninclude/ocpn_plugin.h
-    ocpninclude/pluginmanager.h
-    ocpninclude/shaders.h
-    ocpninclude/TexFont.h
-    ocpninclude/vector2D.h
-    libs/ocpn-api/ocpn_plugin.h
-)
+#set(OCPNHDRS
+#    ocpninclude/cutil.h
+#    ocpninclude/ocpn_plugin.h
+#    ocpninclude/pluginmanager.h
+#    ocpninclude/shaders.h
+#    ocpninclude/TexFont.h
+#    ocpninclude/vector2D.h
+#    libs/ocpn-api/ocpn_plugin.h
+#)
 
 # was off  folder does not exist here
 #set(EXTSRC
@@ -193,7 +193,7 @@ set(OCPNHDRS
 #)
 
 # was off
-set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
+#set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
 
 # was off
 set(LIBHDRS
@@ -237,13 +237,12 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
 # was on
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
-# was on
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp) 
-# to find json.h 
+# was on to find json.h 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
+# was on
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
 
 #
 # ----- Change below to match project requirements for android build ----- ##
