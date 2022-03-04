@@ -18,7 +18,7 @@
 ## *   Free Software Foundation, Inc.,                                       *
 ## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
 ## ---------------------------------------------------------------------------
-## Frontend2 Author: Jon Gough   v1.0.193.3 02/07/2022
+## Frontend2 Author: Jon Gough   v1.0.193.3 07/02/2022 # DD/MM/YYYY format
 ## ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur   ----- ##
 ## ----- Changes should only be made between the section blocks that identify where ---- ##
@@ -165,11 +165,11 @@ SET(HDRS
 			include/zuFile.h
 )
 
-# was off
-set(OCPNSRC
-    ocpnsrc/cutil.cpp
-    ocpnsrc/TexFont.cpp
-)
+# was off 
+# set(OCPNSRC
+#    ocpnsrc/cutil.cpp
+#    ocpnsrc/TexFont.cpp
+#)
 
 # was off
 set(OCPNHDRS
@@ -182,15 +182,15 @@ set(OCPNHDRS
     libs/ocpn-api/ocpn_plugin.h
 )
 
-# was off
-set(EXTSRC
-)
+# was off  folder does not exist here
+#set(EXTSRC
+#)
 
 # was off
-set(EXTINCLUDE
-    extinclude/ODAPI.h
-    extinclude/ODJSONSchemas.h
-)
+# set(EXTINCLUDE
+#    extinclude/ODAPI.h
+#    extinclude/ODJSONSchemas.h
+#)
 
 # was off
 set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
@@ -237,9 +237,9 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
 # was on
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
 # was on
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp) 
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp) 
 # to find json.h 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
