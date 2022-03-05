@@ -1,5 +1,6 @@
 #ifdef __OCPN__ANDROID__
 #include <qdebug.h>
+#include "wx/wxprec.h"
 
 QString qtStyleSheet = "\
 QScrollBar:horizontal {\
