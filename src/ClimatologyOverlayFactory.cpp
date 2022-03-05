@@ -33,9 +33,11 @@
 # include <OpenGL/gl3.h>
 #endif
 
+#ifdef OCPN_FLATPAK_BUILD
 #ifdef __OCPN__ANDROID__
 #include <qopengl.h>
 #include "GL/gl_private.h"
+#endif
 #endif
 
 #ifdef USE_GLES2
