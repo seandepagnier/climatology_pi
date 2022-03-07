@@ -18,20 +18,20 @@ std-filters: &std-filters
 workflows:
     build_all:
         jobs:
-        - build-armhf-stretch:
-            <<: *std-filters
+##        - build-armhf-stretch:
+##            <<: *std-filters
 ## Derecated in favour of ubuntu-armhf:18.04 build - 14/01/2022
 ##        - build-armhf-raspbian-buster:
 ##            <<: *std-filters
-        - build-armhf-ubuntu-buster:
-            <<: *std-filters
-        - build-armhf-debian-buster:
-            <<: *std-filters
+##        - build-armhf-ubuntu-buster:
+##            <<: *std-filters
+##        - build-armhf-debian-buster:
+##            <<: *std-filters
 ## Derecated in favour of ubuntu-armhf:20.04 build - 14/01/2022
 ##        - build-armhf-bullseye:
 ##            <<: *std-filters
-        - build-armhf-debian-bullseye:
-            <<: *std-filters
+##        - build-armhf-debian-bullseye:
+##            <<: *std-filters
 ## Currently circleci does not build armf64 correctly due to no suitable docker image
 ##        - build-armhf-bionic-64:
 ##            <<: *std-filters
@@ -43,14 +43,15 @@ workflows:
 ## Removed as no suitable python3 version for xenial available - 19/01/2022
 ##        - build-xenial:
 ##            <<: *std-filters
-        - build-bionic:
-            <<: *std-filters
-        - build-bionic-gtk3:
-            <<: *std-filters
-        - build-focal-gtk3:
-            <<: *std-filters
-        - build-buster:
-            <<: *std-filters
+##
+##        - build-bionic:
+##            <<: *std-filters
+##        - build-bionic-gtk3:
+##            <<: *std-filters
+##        - build-focal-gtk3:
+##            <<: *std-filters
+##        - build-buster:
+##            <<: *std-filters
         - build-flatpak-arm64:
             <<: *std-filters
         - build-flatpak-x86-2008:
@@ -59,10 +60,10 @@ workflows:
             <<: *std-filters
         - build-flatpak-x86-1808:
             <<: *std-filters
-        - build-macos:
-            <<: *std-filters
-        - build-macos-wx315:
-            <<: *std-filters
+##        - build-macos:
+##            <<: *std-filters
+##        - build-macos-wx315:
+##            <<: *std-filters
         - build-android-arm64:
             <<: *std-filters
         - build-android-armhf:

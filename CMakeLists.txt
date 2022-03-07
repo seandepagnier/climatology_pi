@@ -56,8 +56,8 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "40")
-set(VERSION_TWEAK "0")
-set(VERSION_DATE "05/03/2022") # DD/MM/YYYY format
+set(VERSION_TWEAK "1")
+set(VERSION_DATE "06/03/2022") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -235,6 +235,7 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/${EXTINCLUDE_DIR})
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
 # was on
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp) 
@@ -242,7 +243,7 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
 # was on
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
+
 
 #
 # ----- Change below to match project requirements for android build ----- ##
