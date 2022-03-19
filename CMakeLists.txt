@@ -56,8 +56,8 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "40")
-set(VERSION_TWEAK "2")
-set(VERSION_DATE "10/03/2022") # DD/MM/YYYY format
+set(VERSION_TWEAK "3")
+set(VERSION_DATE "19/03/2022") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -140,7 +140,7 @@ add_definitions(-DUSE_S57)
 #======== Below from cmakelists.txt  climatology_pi
 # ----Remember to Add your project Set(SRCS and set(HDRS  etc..
 
-SET(SRC_CLIMATOLOGY
+SET(SRCS
             src/ClimatologyOverlayFactory.cpp
             src/climatology_pi.cpp
             src/ClimatologyUI.cpp
@@ -193,7 +193,7 @@ SET(HDRS
 #)
 
 # was off
-#set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
+set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
 
 # was off
 set(LIBHDRS
@@ -211,7 +211,7 @@ add_definitions(-DPLUGIN_USE_SVG)
 set(EXTINCLUDE_DIR ${EXTINCLUDE_DIR} extinclude libs/ocpn-api/)
 
 # =================================================
-SET(SRC  ${SRC_CLIMATOLOGY} ${HDRS} )
+# SET(SRC  ${SRCS} ${HDRS} )
 # =================================================	
 
 #
@@ -237,12 +237,11 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
-# was on
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp) 
-# was on to find json.h 
+# on to find json.h 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
-# was on
+
 
 
 #
@@ -259,7 +258,7 @@ endif(QT_ANDROID)
 
 # target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIBSSRC})
 ##=================================================
-target_sources(${PACKAGE_NAME} PUBLIC ${SRC})
+target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${LIBSSRC})
 ##=================================================
 
 if(NOT OCPN_FLATPAK_CONFIG)
