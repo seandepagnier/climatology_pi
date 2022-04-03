@@ -230,12 +230,17 @@ wxString ClimatologyDialog::GetValue(int index, Coord coord)
 void ClimatologyDialog::DayMonthUpdate()
 {
     wxDateTime &timeline = g_pOverlayFactory->m_CurrentTimeline;
-    m_sDay->SetRange(1, wxDateTime::GetNumberOfDays((wxDateTime::Month)m_cMonth->GetSelection(),
-                                                    1999)); // not a leap year
-//   bdbcat removed line below  commit 6c4980f
-// //    timeline.SetDay(0);
+    int nMonthDays = wxDateTime::GetNumberOfDays((wxDateTime::Month)m_cMonth->GetSelection(),
+                                                    1999); // not a leap year
+    if( m_sDay->GetValue() > nMonthDays)
+        timeline.SetDay(1);
+    else
+        timeline.SetDay(m_sDay->GetValue());
+
+    m_sDay->SetRange(1, nMonthDays);
+
     timeline.SetMonth((wxDateTime::Month)m_cMonth->GetSelection());
-    timeline.SetDay(m_sDay->GetValue());
+
     int yearday = g_pOverlayFactory->m_CurrentTimeline.GetDayOfYear();
 
 //  OR
