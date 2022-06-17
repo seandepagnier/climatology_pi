@@ -165,7 +165,7 @@ SET(HDRS
 			include/zuFile.h
 )
 
-# was off 
+# was off
 # set(OCPNSRC
 #    ocpnsrc/cutil.cpp
 #    ocpnsrc/TexFont.cpp
@@ -212,7 +212,7 @@ set(EXTINCLUDE_DIR ${EXTINCLUDE_DIR} extinclude libs/ocpn-api/)
 
 # =================================================
 # SET(SRC  ${SRCS} ${HDRS} )
-# =================================================	
+# =================================================
 
 #
 # ----- If using JSON validation in plugin section below is needed ----- ##
@@ -237,11 +237,15 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp) 
-# on to find json.h 
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
+# on to find json.h
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
 
+# Needed for android builds
+if(QT_ANDROID)
+    include_directories(BEFORE ${qt_android_include})
+endif(QT_ANDROID)
 
 
 #
@@ -326,10 +330,6 @@ target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
 ## ----- do not change next section - needed to configure build process ----- ##
 
 
-# Needed for android builds
-if(QT_ANDROID)
-    include_directories(BEFORE ${qt_android_include})
-endif(QT_ANDROID)
 
 #========================================================
 # Needed for all builds
