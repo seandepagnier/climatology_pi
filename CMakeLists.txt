@@ -54,8 +54,8 @@ set(SHORT_DESCRIPTION "Climatology PlugIn: 32 years of monthly NOAA Data")
 set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic weather data. Supported Climatology types include: - Average wind directions and speed- Percentage of gale and calm conditions - Sea Surface Currents - Average swell and sea state (not yet implemented) - Precipitation, Humidity, Cloud Cover, and Lightning Strikes - Monthly average Sea Level pressure and Sea Temperature, Air Temperature - Tropical Cyclone tracks")
 
 set(VERSION_MAJOR "1")
-set(VERSION_MINOR "4")
-set(VERSION_PATCH "47")
+set(VERSION_MINOR "5")
+set(VERSION_PATCH "0")
 set(VERSION_TWEAK "0")
 set(VERSION_DATE "25/12/2022") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
