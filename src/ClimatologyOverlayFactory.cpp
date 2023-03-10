@@ -42,11 +42,13 @@
 #include "GL/gl_private.h"
 #endif
 
+#ifdef __WXGTK__
+#include <GL/glx.h>
+#endif
+
 #ifdef USE_GLES2
 #include "GLES2/gl2.h"
 #endif
-
-#include <GL/glx.h>
 
 #include "climatology_pi.h"
 #include "gldefs.h"
