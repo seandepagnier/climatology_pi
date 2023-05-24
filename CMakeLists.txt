@@ -18,7 +18,7 @@
 ## *   Free Software Foundation, Inc.,                                       *
 ## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
 ## ---------------------------------------------------------------------------
-## Frontend2 Author: Jon Gough   v1.0.230.0 05/03/2023 # DD/MM/YYYY format
+## Frontend2 Author: Jon Gough   v1.0.237.0 30/04/2023 # DD/MM/YYYY format
 ## ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur   ----- ##
 ## ----- Changes should only be made between the section blocks that identify where ---- ##
@@ -55,10 +55,10 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "5")
-set(VERSION_PATCH "4")
+set(VERSION_PATCH "5")
 set(VERSION_TWEAK "0")
 set(VERSION_DATE "29/03/2023") # DD/MM/YYYY format
-set(OCPN_MIN_VERSION "ov57")
+set(OCPN_MIN_VERSION "ov58")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
 set(TP_COMMENT "")
@@ -119,8 +119,13 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # =======================================================
 include("PluginSetup")
 # =======================================================
+##
 ## ----- The above is used to setup standard variables that are required by the CMAKE process - do not remove ----- ##
-## ----- Modify section below if there are special requirements for the plugin -----
+##
+
+##
+## ----- Modify section below if there are special requirements for the plugin ----- ##
+##
 
 set(CMAKE_VERBOSE_MAKEFILE "Activate verbose mode for make files" ON)
 
@@ -128,11 +133,17 @@ option(Plugin_CXX11 "Use c++11" OFF)
 
 ## ----- Modify section above if there are special requirements for the plugin ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
+
 # ========================================================
 include("PluginConfigure")
 # ========================================================
+##
 ## ----- do not change section above - needed to configure build process ----- ##
-## ----- Change below to match project requirements for source, headers, etc. ----- ##
+##
+
+#
+# ----- Change below to match project requirements for source, headers, etc. ----- ##
+#
 
 add_definitions(-DUSE_S57)
 
@@ -210,10 +221,6 @@ add_definitions(-DPLUGIN_USE_SVG)
 
 set(EXTINCLUDE_DIR ${EXTINCLUDE_DIR} extinclude libs/ocpn-api/)
 
-# =================================================
-# SET(SRC  ${SRCS} ${HDRS} )
-# =================================================
-
 #
 # ----- If using JSON validation in plugin section below is needed ----- ##
 #
@@ -237,15 +244,7 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
-# on to find json.h
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
-
-# Needed for android builds
-if(QT_ANDROID)
-    include_directories(BEFORE ${qt_android_include})
-endif(QT_ANDROID)
 
 
 #
@@ -260,7 +259,7 @@ endif(QT_ANDROID)
 ## ----- Change above to match project requirements for android build ----- ##
 ##
 
-# target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIBSSRC})
+
 ##=================================================
 target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${LIBSSRC})
 ##=================================================
@@ -269,14 +268,12 @@ if(NOT OCPN_FLATPAK_CONFIG)
     # Build environment not available when flatpak is being configured so following statements will not work
     message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
 
-#    add_subdirectory(libs/tinyxml)
+    add_subdirectory(libs/tinyxml)
 
-#    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
+    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
 endif(NOT OCPN_FLATPAK_CONFIG)
 
-
 add_definitions(-DTIXML_USE_STL)
-
 
 #
 # ----- If using JSON validation in plugin section below is needed ----- ##
@@ -287,9 +284,6 @@ add_definitions(-DTIXML_USE_STL)
 #
 # ----- If using JSON validation in plugin section above is needed ----- ##
 #
-
-add_subdirectory(libs/tinyxml)
-target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
 
 IF(NOT UNIX)
     include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include/zlib-1.2.3)
@@ -312,11 +306,6 @@ ENDIF(WIN32)
 ## ----- Change above to match project requirements ----- ##
 
 ##------- Change below to match project requirements --------------
-
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/tinyxml)
-#add_subdirectory(libs/tinyxml)
-#target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
-
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
 add_subdirectory(libs/jsoncpp)
