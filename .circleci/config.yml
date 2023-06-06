@@ -98,22 +98,23 @@ workflows:
 ## Frozen - 28/05/2023  KEEP some users.
         - build-raspian-armhf-913-stretch:
             <<: *std-filters
-## Frozen - 28/05/2023  DROP
-        - build-ubuntu-armhf-1804-buster:
-            <<: *std-filters
+##
 ## UBUNTU OS
 ## Frozen - 28/05/2023  DROP
-        - build-ubuntu-x86_64-1804-bionic:
-            <<: *std-filters
+##        - build-ubuntu-armhf-1804-buster:
+##            <<: *std-filters
 ## Frozen - 28/05/2023  DROP
-        - build-ubuntu-x86_64-1804-bionic-gtk3:
-            <<: *std-filters
+##        - build-ubuntu-x86_64-1804-bionic:
+##            <<: *std-filters
 ## Frozen - 28/05/2023  DROP
-        - build-ubuntu-armhf-2004-focal-gtk3:
-            <<: *std-filters
+##        - build-ubuntu-x86_64-1804-bionic-gtk3:
+##            <<: *std-filters
+## Frozen - 28/05/2023  DROP
+##        - build-ubuntu-armhf-2004-focal-gtk3:
+##            <<: *std-filters
 ## Frozen - 28/05/2023 DROP
-        - build-ubuntu-x86_64-2004-focal-gtk3:
-            <<: *std-filters
+##        - build-ubuntu-x86_64-2004-focal-gtk3:
+##            <<: *std-filters
 ## Frozen - 28/05/2023 KEEP (an unfortunate special case)
         - build-ubuntu-x86_64-2204-jammy:
             <<: *std-filters
