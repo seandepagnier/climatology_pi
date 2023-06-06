@@ -69,25 +69,25 @@ workflows:
 ##            <<: *std-filters
 ## No flatpak-armhf - Insufficient performance.
 ## Frozen - 28/05/2023
-        - build-armhf-10-debian-buster:
+        - build-armhf-debian-10-buster:
             <<: *std-filters
 ## Frozen - 28/05/2023
-        - build-armhf-10-debian-buster-gtk3:
+        - build-armhf-debian-10-buster-gtk3:
             <<: *std-filters
 ## Frozen - 28/05/2023
-        - build-arm64-10-debian-buster:
+        - build-arm64-debian-10-buster:
             <<: *std-filters
 ## Frozen - 28/05/2023
-        - build-x86_64-10-debian-buster:
+        - build-x86_64-debian-10-buster:
             <<: *std-filters       
 ## Frozen - 28/05/2023
-        - build-armhf-11-debian-bullseye:
+        - build-armhf-debian-11-bullseye:
             <<: *std-filters
 ## Frozen - 28/05/2023
-        - build-arm64-11-debian-bullseye:
+        - build-arm64-debian-11-bullseye:
             <<: *std-filters
 ## Frozen - 28/05/2023
-        - build-x86_64-11-debian-bullseye:
+        - build-x86_64-debian-11-bullseye:
             <<: *std-filters
 ## Not needed. Deps not met. - 30/04/2023           
 ##        - build-armhf-debian-11-bullseye-wx32:
