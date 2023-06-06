@@ -311,6 +311,11 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
 add_subdirectory(libs/jsoncpp)
 target_link_libraries(${PACKAGE_NAME} ocpn::jsoncpp)
 
+# Needed for android builds
+if(QT_ANDROID)
+    include_directories(BEFORE ${qt_android_include})
+endif(QT_ANDROID)
+
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/plugingl/include)
 add_subdirectory(libs/plugingl)
 target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
@@ -318,11 +323,6 @@ target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
 ## ----- Change above to match project requirements ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
 
-# Needed for android builds
-if(QT_ANDROID)
-    message(STATUS "${CMLOC}qt_android_include: ${qt_android_include} ")
-    include_directories(${qt_android_include})
-endif(QT_ANDROID)
 
 
 #========================================================
