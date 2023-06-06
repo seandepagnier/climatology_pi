@@ -321,7 +321,7 @@ target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
 # Needed for android builds
 if(QT_ANDROID)
     message(STATUS "${CMLOC}qt_android_include: ${qt_android_include} ")
-    include_directories(BEFORE ${qt_android_include})
+    include_directories(${qt_android_include})
 endif(QT_ANDROID)
 
 
