@@ -96,7 +96,7 @@ workflows:
 ##        - build-x86_64-debian-11-bullseye-wx32:
 ##            <<: *std-filters       
 ## Frozen - 28/05/2023  KEEP some users.
-        - build-raspian-armhf-9.13-stretch:
+        - build-raspian-armhf-913-stretch:
             <<: *std-filters
 ## Frozen - 28/05/2023  DROP
         - build-armhf-ubuntu-1804-buster:
@@ -553,7 +553,7 @@ jobs:
             key: arm64-debian-bullseye-wx32-{{ checksum "CMakeLists.txt" }}
             paths: ./
  ## Debian RPI - needed, some users
-    build-raspian-armhf-9.13-stretch:
+    build-raspian-armhf-913-stretch:
         machine:
             image: ubuntu-2004:202104-01
         environment:
