@@ -42,11 +42,11 @@ workflows:
 ## Work in progress to allow circleci to do windows builds
 ##        - build-msvc-wx32-2022:
 ##            <<: *std-filters
-        - build-debian-arm64-12-bookworm:
+        - build-arm64-debian-12-bookworm:
             <<: *std-filters
-        - build-debian-armhf-12-bookworm:
+        - build-armhf-debian-12-bookworm:
             <<: *std-filters
-        - build-debian-x86_64-12-bookworm:
+        - build-debian-12-bookworm:
             <<: *std-filters
 ## ---------------------
 ## OpenCPN 5.6.2 Plugins
@@ -64,61 +64,61 @@ workflows:
 ## Deprecated in favour of flatpak:22.08 build - 28/05/2023
 ##        - build-flatpak-x86-2008:
 ##            <<: *std-filters
-## Deprecated in favour of flatpak:22.08 build - 28/05/2023  ??
+## Deprecated in favour of flatpak:22.08 build - 28/05/2023  ?
 ##        - build-flatpak:
 ##            <<: *std-filters
 ## No flatpak-armhf - Insufficient performance.
 ## Frozen - 28/05/2023
-        - build-debian-armhf-10-buster:
+        - build-armhf-10-debian-buster:
             <<: *std-filters
 ## Frozen - 28/05/2023
-        - build-debian-armhf-10-buster-gtk3:
+        - build-armhf-10-debian-buster-gtk3:
             <<: *std-filters
 ## Frozen - 28/05/2023
-        - build-debian-arm64-10-buster:
+        - build-arm64-10-debian-buster:
             <<: *std-filters
 ## Frozen - 28/05/2023
-        - build-debian-x86_64-10-buster:
+        - build-x86_64-10-debian-buster:
             <<: *std-filters       
 ## Frozen - 28/05/2023
-        - build-debian-armhf-11-bullseye:
+        - build-armhf-11-debian-bullseye:
             <<: *std-filters
 ## Frozen - 28/05/2023
-        - build-debian-arm64-11-bullseye:
+        - build-arm64-11-debian-bullseye:
             <<: *std-filters
 ## Frozen - 28/05/2023
-        - build-debian-x86_64-11-bullseye:
+        - build-x86_64-11-debian-bullseye:
             <<: *std-filters
 ## Not needed. Deps not met. - 30/04/2023           
-##        - build-debian-armhf-11-bullseye-wx32:
+##        - build-armhf-debian-11-bullseye-wx32:
 ##            <<: *std-filters
 ## Not needed. Deps not met. - 30/04/2023
-##        - build-debian-x86_64-11-bullseye-wx32:
+##        - build-x86_64-debian-11-bullseye-wx32:
 ##            <<: *std-filters       
 ## Frozen - 28/05/2023  KEEP some users.
-        - build-raspian-armhf-913-stretch:
+        - build-raspian-armhf-9.13-stretch:
             <<: *std-filters
 ## Frozen - 28/05/2023  DROP
-        - build-ubuntu-armhf-1804-buster:
+        - build-armhf-ubuntu-1804-buster:
             <<: *std-filters
 ## UBUNTU OS
 ## Frozen - 28/05/2023  DROP
-        - build-ubuntu-x86_64-1804-bionic:
+        - build-x86_64-ubuntu-1804-bionic:
             <<: *std-filters
 ## Frozen - 28/05/2023  DROP
-        - build-ubuntu-x86_64-1804-bionic-gtk3:
+        - build-x86_64-ubuntu-1804-bionic-gtk3:
             <<: *std-filters
 ## Frozen - 28/05/2023  DROP
-        - build-ubuntu-armhf-2004-focal-gtk3:
+        - build-armhf-ubuntu-2004-focal-gtk3:
             <<: *std-filters
 ## Frozen - 28/05/2023 DROP
-        - build-ubuntu-x86_64-2004-focal-gtk3:
+        - build-x86_64-ubuntu-2004-focal-gtk3:
             <<: *std-filters
 ## Frozen - 28/05/2023 KEEP (an unfortunate special case)
-        - build-ubuntu-x86_64-2204-jammy:
+        - build-x86_64-ubuntu-2204-jammy:
             <<: *std-filters
 ## Deprecated in favour of ubuntu-armhf:18.04 buster build - 14/01/2022
-##        - build-raspbian-armhf-buster:
+##        - build-armhf-raspbian-buster:
 ##            <<: *std-filters
 ## Deprecated in favour of ubuntu-armhf:20.04 build - 14/01/2022
 ##        - build-armhf-bullseye:
@@ -247,7 +247,7 @@ jobs:
             command: bash ci/circleci-build-flatpak.sh
             no_output_timeout: 30m
         - deploy-code
-    build-debian-arm64-12-bookworm:
+    build-arm64-debian-12-bookworm:
         machine:
             image: ubuntu-2004:202104-01
         environment:
@@ -265,7 +265,7 @@ jobs:
             command: ci/circleci-build-ubuntu-docker.sh
             no_output_timeout: 30m
         - deploy-code
-    build-debian-armhf-12-bookworm:
+    build-armhf-debian-12-bookworm:
         machine:
             image: ubuntu-2004:202104-01
         resource_class: arm.medium
@@ -284,7 +284,7 @@ jobs:
             command: ci/circleci-build-ubuntu-docker.sh
             no_output_timeout: 30m
         - deploy-code
-    build-debian-x86_64-12-bookworm:
+    build-debian-12-bookworm:
         machine:
             image: ubuntu-2004:202104-01
         environment:
@@ -383,7 +383,7 @@ jobs:
         - run: ci/circleci-build-msvc
         - deploy-code:
             install-python: true
-    build-debian-armhf-10-buster:
+    build-armhf-debian-10-buster:
         machine:
             image: ubuntu-2004:202104-01
         environment:
@@ -399,7 +399,7 @@ jobs:
             command: ci/circleci-build-ubuntu-docker.sh
             no_output_timeout: 30m
         - deploy-code
-    build-debian-armhf-10-buster-gtk3:
+    build-armhf-debian-10-buster-gtk3:
         machine:
             image: ubuntu-2004:202104-01
         environment:
@@ -416,7 +416,7 @@ jobs:
             command: ci/circleci-build-ubuntu-docker.sh
             no_output_timeout: 30m
         - deploy-code
-    build-debian-arm64-10-buster:
+    build-arm64-debian-10-buster:
         machine:
             image: ubuntu-2004:202104-01
         resource_class: arm.medium
@@ -433,7 +433,7 @@ jobs:
             command: ci/circleci-build-ubuntu-docker.sh
             no_output_timeout: 30m
         - deploy-code
-    build-debian-x86_64-10-buster:
+    build-x86_64-debian-10-buster:
         docker:
         - image: circleci/buildpack-deps:buster-scm
         environment:
@@ -451,7 +451,7 @@ jobs:
         - run: chmod a+x ci/*.sh
         - run: ci/circleci-build-debian.sh
         - deploy-code
-    build-debian-armhf-11-bullseye:
+    build-armhf-debian-11-bullseye:
         machine:
             image: ubuntu-2004:202104-01
         environment:
@@ -468,7 +468,7 @@ jobs:
             command: ci/circleci-build-ubuntu-docker.sh
             no_output_timeout: 30m
         - deploy-code
-    build-debian-arm64-11-bullseye:
+    build-arm64-debian-11-bullseye:
         machine:
             image: ubuntu-2004:202104-01
         environment:
@@ -485,7 +485,7 @@ jobs:
             command: ci/circleci-build-ubuntu-docker.sh
             no_output_timeout: 30m
         - deploy-code
-    build-debian-x86_64-11-bullseye:
+    build-x86_64-debian-11-bullseye:
         docker:
         - image: circleci/buildpack-deps:bullseye-scm
         environment:
@@ -506,7 +506,7 @@ jobs:
         - run: ci/circleci-build-debian.sh
         - deploy-code
  ## Not needed. Not used. - 30/04/2023
-    build-debian-armhf-11-bullseye-wx32:
+    build-armhf-debian-11-bullseye-wx32:
         machine:
             image: ubuntu-2004:202104-01
         environment:
@@ -525,7 +525,7 @@ jobs:
             no_output_timeout: 30m
         - deploy-code
 ## Not needed. Not used. - 30/04/2023
-    build-debian-arm64-11-bullseye-wx32:
+    build-arm64-debian-11-bullseye-wx32:
         machine:
             image: ubuntu-2004:2023.04.2
         environment:
@@ -553,7 +553,7 @@ jobs:
             key: arm64-debian-bullseye-wx32-{{ checksum "CMakeLists.txt" }}
             paths: ./
  ## Debian RPI - needed, some users
-    build-raspian-armhf-913-stretch:
+    build-raspian-armhf-9.13-stretch:
         machine:
             image: ubuntu-2004:202104-01
         environment:
@@ -570,7 +570,7 @@ jobs:
             no_output_timeout: 30m
         - deploy-code           
 ## Ubuntu OS  - All are Old & Deprecated, now using debian above.
-    build-ubuntu-armhf-1804-buster:
+    build-armhf-ubuntu-1804-buster:
         machine:
             image: ubuntu-2004:202104-01
         environment:
@@ -586,7 +586,7 @@ jobs:
             command: ci/circleci-build-ubuntu-docker.sh
             no_output_timeout: 30m
         - deploy-code
-    build-ubuntu-x86_64-1804-bionic:
+    build-x86_64-ubuntu-1804-bionic:
         docker:
         - image: cimg/base:stable-18.04
         environment:
@@ -604,7 +604,7 @@ jobs:
         - run: chmod a+x ci/*.sh
         - run: ci/circleci-build-debian.sh
         - deploy-code
-    build-ubuntu-x86_64-1804-bionic-gtk3:
+    build-x86_64-ubuntu-1804-bionic-gtk3:
         docker:
         - image: cimg/base:stable-18.04
         environment:
@@ -624,7 +624,7 @@ jobs:
         - run: chmod a+x ci/*.sh
         - run: ci/circleci-build-debian.sh
         - deploy-code
-    build-ubuntu-armhf-2004-focal-gtk3:
+    build-armhf-ubuntu-2004-focal-gtk3:
         machine:
             image: ubuntu-2004:202104-01
         environment:
@@ -644,7 +644,7 @@ jobs:
             command: ci/circleci-build-ubuntu-docker.sh
             no_output_timeout: 30m
         - deploy-code
-    build-ubuntu-x86_64-2004-focal-gtk3:
+    build-x86_64-ubuntu-2004-focal-gtk3:
         docker:
         - image: cimg/base:stable-20.04
         environment:
@@ -662,7 +662,7 @@ jobs:
         - run: chmod a+x ci/*.sh
         - run: ci/circleci-build-debian.sh
         - deploy-code
-    build-ubuntu-x86_64-2204-jammy:
+    build-x86_64-ubuntu-2204-jammy:
         docker:
         - image: cimg/base:edge-22.04
         environment:
@@ -684,7 +684,7 @@ jobs:
         - run: ci/circleci-build-debian.sh
         - deploy-code
 ## Deprecated in favour of ubuntu-armhf:18.04 buster build - 14/01/2022
-    build-raspbian-armhf-buster:
+    build-armhf-raspbian-buster:
         machine:
             image: ubuntu-2004:202104-01
         environment:
