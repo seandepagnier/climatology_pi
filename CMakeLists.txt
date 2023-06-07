@@ -18,7 +18,7 @@
 ## *   Free Software Foundation, Inc.,                                       *
 ## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
 ## ---------------------------------------------------------------------------
-## Frontend2 Author: Jon Gough   v1.0.237.0 30/04/2023 # DD/MM/YYYY format
+## Frontend2 Author: Jon Gough   v1.0.237.1 07/06/2023 # DD/MM/YYYY format
 ## ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur   ----- ##
 ## ----- Changes should only be made between the section blocks that identify where ---- ##
@@ -55,8 +55,8 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "5")
-set(VERSION_PATCH "5")
-set(VERSION_TWEAK "10")
+set(VERSION_PATCH "6")
+set(VERSION_TWEAK "0")
 set(VERSION_DATE "07/06/2023") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov58")
 set(OCPN_API_VERSION_MAJOR "1")

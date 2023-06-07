@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Feb 26 2019)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -29,15 +29,13 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer23->SetFlexibleDirection( wxBOTH );
 	fgSizer23->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	wxString m_cMonthChoices[] = { _("January"), _("February"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"), _("September"), _("October"), _("November"), _("December") };
+	wxString m_cMonthChoices[] = { _("January"), _("Febuary"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"), _("September"), _("October"), _("November"), _("December") };
 	int m_cMonthNChoices = sizeof( m_cMonthChoices ) / sizeof( wxString );
 	m_cMonth = new wxChoice( sbSizer21->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize( 80,-1 ), m_cMonthNChoices, m_cMonthChoices, 0 );
 	m_cMonth->SetSelection( 0 );
 	fgSizer23->Add( m_cMonth, 0, wxALL|wxEXPAND, 5 );
 
-	m_sDay = new wxSpinCtrl( sbSizer21->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 1, 31, 1 );
-	m_sDay->SetMinSize( wxSize( 50,-1 ) );
-
+	m_sDay = new wxSpinCtrl( sbSizer21->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxSP_ARROW_KEYS, 1, 31, 1 );
 	fgSizer23->Add( m_sDay, 0, wxALL, 5 );
 
 	m_cbAll = new wxCheckBox( sbSizer21->GetStaticBox(), wxID_ANY, _("All"), wxDefaultPosition, wxDefaultSize, 0 );
