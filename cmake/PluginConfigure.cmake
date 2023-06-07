@@ -639,6 +639,10 @@ else(NOT QT_ANDROID)
           )
 
     ENDIF(_wx_selected_config MATCHES "androideabi-qt-arm64")
+
+    # Needed for android builds
+    include_directories(BEFORE ${qt_android_include})
+
 endif(NOT QT_ANDROID)
 
 find_package(Gettext REQUIRED)
