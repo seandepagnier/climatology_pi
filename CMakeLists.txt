@@ -214,8 +214,8 @@ if(NOT OCPN_FLATPAK_CONFIG)
     add_subdirectory(opencpn-libs/wxJSON)
     target_link_libraries(${PACKAGE_NAME} ocpn::wxjson)
 
-    add_subdirectory(opencpn-libs/plugingl)
-    target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
+#    add_subdirectory(opencpn-libs/plugingl)
+#    target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
 
 endif(NOT OCPN_FLATPAK_CONFIG)
 
@@ -237,15 +237,17 @@ endif(QT_ANDROID)
 
 IF(NOT UNIX)
 
+#    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/zlib-1.2.3)
+#    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/bzip2)
+
+#    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/zlib)
 #    add_subdirectory(opencpn-libs/zlib)
 #    target_link_libraries(${PACKAGE_NAME} ocpn::zlib)
 	
+    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/bzip2)
     add_subdirectory(opencpn-libs/bzip2)
     target_link_libraries(${PACKAGE_NAME} ocpn::bzip2)
 
-#    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/zlib-1.2.3)
-#    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/bzip2)
-#	
 #    add_subdirectory(${PROJECT_SOURCE_DIR}/libs/bzip2)
 #    target_link_libraries(${PACKAGE_NAME} ocpn::bzip2)
 
@@ -255,6 +257,9 @@ IF(WIN32)
   IF(MSVC)
     SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
 
+    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/buildwin/include)
+    target_link_libraries(${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib1.lib")
+    
     add_subdirectory(opencpn-libs/zlib)
     target_link_libraries(${PACKAGE_NAME} ocpn::zlib)
 	
@@ -267,8 +272,13 @@ IF(WIN32)
   ENDIF()
 ENDIF(WIN32)
 
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/jsoncpp)
 add_subdirectory(opencpn-libs/jsoncpp)
 target_link_libraries(${PACKAGE_NAME} ocpn::jsoncpp)
+
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/plugingl/include)
+add_subdirectory(opencpn-libs/plugingl)
+target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
 
 
 #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
