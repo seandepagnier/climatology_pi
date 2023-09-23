@@ -55,7 +55,7 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "6")
-set(VERSION_PATCH "3")
+set(VERSION_PATCH "4")
 set(VERSION_TWEAK "0")
 set(VERSION_DATE  "23/09/2023")#DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov58")
@@ -211,20 +211,16 @@ if(NOT OCPN_FLATPAK_CONFIG)
     add_subdirectory(opencpn-libs/tinyxml)
     target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
 
+    #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/jsoncpp)
+    add_subdirectory(opencpn-libs/jsonlib)
+    target_link_libraries(${PACKAGE_NAME} ocpn::jsonlib)
+
     add_subdirectory(opencpn-libs/wxJSON)
     target_link_libraries(${PACKAGE_NAME} ocpn::wxjson)
 
-#    add_subdirectory(opencpn-libs/plugingl)
-#    target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
-
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/jsoncpp)
-add_subdirectory(opencpn-libs/jsoncpp)
-target_link_libraries(${PACKAGE_NAME} ocpn::jsoncpp)
-
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/plugingl/include)
-add_subdirectory(opencpn-libs/plugingl)
-target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
-
+    #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/plugingl/include)
+    add_subdirectory(opencpn-libs/plugingl)
+    target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
 
 endif(NOT OCPN_FLATPAK_CONFIG)
 
