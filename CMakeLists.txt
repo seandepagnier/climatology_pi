@@ -55,7 +55,7 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "6")
-set(VERSION_PATCH "4")
+set(VERSION_PATCH "5")
 set(VERSION_TWEAK "0")
 set(VERSION_DATE  "23/09/2023")#DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov58")
@@ -211,16 +211,40 @@ if(NOT OCPN_FLATPAK_CONFIG)
     add_subdirectory(opencpn-libs/tinyxml)
     target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
 
-    #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/jsoncpp)
     add_subdirectory(opencpn-libs/jsonlib)
     target_link_libraries(${PACKAGE_NAME} ocpn::jsonlib)
 
     add_subdirectory(opencpn-libs/wxJSON)
     target_link_libraries(${PACKAGE_NAME} ocpn::wxjson)
 
-    #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/plugingl/include)
     add_subdirectory(opencpn-libs/plugingl)
     target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
+    IF(NOT UNIX)
+
+       #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/bzip2)
+       add_subdirectory(opencpn-libs/bzip2)
+       target_link_libraries(${PACKAGE_NAME} ocpn::bzip2)
+
+       #zlib already included
+       #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/zlib)
+       #add_subdirectory(opencpn-libs/zlib)
+       #target_link_libraries(${PACKAGE_NAME} ocpn::zlib)
+
+    ENDIF(NOT UNIX)
+
+    IF(WIN32)
+       IF(MSVC)
+           SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
+#               include_directories(BEFORE ${PROJECT_SOURCE_DIR}/buildwin/include)
+#               target_link_libraries(${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib1.lib")
+    
+               add_subdirectory(opencpn-libs/zlib)
+               target_link_libraries(${PACKAGE_NAME} ocpn::zlib)
+       ELSE()
+            #MINGW
+            TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "-lz")
+       ENDIF()
+    ENDIF(WIN32)     
 
 endif(NOT OCPN_FLATPAK_CONFIG)
 
@@ -239,52 +263,6 @@ add_definitions(-DTIXML_USE_STL)
 if(QT_ANDROID)
     include_directories(BEFORE ${qt_android_include})
 endif(QT_ANDROID)
-
-IF(NOT UNIX)
-
-    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/bzip2)
-    add_subdirectory(opencpn-libs/bzip2)
-    target_link_libraries(${PACKAGE_NAME} ocpn::bzip2)
-
-# zlib already included
-#    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/zlib-1.2.3)
-#    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/zlib)
-#    add_subdirectory(opencpn-libs/zlib)
-#    target_link_libraries(${PACKAGE_NAME} ocpn::zlib)
-
-#    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/bzip2)
-#    add_subdirectory(${PROJECT_SOURCE_DIR}/libs/bzip2)
-#    target_link_libraries(${PACKAGE_NAME} ocpn::bzip2)
-
-ENDIF(NOT UNIX)
-
-IF(WIN32)
-  IF(MSVC)
-    SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
-
-    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/buildwin/include)
-    target_link_libraries(${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib1.lib")
-    
-    add_subdirectory(opencpn-libs/zlib)
-    target_link_libraries(${PACKAGE_NAME} ocpn::zlib)
-	
-#    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/buildwin/include)
-#    target_link_libraries(${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib1.lib")
-
-  ELSE()
-    # MINGW
-    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} "-lz")
-  ENDIF()
-ENDIF(WIN32)
-
-
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
-#add_subdirectory(libs/jsoncpp)
-#target_link_libraries(${PACKAGE_NAME} ocpn::jsoncpp)
-
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/pluginDC/include)
-#add_subdirectory(libs/pluginDC)
-#target_link_libraries(${PACKAGE_NAME} ocpn::pluginDC)
 
 ## Needed for all builds Do not change - needed to build app -------------##
 ##===============================================================
