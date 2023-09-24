@@ -219,6 +219,12 @@ if(NOT OCPN_FLATPAK_CONFIG)
 
     add_subdirectory(opencpn-libs/plugingl)
     target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
+
+    if(QT_ANDROID)
+        add_subdirectory(opencpn-libs/glu)
+        target_link_libraries(${PACKAGE_NAME} ocpn::glu_static)
+    endif()
+
     IF(NOT UNIX)
 
        #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/bzip2)
