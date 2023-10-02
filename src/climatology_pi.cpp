@@ -74,7 +74,7 @@ wxString ClimatologyUserDataDirectory()
 }
 
 climatology_pi::climatology_pi(void *ppimgr)
-      :opencpn_plugin_116(ppimgr)
+      :opencpn_plugin_117(ppimgr)
 {
       m_pClimatologyDialog = nullptr;
       // Create the PlugIn icons
@@ -186,6 +186,17 @@ int climatology_pi::GetPlugInVersionMinor()
 {
       return PLUGIN_VERSION_MINOR;
 }
+
+int climatology_pi::GetPlugInVersionPatch()
+{
+      return PLUGIN_VERSION_PATCH;
+}
+
+int climatology_pi::GetPlugInVersionPost()
+{
+      return PLUGIN_VERSION_TWEAK;
+}
+
 
 /*  Converts  icon.cpp file to an image. Original process
 wxBitmap *climatology_pi::GetPlugInBitmap()
