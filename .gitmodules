@@ -1,6 +1,6 @@
 [submodule "opencpn-libs"]
 	path = opencpn-libs
 	url = https://github.com/OpenCPN/opencpn-libs.git
-[submodule "climatology_pi_data"]
-	path = climatology_pi_data
+[submodule "data"]
+	path = data
 	url = https://github.com/rgleason/climatology_pi_data.git
