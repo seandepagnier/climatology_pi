@@ -19,7 +19,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 #-----------------------------------------------------------------------------
 # Frontend2 Author: Jon Gough 
-# Testplugn(TP) v1.0.256.0 17/09/2023 DD/MM/YYYY format
+# Testplugin(TP) v1.0.260 07/10/2023 DD/MM/YYYY format
 # buildCI:yes useODAPI:no validateJSON:no
 # ---------------------------------------------------------------------------
 ## -- When changing this file do NOT change the order of the sections.    -- ##
@@ -55,9 +55,9 @@ set(LONG_DESCRIPTION "Climatology provides overlay capabilities for historic wea
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "6")
-set(VERSION_PATCH "8")
+set(VERSION_PATCH "10")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE  "02/10/2023")#DD/MM/YYYY format
+set(VERSION_DATE  "09/10/2023")#DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov58")
 
 set(OCPN_API_VERSION_MAJOR "1")
@@ -82,7 +82,7 @@ set(CLOUDSMITH_BASE_REPOSITORY "climatology")  #without the _pi
 
 # Set the following to use OpenCPN cloudsmith repositories instead of own repositories
 set(CLOUDSMITH_USER "opencpn")
-#set(CLOUDSMITH_USER "rick-gleason")
+# set(CLOUDSMITH_USER "rick-gleason")
 
 set(XML_INFO_URL "https://opencpn.org/OpenCPN/plugins/climatology.html")
 set(XML_SUMMARY ${SHORT_DESCRIPTION})
@@ -202,8 +202,8 @@ if(NOT OCPN_FLATPAK_CONFIG)
 	# so following statements will not work
     message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
 
-    add_subdirectory(opencpn-libs/WindowsHeaders)
-    target_link_libraries(${PACKAGE_NAME} windows::headers)
+#    add_subdirectory(opencpn-libs/WindowsHeaders)
+#    target_link_libraries(${PACKAGE_NAME} windows::headers)
 
     add_subdirectory(opencpn-libs/api-17)
     target_link_libraries(${PACKAGE_NAME} ocpn::api)
@@ -227,23 +227,14 @@ if(NOT OCPN_FLATPAK_CONFIG)
 
     IF(NOT UNIX)
 
-       #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/bzip2)
        add_subdirectory(opencpn-libs/bzip2)
        target_link_libraries(${PACKAGE_NAME} ocpn::bzip2)
-
-       #zlib already included
-       #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/opencpn-libs/zlib)
-       #add_subdirectory(opencpn-libs/zlib)
-       #target_link_libraries(${PACKAGE_NAME} ocpn::zlib)
 
     ENDIF(NOT UNIX)
 
     IF(WIN32)
        IF(MSVC)
            SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
-#               include_directories(BEFORE ${PROJECT_SOURCE_DIR}/buildwin/include)
-#               target_link_libraries(${PACKAGE_NAME} "${CMAKE_SOURCE_DIR}/buildwin/zlib1.lib")
-    
                add_subdirectory(opencpn-libs/zlib)
                target_link_libraries(${PACKAGE_NAME} ocpn::zlib)
        ELSE()
