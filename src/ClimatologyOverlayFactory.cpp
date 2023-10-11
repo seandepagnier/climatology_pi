@@ -58,7 +58,8 @@
 #define FAILED_FILELIST_MSG_LEN 150
 
 static int s_multitexturing = 0;
-#ifndef __ANDROID__
+
+#if !defined(__ANDROID__) && !defined(__APPLE__)
 static PFNGLACTIVETEXTUREARBPROC s_glActiveTextureARB = 0;
 static PFNGLMULTITEXCOORD2DARBPROC s_glMultiTexCoord2dARB = 0;
 #endif
@@ -1245,7 +1246,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
                 goto corrupted;
 
             // make sure it's in range
-            if(fabsf((double)lat/10) >= 90 || (double)lon/10 > 15 || (double)lon/10 < -360)
+            if(std::abs((double)lat/10) >= 90 || (double)lon/10 > 15 || (double)lon/10 < -360)
                 goto corrupted;
 
             if(lastlat != -10000) {
@@ -1646,13 +1647,16 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     else
         multitexturing = s_multitexturing;
 
+#if defined(__ANDROID__) || defined(__APPLE__)
+    multitrxturing = 0;
+#endif
     if(multitexturing) {
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
         glEnable(texture_format);
         glBindTexture(texture_format, O2.m_iTexture);
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         s_glActiveTextureARB (GL_TEXTURE1_ARB); 
-   } else
+    } else
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     glEnable(texture_format);
@@ -2704,7 +2708,7 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 
 static void QueryGL()
 {
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !defined(__APPLE__)
 
     // assume we have GL_ARB_multitexture if this passes
     if(QueryExtension( "GL_ARB_texture_env_combine" )) {
