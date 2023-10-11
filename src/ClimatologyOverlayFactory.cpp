@@ -1529,7 +1529,8 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     if(vp.m_projection_type != PI_PROJECTION_MERCATOR)
         return;
 
-#ifdef USE_GLSL
+#ifdef __ANDROID__      //TODO  Implement shader structure
+#if 0
         int w = vp.pix_width, h = vp.pix_height;
 
         double lat[4], lon[4];
@@ -1637,6 +1638,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     glDisable(texture_format);
+#endif
 #else
     int multitexturing;
     if(&O1 == &O2)
