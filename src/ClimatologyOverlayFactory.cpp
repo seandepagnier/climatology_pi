@@ -1513,10 +1513,12 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
 static inline void glTexCoord2d_2(int multitexturing, double x, double y)
 {
 #ifndef __ANDROID__
+#ifndef __APPLE__
     if(multitexturing) {
         s_glMultiTexCoord2dARB(GL_TEXTURE0_ARB, x, y);
         s_glMultiTexCoord2dARB(GL_TEXTURE1_ARB, x, y);
     } else
+#endif
         glTexCoord2d(x, y);
 #endif
 }
