@@ -55,13 +55,13 @@
 //#include "gldefs.h"
 #include "icons.h"
 
-#include "pi_shaders.h"
-
 #define FAILED_FILELIST_MSG_LEN 150
 
 static int s_multitexturing = 0;
+#ifndef __ANDROID__
 static PFNGLACTIVETEXTUREARBPROC s_glActiveTextureARB = 0;
 static PFNGLMULTITEXCOORD2DARBPROC s_glMultiTexCoord2dARB = 0;
+#endif
 
 static int texture_format;
 static bool glQueried = false;
