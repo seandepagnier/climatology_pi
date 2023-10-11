@@ -28,12 +28,13 @@
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
 
+
 #ifdef __WXOSX__
 # include <OpenGL/OpenGL.h>
 # include <OpenGL/gl3.h>
 #endif
 
-#ifdef __OCPN__ANDROID__
+#ifdef __ANDROID__
 #include <qopengl.h>
 #include "GL/gl_private.h"
 #endif
@@ -51,16 +52,16 @@
 #endif
 
 #include "climatology_pi.h"
-#include "gldefs.h"
+//#include "gldefs.h"
 #include "icons.h"
-
-#include "pi_shaders.h"
 
 #define FAILED_FILELIST_MSG_LEN 150
 
 static int s_multitexturing = 0;
+#ifndef __ANDROID__
 static PFNGLACTIVETEXTUREARBPROC s_glActiveTextureARB = 0;
 static PFNGLMULTITEXCOORD2DARBPROC s_glMultiTexCoord2dARB = 0;
+#endif
 
 static int texture_format;
 static bool glQueried = false;
@@ -1510,11 +1511,13 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
 
 static inline void glTexCoord2d_2(int multitexturing, double x, double y)
 {
+#ifndef __ANDROID__
     if(multitexturing) {
         s_glMultiTexCoord2dARB(GL_TEXTURE0_ARB, x, y);
         s_glMultiTexCoord2dARB(GL_TEXTURE1_ARB, x, y);
     } else
         glTexCoord2d(x, y);
+#endif
 }
 
 void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, ClimatologyOverlay &O2,
@@ -1526,7 +1529,8 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     if(vp.m_projection_type != PI_PROJECTION_MERCATOR)
         return;
 
-#ifdef USE_GLSL
+#ifdef __ANDROID__      //TODO  Implement shader structure
+#if 0
         int w = vp.pix_width, h = vp.pix_height;
 
         double lat[4], lon[4];
@@ -1634,6 +1638,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     glDisable(texture_format);
+#endif
 #else
     int multitexturing;
     if(&O1 == &O2)
@@ -2699,6 +2704,8 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 
 static void QueryGL()
 {
+#ifndef __ANDROID__
+
     // assume we have GL_ARB_multitexture if this passes
     if(QueryExtension( "GL_ARB_texture_env_combine" )) {
         s_glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
@@ -2714,6 +2721,10 @@ static void QueryGL()
                 s_multitexturing = 2; /* with blending */
         }
     }
+#else
+    s_multitexturing = 0;
+#endif
+
 
     // npot textures don't support GL_REPEAT on GLES
     // and texture rectangle doesn't either
