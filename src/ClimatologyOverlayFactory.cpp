@@ -28,6 +28,7 @@
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
 
+
 #ifdef __WXOSX__
 # include <OpenGL/OpenGL.h>
 # include <OpenGL/gl3.h>
@@ -51,7 +52,7 @@
 #endif
 
 #include "climatology_pi.h"
-#include "gldefs.h"
+//#include "gldefs.h"
 #include "icons.h"
 
 #include "pi_shaders.h"
