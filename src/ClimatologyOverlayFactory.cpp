@@ -34,7 +34,7 @@
 # include <OpenGL/gl3.h>
 #endif
 
-#ifdef __OCPN__ANDROID__
+#ifdef __ANDROID__
 #include <qopengl.h>
 #include "GL/gl_private.h"
 #endif
