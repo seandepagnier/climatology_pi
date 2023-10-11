@@ -1516,8 +1516,8 @@ static inline void glTexCoord2d_2(int multitexturing, double x, double y)
         s_glMultiTexCoord2dARB(GL_TEXTURE0_ARB, x, y);
         s_glMultiTexCoord2dARB(GL_TEXTURE1_ARB, x, y);
     } else
-#endif
         glTexCoord2d(x, y);
+#endif
 }
 
 void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, ClimatologyOverlay &O2,
@@ -2702,6 +2702,8 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 
 static void QueryGL()
 {
+#ifndef __ANDROID__
+
     // assume we have GL_ARB_multitexture if this passes
     if(QueryExtension( "GL_ARB_texture_env_combine" )) {
         s_glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
@@ -2717,6 +2719,10 @@ static void QueryGL()
                 s_multitexturing = 2; /* with blending */
         }
     }
+#else
+    s_multitexturing = 0;
+#endif
+
 
     // npot textures don't support GL_REPEAT on GLES
     // and texture rectangle doesn't either
