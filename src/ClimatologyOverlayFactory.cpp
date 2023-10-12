@@ -1652,6 +1652,8 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
 #if defined(__ANDROID__) || defined(__APPLE__)
     multitexturing = 0;
 #endif
+
+#if !defined(__ANDROID__) && !defined(__APPLE__)
     if(multitexturing) {
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
         glEnable(texture_format);
@@ -1659,6 +1661,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         s_glActiveTextureARB (GL_TEXTURE1_ARB); 
     } else
+#endif
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     glEnable(texture_format);
