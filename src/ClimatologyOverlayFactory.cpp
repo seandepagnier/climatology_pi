@@ -1650,7 +1650,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         multitexturing = s_multitexturing;
 
 #if defined(__ANDROID__) || defined(__APPLE__)
-    multitrxturing = 0;
+    multitexturing = 0;
 #endif
     if(multitexturing) {
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
@@ -1664,6 +1664,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     glEnable(texture_format);
     glBindTexture(texture_format, O1.m_iTexture);
 
+#if !defined(__ANDROID__) && !defined(__APPLE__)
     if(multitexturing) {
         float fpos = dpos;
         GLfloat constColor[4] = {0, 0, 0, fpos};
@@ -1709,7 +1710,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
             glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_ARB, GL_PRIMARY_COLOR_ARB);
         }
     }
-
+#endif
     glColor4f(1, 1, 1, 1 - transparency);
 
     if(s_bnoglrepeat) {
@@ -1816,6 +1817,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         glEnd();
     }
 
+#if !defined(__ANDROID__) && !defined(__APPLE__)
     if(multitexturing) {
         if(multitexturing > 1) {
             glDisable(texture_format);
@@ -1824,6 +1826,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         glDisable(texture_format);
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
     }
+#endif
 
     glDisable(texture_format);
 #endif
