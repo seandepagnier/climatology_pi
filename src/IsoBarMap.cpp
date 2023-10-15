@@ -42,7 +42,7 @@
 
 #include "IsoBarMap.h"
 #include "defs.h"
-#include "gldefs.h"
+//#include "gldefs.h"
 #include "pidc.h"
 
 /* initialize cache to contain data */

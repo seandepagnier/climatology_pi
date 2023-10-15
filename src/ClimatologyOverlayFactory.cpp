@@ -28,12 +28,13 @@
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
 
+
 #ifdef __WXOSX__
 # include <OpenGL/OpenGL.h>
 # include <OpenGL/gl3.h>
 #endif
 
-#ifdef __OCPN__ANDROID__
+#ifdef __ANDROID__
 #include <qopengl.h>
 #include "GL/gl_private.h"
 #endif
@@ -51,16 +52,17 @@
 #endif
 
 #include "climatology_pi.h"
-#include "gldefs.h"
+//#include "gldefs.h"
 #include "icons.h"
-
-#include "pi_shaders.h"
 
 #define FAILED_FILELIST_MSG_LEN 150
 
 static int s_multitexturing = 0;
+
+#if !defined(__ANDROID__) && !defined(__APPLE__)
 static PFNGLACTIVETEXTUREARBPROC s_glActiveTextureARB = 0;
 static PFNGLMULTITEXCOORD2DARBPROC s_glMultiTexCoord2dARB = 0;
+#endif
 
 static int texture_format;
 static bool glQueried = false;
@@ -1244,7 +1246,7 @@ bool ClimatologyOverlayFactory::ReadCycloneData(wxString filename, std::list<Cyc
                 goto corrupted;
 
             // make sure it's in range
-            if(fabsf((double)lat/10) >= 90 || (double)lon/10 > 15 || (double)lon/10 < -360)
+            if(std::abs((double)lat/10) >= 90 || (double)lon/10 > 15 || (double)lon/10 < -360)
                 goto corrupted;
 
             if(lastlat != -10000) {
@@ -1510,11 +1512,15 @@ bool ClimatologyOverlayFactory::CreateGLTexture(ClimatologyOverlay &O,
 
 static inline void glTexCoord2d_2(int multitexturing, double x, double y)
 {
+#ifndef __ANDROID__
+#ifndef __APPLE__
     if(multitexturing) {
         s_glMultiTexCoord2dARB(GL_TEXTURE0_ARB, x, y);
         s_glMultiTexCoord2dARB(GL_TEXTURE1_ARB, x, y);
     } else
+#endif
         glTexCoord2d(x, y);
+#endif
 }
 
 void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, ClimatologyOverlay &O2,
@@ -1526,7 +1532,8 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     if(vp.m_projection_type != PI_PROJECTION_MERCATOR)
         return;
 
-#ifdef USE_GLSL
+#ifdef __ANDROID__      //TODO  Implement shader structure
+#if 0
         int w = vp.pix_width, h = vp.pix_height;
 
         double lat[4], lon[4];
@@ -1634,6 +1641,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     glDisable(texture_format);
+#endif
 #else
     int multitexturing;
     if(&O1 == &O2)
@@ -1641,18 +1649,25 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
     else
         multitexturing = s_multitexturing;
 
+#if defined(__ANDROID__) || defined(__APPLE__)
+    multitexturing = 0;
+#endif
+
+#if !defined(__ANDROID__) && !defined(__APPLE__)
     if(multitexturing) {
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
         glEnable(texture_format);
         glBindTexture(texture_format, O2.m_iTexture);
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         s_glActiveTextureARB (GL_TEXTURE1_ARB); 
-   } else
+    } else
+#endif
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     glEnable(texture_format);
     glBindTexture(texture_format, O1.m_iTexture);
 
+#if !defined(__ANDROID__) && !defined(__APPLE__)
     if(multitexturing) {
         float fpos = dpos;
         GLfloat constColor[4] = {0, 0, 0, fpos};
@@ -1698,7 +1713,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
             glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_ARB, GL_PRIMARY_COLOR_ARB);
         }
     }
-
+#endif
     glColor4f(1, 1, 1, 1 - transparency);
 
     if(s_bnoglrepeat) {
@@ -1805,6 +1820,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         glEnd();
     }
 
+#if !defined(__ANDROID__) && !defined(__APPLE__)
     if(multitexturing) {
         if(multitexturing > 1) {
             glDisable(texture_format);
@@ -1813,6 +1829,7 @@ void ClimatologyOverlayFactory::DrawGLTexture( ClimatologyOverlay &O1, Climatolo
         glDisable(texture_format);
         s_glActiveTextureARB (GL_TEXTURE0_ARB);
     }
+#endif
 
     glDisable(texture_format);
 #endif
@@ -2699,6 +2716,8 @@ void ClimatologyOverlayFactory::RenderCyclones(PlugIn_ViewPort &vp)
 
 static void QueryGL()
 {
+#if !defined(__ANDROID__) && !defined(__APPLE__)
+
     // assume we have GL_ARB_multitexture if this passes
     if(QueryExtension( "GL_ARB_texture_env_combine" )) {
         s_glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)
@@ -2714,6 +2733,10 @@ static void QueryGL()
                 s_multitexturing = 2; /* with blending */
         }
     }
+#else
+    s_multitexturing = 0;
+#endif
+
 
     // npot textures don't support GL_REPEAT on GLES
     // and texture rectangle doesn't either
