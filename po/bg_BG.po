@@ -5,37 +5,37 @@ msgstr ""
 "POT-Creation-Date: 2023-10-20 09:35+0200\n"
 "PO-Revision-Date: 2023-11-09 21:22\n"
 "Last-Translator: \n"
-"Language-Team: Turkish\n"
-"Language: tr_TR\n"
+"Language-Team: Bulgarian\n"
+"Language: bg_BG\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: opencpn\n"
 "X-Crowdin-Project-ID: 49843\n"
-"X-Crowdin-Language: tr\n"
+"X-Crowdin-Language: bg\n"
 "X-Crowdin-File: /plugins/climatology_pi/po/climatology_pi.pot\n"
 "X-Crowdin-File-ID: 110\n"
 
 #: include/ClimatologyUI.h:98 src/ClimatologyDialog.cpp:46
 msgid "Climatology Display Control"
-msgstr "İklimbilim Ekran Kontrolü"
+msgstr ""
 
 #: include/ClimatologyUI.h:218 src/ClimatologyConfigDialog.cpp:228
 msgid "Climatology Configuration"
-msgstr "İklimbilim Yapılandırma"
+msgstr ""
 
 #: include/IsoBarMap.h:135
 msgid "Declination"
-msgstr "Sapma açısı"
+msgstr ""
 
 #: include/IsoBarMap.h:139
 msgid "Inclination"
-msgstr "Eğilim"
+msgstr ""
 
 #: include/IsoBarMap.h:142
 msgid "Field Strength"
-msgstr "Alan kuvveti"
+msgstr ""
 
 #: src/ClimatologyConfigDialog.cpp:431
 msgid "ClimatologyInformation.html"
@@ -43,18 +43,18 @@ msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:165
 msgid "Some Data Failed to load:\n"
-msgstr "Bazı veriler yüklenirken:\n"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:167
 msgid "Would you like to try to download?"
-msgstr "İndirmeyi denemek istermisiniz?"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:168 src/ClimatologyOverlayFactory.cpp:209
 #: src/ClimatologyOverlayFactory.cpp:219 src/ClimatologyOverlayFactory.cpp:644
 #: src/ClimatologyOverlayFactory.cpp:1461 src/ClimatologyOverlayFactory.cpp:2688
 #: src/climatology_pi.cpp:142 src/climatology_pi.cpp:146
 msgid "Climatology"
-msgstr "İklimbilim"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:190
 msgid "downloading climatology data file"
@@ -75,75 +75,75 @@ msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:536
 msgid "averaging wind"
-msgstr "ortalama rüzgar"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:548
 msgid "averaging current"
-msgstr "ortalama akıntı"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:554
 msgid "sea level presure"
-msgstr "deniz seviyesi basıncı"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:558
 msgid "sea surface tempertature"
-msgstr "deniz yüzey sıcaklığı"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:562
 msgid "air tempertature"
-msgstr "hava sıcaklığı"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:566
 msgid "cloud cover"
-msgstr "bulut örtüsü"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:570
 msgid "precipitation"
-msgstr "yağış olasılığı"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:574
 msgid "relative humidity"
-msgstr "bağıl nem"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:579
 msgid "lightning"
-msgstr "yıldırım"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:584
 msgid "sea depth"
-msgstr "deniz derinliği"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:590
 msgid "cyclone (east pacific)"
-msgstr "hortum (doğu pasifik)"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:595
 msgid "cyclone (west pacific)"
-msgstr "hortum (batı pasifik)"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:600
 msgid "cyclone (south pacific)"
-msgstr "hortum ( (güney pasifik)"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:605
 msgid "cyclone (atlantic)"
-msgstr "hortum (atlantik)"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:610
 msgid "cyclone (north indian)"
-msgstr "hortum (kuzey hindistan)"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:615
 msgid "cyclone (south indian)"
-msgstr "hortum (güney hindistan)"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:623
 msgid "el nino years"
-msgstr "el nino yılları"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:632
 msgid "cyclone cache"
-msgstr "siklon önbelleği"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:755 src/ClimatologyOverlayFactory.cpp:868
 #: src/ClimatologyOverlayFactory.cpp:939 src/ClimatologyOverlayFactory.cpp:971
@@ -156,55 +156,55 @@ msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:758
 msgid "wind data file corrupt: "
-msgstr "rüzgar veri dosyası bozuk: "
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:871
 msgid "current data file corrupt: "
-msgstr "akıntı veri dosyası bozulmuş: "
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:905
 msgid "Average Current includes only"
-msgstr "Sadece ortalama akıntı içerir"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:906
 msgid "months"
-msgstr "ay"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:940
 msgid "slp file truncated"
-msgstr "slp dosyası kesildi"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:972
 msgid "sst file truncated"
-msgstr "sst dosyası kesildi"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:1006
 msgid "at file truncated"
-msgstr "at dosyası kesildi"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:1040
 msgid "cld file truncated"
-msgstr "cld dosyası kesildi"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:1074
 msgid "precip file truncated"
-msgstr "precip dosyası kesildi"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:1108
 msgid "relative humidity file truncated"
-msgstr "bağıl nem dosyası kesildi"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:1142
 msgid "lightning file truncated"
-msgstr "yıldırım dosyası kesildi"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:1169
 msgid "seadepth file truncated"
-msgstr "seadepth dosyası kesildi"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:1277
 msgid "cyclone data corrupt: "
-msgstr "hortum veri bozuk: "
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:1372
 msgid "cyclone cache time "
@@ -212,139 +212,139 @@ msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:1418
 msgid "failed to open file: "
-msgstr "dosya açılamadı: "
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:1461
 msgid "Building Overlay map"
-msgstr "Harita çıkarılıyor"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:2267
 msgid "Climatology overlay map unsupported unless OpenGL is enabled"
-msgstr "OpenGL etkin olmadığı sürece klimatoloji yer paylaşımı haritası desteklenmez"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:2317 src/ClimatologyUI.cpp:634
 msgid "N/A"
-msgstr "N/A"
+msgstr ""
 
 #: src/ClimatologyOverlayFactory.cpp:2687
 msgid "Computer too slow to render cyclones, disabling theater"
-msgstr "Bilgisayar siklonları çalıştırmak için çok yavaş, tiyatronun devre dışı bırakılması"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:24
 msgid "Month"
-msgstr "Ay"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "April"
-msgstr "Nisan"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "August"
-msgstr "Ağustos"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "December"
-msgstr "Aralık"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "Febuary"
-msgstr "Şubat"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "January"
-msgstr "Ocak"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "July"
-msgstr "Temmuz"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "June"
-msgstr "Haziran"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "March"
-msgstr "Mart"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "May"
-msgstr "Mayıs"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "November"
-msgstr "Kasım"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "October"
-msgstr "Ekim"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:32
 msgid "September"
-msgstr "Eylül"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:41
 msgid "All"
-msgstr "Tümü"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:57
 msgid "Climatology Data"
-msgstr "İklimbilim veri"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:72
 msgid "Speed"
-msgstr "Hız"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:76
 msgid "Direction"
-msgstr "Yön"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:80 src/ClimatologyUI.cpp:525
 msgid "Wind"
-msgstr "Rüzgar"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:91
 msgid "Current"
-msgstr "Akıntı"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:110
 msgid "Pressure"
-msgstr "Basınç"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:118
 msgid "Sea Temperature"
-msgstr "Deniz Suyu Sıcaklığı"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:126
 msgid "Air Temperature"
-msgstr "Hava Sıcaklığı"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:134
 msgid "Cloud Cover"
-msgstr "Bulut örtüsü"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:142
 msgid "Precipitation"
-msgstr "Yağış Olasılığı"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:150
 msgid "Rel Humidity"
-msgstr "Bağıl Nem Oranı"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:158
 msgid "Lightning"
-msgstr "Şimşek"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:166
 msgid "Sea Depth"
-msgstr "Deniz derinliği"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:174 src/ClimatologyUI.cpp:758
 msgid "Cyclones"
-msgstr "Siklonlar"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:179
 msgid "Config"
-msgstr "Yapılandır"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:291 src/ClimatologyUI.cpp:301
 msgid "------------"
@@ -352,48 +352,48 @@ msgstr ""
 
 #: src/ClimatologyUI.cpp:297
 msgid "Units"
-msgstr "Birimler"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:307
 msgid "Enabled"
-msgstr "Etkin"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:319
 msgid "OverlayMap"
-msgstr "YerHaritası"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:322
 msgid "Transparency"
-msgstr "Saydamlık"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:329
 msgid "Interpolation"
-msgstr "İlişkilendirme"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:340
 msgid "Iso Bars"
-msgstr "İzobar"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:343 src/ClimatologyUI.cpp:371 src/ClimatologyUI.cpp:439
 #: src/ClimatologyUI.cpp:494
 msgid "Spacing"
-msgstr "Aralama"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:350
 msgid "Step"
-msgstr "Adım"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:354
 msgid "Course"
-msgstr "Rota"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:354
 msgid "Fine"
-msgstr "İyi"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:354
 msgid "Normal"
-msgstr "Normal"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:354
 msgid "Very Course"
@@ -401,92 +401,90 @@ msgstr ""
 
 #: src/ClimatologyUI.cpp:354
 msgid "Very Fine"
-msgstr "Çok İyi"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:368
 msgid "Numbers"
-msgstr "Sayılar"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:392
 msgid "Direction Arrows"
-msgstr "Yön Okları"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:399 src/ClimatologyUI.cpp:481
 msgid "Enable"
-msgstr "Etkinleştir"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:405
 msgid "Barbs"
-msgstr "Barbs"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:408
 msgid "Length"
-msgstr "Uzunluk"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:411
 msgid "Width"
-msgstr "Genişlik"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:418
 msgid "Color"
-msgstr "Renk"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:425 src/ClimatologyUI.cpp:501
 msgid "Opacity"
-msgstr "Görünürlük"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:432 src/ClimatologyUI.cpp:487
 msgid "Size"
-msgstr "Boyut"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:459
 msgid "Standard Displays"
-msgstr "Standart Görünüm"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:468
 msgid "Wind Atlas"
-msgstr "Rüzgar Atlası"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:511
-#: c-format
+#, c-format
 msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\n"
 "The barbs indicate wind speed, each barb being 5 knots.\n\n"
 "The numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
-msgstr "Rüzgar atlası göstergesi, rüzgarın sekiz yönde her birinin ok uzunluğu olarak yüzde yüzdesini veya yüzde 29'un üzerinde olması durumunda bir sayı gösterildiğini gösterir.\n\n"
-"Ortamlar rüzgar hızını belirtir, her diken 5'dir düğümler.\n\n"
-"Maku, ortalama rüzgar hızının sakin (3 veya daha düşük düğüm) yüzdesine veya en azından şiddetli kuvvet (34 ve üzeri düğüm) kırmızı yüzdesi verirse, daire içindeki sayılar."
+msgstr ""
 
 #: src/ClimatologyUI.cpp:538
 msgid "Start Date"
-msgstr "Başlangıç Tarihi"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:547
 msgid "End Date"
-msgstr "Bitiş Tarihi"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:561
 msgid "Display Spanning"
-msgstr "Kapsamı Göster"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:571
 msgid "days"
-msgstr "günler"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:586
 msgid "Min Windspeed"
-msgstr "Min Rüzgar hızı"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:601
 msgid "Max Pressure"
-msgstr "En Yüksek Basınç"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:615
 msgid "El Nino Period"
-msgstr "El Nino Dönemi"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:622
 msgid "El Nino"
-msgstr "El Nino"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:626
 msgid "La Nina"
@@ -494,93 +492,93 @@ msgstr ""
 
 #: src/ClimatologyUI.cpp:630
 msgid "Neutral"
-msgstr "Nötr"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:644
 msgid "Storm Types"
-msgstr "Fırtına Türleri"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:651
 msgid "Tropical"
-msgstr "Tropikal"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:655
 msgid "Sub Tropical"
-msgstr "Alt tropikal"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:659
 msgid "ExtraTropical"
-msgstr "EkstraTropikal"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:663
 msgid "Remanent"
-msgstr "Remanent"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:673
 msgid "Sustained Wind Key (knots)"
-msgstr "Sürekli Rüzgar Anahtarı (deniz mili)"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:681
 msgid "20"
-msgstr "20"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:688
 msgid "40"
-msgstr "40"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:695
 msgid "60"
-msgstr "60"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:702
 msgid "80"
-msgstr "80"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:709
 msgid "100"
-msgstr "100"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:716
 msgid "120"
-msgstr "120"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:723
 msgid "140"
-msgstr "140"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:730
 msgid "160"
-msgstr "160"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:737
 msgid "200"
-msgstr "200"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:750
 msgid "Direction arrows are spaced every 6 hours on storm track"
-msgstr "Yön okları fırtına rotasında her 6 saat aralıklarla bulunur"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:773
 msgid "Climatology Plugin Version"
-msgstr "İklimbilim Eklenti Sürümü"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:781
 msgid "Climatology Data Directory"
-msgstr "İklimbilim Veri Rehberi"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:798
 msgid "About"
-msgstr "Hakkında"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:808
 msgid "About Author"
-msgstr "Yazar Hakkında"
+msgstr ""
 
 #: src/ClimatologyUI.cpp:811
 msgid "Close"
-msgstr "Kapat"
+msgstr ""
 
 #: src/IsoBarMap.cpp:355
 msgid "Building Isobar Map"
-msgstr "İzobar haritası oluşturuluyor"
+msgstr ""
 
