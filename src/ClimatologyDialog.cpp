@@ -66,7 +66,7 @@ ClimatologyDialog::ClimatologyDialog(wxWindow *parent, climatology_pi *ppi)
     // run fit delayed (buggy wxwidgets)
     m_fittimer.Connect(wxEVT_TIMER, wxTimerEventHandler
                        ( ClimatologyDialog::OnFitTimer ), NULL, this);
-#ifdef __OCPN__ANDROID__ 
+#ifdef __OCPN__ANDROID__
     GetHandle()->setAttribute(Qt::WA_AcceptTouchEvents);
     GetHandle()->grabGesture(Qt::PanGesture);
     GetHandle()->setStyleSheet( qtStyleSheet);
@@ -98,7 +98,7 @@ ClimatologyDialog::~ClimatologyDialog()
 {
 }
 
-#ifdef __OCPN__ANDROID__ 
+#ifdef __OCPN__ANDROID__
 void ClimatologyDialog::OnEvtPanGesture( wxQT_PanGestureEvent &event)
 {
     switch(event.GetState()){
@@ -115,7 +115,7 @@ void ClimatologyDialog::OnEvtPanGesture( wxQT_PanGestureEvent &event)
             x = wxMin(x, xmax);
             int ymax = ::wxGetDisplaySize().y - GetSize().y;          // Some fluff at the bottom
             y = wxMin(y, ymax);
-            
+
             Move(x, y);
         } break;
     }
@@ -230,14 +230,26 @@ wxString ClimatologyDialog::GetValue(int index, Coord coord)
 void ClimatologyDialog::DayMonthUpdate()
 {
     wxDateTime &timeline = g_pOverlayFactory->m_CurrentTimeline;
-    m_sDay->SetRange(1, wxDateTime::GetNumberOfDays((wxDateTime::Month)m_cMonth->GetSelection(),
-                                                    1999)); // not a leap year
+    int nMonthDays = wxDateTime::GetNumberOfDays((wxDateTime::Month)m_cMonth->GetSelection(),
+                                                    1999); // not a leap year
+    if( m_sDay->GetValue() > nMonthDays)
+        timeline.SetDay(1);
+    else
+        timeline.SetDay(m_sDay->GetValue());
 
-    timeline.SetDay(0);
+    m_sDay->SetRange(1, nMonthDays);
+
     timeline.SetMonth((wxDateTime::Month)m_cMonth->GetSelection());
-    timeline.SetDay(m_sDay->GetValue());
 
-    int yearday = timeline.GetDayOfYear();
+    int yearday = g_pOverlayFactory->m_CurrentTimeline.GetDayOfYear();
+
+//  OR
+//  Sean add line just below back and changed int yearday commit 15d4101
+//    timeline.SetDay(0);
+//    timeline.SetMonth((wxDateTime::Month)m_cMonth->GetSelection());
+//    timeline.SetDay(m_sDay->GetValue());
+//    int yearday = timeline.GetDayOfYear();
+
     if(yearday < 67) {
         yearday += 365;
     }

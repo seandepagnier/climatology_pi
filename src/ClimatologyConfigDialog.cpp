@@ -110,7 +110,7 @@ double ClimatologyOverlaySettings::CalibrationFactor(int setting)
         case FEET:   return 3.28;
         } break;
     }
-        
+
     return 1;
 }
 
@@ -273,7 +273,7 @@ void ClimatologyConfigDialog::Save()
 void ClimatologyConfigDialog::DisableIsoBars(int setting)
 {
     m_Settings.Settings[setting].m_bIsoBars = false;
-    
+
     if(setting == m_cDataType->GetSelection())
         m_cbIsoBars->SetValue(false);
 }
@@ -343,8 +343,8 @@ void ClimatologyConfigDialog::SaveSettings()
     /* cyclone settings */
     pConf->SetPath("/PlugIns/Climatology/Cyclones");
 
-    pConf->Write("StartDate" , m_dPStart->GetDateCtrlValue().FormatISODate());
-    pConf->Write("EndDate" , m_dPEnd->GetDateCtrlValue().FormatISODate());
+    pConf->Write("StartDate" , m_dPStart->GetValue().FormatISODate());
+    pConf->Write("EndDate" , m_dPEnd->GetValue().FormatISODate());
 
     pConf->Write("CycloneDaySpan" , m_sCycloneDaySpan->GetValue() );
     pConf->Write("MinWindSpeed" , m_sMinWindSpeed->GetValue() );
@@ -490,7 +490,7 @@ void ClimatologyConfigDialog::OnPaintKey( wxPaintEvent& event )
         if(++panel==(sizeof panels) / (sizeof *panels))
             panel = 0;
     }
-    
+
     wxPaintDC dc( window );
 
     double knots;

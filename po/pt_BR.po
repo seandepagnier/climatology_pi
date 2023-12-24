@@ -2,331 +2,231 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-15 13:12-0300\n"
-"PO-Revision-Date: 2018-02-15 13:06-0500\n"
-"Last-Translator: nohal <pavel@kalian.cz>\n"
+"POT-Creation-Date: 2023-10-20 09:35+0200\n"
+"PO-Revision-Date: 2023-11-09 21:22\n"
+"Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: crowdin.com\n"
 "X-Crowdin-Project: opencpn\n"
+"X-Crowdin-Project-ID: 49843\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /plugins/climatology_pi/po/climatology_pi.pot\n"
+"X-Crowdin-File-ID: 110\n"
 
-#: src/ClimatologyConfigDialog.cpp:41
-msgid "Knots"
-msgstr "Nós"
-
-#: src/ClimatologyConfigDialog.cpp:41
-msgid "M/S"
-msgstr "M/S"
-
-#: src/ClimatologyConfigDialog.cpp:41
-msgid "MPH"
-msgstr "MPH"
-
-#: src/ClimatologyConfigDialog.cpp:41
-msgid "KPH"
-msgstr "Kph"
-
-#: src/ClimatologyConfigDialog.cpp:42
-msgid "MilliBars"
-msgstr "Milibares"
-
-#: src/ClimatologyConfigDialog.cpp:42
-msgid "mmHG"
-msgstr "mmHG"
-
-#: src/ClimatologyConfigDialog.cpp:43
-msgid "mm/day"
-msgstr ""
-
-#: src/ClimatologyConfigDialog.cpp:43
-msgid "in/day"
-msgstr ""
-
-#: src/ClimatologyConfigDialog.cpp:43
-msgid "mm/month"
-msgstr ""
-
-#: src/ClimatologyConfigDialog.cpp:43
-msgid "M/month"
-msgstr ""
-
-#: src/ClimatologyConfigDialog.cpp:44
-msgid "in/month"
-msgstr ""
-
-#: src/ClimatologyConfigDialog.cpp:44
-msgid "ft/month"
-msgstr ""
-
-#: src/ClimatologyConfigDialog.cpp:44
-msgid "M/year"
-msgstr ""
-
-#: src/ClimatologyConfigDialog.cpp:44
-msgid "in/year"
-msgstr ""
-
-#: src/ClimatologyConfigDialog.cpp:45
-msgid "ft/year"
-msgstr ""
-
-#: src/ClimatologyConfigDialog.cpp:46
-msgid "Celcius"
-msgstr "Celcius"
-
-#: src/ClimatologyConfigDialog.cpp:46
-msgid "Fahrenheit"
-msgstr "Fahrenheit"
-
-#: src/ClimatologyConfigDialog.cpp:47
-msgid "Percent"
-msgstr "Por cento"
-
-#: src/ClimatologyConfigDialog.cpp:48
-msgid "Unknown"
-msgstr "Desconhecido"
-
-#: src/ClimatologyConfigDialog.cpp:49
-msgid "Meters"
-msgstr "Metros"
-
-#: src/ClimatologyConfigDialog.cpp:49
-msgid "Feet"
-msgstr "Pés"
-
-#: src/ClimatologyConfigDialog.cpp:63 src/ClimatologyUI.cpp:80
-#: src/ClimatologyUI.cpp:523
-msgid "Wind"
-msgstr "Vento"
-
-#: src/ClimatologyConfigDialog.cpp:64 src/ClimatologyUI.cpp:91
-msgid "Current"
-msgstr "Atual"
-
-#: src/ClimatologyConfigDialog.cpp:65
-msgid "Sea Level Pressure"
-msgstr "Pressão ao nível do mar"
-
-#: src/ClimatologyConfigDialog.cpp:66
-msgid "Sea Surface Temperature"
-msgstr "Temperatura da superfície do mar"
-
-#: src/ClimatologyConfigDialog.cpp:67 src/ClimatologyUI.cpp:126
-msgid "Air Temperature"
-msgstr "Temperatura do ar"
-
-#: src/ClimatologyConfigDialog.cpp:68 src/ClimatologyUI.cpp:134
-msgid "Cloud Cover"
-msgstr "Coberto de nuvens"
-
-#: src/ClimatologyConfigDialog.cpp:69 src/ClimatologyUI.cpp:142
-msgid "Precipitation"
-msgstr "Precipitação"
-
-#: src/ClimatologyConfigDialog.cpp:70
-msgid "Relative Humidity"
-msgstr "Umidade relativa"
-
-#: src/ClimatologyConfigDialog.cpp:71 src/ClimatologyUI.cpp:158
-msgid "Lightning"
-msgstr "Relâmpago"
-
-#: src/ClimatologyConfigDialog.cpp:72 src/ClimatologyUI.cpp:166
-msgid "Sea Depth"
-msgstr "Profundidade do mar"
-
-#: src/ClimatologyConfigDialog.cpp:235 src/ClimatologyUI.h:218
-msgid "Climatology Configuration"
-msgstr "Climatologia configuração"
-
-#: src/ClimatologyConfigDialog.cpp:422
-msgid "ClimatologyInformation.html"
-msgstr "ClimatologiaInformação.html"
-
-#: src/ClimatologyDialog.cpp:46 src/ClimatologyUI.h:99
+#: include/ClimatologyUI.h:98 src/ClimatologyDialog.cpp:46
 msgid "Climatology Display Control"
 msgstr "Climatologia controle de exibição"
 
-#: src/ClimatologyOverlayFactory.cpp:140 src/ClimatologyOverlayFactory.cpp:452
-#: src/ClimatologyOverlayFactory.cpp:458 src/ClimatologyOverlayFactory.cpp:1284
-#: src/ClimatologyOverlayFactory.cpp:2493 src/climatology_pi.cpp:101
-#: src/climatology_pi.cpp:104 src/climatology_pi.cpp:158
-msgid "Climatology"
-msgstr "Climatologia"
+#: include/ClimatologyUI.h:218 src/ClimatologyConfigDialog.cpp:228
+msgid "Climatology Configuration"
+msgstr "Climatologia configuração"
 
-#: src/ClimatologyOverlayFactory.cpp:154
-msgid "averaging wind"
-msgstr "com média de vento"
+#: include/IsoBarMap.h:135
+msgid "Declination"
+msgstr "Declinação"
 
-#: src/ClimatologyOverlayFactory.cpp:166
-msgid "averaging current"
-msgstr "com média atual"
+#: include/IsoBarMap.h:139
+msgid "Inclination"
+msgstr "Inclinação"
 
-#: src/ClimatologyOverlayFactory.cpp:172
-msgid "sea level presure"
-msgstr "pressão ao nível do mar"
+#: include/IsoBarMap.h:142
+msgid "Field Strength"
+msgstr "Força do campo"
 
-#: src/ClimatologyOverlayFactory.cpp:178
-msgid "slp file truncated"
-msgstr "arquivo SLP truncado"
+#: src/ClimatologyConfigDialog.cpp:431
+msgid "ClimatologyInformation.html"
+msgstr "ClimatologiaInformação.html"
 
-#: src/ClimatologyOverlayFactory.cpp:200
-msgid "sea surface tempertature"
-msgstr "temperatura da superfície do mar"
-
-#: src/ClimatologyOverlayFactory.cpp:206
-msgid "sst file truncated"
-msgstr "arquivo SST truncado"
-
-#: src/ClimatologyOverlayFactory.cpp:230
-msgid "air tempertature"
-msgstr "temperatura do ar"
-
-#: src/ClimatologyOverlayFactory.cpp:236
-msgid "at file truncated"
-msgstr "no arquivo truncado"
-
-#: src/ClimatologyOverlayFactory.cpp:260
-msgid "cloud cover"
-msgstr "cobertura de nuvens"
-
-#: src/ClimatologyOverlayFactory.cpp:266
-msgid "cld file truncated"
-msgstr "arquivo cld truncado"
-
-#: src/ClimatologyOverlayFactory.cpp:290
-msgid "precipitation"
-msgstr "precipitação"
-
-#: src/ClimatologyOverlayFactory.cpp:296
-msgid "precip file truncated"
-msgstr "arquivo de precipitação truncado"
-
-#: src/ClimatologyOverlayFactory.cpp:320
-msgid "relative humidity"
-msgstr "umidade relativa"
-
-#: src/ClimatologyOverlayFactory.cpp:326
-msgid "relative humidity file truncated"
-msgstr "arquivo de umidade relativa truncado"
-
-#: src/ClimatologyOverlayFactory.cpp:351
-msgid "lightning"
-msgstr "relâmpago"
-
-#: src/ClimatologyOverlayFactory.cpp:357
-msgid "lightning file truncated"
-msgstr "arquivo de relâmpago truncado"
-
-#: src/ClimatologyOverlayFactory.cpp:375
-msgid "sea depth"
-msgstr "profundidade do mar"
-
-#: src/ClimatologyOverlayFactory.cpp:381
-msgid "seadepth file truncated"
-msgstr "arquivo de profundidade do mar truncado"
-
-#: src/ClimatologyOverlayFactory.cpp:397
-msgid "cyclone (east pacific)"
-msgstr "ciclone (leste do Pacífico)"
-
-#: src/ClimatologyOverlayFactory.cpp:402
-msgid "cyclone (west pacific)"
-msgstr "ciclone (oeste do Pacífico)"
-
-#: src/ClimatologyOverlayFactory.cpp:407
-msgid "cyclone (south pacific)"
-msgstr "ciclone (sul do Pacífico)"
-
-#: src/ClimatologyOverlayFactory.cpp:412
-msgid "cyclone (atlantic)"
-msgstr "ciclone (Atlântico)"
-
-#: src/ClimatologyOverlayFactory.cpp:417
-msgid "cyclone (north indian)"
-msgstr "ciclone (norte do Índico)"
-
-#: src/ClimatologyOverlayFactory.cpp:422
-msgid "cyclone (south indian)"
-msgstr "ciclone (Sul do Índico)"
-
-#: src/ClimatologyOverlayFactory.cpp:430
-msgid "el nino years"
-msgstr "anos de El ninho"
-
-#: src/ClimatologyOverlayFactory.cpp:439
-msgid "cyclone cache"
-msgstr "cache de ciclone"
-
-#: src/ClimatologyOverlayFactory.cpp:449
+#: src/ClimatologyOverlayFactory.cpp:165
 msgid "Some Data Failed to load:\n"
 msgstr "Alguns dados falharam ao carregar: \n"
 
-#: src/ClimatologyOverlayFactory.cpp:451
+#: src/ClimatologyOverlayFactory.cpp:167
 msgid "Would you like to try to download?"
 msgstr "Gostaria de tentar fazer o download?"
 
-#: src/ClimatologyOverlayFactory.cpp:456
-msgid "You must extract this data, and place in: "
-msgstr "Você deve extrair esses dados e colocar em: "
+#: src/ClimatologyOverlayFactory.cpp:168 src/ClimatologyOverlayFactory.cpp:209
+#: src/ClimatologyOverlayFactory.cpp:219 src/ClimatologyOverlayFactory.cpp:644
+#: src/ClimatologyOverlayFactory.cpp:1461 src/ClimatologyOverlayFactory.cpp:2688
+#: src/climatology_pi.cpp:142 src/climatology_pi.cpp:146
+msgid "Climatology"
+msgstr "Climatologia"
 
-#: src/ClimatologyOverlayFactory.cpp:457
-msgid "\n"
-"then restart OpenCPN"
+#: src/ClimatologyOverlayFactory.cpp:190
+msgid "downloading climatology data file"
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:696
+#: src/ClimatologyOverlayFactory.cpp:207
+msgid "Some Data Failed to download.\n"
+"Climatology data incomplete"
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:216
+msgid "Some Data Failed to load."
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:218
+msgid "Climatology data incomplete."
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:536
+msgid "averaging wind"
+msgstr "com média de vento"
+
+#: src/ClimatologyOverlayFactory.cpp:548
+msgid "averaging current"
+msgstr "com média atual"
+
+#: src/ClimatologyOverlayFactory.cpp:554
+msgid "sea level presure"
+msgstr "pressão ao nível do mar"
+
+#: src/ClimatologyOverlayFactory.cpp:558
+msgid "sea surface tempertature"
+msgstr "temperatura da superfície do mar"
+
+#: src/ClimatologyOverlayFactory.cpp:562
+msgid "air tempertature"
+msgstr "temperatura do ar"
+
+#: src/ClimatologyOverlayFactory.cpp:566
+msgid "cloud cover"
+msgstr "cobertura de nuvens"
+
+#: src/ClimatologyOverlayFactory.cpp:570
+msgid "precipitation"
+msgstr "precipitação"
+
+#: src/ClimatologyOverlayFactory.cpp:574
+msgid "relative humidity"
+msgstr "umidade relativa"
+
+#: src/ClimatologyOverlayFactory.cpp:579
+msgid "lightning"
+msgstr "relâmpago"
+
+#: src/ClimatologyOverlayFactory.cpp:584
+msgid "sea depth"
+msgstr "profundidade do mar"
+
+#: src/ClimatologyOverlayFactory.cpp:590
+msgid "cyclone (east pacific)"
+msgstr "ciclone (leste do Pacífico)"
+
+#: src/ClimatologyOverlayFactory.cpp:595
+msgid "cyclone (west pacific)"
+msgstr "ciclone (oeste do Pacífico)"
+
+#: src/ClimatologyOverlayFactory.cpp:600
+msgid "cyclone (south pacific)"
+msgstr "ciclone (sul do Pacífico)"
+
+#: src/ClimatologyOverlayFactory.cpp:605
+msgid "cyclone (atlantic)"
+msgstr "ciclone (Atlântico)"
+
+#: src/ClimatologyOverlayFactory.cpp:610
+msgid "cyclone (north indian)"
+msgstr "ciclone (norte do Índico)"
+
+#: src/ClimatologyOverlayFactory.cpp:615
+msgid "cyclone (south indian)"
+msgstr "ciclone (Sul do Índico)"
+
+#: src/ClimatologyOverlayFactory.cpp:623
+msgid "el nino years"
+msgstr "anos de El ninho"
+
+#: src/ClimatologyOverlayFactory.cpp:632
+msgid "cyclone cache"
+msgstr "cache de ciclone"
+
+#: src/ClimatologyOverlayFactory.cpp:755 src/ClimatologyOverlayFactory.cpp:868
+#: src/ClimatologyOverlayFactory.cpp:939 src/ClimatologyOverlayFactory.cpp:971
+#: src/ClimatologyOverlayFactory.cpp:1005 src/ClimatologyOverlayFactory.cpp:1039
+#: src/ClimatologyOverlayFactory.cpp:1073 src/ClimatologyOverlayFactory.cpp:1107
+#: src/ClimatologyOverlayFactory.cpp:1141 src/ClimatologyOverlayFactory.cpp:1168
+#: src/ClimatologyOverlayFactory.cpp:1276
+msgid "corrupt file: "
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:758
 msgid "wind data file corrupt: "
 msgstr "arquivo de dados de vento corrompido: "
 
-#: src/ClimatologyOverlayFactory.cpp:814
+#: src/ClimatologyOverlayFactory.cpp:871
 msgid "current data file corrupt: "
-msgstr ""
+msgstr "arquivo de dados atual corrompido: "
 
-#: src/ClimatologyOverlayFactory.cpp:849
+#: src/ClimatologyOverlayFactory.cpp:905
 msgid "Average Current includes only"
 msgstr "Corrente média inclui apenas"
 
-#: src/ClimatologyOverlayFactory.cpp:850
+#: src/ClimatologyOverlayFactory.cpp:906
 msgid "months"
 msgstr "meses"
 
-#: src/ClimatologyOverlayFactory.cpp:950
+#: src/ClimatologyOverlayFactory.cpp:940
+msgid "slp file truncated"
+msgstr "arquivo SLP truncado"
+
+#: src/ClimatologyOverlayFactory.cpp:972
+msgid "sst file truncated"
+msgstr "arquivo SST truncado"
+
+#: src/ClimatologyOverlayFactory.cpp:1006
+msgid "at file truncated"
+msgstr "no arquivo truncado"
+
+#: src/ClimatologyOverlayFactory.cpp:1040
+msgid "cld file truncated"
+msgstr "arquivo cld truncado"
+
+#: src/ClimatologyOverlayFactory.cpp:1074
+msgid "precip file truncated"
+msgstr "arquivo de precipitação truncado"
+
+#: src/ClimatologyOverlayFactory.cpp:1108
+msgid "relative humidity file truncated"
+msgstr "arquivo de umidade relativa truncado"
+
+#: src/ClimatologyOverlayFactory.cpp:1142
+msgid "lightning file truncated"
+msgstr "arquivo de relâmpago truncado"
+
+#: src/ClimatologyOverlayFactory.cpp:1169
+msgid "seadepth file truncated"
+msgstr "arquivo de profundidade do mar truncado"
+
+#: src/ClimatologyOverlayFactory.cpp:1277
 msgid "cyclone data corrupt: "
 msgstr "dados de ciclone corrompidos: "
 
-#: src/ClimatologyOverlayFactory.cpp:1040
-msgid "cyclone cache: "
+#: src/ClimatologyOverlayFactory.cpp:1372
+msgid "cyclone cache time "
 msgstr ""
 
-#: src/ClimatologyOverlayFactory.cpp:1062
+#: src/ClimatologyOverlayFactory.cpp:1418
 msgid "failed to open file: "
 msgstr "Falha ao abrir arquivo: "
 
-#: src/ClimatologyOverlayFactory.cpp:1284
+#: src/ClimatologyOverlayFactory.cpp:1461
 msgid "Building Overlay map"
 msgstr "Construindo Mapa de sobreposição"
 
-#: src/ClimatologyOverlayFactory.cpp:1556 src/ClimatologyOverlayFactory.cpp:2117
-#: src/ClimatologyUI.cpp:632
-msgid "N/A"
-msgstr "N/A"
-
-#: src/ClimatologyOverlayFactory.cpp:2055
+#: src/ClimatologyOverlayFactory.cpp:2267
 msgid "Climatology overlay map unsupported unless OpenGL is enabled"
 msgstr "Mapa de sobreposição de climatologia sem suporte a menos que OpenGL esteja habilitado"
 
-#: src/ClimatologyOverlayFactory.cpp:2093
-msgid "failed to read file: "
-msgstr "Falha ao ler o arquivo: "
+#: src/ClimatologyOverlayFactory.cpp:2317 src/ClimatologyUI.cpp:634
+msgid "N/A"
+msgstr "N/A"
 
-#: src/ClimatologyOverlayFactory.cpp:2492
+#: src/ClimatologyOverlayFactory.cpp:2687
 msgid "Computer too slow to render cyclones, disabling theater"
 msgstr "Computador demasiado lento para processar ciclones, cenário desativado"
 
@@ -335,52 +235,52 @@ msgid "Month"
 msgstr "Mês"
 
 #: src/ClimatologyUI.cpp:32
-msgid "January"
-msgstr "Janeiro"
-
-#: src/ClimatologyUI.cpp:32
-msgid "Febuary"
-msgstr "Fevereiro"
-
-#: src/ClimatologyUI.cpp:32
-msgid "March"
-msgstr "Março"
-
-#: src/ClimatologyUI.cpp:32
 msgid "April"
 msgstr "Abril"
-
-#: src/ClimatologyUI.cpp:32
-msgid "May"
-msgstr "Maio"
-
-#: src/ClimatologyUI.cpp:32
-msgid "June"
-msgstr "Junho"
-
-#: src/ClimatologyUI.cpp:32
-msgid "July"
-msgstr "Julho"
 
 #: src/ClimatologyUI.cpp:32
 msgid "August"
 msgstr "Agosto"
 
 #: src/ClimatologyUI.cpp:32
-msgid "September"
-msgstr "Setembro"
+msgid "December"
+msgstr "Dezembro"
 
 #: src/ClimatologyUI.cpp:32
-msgid "October"
-msgstr "Outubro"
+msgid "Febuary"
+msgstr "Fevereiro"
+
+#: src/ClimatologyUI.cpp:32
+msgid "January"
+msgstr "Janeiro"
+
+#: src/ClimatologyUI.cpp:32
+msgid "July"
+msgstr "Julho"
+
+#: src/ClimatologyUI.cpp:32
+msgid "June"
+msgstr "Junho"
+
+#: src/ClimatologyUI.cpp:32
+msgid "March"
+msgstr "Março"
+
+#: src/ClimatologyUI.cpp:32
+msgid "May"
+msgstr "Maio"
 
 #: src/ClimatologyUI.cpp:32
 msgid "November"
 msgstr "Novembro"
 
 #: src/ClimatologyUI.cpp:32
-msgid "December"
-msgstr "Dezembro"
+msgid "October"
+msgstr "Outubro"
+
+#: src/ClimatologyUI.cpp:32
+msgid "September"
+msgstr "Setembro"
 
 #: src/ClimatologyUI.cpp:41
 msgid "All"
@@ -398,6 +298,14 @@ msgstr "Velocidade"
 msgid "Direction"
 msgstr "Direção"
 
+#: src/ClimatologyUI.cpp:80 src/ClimatologyUI.cpp:525
+msgid "Wind"
+msgstr "Vento"
+
+#: src/ClimatologyUI.cpp:91
+msgid "Current"
+msgstr "Atual"
+
 #: src/ClimatologyUI.cpp:110
 msgid "Pressure"
 msgstr "Pressão"
@@ -406,11 +314,31 @@ msgstr "Pressão"
 msgid "Sea Temperature"
 msgstr "Temperatura do mar"
 
+#: src/ClimatologyUI.cpp:126
+msgid "Air Temperature"
+msgstr "Temperatura do ar"
+
+#: src/ClimatologyUI.cpp:134
+msgid "Cloud Cover"
+msgstr "Coberto de nuvens"
+
+#: src/ClimatologyUI.cpp:142
+msgid "Precipitation"
+msgstr "Precipitação"
+
 #: src/ClimatologyUI.cpp:150
 msgid "Rel Humidity"
 msgstr "Umidade relativa"
 
-#: src/ClimatologyUI.cpp:174 src/ClimatologyUI.cpp:756
+#: src/ClimatologyUI.cpp:158
+msgid "Lightning"
+msgstr "Relâmpago"
+
+#: src/ClimatologyUI.cpp:166
+msgid "Sea Depth"
+msgstr "Profundidade do mar"
+
+#: src/ClimatologyUI.cpp:174 src/ClimatologyUI.cpp:758
 msgid "Cyclones"
 msgstr "Ciclones"
 
@@ -418,104 +346,109 @@ msgstr "Ciclones"
 msgid "Config"
 msgstr "Configuração"
 
-#: src/ClimatologyUI.cpp:296
+#: src/ClimatologyUI.cpp:291 src/ClimatologyUI.cpp:301
+msgid "------------"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:297
 msgid "Units"
 msgstr "Unidades"
 
-#: src/ClimatologyUI.cpp:305
+#: src/ClimatologyUI.cpp:307
 msgid "Enabled"
 msgstr "Habilitado"
 
-#: src/ClimatologyUI.cpp:317
+#: src/ClimatologyUI.cpp:319
 msgid "OverlayMap"
 msgstr "Sobreposição Mapa"
 
-#: src/ClimatologyUI.cpp:320
+#: src/ClimatologyUI.cpp:322
 msgid "Transparency"
 msgstr "Transparência"
 
-#: src/ClimatologyUI.cpp:327
+#: src/ClimatologyUI.cpp:329
 msgid "Interpolation"
 msgstr "Interpolação"
 
-#: src/ClimatologyUI.cpp:338
+#: src/ClimatologyUI.cpp:340
 msgid "Iso Bars"
 msgstr "Iso Barras"
 
-#: src/ClimatologyUI.cpp:341 src/ClimatologyUI.cpp:369 src/ClimatologyUI.cpp:437
-#: src/ClimatologyUI.cpp:492
+#: src/ClimatologyUI.cpp:343 src/ClimatologyUI.cpp:371 src/ClimatologyUI.cpp:439
+#: src/ClimatologyUI.cpp:494
 msgid "Spacing"
 msgstr "Espaçamento"
 
-#: src/ClimatologyUI.cpp:348
+#: src/ClimatologyUI.cpp:350
 msgid "Step"
 msgstr "Passo"
 
-#: src/ClimatologyUI.cpp:352
-msgid "Very Course"
-msgstr "Muito Curso"
-
-#: src/ClimatologyUI.cpp:352
+#: src/ClimatologyUI.cpp:354
 msgid "Course"
 msgstr "Curso"
 
-#: src/ClimatologyUI.cpp:352
-msgid "Normal"
-msgstr "Normal"
-
-#: src/ClimatologyUI.cpp:352
+#: src/ClimatologyUI.cpp:354
 msgid "Fine"
 msgstr "Fino"
 
-#: src/ClimatologyUI.cpp:352
+#: src/ClimatologyUI.cpp:354
+msgid "Normal"
+msgstr "Normal"
+
+#: src/ClimatologyUI.cpp:354
+msgid "Very Course"
+msgstr "Muito Curso"
+
+#: src/ClimatologyUI.cpp:354
 msgid "Very Fine"
 msgstr "Muito bem"
 
-#: src/ClimatologyUI.cpp:366
+#: src/ClimatologyUI.cpp:368
 msgid "Numbers"
 msgstr "Números"
 
-#: src/ClimatologyUI.cpp:390
+#: src/ClimatologyUI.cpp:392
 msgid "Direction Arrows"
 msgstr "Setas de direção"
 
-#: src/ClimatologyUI.cpp:397 src/ClimatologyUI.cpp:479
+#: src/ClimatologyUI.cpp:399 src/ClimatologyUI.cpp:481
 msgid "Enable"
 msgstr "Habilitar"
 
-#: src/ClimatologyUI.cpp:403
+#: src/ClimatologyUI.cpp:405
 msgid "Barbs"
 msgstr "Pontas"
 
-#: src/ClimatologyUI.cpp:406
+#: src/ClimatologyUI.cpp:408
 msgid "Length"
 msgstr "Comprimento"
 
-#: src/ClimatologyUI.cpp:409
+#: src/ClimatologyUI.cpp:411
 msgid "Width"
 msgstr "Largura"
 
-#: src/ClimatologyUI.cpp:416
+#: src/ClimatologyUI.cpp:418
 msgid "Color"
 msgstr "Cor"
 
-#: src/ClimatologyUI.cpp:423 src/ClimatologyUI.cpp:499
+#: src/ClimatologyUI.cpp:425 src/ClimatologyUI.cpp:501
 msgid "Opacity"
 msgstr "Opacidade"
 
-#: src/ClimatologyUI.cpp:430 src/ClimatologyUI.cpp:485
+#: src/ClimatologyUI.cpp:432 src/ClimatologyUI.cpp:487
 msgid "Size"
 msgstr "Tamanho"
 
-#: src/ClimatologyUI.cpp:457
+#: src/ClimatologyUI.cpp:459
 msgid "Standard Displays"
 msgstr "Exibições padrão"
 
-#: src/ClimatologyUI.cpp:466
+#: src/ClimatologyUI.cpp:468
 msgid "Wind Atlas"
 msgstr "Atlas de vento"
 
-#: src/ClimatologyUI.cpp:509
+#: src/ClimatologyUI.cpp:511
+#: c-format
 msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\n"
 "The barbs indicate wind speed, each barb being 5 knots.\n\n"
 "The numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
@@ -523,169 +456,131 @@ msgstr "A apresentação do atlas de vento mostra a percentagem de tempo que o v
 "As barbelas indicam a velocidade do vento, cada barbela correspondendo a 5 nós.\n\n"
 "O número dentro do circulo, se azul indica a percentagem da velocidade média do vento calmo (3 nós ou menos) ou se vermelho vento forte (34 nós ou superior)."
 
-#: src/ClimatologyUI.cpp:536
+#: src/ClimatologyUI.cpp:538
 msgid "Start Date"
 msgstr "Data de início"
 
-#: src/ClimatologyUI.cpp:545
+#: src/ClimatologyUI.cpp:547
 msgid "End Date"
 msgstr "Data de término"
 
-#: src/ClimatologyUI.cpp:559
+#: src/ClimatologyUI.cpp:561
 msgid "Display Spanning"
 msgstr "Exibição de abrangência"
 
-#: src/ClimatologyUI.cpp:569
+#: src/ClimatologyUI.cpp:571
 msgid "days"
 msgstr "dias"
 
-#: src/ClimatologyUI.cpp:584
+#: src/ClimatologyUI.cpp:586
 msgid "Min Windspeed"
 msgstr "Velocidade do vento Min"
 
-#: src/ClimatologyUI.cpp:599
+#: src/ClimatologyUI.cpp:601
 msgid "Max Pressure"
 msgstr "Pressão máxima"
 
-#: src/ClimatologyUI.cpp:613
+#: src/ClimatologyUI.cpp:615
 msgid "El Nino Period"
 msgstr "Período de El Niño"
 
-#: src/ClimatologyUI.cpp:620
+#: src/ClimatologyUI.cpp:622
 msgid "El Nino"
 msgstr "El Niño"
 
-#: src/ClimatologyUI.cpp:624
+#: src/ClimatologyUI.cpp:626
 msgid "La Nina"
 msgstr "La Nina"
 
-#: src/ClimatologyUI.cpp:628
+#: src/ClimatologyUI.cpp:630
 msgid "Neutral"
 msgstr "Neutro"
 
-#: src/ClimatologyUI.cpp:642
+#: src/ClimatologyUI.cpp:644
 msgid "Storm Types"
 msgstr "Tipos de tempestade"
 
-#: src/ClimatologyUI.cpp:649
+#: src/ClimatologyUI.cpp:651
 msgid "Tropical"
 msgstr "Tropical"
 
-#: src/ClimatologyUI.cpp:653
+#: src/ClimatologyUI.cpp:655
 msgid "Sub Tropical"
 msgstr "Sub Tropical"
 
-#: src/ClimatologyUI.cpp:657
+#: src/ClimatologyUI.cpp:659
 msgid "ExtraTropical"
 msgstr "ExtraTropical"
 
-#: src/ClimatologyUI.cpp:661
+#: src/ClimatologyUI.cpp:663
 msgid "Remanent"
 msgstr "Permanente"
 
-#: src/ClimatologyUI.cpp:671
+#: src/ClimatologyUI.cpp:673
 msgid "Sustained Wind Key (knots)"
 msgstr "Chave de vento sustentado (Nós)"
 
-#: src/ClimatologyUI.cpp:679
+#: src/ClimatologyUI.cpp:681
 msgid "20"
 msgstr "20"
 
-#: src/ClimatologyUI.cpp:686
+#: src/ClimatologyUI.cpp:688
 msgid "40"
 msgstr "40"
 
-#: src/ClimatologyUI.cpp:693
+#: src/ClimatologyUI.cpp:695
 msgid "60"
 msgstr "60"
 
-#: src/ClimatologyUI.cpp:700
+#: src/ClimatologyUI.cpp:702
 msgid "80"
 msgstr "80"
 
-#: src/ClimatologyUI.cpp:707
+#: src/ClimatologyUI.cpp:709
 msgid "100"
 msgstr "100"
 
-#: src/ClimatologyUI.cpp:714
+#: src/ClimatologyUI.cpp:716
 msgid "120"
 msgstr "120"
 
-#: src/ClimatologyUI.cpp:721
+#: src/ClimatologyUI.cpp:723
 msgid "140"
 msgstr "140"
 
-#: src/ClimatologyUI.cpp:728
+#: src/ClimatologyUI.cpp:730
 msgid "160"
 msgstr "160"
 
-#: src/ClimatologyUI.cpp:735
+#: src/ClimatologyUI.cpp:737
 msgid "200"
 msgstr "200"
 
-#: src/ClimatologyUI.cpp:748
+#: src/ClimatologyUI.cpp:750
 msgid "Direction arrows are spaced every 6 hours on storm track"
 msgstr "Setas de direção são espaçadas a cada 6 horas na faixa da tempestade"
 
-#: src/ClimatologyUI.cpp:771
+#: src/ClimatologyUI.cpp:773
 msgid "Climatology Plugin Version"
 msgstr "Versão do Plugin de Climatologia"
 
-#: src/ClimatologyUI.cpp:779
+#: src/ClimatologyUI.cpp:781
 msgid "Climatology Data Directory"
 msgstr "Diretório de dados de Climatologia"
 
-#: src/ClimatologyUI.cpp:796
+#: src/ClimatologyUI.cpp:798
 msgid "About"
 msgstr "Sobre"
 
-#: src/ClimatologyUI.cpp:806
+#: src/ClimatologyUI.cpp:808
 msgid "About Author"
 msgstr "Sobre o autor"
 
-#: src/ClimatologyUI.cpp:809
+#: src/ClimatologyUI.cpp:811
 msgid "Close"
 msgstr "Fechar"
 
-#: src/IsoBarMap.cpp:416
+#: src/IsoBarMap.cpp:355
 msgid "Building Isobar Map"
 msgstr "Construindo Isobar mapa"
-
-#: src/IsoBarMap.h:137
-msgid "Declination"
-msgstr "Declinação"
-
-#: src/IsoBarMap.h:141
-msgid "Inclination"
-msgstr "Inclinação"
-
-#: src/IsoBarMap.h:144
-msgid "Field Strength"
-msgstr "Força do campo"
-
-#: src/climatology_pi.cpp:164
-msgid "Climatology PlugIn for OpenCPN"
-msgstr "Climatologia PlugIn para OpenCPN"
-
-#: src/climatology_pi.cpp:170
-msgid "Climatology PlugIn for OpenCPN\n"
-"Provides overlay capabilities for historic weather data.\n\n"
-"Supported Climatology types include:\n"
-"- Average wind directions and speed\n"
-"- Percentage of gale and calm conditions\n"
-"- Sea Surface Currents\n"
-"- Average swell and seastate (not yet implemented)\n"
-"- Precipitation, Humidity, Cloud Cover, and Lightning Strikes \n"
-"- Monthly average Sea Level pressure and Sea Temperature, Air Temperature\n"
-"- Tropical Cyclone tracks"
-msgstr "Plugin Climatologia para OpenCPN\n"
-"Permite a sobreposição de dados metereologicos históricos.\n\n"
-"Tipos suportados de Climatologia incluem:\n"
-"- Direção e Velocidade média do vento\n"
-"- Percentagem de ventanias e calmarias\n"
-"- Correntes de superficie\n"
-"- Média da vaga e estado do mar (ainda não implementado)\n"
-"- Precipitação, Humidade, Cobertura de nuvens e relampagos\n"
-"- Média mensal de pressão ao nível do mar e temperatura do mar, Temperatura do ar\n"
-"- Acompanhamento de ciclones tropicais"
 

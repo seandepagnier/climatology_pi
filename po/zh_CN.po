@@ -1,0 +1,586 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: opencpn\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-20 09:35+0200\n"
+"PO-Revision-Date: 2023-11-09 21:22\n"
+"Last-Translator: \n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: opencpn\n"
+"X-Crowdin-Project-ID: 49843\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /plugins/climatology_pi/po/climatology_pi.pot\n"
+"X-Crowdin-File-ID: 110\n"
+
+#: include/ClimatologyUI.h:98 src/ClimatologyDialog.cpp:46
+msgid "Climatology Display Control"
+msgstr "气候学显示控制"
+
+#: include/ClimatologyUI.h:218 src/ClimatologyConfigDialog.cpp:228
+msgid "Climatology Configuration"
+msgstr "气候学配置"
+
+#: include/IsoBarMap.h:135
+msgid "Declination"
+msgstr "磁偏角"
+
+#: include/IsoBarMap.h:139
+msgid "Inclination"
+msgstr "倾角"
+
+#: include/IsoBarMap.h:142
+msgid "Field Strength"
+msgstr "场强"
+
+#: src/ClimatologyConfigDialog.cpp:431
+msgid "ClimatologyInformation.html"
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:165
+msgid "Some Data Failed to load:\n"
+msgstr "某些数据加载失败：\n"
+
+#: src/ClimatologyOverlayFactory.cpp:167
+msgid "Would you like to try to download?"
+msgstr "你想尝试下载吗？"
+
+#: src/ClimatologyOverlayFactory.cpp:168 src/ClimatologyOverlayFactory.cpp:209
+#: src/ClimatologyOverlayFactory.cpp:219 src/ClimatologyOverlayFactory.cpp:644
+#: src/ClimatologyOverlayFactory.cpp:1461 src/ClimatologyOverlayFactory.cpp:2688
+#: src/climatology_pi.cpp:142 src/climatology_pi.cpp:146
+msgid "Climatology"
+msgstr "气候学"
+
+#: src/ClimatologyOverlayFactory.cpp:190
+msgid "downloading climatology data file"
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:207
+msgid "Some Data Failed to download.\n"
+"Climatology data incomplete"
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:216
+msgid "Some Data Failed to load."
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:218
+msgid "Climatology data incomplete."
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:536
+msgid "averaging wind"
+msgstr "平均风力"
+
+#: src/ClimatologyOverlayFactory.cpp:548
+msgid "averaging current"
+msgstr "平均洋流"
+
+#: src/ClimatologyOverlayFactory.cpp:554
+msgid "sea level presure"
+msgstr "海平面压力"
+
+#: src/ClimatologyOverlayFactory.cpp:558
+msgid "sea surface tempertature"
+msgstr "海洋表面温度"
+
+#: src/ClimatologyOverlayFactory.cpp:562
+msgid "air tempertature"
+msgstr "空气温度"
+
+#: src/ClimatologyOverlayFactory.cpp:566
+msgid "cloud cover"
+msgstr "云层覆盖"
+
+#: src/ClimatologyOverlayFactory.cpp:570
+msgid "precipitation"
+msgstr "降雨量"
+
+#: src/ClimatologyOverlayFactory.cpp:574
+msgid "relative humidity"
+msgstr "相对湿度"
+
+#: src/ClimatologyOverlayFactory.cpp:579
+msgid "lightning"
+msgstr "闪电"
+
+#: src/ClimatologyOverlayFactory.cpp:584
+msgid "sea depth"
+msgstr "海洋深度"
+
+#: src/ClimatologyOverlayFactory.cpp:590
+msgid "cyclone (east pacific)"
+msgstr "热带气旋（东太平洋）"
+
+#: src/ClimatologyOverlayFactory.cpp:595
+msgid "cyclone (west pacific)"
+msgstr "热带气旋（西太平洋）"
+
+#: src/ClimatologyOverlayFactory.cpp:600
+msgid "cyclone (south pacific)"
+msgstr "热带气旋（南太平洋）"
+
+#: src/ClimatologyOverlayFactory.cpp:605
+msgid "cyclone (atlantic)"
+msgstr "热带气旋（大西洋）"
+
+#: src/ClimatologyOverlayFactory.cpp:610
+msgid "cyclone (north indian)"
+msgstr "热带气旋（北印度洋）"
+
+#: src/ClimatologyOverlayFactory.cpp:615
+msgid "cyclone (south indian)"
+msgstr "热带气旋（南印度洋）"
+
+#: src/ClimatologyOverlayFactory.cpp:623
+msgid "el nino years"
+msgstr "厄尔尼诺年"
+
+#: src/ClimatologyOverlayFactory.cpp:632
+msgid "cyclone cache"
+msgstr "气旋缓存目录"
+
+#: src/ClimatologyOverlayFactory.cpp:755 src/ClimatologyOverlayFactory.cpp:868
+#: src/ClimatologyOverlayFactory.cpp:939 src/ClimatologyOverlayFactory.cpp:971
+#: src/ClimatologyOverlayFactory.cpp:1005 src/ClimatologyOverlayFactory.cpp:1039
+#: src/ClimatologyOverlayFactory.cpp:1073 src/ClimatologyOverlayFactory.cpp:1107
+#: src/ClimatologyOverlayFactory.cpp:1141 src/ClimatologyOverlayFactory.cpp:1168
+#: src/ClimatologyOverlayFactory.cpp:1276
+msgid "corrupt file: "
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:758
+msgid "wind data file corrupt: "
+msgstr "风力数据文件损坏："
+
+#: src/ClimatologyOverlayFactory.cpp:871
+msgid "current data file corrupt: "
+msgstr "洋流数据文件损坏："
+
+#: src/ClimatologyOverlayFactory.cpp:905
+msgid "Average Current includes only"
+msgstr "仅包括平均洋流"
+
+#: src/ClimatologyOverlayFactory.cpp:906
+msgid "months"
+msgstr "月"
+
+#: src/ClimatologyOverlayFactory.cpp:940
+msgid "slp file truncated"
+msgstr "SLP文件被截断"
+
+#: src/ClimatologyOverlayFactory.cpp:972
+msgid "sst file truncated"
+msgstr "SST文件被截断"
+
+#: src/ClimatologyOverlayFactory.cpp:1006
+msgid "at file truncated"
+msgstr "文件被截断"
+
+#: src/ClimatologyOverlayFactory.cpp:1040
+msgid "cld file truncated"
+msgstr "CLD文件被截断"
+
+#: src/ClimatologyOverlayFactory.cpp:1074
+msgid "precip file truncated"
+msgstr "precip文件被截断"
+
+#: src/ClimatologyOverlayFactory.cpp:1108
+msgid "relative humidity file truncated"
+msgstr "相对湿度文件被截断"
+
+#: src/ClimatologyOverlayFactory.cpp:1142
+msgid "lightning file truncated"
+msgstr "闪电文件被截断"
+
+#: src/ClimatologyOverlayFactory.cpp:1169
+msgid "seadepth file truncated"
+msgstr "海洋深度文件被截断"
+
+#: src/ClimatologyOverlayFactory.cpp:1277
+msgid "cyclone data corrupt: "
+msgstr "气旋数据损坏："
+
+#: src/ClimatologyOverlayFactory.cpp:1372
+msgid "cyclone cache time "
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:1418
+msgid "failed to open file: "
+msgstr "打开文件失败："
+
+#: src/ClimatologyOverlayFactory.cpp:1461
+msgid "Building Overlay map"
+msgstr "构建叠加地图"
+
+#: src/ClimatologyOverlayFactory.cpp:2267
+msgid "Climatology overlay map unsupported unless OpenGL is enabled"
+msgstr "除非启用OpenGL，否则不支持气候学叠加地图"
+
+#: src/ClimatologyOverlayFactory.cpp:2317 src/ClimatologyUI.cpp:634
+msgid "N/A"
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:2687
+msgid "Computer too slow to render cyclones, disabling theater"
+msgstr "计算机速度过慢，无法渲染气旋，禁用剧场模式"
+
+#: src/ClimatologyUI.cpp:24
+msgid "Month"
+msgstr "月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "April"
+msgstr "四月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "August"
+msgstr "八月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "December"
+msgstr "十二月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "Febuary"
+msgstr "二月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "January"
+msgstr "一月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "July"
+msgstr "七月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "June"
+msgstr "六月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "March"
+msgstr "三月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "May"
+msgstr "五月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "November"
+msgstr "十一月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "October"
+msgstr "十月"
+
+#: src/ClimatologyUI.cpp:32
+msgid "September"
+msgstr "九月"
+
+#: src/ClimatologyUI.cpp:41
+msgid "All"
+msgstr "全部"
+
+#: src/ClimatologyUI.cpp:57
+msgid "Climatology Data"
+msgstr "气候学数据"
+
+#: src/ClimatologyUI.cpp:72
+msgid "Speed"
+msgstr "速度"
+
+#: src/ClimatologyUI.cpp:76
+msgid "Direction"
+msgstr "方位"
+
+#: src/ClimatologyUI.cpp:80 src/ClimatologyUI.cpp:525
+msgid "Wind"
+msgstr "风"
+
+#: src/ClimatologyUI.cpp:91
+msgid "Current"
+msgstr "当前"
+
+#: src/ClimatologyUI.cpp:110
+msgid "Pressure"
+msgstr "气压"
+
+#: src/ClimatologyUI.cpp:118
+msgid "Sea Temperature"
+msgstr "海水温度"
+
+#: src/ClimatologyUI.cpp:126
+msgid "Air Temperature"
+msgstr "气温"
+
+#: src/ClimatologyUI.cpp:134
+msgid "Cloud Cover"
+msgstr "云层覆盖"
+
+#: src/ClimatologyUI.cpp:142
+msgid "Precipitation"
+msgstr "降水量"
+
+#: src/ClimatologyUI.cpp:150
+msgid "Rel Humidity"
+msgstr "相对湿度"
+
+#: src/ClimatologyUI.cpp:158
+msgid "Lightning"
+msgstr "闪电"
+
+#: src/ClimatologyUI.cpp:166
+msgid "Sea Depth"
+msgstr "海洋深度"
+
+#: src/ClimatologyUI.cpp:174 src/ClimatologyUI.cpp:758
+msgid "Cyclones"
+msgstr "气旋"
+
+#: src/ClimatologyUI.cpp:179
+msgid "Config"
+msgstr "配置"
+
+#: src/ClimatologyUI.cpp:291 src/ClimatologyUI.cpp:301
+msgid "------------"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:297
+msgid "Units"
+msgstr "单位"
+
+#: src/ClimatologyUI.cpp:307
+msgid "Enabled"
+msgstr "启用"
+
+#: src/ClimatologyUI.cpp:319
+msgid "OverlayMap"
+msgstr "叠加图"
+
+#: src/ClimatologyUI.cpp:322
+msgid "Transparency"
+msgstr "透明度"
+
+#: src/ClimatologyUI.cpp:329
+msgid "Interpolation"
+msgstr "插值"
+
+#: src/ClimatologyUI.cpp:340
+msgid "Iso Bars"
+msgstr "等压线"
+
+#: src/ClimatologyUI.cpp:343 src/ClimatologyUI.cpp:371 src/ClimatologyUI.cpp:439
+#: src/ClimatologyUI.cpp:494
+msgid "Spacing"
+msgstr "间隔"
+
+#: src/ClimatologyUI.cpp:350
+msgid "Step"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:354
+msgid "Course"
+msgstr "航向"
+
+#: src/ClimatologyUI.cpp:354
+msgid "Fine"
+msgstr "良好"
+
+#: src/ClimatologyUI.cpp:354
+msgid "Normal"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:354
+msgid "Very Course"
+msgstr "非常粗糙"
+
+#: src/ClimatologyUI.cpp:354
+msgid "Very Fine"
+msgstr "非常好"
+
+#: src/ClimatologyUI.cpp:368
+msgid "Numbers"
+msgstr "数字"
+
+#: src/ClimatologyUI.cpp:392
+msgid "Direction Arrows"
+msgstr "方向箭头"
+
+#: src/ClimatologyUI.cpp:399 src/ClimatologyUI.cpp:481
+msgid "Enable"
+msgstr "启用"
+
+#: src/ClimatologyUI.cpp:405
+msgid "Barbs"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:408
+msgid "Length"
+msgstr "长度"
+
+#: src/ClimatologyUI.cpp:411
+msgid "Width"
+msgstr "宽度"
+
+#: src/ClimatologyUI.cpp:418
+msgid "Color"
+msgstr "颜色"
+
+#: src/ClimatologyUI.cpp:425 src/ClimatologyUI.cpp:501
+msgid "Opacity"
+msgstr "不透明度"
+
+#: src/ClimatologyUI.cpp:432 src/ClimatologyUI.cpp:487
+msgid "Size"
+msgstr "大小"
+
+#: src/ClimatologyUI.cpp:459
+msgid "Standard Displays"
+msgstr "标准显示"
+
+#: src/ClimatologyUI.cpp:468
+msgid "Wind Atlas"
+msgstr "风力图"
+
+#: src/ClimatologyUI.cpp:511
+#: c-format
+msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\n"
+"The barbs indicate wind speed, each barb being 5 knots.\n\n"
+"The numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
+msgstr "风向图显示风向的时间百分比，以箭头的长度表示，当百分比超过29%时显示具体数值。\n\n"
+"风速由风羽表示，每个风羽代表5节。\n\n"
+"圆圈内的数字，如果是蓝色，则表示平静状态（风速小于等于3节）的平均风速百分比，如果是红色，则表示至少烈风（风速为34节及以上）的百分比。"
+
+#: src/ClimatologyUI.cpp:538
+msgid "Start Date"
+msgstr "开始日期"
+
+#: src/ClimatologyUI.cpp:547
+msgid "End Date"
+msgstr "结束日期"
+
+#: src/ClimatologyUI.cpp:561
+msgid "Display Spanning"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:571
+msgid "days"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:586
+msgid "Min Windspeed"
+msgstr "最小风速"
+
+#: src/ClimatologyUI.cpp:601
+msgid "Max Pressure"
+msgstr "最大气压"
+
+#: src/ClimatologyUI.cpp:615
+msgid "El Nino Period"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:622
+msgid "El Nino"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:626
+msgid "La Nina"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:630
+msgid "Neutral"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:644
+msgid "Storm Types"
+msgstr "风暴类型"
+
+#: src/ClimatologyUI.cpp:651
+msgid "Tropical"
+msgstr "热带"
+
+#: src/ClimatologyUI.cpp:655
+msgid "Sub Tropical"
+msgstr "亚热带地区"
+
+#: src/ClimatologyUI.cpp:659
+msgid "ExtraTropical"
+msgstr "热带以外"
+
+#: src/ClimatologyUI.cpp:663
+msgid "Remanent"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:673
+msgid "Sustained Wind Key (knots)"
+msgstr "持续风速关键图例（节）"
+
+#: src/ClimatologyUI.cpp:681
+msgid "20"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:688
+msgid "40"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:695
+msgid "60"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:702
+msgid "80"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:709
+msgid "100"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:716
+msgid "120"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:723
+msgid "140"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:730
+msgid "160"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:737
+msgid "200"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:750
+msgid "Direction arrows are spaced every 6 hours on storm track"
+msgstr "在风暴路径上，方向箭头每隔6小时标注一次。"
+
+#: src/ClimatologyUI.cpp:773
+msgid "Climatology Plugin Version"
+msgstr "气候学插件版本"
+
+#: src/ClimatologyUI.cpp:781
+msgid "Climatology Data Directory"
+msgstr "气候学数据目录"
+
+#: src/ClimatologyUI.cpp:798
+msgid "About"
+msgstr "关于"
+
+#: src/ClimatologyUI.cpp:808
+msgid "About Author"
+msgstr "关于作者"
+
+#: src/ClimatologyUI.cpp:811
+msgid "Close"
+msgstr "关闭"
+
+#: src/IsoBarMap.cpp:355
+msgid "Building Isobar Map"
+msgstr "绘制等压线地图"
+

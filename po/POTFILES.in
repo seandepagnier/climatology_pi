@@ -1,3 +1,11 @@
+src/ClimatologyOverlayFactory.cpp
+src/climatology_pi.cpp
+src/ClimatologyUI.cpp
+src/ClimatologyDialog.cpp
+src/ClimatologyConfigDialog.cpp
+src/IsoBarMap.cpp
+src/icons.cpp
+src/zuFile.cpp
 include/climatology_pi.h
 include/ClimatologyConfigDialog.h
 include/ClimatologyDialog.h

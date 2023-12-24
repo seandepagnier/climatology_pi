@@ -1,4 +1,8 @@
-build/
-buildwin/
+cmake-*
+build/*
+.idea*
 .directory
 po/POTFILES.in.test
+temp
+tmp
+master.zip

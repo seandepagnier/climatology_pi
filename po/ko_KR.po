@@ -1,0 +1,586 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: opencpn\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-20 09:35+0200\n"
+"PO-Revision-Date: 2023-11-09 21:22\n"
+"Last-Translator: \n"
+"Language-Team: Korean\n"
+"Language: ko_KR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: opencpn\n"
+"X-Crowdin-Project-ID: 49843\n"
+"X-Crowdin-Language: ko\n"
+"X-Crowdin-File: /plugins/climatology_pi/po/climatology_pi.pot\n"
+"X-Crowdin-File-ID: 110\n"
+
+#: include/ClimatologyUI.h:98 src/ClimatologyDialog.cpp:46
+msgid "Climatology Display Control"
+msgstr "기후학 표시 제어"
+
+#: include/ClimatologyUI.h:218 src/ClimatologyConfigDialog.cpp:228
+msgid "Climatology Configuration"
+msgstr "기후학 환경구성"
+
+#: include/IsoBarMap.h:135
+msgid "Declination"
+msgstr "적위"
+
+#: include/IsoBarMap.h:139
+msgid "Inclination"
+msgstr "기울기"
+
+#: include/IsoBarMap.h:142
+msgid "Field Strength"
+msgstr "필드 강도"
+
+#: src/ClimatologyConfigDialog.cpp:431
+msgid "ClimatologyInformation.html"
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:165
+msgid "Some Data Failed to load:\n"
+msgstr "일부 데이터 로드 실패:\n"
+
+#: src/ClimatologyOverlayFactory.cpp:167
+msgid "Would you like to try to download?"
+msgstr "다운로드를 시도하시겠습니까?"
+
+#: src/ClimatologyOverlayFactory.cpp:168 src/ClimatologyOverlayFactory.cpp:209
+#: src/ClimatologyOverlayFactory.cpp:219 src/ClimatologyOverlayFactory.cpp:644
+#: src/ClimatologyOverlayFactory.cpp:1461 src/ClimatologyOverlayFactory.cpp:2688
+#: src/climatology_pi.cpp:142 src/climatology_pi.cpp:146
+msgid "Climatology"
+msgstr "기후학"
+
+#: src/ClimatologyOverlayFactory.cpp:190
+msgid "downloading climatology data file"
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:207
+msgid "Some Data Failed to download.\n"
+"Climatology data incomplete"
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:216
+msgid "Some Data Failed to load."
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:218
+msgid "Climatology data incomplete."
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:536
+msgid "averaging wind"
+msgstr "평균 바람"
+
+#: src/ClimatologyOverlayFactory.cpp:548
+msgid "averaging current"
+msgstr "평균 해류"
+
+#: src/ClimatologyOverlayFactory.cpp:554
+msgid "sea level presure"
+msgstr "해수면 기압"
+
+#: src/ClimatologyOverlayFactory.cpp:558
+msgid "sea surface tempertature"
+msgstr "해수면 온도"
+
+#: src/ClimatologyOverlayFactory.cpp:562
+msgid "air tempertature"
+msgstr "대기 온도"
+
+#: src/ClimatologyOverlayFactory.cpp:566
+msgid "cloud cover"
+msgstr "구름덮힘"
+
+#: src/ClimatologyOverlayFactory.cpp:570
+msgid "precipitation"
+msgstr "강수"
+
+#: src/ClimatologyOverlayFactory.cpp:574
+msgid "relative humidity"
+msgstr "상대 습도"
+
+#: src/ClimatologyOverlayFactory.cpp:579
+msgid "lightning"
+msgstr "번개"
+
+#: src/ClimatologyOverlayFactory.cpp:584
+msgid "sea depth"
+msgstr "바다 수심"
+
+#: src/ClimatologyOverlayFactory.cpp:590
+msgid "cyclone (east pacific)"
+msgstr "사이클론 (동태평양)"
+
+#: src/ClimatologyOverlayFactory.cpp:595
+msgid "cyclone (west pacific)"
+msgstr "싸이클론 (서태평양)"
+
+#: src/ClimatologyOverlayFactory.cpp:600
+msgid "cyclone (south pacific)"
+msgstr "싸이클론 (남태평양)"
+
+#: src/ClimatologyOverlayFactory.cpp:605
+msgid "cyclone (atlantic)"
+msgstr "사이클론 (대서양)"
+
+#: src/ClimatologyOverlayFactory.cpp:610
+msgid "cyclone (north indian)"
+msgstr "사이클론 (북인도양)"
+
+#: src/ClimatologyOverlayFactory.cpp:615
+msgid "cyclone (south indian)"
+msgstr "사이클론 (남인도양)"
+
+#: src/ClimatologyOverlayFactory.cpp:623
+msgid "el nino years"
+msgstr "엘니뇨 년도"
+
+#: src/ClimatologyOverlayFactory.cpp:632
+msgid "cyclone cache"
+msgstr "사이클론 캐시"
+
+#: src/ClimatologyOverlayFactory.cpp:755 src/ClimatologyOverlayFactory.cpp:868
+#: src/ClimatologyOverlayFactory.cpp:939 src/ClimatologyOverlayFactory.cpp:971
+#: src/ClimatologyOverlayFactory.cpp:1005 src/ClimatologyOverlayFactory.cpp:1039
+#: src/ClimatologyOverlayFactory.cpp:1073 src/ClimatologyOverlayFactory.cpp:1107
+#: src/ClimatologyOverlayFactory.cpp:1141 src/ClimatologyOverlayFactory.cpp:1168
+#: src/ClimatologyOverlayFactory.cpp:1276
+msgid "corrupt file: "
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:758
+msgid "wind data file corrupt: "
+msgstr "바람 데이터 파일 손상:"
+
+#: src/ClimatologyOverlayFactory.cpp:871
+msgid "current data file corrupt: "
+msgstr "해류 데이터 파일 손상:"
+
+#: src/ClimatologyOverlayFactory.cpp:905
+msgid "Average Current includes only"
+msgstr "평균 해류만 포함합니다."
+
+#: src/ClimatologyOverlayFactory.cpp:906
+msgid "months"
+msgstr "개월"
+
+#: src/ClimatologyOverlayFactory.cpp:940
+msgid "slp file truncated"
+msgstr "slp 파일 자름"
+
+#: src/ClimatologyOverlayFactory.cpp:972
+msgid "sst file truncated"
+msgstr "sst 파일 자름"
+
+#: src/ClimatologyOverlayFactory.cpp:1006
+msgid "at file truncated"
+msgstr "at 파일 자름"
+
+#: src/ClimatologyOverlayFactory.cpp:1040
+msgid "cld file truncated"
+msgstr "cld 파일 자름"
+
+#: src/ClimatologyOverlayFactory.cpp:1074
+msgid "precip file truncated"
+msgstr "Precip 파일 자름"
+
+#: src/ClimatologyOverlayFactory.cpp:1108
+msgid "relative humidity file truncated"
+msgstr "상대 습도 파일 자름"
+
+#: src/ClimatologyOverlayFactory.cpp:1142
+msgid "lightning file truncated"
+msgstr "번개 파일 자름"
+
+#: src/ClimatologyOverlayFactory.cpp:1169
+msgid "seadepth file truncated"
+msgstr "seadepth 파일 자름"
+
+#: src/ClimatologyOverlayFactory.cpp:1277
+msgid "cyclone data corrupt: "
+msgstr "싸이클론 데이터 손상"
+
+#: src/ClimatologyOverlayFactory.cpp:1372
+msgid "cyclone cache time "
+msgstr ""
+
+#: src/ClimatologyOverlayFactory.cpp:1418
+msgid "failed to open file: "
+msgstr "파일을 열기 실패:"
+
+#: src/ClimatologyOverlayFactory.cpp:1461
+msgid "Building Overlay map"
+msgstr "합성지도 만들기"
+
+#: src/ClimatologyOverlayFactory.cpp:2267
+msgid "Climatology overlay map unsupported unless OpenGL is enabled"
+msgstr "OpenGL이 활성화되어 있지 않으면 기후 합성지도가 지원되지 않습니다."
+
+#: src/ClimatologyOverlayFactory.cpp:2317 src/ClimatologyUI.cpp:634
+msgid "N/A"
+msgstr "해당 없음"
+
+#: src/ClimatologyOverlayFactory.cpp:2687
+msgid "Computer too slow to render cyclones, disabling theater"
+msgstr "컴퓨터가 너무 느려서 사이클론을 렌더링할 수 없어 ,극장이 비활성화됨"
+
+#: src/ClimatologyUI.cpp:24
+msgid "Month"
+msgstr "월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "April"
+msgstr "4월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "August"
+msgstr "8월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "December"
+msgstr "12월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "Febuary"
+msgstr "2월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "January"
+msgstr "1월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "July"
+msgstr "7월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "June"
+msgstr "6월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "March"
+msgstr "3월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "May"
+msgstr "5월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "November"
+msgstr "11월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "October"
+msgstr "10월"
+
+#: src/ClimatologyUI.cpp:32
+msgid "September"
+msgstr "9월"
+
+#: src/ClimatologyUI.cpp:41
+msgid "All"
+msgstr "모든"
+
+#: src/ClimatologyUI.cpp:57
+msgid "Climatology Data"
+msgstr "기후 데이터"
+
+#: src/ClimatologyUI.cpp:72
+msgid "Speed"
+msgstr "속력"
+
+#: src/ClimatologyUI.cpp:76
+msgid "Direction"
+msgstr "방향"
+
+#: src/ClimatologyUI.cpp:80 src/ClimatologyUI.cpp:525
+msgid "Wind"
+msgstr "바람"
+
+#: src/ClimatologyUI.cpp:91
+msgid "Current"
+msgstr "해류"
+
+#: src/ClimatologyUI.cpp:110
+msgid "Pressure"
+msgstr "기압"
+
+#: src/ClimatologyUI.cpp:118
+msgid "Sea Temperature"
+msgstr "해수 온도"
+
+#: src/ClimatologyUI.cpp:126
+msgid "Air Temperature"
+msgstr "대기 온도"
+
+#: src/ClimatologyUI.cpp:134
+msgid "Cloud Cover"
+msgstr "구름덮힘"
+
+#: src/ClimatologyUI.cpp:142
+msgid "Precipitation"
+msgstr "강수"
+
+#: src/ClimatologyUI.cpp:150
+msgid "Rel Humidity"
+msgstr "상대 습도"
+
+#: src/ClimatologyUI.cpp:158
+msgid "Lightning"
+msgstr "번개"
+
+#: src/ClimatologyUI.cpp:166
+msgid "Sea Depth"
+msgstr "바다 수심"
+
+#: src/ClimatologyUI.cpp:174 src/ClimatologyUI.cpp:758
+msgid "Cyclones"
+msgstr "싸이클론"
+
+#: src/ClimatologyUI.cpp:179
+msgid "Config"
+msgstr "환경설정"
+
+#: src/ClimatologyUI.cpp:291 src/ClimatologyUI.cpp:301
+msgid "------------"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:297
+msgid "Units"
+msgstr "단위"
+
+#: src/ClimatologyUI.cpp:307
+msgid "Enabled"
+msgstr "활성화"
+
+#: src/ClimatologyUI.cpp:319
+msgid "OverlayMap"
+msgstr "합성지도"
+
+#: src/ClimatologyUI.cpp:322
+msgid "Transparency"
+msgstr "투명도"
+
+#: src/ClimatologyUI.cpp:329
+msgid "Interpolation"
+msgstr "보간"
+
+#: src/ClimatologyUI.cpp:340
+msgid "Iso Bars"
+msgstr "등압선"
+
+#: src/ClimatologyUI.cpp:343 src/ClimatologyUI.cpp:371 src/ClimatologyUI.cpp:439
+#: src/ClimatologyUI.cpp:494
+msgid "Spacing"
+msgstr "간격"
+
+#: src/ClimatologyUI.cpp:350
+msgid "Step"
+msgstr "단계"
+
+#: src/ClimatologyUI.cpp:354
+msgid "Course"
+msgstr "Course"
+
+#: src/ClimatologyUI.cpp:354
+msgid "Fine"
+msgstr "좋음"
+
+#: src/ClimatologyUI.cpp:354
+msgid "Normal"
+msgstr "보통"
+
+#: src/ClimatologyUI.cpp:354
+msgid "Very Course"
+msgstr "Very Course"
+
+#: src/ClimatologyUI.cpp:354
+msgid "Very Fine"
+msgstr "매우 좋음"
+
+#: src/ClimatologyUI.cpp:368
+msgid "Numbers"
+msgstr "숫자"
+
+#: src/ClimatologyUI.cpp:392
+msgid "Direction Arrows"
+msgstr "방향 화살표"
+
+#: src/ClimatologyUI.cpp:399 src/ClimatologyUI.cpp:481
+msgid "Enable"
+msgstr "활성화"
+
+#: src/ClimatologyUI.cpp:405
+msgid "Barbs"
+msgstr "미늘"
+
+#: src/ClimatologyUI.cpp:408
+msgid "Length"
+msgstr "길이"
+
+#: src/ClimatologyUI.cpp:411
+msgid "Width"
+msgstr "가로"
+
+#: src/ClimatologyUI.cpp:418
+msgid "Color"
+msgstr "색상"
+
+#: src/ClimatologyUI.cpp:425 src/ClimatologyUI.cpp:501
+msgid "Opacity"
+msgstr "불투명도"
+
+#: src/ClimatologyUI.cpp:432 src/ClimatologyUI.cpp:487
+msgid "Size"
+msgstr "크기"
+
+#: src/ClimatologyUI.cpp:459
+msgid "Standard Displays"
+msgstr "표준 표시"
+
+#: src/ClimatologyUI.cpp:468
+msgid "Wind Atlas"
+msgstr "바람 지도"
+
+#: src/ClimatologyUI.cpp:511
+#: c-format
+msgid "The wind atlas display shows the percentage of time wind is in each of eight directions as a length of the arrow, or in the case it is over 29% a number is shown.\n\n"
+"The barbs indicate wind speed, each barb being 5 knots.\n\n"
+"The numbers inside the circle, if blue give percentage of average wind speed as calm (3 knots or less) or in red at least gale force (34 knots and above)."
+msgstr "바람 지도 표시는 바람이 8방향 각각에 있는 시간의 백분율을 화살표의 길이로 표시하거나 29%를 초과하는 경우 숫자로 표시됩니다.\n\n"
+"미늘은 풍속을 나타내며 각 미늘은 5입니다. 노트.\n\n"
+"원 안의 숫자는 파란색이면 평균 풍속의 백분율을 고요함(3노트 이하)으로, 빨간색은 최소 강풍(34노트 이상)으로 표시합니다."
+
+#: src/ClimatologyUI.cpp:538
+msgid "Start Date"
+msgstr "시작 날짜"
+
+#: src/ClimatologyUI.cpp:547
+msgid "End Date"
+msgstr "종료 날짜"
+
+#: src/ClimatologyUI.cpp:561
+msgid "Display Spanning"
+msgstr "Display Spanning"
+
+#: src/ClimatologyUI.cpp:571
+msgid "days"
+msgstr "일"
+
+#: src/ClimatologyUI.cpp:586
+msgid "Min Windspeed"
+msgstr "최소 풍속"
+
+#: src/ClimatologyUI.cpp:601
+msgid "Max Pressure"
+msgstr "최대 풍속"
+
+#: src/ClimatologyUI.cpp:615
+msgid "El Nino Period"
+msgstr "엘니뇨 기간"
+
+#: src/ClimatologyUI.cpp:622
+msgid "El Nino"
+msgstr "엘니뇨"
+
+#: src/ClimatologyUI.cpp:626
+msgid "La Nina"
+msgstr "라니냐"
+
+#: src/ClimatologyUI.cpp:630
+msgid "Neutral"
+msgstr "중립"
+
+#: src/ClimatologyUI.cpp:644
+msgid "Storm Types"
+msgstr "폭풍 유형"
+
+#: src/ClimatologyUI.cpp:651
+msgid "Tropical"
+msgstr "열대"
+
+#: src/ClimatologyUI.cpp:655
+msgid "Sub Tropical"
+msgstr "아열대"
+
+#: src/ClimatologyUI.cpp:659
+msgid "ExtraTropical"
+msgstr "온대"
+
+#: src/ClimatologyUI.cpp:663
+msgid "Remanent"
+msgstr "잔류"
+
+#: src/ClimatologyUI.cpp:673
+msgid "Sustained Wind Key (knots)"
+msgstr "지속 바람 키 (노트)"
+
+#: src/ClimatologyUI.cpp:681
+msgid "20"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:688
+msgid "40"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:695
+msgid "60"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:702
+msgid "80"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:709
+msgid "100"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:716
+msgid "120"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:723
+msgid "140"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:730
+msgid "160"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:737
+msgid "200"
+msgstr ""
+
+#: src/ClimatologyUI.cpp:750
+msgid "Direction arrows are spaced every 6 hours on storm track"
+msgstr "방향 화살표는 폭풍우 트랙에서 6시간 간격으로 배치됩니다."
+
+#: src/ClimatologyUI.cpp:773
+msgid "Climatology Plugin Version"
+msgstr "기후 플러그인 버전"
+
+#: src/ClimatologyUI.cpp:781
+msgid "Climatology Data Directory"
+msgstr "기후 데이터 디렉토리"
+
+#: src/ClimatologyUI.cpp:798
+msgid "About"
+msgstr "소개"
+
+#: src/ClimatologyUI.cpp:808
+msgid "About Author"
+msgstr "만든이 소개"
+
+#: src/ClimatologyUI.cpp:811
+msgid "Close"
+msgstr "닫기"
+
+#: src/IsoBarMap.cpp:355
+msgid "Building Isobar Map"
+msgstr "등압선 지도 만들기"
+

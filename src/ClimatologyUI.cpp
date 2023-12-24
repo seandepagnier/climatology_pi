@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Feb 26 2019)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -35,9 +35,7 @@ ClimatologyDialogBase::ClimatologyDialogBase( wxWindow* parent, wxWindowID id, c
 	m_cMonth->SetSelection( 0 );
 	fgSizer23->Add( m_cMonth, 0, wxALL|wxEXPAND, 5 );
 
-	m_sDay = new wxSpinCtrl( sbSizer21->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 1, 31, 1 );
-	m_sDay->SetMinSize( wxSize( 50,-1 ) );
-
+	m_sDay = new wxSpinCtrl( sbSizer21->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxSP_ARROW_KEYS, 1, 31, 1 );
 	fgSizer23->Add( m_sDay, 0, wxALL, 5 );
 
 	m_cbAll = new wxCheckBox( sbSizer21->GetStaticBox(), wxID_ANY, _("All"), wxDefaultPosition, wxDefaultSize, 0 );

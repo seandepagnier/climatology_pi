@@ -62,26 +62,26 @@ wxString ClimatologyDataDirectory()
 //    return *GetpSharedDataLocation() + "plugins"
 //        + s + "climatology_pi" + s + "data" + s;
 
-    wxString s =wxFileName::GetPathSeparator();
+    wxChar s =wxFileName::GetPathSeparator();
     return GetPluginDataDir("climatology_pi") + s + "data" + s;
 }
 
 wxString ClimatologyUserDataDirectory()
 {
-    wxString s = wxFileName::GetPathSeparator();
+    wxChar s = wxFileName::GetPathSeparator();
     return *GetpPrivateApplicationDataLocation() + s + "plugins"
         + s + "climatology_pi" + s + "data" + s;
 }
 
 climatology_pi::climatology_pi(void *ppimgr)
-      :opencpn_plugin_116(ppimgr)
+      :opencpn_plugin_117(ppimgr)
 {
       m_pClimatologyDialog = nullptr;
       // Create the PlugIn icons
       initialize_images();
 
-	 //original way usingimages in file  icon.cpp
-      s_climatology_pi = this;
+      //original way usingimages in file  icon.cpp
+        s_climatology_pi = this;
 
 // Create the PlugIn icons  -from shipdriver
 // loads png file for the listing panel icon
@@ -186,6 +186,17 @@ int climatology_pi::GetPlugInVersionMinor()
 {
       return PLUGIN_VERSION_MINOR;
 }
+
+int climatology_pi::GetPlugInVersionPatch()
+{
+      return PLUGIN_VERSION_PATCH;
+}
+
+int climatology_pi::GetPlugInVersionPost()
+{
+      return PLUGIN_VERSION_TWEAK;
+}
+
 
 /*  Converts  icon.cpp file to an image. Original process
 wxBitmap *climatology_pi::GetPlugInBitmap()

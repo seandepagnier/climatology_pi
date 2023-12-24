@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Feb 26 2019)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -37,13 +37,6 @@
 #include <wx/html/htmlwin.h>
 #include <wx/notebook.h>
 
-#ifdef __OCPN__ANDROID__
-#include "android/wx/datectrl.h"
-#else
-class wxDatePickerCtrl;
-#endif
-
-
 ///////////////////////////////////////////////////////////////////////////
 
 
@@ -69,7 +62,7 @@ class ClimatologyDialogBase : public wxDialog
 		wxTextCtrl* m_tCloudCover;
 		wxButton* m_bConfig;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnMonth( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDay( wxSpinEvent& event ) { event.Skip(); }
@@ -103,6 +96,7 @@ class ClimatologyDialogBase : public wxDialog
 		wxCheckBox* m_cbCyclones;
 
 		ClimatologyDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Display Control"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxCLOSE_BOX|wxRESIZE_BORDER|wxSYSTEM_MENU );
+
 		~ClimatologyDialogBase();
 
 };
@@ -182,7 +176,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxButton* m_bAboutAuthor;
 		wxButton* m_bClose;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnPageChanged( wxNotebookEvent& event ) { event.Skip(); }
 		virtual void OnDataTypeChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
@@ -222,6 +216,7 @@ class ClimatologyConfigDialogBase : public wxDialog
 		wxCheckBox* m_cbRemanent;
 
 		ClimatologyConfigDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Climatology Configuration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE );
+
 		~ClimatologyConfigDialogBase();
 
 };
